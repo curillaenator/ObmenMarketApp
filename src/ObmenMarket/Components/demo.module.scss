@@ -1,0 +1,12 @@
+.row {
+  display: flex;
+  align-items: center;
+  margin-top: 32px;
+  & > button {
+    margin-right: 8px;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
