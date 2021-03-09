@@ -4,8 +4,8 @@ import "firebase/auth";
 import { setUser } from "./user";
 
 firebase.initializeApp({
-  apiKey: "AIzaSyBmYNXLxCwaIR_U2RYWUAzCeRIQjixMVv4",
-  authDomain: "obmen-market-666.firebaseapp.com",
+
+    authDomain: "obmen-market-666.firebaseapp.com",
   databaseURL:
     "https://obmen-market-666-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "obmen-market-666",
