@@ -8,3 +8,15 @@
     margin-right: 40px;
   }
 }
+
+@media (max-width: 640px) {
+  .cta {
+    & > button {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      margin-right: 0;
+      transform: translateX(-50%);
+    }
+  }
+}

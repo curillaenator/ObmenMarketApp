@@ -2,14 +2,14 @@ import { useState } from "react";
 import styles from "./search.module.scss";
 
 export const Search = (props) => {
-  const [searchText, watchsearchText] = useState("");
-  const textHandler = (e) => watchsearchText(e.target.value);
+  const [searchText, watchSearchText] = useState("");
+  const textHandler = (e) => watchSearchText(e.target.value);
 
   const [isFocused, setFocus] = useState(false);
   const onFocus = () => setFocus(true);
   const onBlur = () => {
     setFocus(false);
-    watchsearchText("");
+    watchSearchText("");
   };
 
   const unfocused = {

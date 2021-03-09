@@ -8,12 +8,19 @@
   margin-bottom: 24px;
   .pad {
     flex-shrink: 0;
+    .logo {
+      display: flex;
+      align-items: center;
+      height: 42px;
+    }
     .user {
       display: flex;
       align-items: center;
+      text-decoration: none;
       & > p {
         font-size: 14px;
         font-weight: 600;
+        color: $fontGrey;
       }
       & > img {
         width: 42px;
@@ -21,6 +28,9 @@
         margin-left: 16px;
         border-radius: 50%;
         object-fit: cover;
+      }
+      &:hover img {
+        opacity: 0.5;
       }
     }
     .loginButton {

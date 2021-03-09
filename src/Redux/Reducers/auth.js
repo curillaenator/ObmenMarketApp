@@ -47,3 +47,9 @@ export const authWithGoogle = () => async (dispatch) => {
   dispatch(setUser(user));
   dispatch(setIsAuth(true));
 };
+
+export const logout = () => async (dispatch) => {
+  await fireauth.signOut();
+  dispatch(setIsAuth(false));
+  dispatch(setUser(null));
+};

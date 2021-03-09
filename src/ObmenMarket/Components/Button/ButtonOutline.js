@@ -7,7 +7,7 @@ const Shape = ({ width, height, active, disabled }) => {
   const W = width - 2;
   const H = height - 2;
   const R = height / 2 < radius ? height / 2 : radius;
-  const _smooth = height / 2 < radius ? 90 : smoothQ;
+  const _smooth = height / 2 < radius ? 80 : smoothQ;
   const S = (0.08 + R * 0.0009) * _smooth - 5 / _smooth - 4;
 
   const shapePresent = active
