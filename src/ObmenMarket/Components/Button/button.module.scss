@@ -44,6 +44,7 @@
     display: flex;
     align-items: center;
     transition: 0.12s linear;
+    max-width: 24px;
   }
   .iconIdle {
     & > svg {

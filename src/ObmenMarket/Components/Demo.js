@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { connect } from "react-redux";
+
 import { Button } from "./Button/Button";
 import { ButtonOutline } from "./Button/ButtonOutline";
 
@@ -10,6 +11,8 @@ const Demo = (props) => {
   const ctaHandler = () => setCtaActive(!ctaActive);
 
   const ctaTitle = ctaActive ? "Передумал" : "Есть что обменять";
+
+  console.log(props);
 
   return (
     <>
@@ -89,6 +92,9 @@ const Demo = (props) => {
 
 const mstp = (state) => ({
   icons: state.ui.icons,
+  firebase: state.auth.firebase,
+  firestore: state.auth.firestore,
+  fireauth: state.auth.fireauth,
 });
 
 export const DemoCont = connect(mstp, {})(Demo);

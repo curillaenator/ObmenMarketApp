@@ -1,0 +1,30 @@
+@import "../../palette.scss";
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 64px;
+  margin-bottom: 56px;
+  .pad {
+    flex-shrink: 0;
+    .user {
+      display: flex;
+      align-items: center;
+      & > p {
+        font-size: 14px;
+        font-weight: 600;
+      }
+      & > img {
+        width: 42px;
+        height: 42px;
+        margin-left: 16px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+    }
+    .loginButton {
+      text-decoration: none;
+    }
+  }
+}
