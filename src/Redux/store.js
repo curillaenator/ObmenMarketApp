@@ -5,12 +5,14 @@ import { ui } from "./Reducers/ui";
 import { auth } from "./Reducers/auth";
 import { user } from "./Reducers/user";
 import { home } from "./Reducers/home";
+import { lots } from "./Reducers/lots";
 
 const rootReducer = combineReducers({
   ui,
   auth,
   user,
   home,
+  lots,
 });
 
 export const store = createStore(rootReducer, applyMiddleware(thunk));
