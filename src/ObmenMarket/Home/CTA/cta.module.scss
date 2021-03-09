@@ -1,0 +1,10 @@
+@import "../../../palette.scss";
+
+.cta {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  & > button {
+    margin-right: 40px;
+  }
+}

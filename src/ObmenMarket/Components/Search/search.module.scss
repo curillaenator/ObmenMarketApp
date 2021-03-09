@@ -1,0 +1,56 @@
+@import "../../../palette.scss";
+
+.search {
+  width: 100%;
+  height: 56px;
+  position: relative;
+  .searchButton {
+    display: flex;
+    align-items: center;
+    height: 56px;
+    position: absolute;
+    top: 50%;
+
+    border: none;
+    background-color: transparent;
+    margin-right: 8px;
+
+    font-family: "Inter", serif;
+    font-weight: 800;
+    font-size: 28px;
+    letter-spacing: -0.576px;
+    color: $fontTitle;
+
+    transform: translateY(-50%);
+    transition: 0.12s ease-in-out;
+    cursor: pointer;
+    & > svg {
+      fill: $fontTitle;
+      margin-left: 8px;
+    }
+    &:hover {
+      color: $primary;
+    }
+    &:hover > svg {
+      fill: $primary;
+    }
+  }
+  & > input {
+    width: 100%;
+    height: 100%;
+    padding-right: 130px;
+    border: 0;
+    border-bottom: 1px solid #d8d8d8;
+    background-color: transparent;
+
+    text-align: left;
+    font-family: "Inter", sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 20px;
+    letter-spacing: -0.576px;
+    color: $fontGrey;
+    outline: none;
+  }
+}
