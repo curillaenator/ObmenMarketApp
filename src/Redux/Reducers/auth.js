@@ -1,6 +1,7 @@
 import firebase from "firebase";
 import "firebase/firestore";
 import "firebase/auth";
+import { setUser } from "./user";
 
 firebase.initializeApp({
   apiKey: "AIzaSyBmYNXLxCwaIR_U2RYWUAzCeRIQjixMVv4",
@@ -15,14 +16,11 @@ firebase.initializeApp({
 });
 
 const fireauth = firebase.auth();
-const firestore = firebase.firestore();
+// const firestore = firebase.firestore();
 
 const IS_AUTH = "auth/IS_AUTH";
 
 const initialState = {
-  firebase,
-  fireauth,
-  firestore,
   isAuth: false,
   appName: "Обмен.Маркет",
   providers: ["google", "vk"],
@@ -37,4 +35,15 @@ export const auth = (state = initialState, action) => {
   }
 };
 
-// const setIsAuth = (auth) => ({ type: IS_AUTH, auth });
+// ACTIONs
+
+const setIsAuth = (auth) => ({ type: IS_AUTH, auth });
+
+// THUNKs
+
+export const authWithGoogle = () => async (dispatch) => {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  const { user } = await fireauth.signInWithPopup(provider);
+  dispatch(setUser(user));
+  dispatch(setIsAuth(true));
+};

@@ -1,9 +1,14 @@
 import { connect } from "react-redux";
 import { Button } from "../Components/Button/Button";
+import { Redirect } from "react-router-dom";
+
+import { authWithGoogle } from "../../Redux/Reducers/auth";
+
 import styles from "./login.module.scss";
 
 const Login = (props) => {
-  //   console.log(props);
+  if (props.isAuth) return <Redirect to="/" />;
+
   return (
     <div className={styles.login}>
       <div className={styles.shape}></div>
@@ -11,9 +16,12 @@ const Login = (props) => {
       <p>Войти через:</p>
 
       <div className={styles.providers}>
-        {props.providers.map((p) => (
-          <Button width={56} height={56} icon={props.icons[p]} key={p} />
-        ))}
+        <Button
+          width={56}
+          height={56}
+          icon={props.icons.google}
+          handler={props.authWithGoogle}
+        />
       </div>
     </div>
   );
@@ -21,7 +29,7 @@ const Login = (props) => {
 
 const mstp = (state) => ({
   icons: state.ui.icons,
-  providers: state.auth.providers,
+  isAuth: state.auth.isAuth,
 });
 
-export const LoginCont = connect(mstp)(Login);
+export const LoginCont = connect(mstp, { authWithGoogle })(Login);

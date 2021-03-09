@@ -10,8 +10,8 @@ import styles from "./header.module.scss";
 const User = (props) => {
   return (
     <div className={styles.user}>
-      <p>{props.name}</p>
-      <img src={props.avatar} alt={props.name} />
+      <p>{props.user.displayName}</p>
+      <img src={props.user.photoURL} alt={props.user.displayName} />
     </div>
   );
 };
@@ -29,7 +29,7 @@ export const Header = (props) => {
       </div>
       <div className={styles.pad}>
         {props.isAuth ? (
-          <User name={props.name} avatar={props.avatar} />
+          <User name={props.name} avatar={props.avatar} user={props.user} />
         ) : (
           <Link to={loginButtonPath} className={styles.loginButton}>
             <Button
@@ -47,9 +47,8 @@ export const Header = (props) => {
 
 const mstp = (state) => ({
   isAuth: state.auth.isAuth,
-  name: state.user.name,
-  avatar: state.user.avatar,
   appName: state.auth.appName,
+  user: state.user.user,
 });
 
 export const HeaderCont = compose(withRouter, connect(mstp, {}))(Header);

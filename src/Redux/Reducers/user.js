@@ -1,16 +1,21 @@
-import avatar from "../../Assets/Images/ava.jpg";
-const DUMMY = "user/DUMMY";
+const SET_USER = "user/SET_USER";
 
 const initialState = {
-  name: "Кирилл Арт",
-  avatar: avatar,
+  user: null,
 };
 
 export const user = (state = initialState, action) => {
   switch (action.type) {
-    case DUMMY:
-      return { ...state };
+    case SET_USER:
+      return { ...state, user: action.userData };
     default:
       return state;
   }
 };
+
+// ACTIONs
+
+export const setUser = (userData) => ({ type: SET_USER, userData });
+
+// THUNKs
+
