@@ -27,15 +27,17 @@ export const Header = (props) => {
           <img src={logo} alt={props.appName} />
         </Link>
       </div>
+
       <div className={styles.pad}>
         {props.isAuth ? (
           <User name={props.name} avatar={props.avatar} user={props.user} />
+        ) : props.userLoading ? (
+          <div>Загрузка...</div>
         ) : (
           <Link to={loginButtonPath} className={styles.loginButton}>
             <Button
               width={40}
               height={40}
-              // title="Вход"
               icon={props.icons.login}
               active={loginButtonClicked}
             />

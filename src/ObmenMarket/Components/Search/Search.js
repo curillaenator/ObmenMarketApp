@@ -3,13 +3,15 @@ import styles from "./search.module.scss";
 
 export const Search = (props) => {
   const [searchText, watchSearchText] = useState("");
-  const textHandler = (e) => watchSearchText(e.target.value);
+  const searchTextHandler = (e) => watchSearchText(e.target.value);
 
   const [isFocused, setFocus] = useState(false);
-  const onFocus = () => setFocus(true);
-  const onBlur = () => {
-    setFocus(false);
+  const onFocus = (e) => setFocus(true);
+  const onBlur = () => !searchText && setFocus(false);
+
+  const findHandler = () => {
     watchSearchText("");
+    setFocus(false);
   };
 
   const unfocused = {
@@ -20,15 +22,16 @@ export const Search = (props) => {
     left: "calc(100% - 117px)",
   };
 
-  const searchButtonTitle = isFocused ? "Найти" : "Поиск";
+  const searchButtonTitle = isFocused ? "найти" : "Поиск";
   const searchButtonPresent = isFocused ? focused : unfocused;
 
   return (
     <div className={styles.search}>
       <button
-        className={styles.searchButton}
-        disabled={!isFocused}
+        className={styles.find}
+        disabled={!searchText}
         style={searchButtonPresent}
+        onClick={findHandler}
       >
         {searchButtonTitle}
         {isFocused && props.icon}
@@ -38,7 +41,7 @@ export const Search = (props) => {
         onFocus={onFocus}
         onBlur={onBlur}
         value={searchText}
-        onInput={textHandler}
+        onInput={searchTextHandler}
       />
     </div>
   );

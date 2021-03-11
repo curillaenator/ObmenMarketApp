@@ -1,0 +1,139 @@
+@import "../../../palette.scss";
+
+.lot {
+  display: block;
+  position: relative;
+  padding-top: 16px;
+  border-bottom: 1px solid #d8d8d8;
+  margin-bottom: 8px;
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -24px;
+    display: block;
+    width: calc(100% + 48px);
+    height: calc(100% + 1px);
+    background-color: #f6f7f8;
+    opacity: 0;
+    transition: 0.12s linear;
+    z-index: -1;
+  }
+  &:active::before {
+    opacity: 1;
+  }
+  .owner {
+    display: flex;
+    align-items: center;
+    margin-bottom: 11px;
+    width: fit-content;
+    text-decoration: none;
+    transition: 0.12s linear;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.7;
+    }
+    & > img {
+      width: 32px;
+      height: 32px;
+      object-fit: cover;
+      border-radius: 16px;
+      margin-right: 8px;
+    }
+    & > p {
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 20px;
+      letter-spacing: -0.149333px;
+      color: $fontTitle;
+      margin-right: 16px;
+    }
+  }
+  .content {
+    cursor: pointer;
+    .photo {
+      width: 100%;
+      object-fit: cover;
+      margin-bottom: 18px;
+      mask-image: url(../../../Assets/Masks/lotPhoto.svg);
+      mask-size: cover;
+      mask-repeat: no-repeat;
+    }
+    .title {
+      font-weight: 800;
+      font-size: 22px;
+      line-height: 28px;
+      letter-spacing: -0.64px;
+      color: $fontTitle;
+      margin-bottom: 5px;
+    }
+    .description {
+      overflow-y: hidden;
+      min-height: 57px;
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 19px;
+      letter-spacing: -0.08px;
+      color: $fontGrey;
+      margin-bottom: 23px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .statusbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      .offers {
+        display: flex;
+        align-items: center;
+        & > img {
+          margin-right: 9px;
+        }
+        & > p {
+          font-weight: 600;
+          font-size: 12px;
+          line-height: 16px;
+          letter-spacing: -0.08px;
+          color: $fontGrey;
+        }
+      }
+      .timing {
+        display: flex;
+        align-items: center;
+        & > p {
+          font-weight: 600;
+          font-size: 12px;
+          line-height: 16px;
+          text-align: right;
+          letter-spacing: -0.08px;
+          color: $fontGrey;
+        }
+        & > img {
+          margin-left: 9px;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 375px) {
+  .lot {
+    .content {
+      .statusbar {
+        .offers {
+          & > p {
+            font-size: 13px;
+          }
+        }
+        .timing {
+          & > p {
+            font-size: 13px;
+          }
+        }
+      }
+    }
+  }
+}
