@@ -7,7 +7,7 @@ const initialState = {
 export const home = (state = initialState, action) => {
   switch (action.type) {
     case SET_FORM_MODE:
-      return { ...state, isFormModeOn: !state.isFormModeOn };
+      return { ...state, isFormModeOn: action.mode };
     default:
       return state;
   }
@@ -15,7 +15,6 @@ export const home = (state = initialState, action) => {
 
 // ACTIONs
 
-export const setFormMode = () => ({ type: SET_FORM_MODE });
+export const setFormMode = (mode) => ({ type: SET_FORM_MODE, mode });
 
 // THUNKs
-

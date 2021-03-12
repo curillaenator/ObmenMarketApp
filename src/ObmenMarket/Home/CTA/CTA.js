@@ -1,32 +1,25 @@
-import { connect } from "react-redux";
 import { Button } from "../../Components/Button/Button";
 import { Search } from "../../Components/Search/Search";
 
-import { setFormMode } from "../../../Redux/Reducers/home";
-
 import styles from "./cta.module.scss";
 
-const Cta = (props) => {
+export const Cta = (props) => {
   const { isFormModeOn, setFormMode } = props;
+  const formModeHandler = () => setFormMode(!isFormModeOn);
+
   const ctaTitle = isFormModeOn ? "Передумал" : "Есть что обменять";
+  const ctaMarginBottom = isFormModeOn ? { marginBottom: "13px" } : {};
   return (
-    <div className={styles.cta}>
+    <div className={styles.cta} style={ctaMarginBottom}>
       <Button
         width={220}
         height={56}
         title={ctaTitle}
         icon={props.icons.add}
         active={isFormModeOn}
-        handler={setFormMode}
+        handler={formModeHandler}
       />
       <Search icon={props.icons.search} />
     </div>
   );
 };
-
-const mstp = (state) => ({
-  icons: state.ui.icons,
-  isFormModeOn: state.home.isFormModeOn,
-});
-
-export const CtaCont = connect(mstp, { setFormMode })(Cta);
