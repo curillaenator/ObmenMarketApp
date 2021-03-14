@@ -35,9 +35,12 @@ export const Lots = ({ user, firestore, ...props }) => {
 
   return (
     <div className={styles.lots} style={lotsDisplay}>
-      {posts.map((p) => (
+      {/* {posts.map((p) => (
         <Lot data={p} key={p.uid} />
-      ))}
+      ))} */}
+      <Lot data={posts[0]} />
+      <Lot data={posts[0]} />
+      <Lot data={posts[0]} />
     </div>
   );
 };

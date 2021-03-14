@@ -2,7 +2,7 @@ import { Form } from "react-final-form";
 import { FormFullFields } from "./FormFullFields";
 
 export const FormFull = (props) => {
-  const onSubmit = (formData, values) => console.log(formData, values);
+  const onSubmit = (formData) => console.log(formData);
   return (
     <Form
       onSubmit={onSubmit}
@@ -13,6 +13,7 @@ export const FormFull = (props) => {
           form={form}
           values={values}
           icons={props.icons}
+          furmFullUi={props.furmFullUi}
         />
       )}
     />

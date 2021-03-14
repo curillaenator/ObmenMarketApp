@@ -23,16 +23,21 @@ const Home = (props) => {
         user={props.user}
         firestore={props.firestore}
       />
-      <FormFull isFormModeOn={props.isFormModeOn} icons={props.icons} />
+      <FormFull
+        isFormModeOn={props.isFormModeOn}
+        icons={props.icons}
+        furmFullUi={props.furmFullUi}
+      />
     </div>
   );
 };
 
 const mstp = (state) => ({
   icons: state.ui.icons,
+  furmFullUi: state.ui.formFull,
+  isFormModeOn: state.home.isFormModeOn,
   firestore: state.auth.firestore,
   user: state.user.user,
-  isFormModeOn: state.home.isFormModeOn,
 });
 
 export const HomeCont = connect(mstp, { setFormMode })(Home);

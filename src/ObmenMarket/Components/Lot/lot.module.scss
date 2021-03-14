@@ -2,9 +2,10 @@
 
 .lot {
   display: block;
+  width: 100%;
   position: relative;
   padding-top: 16px;
-  border-bottom: 1px solid #d8d8d8;
+  border-bottom: 1px solid $spacer;
   margin-bottom: 8px;
   &::before {
     content: "";
@@ -52,12 +53,22 @@
   .content {
     cursor: pointer;
     .photo {
+      position: relative;
       width: 100%;
-      object-fit: cover;
+      height: 0;
+      padding-top: calc(100% * 0.563);
       margin-bottom: 18px;
-      mask-image: url(../../../Assets/Masks/lotPhoto.svg);
-      mask-size: cover;
-      mask-repeat: no-repeat;
+      & > img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        mask-image: url(../../../Assets/Masks/lotPhoto.svg);
+        mask-size: cover;
+        mask-repeat: no-repeat;
+      }
     }
     .title {
       font-weight: 800;
@@ -135,5 +146,15 @@
         }
       }
     }
+  }
+}
+@media (min-width: 640px) {
+  .lot {
+    width: calc(50% - 16px);
+  }
+}
+@media (min-width: 1024px) {
+  .lot {
+    width: calc(50% - 28px);
   }
 }

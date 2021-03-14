@@ -1,177 +1,248 @@
 @import "../../../palette.scss";
 
+@mixin photo {
+}
+
 .formfull {
   margin-bottom: 40px;
   .cloudtail {
     margin-left: 110px;
     margin-bottom: -3px;
-    // padding-left: 110px;
     transform: translateX(-50%);
   }
   .shape {
     width: 100%;
     padding: 32px 24px;
     margin-bottom: 28px;
-    // height: calc(100% - 14px);
     background-color: $shape;
     border-radius: 16px;
     background-color: $shape;
     z-index: -10;
-  }
-  .fields {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    width: 100%;
-    .pad {
-      display: block;
+    .fields {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
       width: 100%;
-      margin-bottom: 32px;
-      &:last-child {
-        margin-bottom: 0;
+      .pad {
+        display: block;
+        width: 100%;
+        margin-bottom: 32px;
+        &:last-child {
+          margin-bottom: 0;
+        }
+        .title {
+          font-weight: bold;
+          font-size: 16px;
+          line-height: 19px;
+          letter-spacing: -0.08px;
+          color: $fontTitle;
+          margin-bottom: 8px;
+          user-select: none;
+        }
+        .subtitle {
+          margin-top: 16px;
+          font-weight: 600;
+        }
+        .subinput {
+          font-weight: 500;
+          font-size: 11px;
+          line-height: 16px;
+          letter-spacing: -0.149333px;
+          color: $fontSub;
+          user-select: none;
+          // margin-bottom: 16px;
+        }
+        & > input {
+          width: 100%;
+          height: 52px;
+          background-color: transparent;
+          border: 0;
+          border-bottom: 1px solid $formSpacer;
+          font-family: Inter;
+          font-weight: 700;
+          font-size: 13px;
+          line-height: 19px;
+          letter-spacing: -0.08px;
+          color: $fontTitle;
+          outline: none;
+          &::placeholder {
+            font-weight: 600;
+            font-size: 13px;
+            line-height: 20px;
+            letter-spacing: -0.149333px;
+            color: $fontGrey;
+            transition: 0.12s;
+          }
+          &:focus::placeholder {
+            opacity: 0;
+          }
+        }
+        & > textarea {
+          width: 100%;
+          min-height: 52px;
+          padding-top: 16px;
+          resize: none;
+          overflow-y: auto;
+          outline: none;
+          background-color: transparent;
+          border: 0;
+          border-bottom: 1px solid $formSpacer;
+          // margin-bottom: 13px;
+          font-family: Inter;
+          font-weight: 700;
+          font-size: 13px;
+          line-height: 19px;
+          letter-spacing: -0.08px;
+          color: $fontTitle;
+          &::placeholder {
+            font-weight: 600;
+            font-size: 13px;
+            line-height: 20px;
+            letter-spacing: -0.149333px;
+            color: $fontGrey;
+            transition: 0.12s;
+          }
+          &:focus::placeholder {
+            opacity: 0;
+          }
+        }
       }
-      .title {
-        font-weight: bold;
-        font-size: 16px;
-        line-height: 19px;
-        letter-spacing: -0.08px;
-        color: $fontTitle;
-        margin-bottom: 8px;
-        user-select: none;
-      }
-      .subtitle {
+      .photos {
+        width: 100%;
         margin-top: 16px;
-        font-weight: 600;
-      }
-      .subinput {
-        font-weight: 500;
-        font-size: 11px;
-        line-height: 16px;
-        letter-spacing: -0.149333px;
-        color: $fontSub;
-        user-select: none;
-        // margin-bottom: 16px;
-      }
-      & > input {
-        width: 100%;
-        height: 52px;
-        background-color: transparent;
-        border: 0;
-        border-bottom: 1px solid $formSpacer;
-        font-family: Inter;
-        font-weight: 700;
-        font-size: 13px;
-        line-height: 19px;
-        letter-spacing: -0.08px;
-        color: $fontTitle;
-        outline: none;
-        &::placeholder {
-          font-weight: 600;
-          font-size: 13px;
-          line-height: 20px;
-          letter-spacing: -0.149333px;
-          color: $fontGrey;
-          transition: 0.12s;
+        .loaded {
+          display: flex;
+          width: 100%;
+          margin-bottom: 16px;
+          .imgCont {
+            position: relative;
+            width: calc(20% - 3.2px);
+            height: 0;
+            padding-top: calc(20% - 3.2px);
+            margin-left: 4px;
+            cursor: pointer;
+            & > img {
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+              mask-image: url(../../../Assets/Masks/commonBtn.svg);
+              mask-size: cover;
+              mask-repeat: no-repeat;
+            }
+            &:first-child {
+              margin-left: 0;
+            }
+            .delete {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background-color: transparent;
+              mask-image: url(../../../Assets/Masks/commonBtn.svg);
+              mask-size: cover;
+              mask-repeat: no-repeat;
+              transition: 0.12s linear;
+              & > svg {
+                fill: $fontWhite;
+              }
+            }
+            &:hover .delete {
+              background-color: $primaryTransparent;
+            }
+          }
         }
-        &:focus::placeholder {
-          opacity: 0;
-        }
-      }
-      & > textarea {
-        width: 100%;
-        min-height: 52px;
-        padding-top: 16px;
-        resize: none;
-        overflow-y: auto;
-        outline: none;
-        background-color: transparent;
-        border: 0;
-        border-bottom: 1px solid $formSpacer;
-        // margin-bottom: 13px;
-        font-family: Inter;
-        font-weight: 700;
-        font-size: 13px;
-        line-height: 19px;
-        letter-spacing: -0.08px;
-        color: $fontTitle;
-        &::placeholder {
-          font-weight: 600;
-          font-size: 13px;
-          line-height: 20px;
-          letter-spacing: -0.149333px;
-          color: $fontGrey;
-          transition: 0.12s;
-        }
-        &:focus::placeholder {
-          opacity: 0;
+        .addPhoto {
+          position: relative;
+          & > input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -10;
+            opacity: 0;
+          }
+          & > label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 185px;
+            border-radius: 16px;
+            height: 40px;
+            background-color: $primary;
+            color: $fontWhite;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: -0.149333px;
+            transition: 0.12s linear;
+            z-index: 10;
+            user-select: none;
+            cursor: pointer;
+            filter: drop-shadow(0 4px 4px $primaryIdleShadow)
+              drop-shadow(0 0 1px $primaryIdleShadow)
+              drop-shadow(0 0 1px $primaryIdleShadow);
+            &:hover {
+              background-color: $primaryHover;
+            }
+            &:active {
+              background-color: $primary;
+              color: $primaryFontClicked;
+              filter: none;
+            }
+          }
         }
       }
     }
-    .photos {
-      display: flex;
-      position: relative;
-      margin-top: 16px;
-      & > img {
-        width: 52px;
-        height: 52px;
-        object-fit: cover;
-        mask-image: url(../../../Assets/Masks/commonBtn.svg);
-        mask-size: contain;
-        mask-repeat: no-repeat;
-        margin-left: 4px;
-        &:first-child {
-          margin-left: 0;
-        }
-      }
-      & > input {
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: -10;
-        opacity: 0;
-      }
-      & > label {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 52px;
-        height: 52px;
-        margin-left: 4px;
-        background-color: $primary;
-        mask-image: url(../../../Assets/Masks/commonBtn.svg);
-        mask-size: cover;
-        mask-repeat: no-repeat;
-        transition: 0.12s linear;
-        z-index: 10;
-        cursor: pointer;
-        filter: drop-shadow(0 4px 4px $primaryIdleShadow)
-          drop-shadow(0 0 1px $primaryIdleShadow)
-          drop-shadow(0 0 1px $primaryIdleShadow);
-        & > img {
-          width: 43%;
-          height: 43%;
-          user-select: none;
-        }
-        &:hover {
-          background-color: $primaryHover;
-        }
-        &:active {
-          background-color: $primary;
-          filter: none;
-        }
-        &:active > img {
-          opacity: 0.7;
-        }
-      }
+  }
+  .buttons {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 128px;
+    & > button {
+      margin-bottom: 28px;
+    }
+    & > p {
+      width: 100%;
+      text-align: center;
     }
   }
 }
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
   .formfull {
-    .fields {
-      .pad {
-        width: calc(50% - 12px);
+    .shape {
+      .fields {
+        .pad {
+          width: calc(50% - 12px);
+        }
+      }
+    }
+    .buttons {
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: flex-start;
+      & > button {
+        margin-right: 16px;
+      }
+      & > P {
+        text-align: left;
+      }
+    }
+  }
+}
+@media (min-width: 1024px) {
+  .formfull {
+    .buttons {
+      & > p {
+        width: calc(100% - 440px - 32px);
       }
     }
   }
