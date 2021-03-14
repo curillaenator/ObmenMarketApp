@@ -1,10 +1,16 @@
 import { Field } from "react-final-form";
-import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "../Button/Button";
 import { ButtonOutline } from "../Button/ButtonOutline";
+import {
+  required,
+  minLength,
+  combinedValidators,
+  TextInput,
+  TextArea,
+  PhotoFiles,
+} from "../Inputs/Inputs";
 
 import cloudtail from "../../../Assets/Icons/cloudtail.svg";
-// import addphoto from "../../../Assets/Icons/add.svg";
 
 import photo1 from "../../../Assets/Images/1.jpg";
 import photo2 from "../../../Assets/Images/2.jpg";
@@ -12,13 +18,17 @@ import photo3 from "../../../Assets/Images/3.jpg";
 
 import styles from "./formfull.module.scss";
 
-const PhotoLoaded = (props) => {
+// Components
+const PhotosCont = (props) => {
+  const deletePhoto = () => console.log("delete");
   return (
-    <div className={styles.imgCont} onClick={props.deletePhoto}>
-      <img src={props.photo} alt="" draggable={false} />
-      <div className={styles.delete}>
-        {props.deleteIcon}
-      </div>
+    <div className={styles.loaded}>
+      {props.photos.map((p, i) => (
+        <div className={styles.imgCont} onClick={deletePhoto} key={i}>
+          <img src={p} alt="" draggable={false} />
+          <div className={styles.delete}>{props.icons.delete}</div>
+        </div>
+      ))}
     </div>
   );
 };
@@ -43,12 +53,11 @@ const Buttons = (props) => {
   );
 };
 
+// Main form
 export const FormFullFields = (props) => {
   const formUi = props.furmFullUi;
-  const photoArr = true;
+  const photos = [photo1, photo2, photo3];
   const formDisplay = props.isFormModeOn ? {} : { display: "none" };
-
-  const deletePhoto = () => console.log("delete");
 
   return (
     <form
@@ -64,88 +73,53 @@ export const FormFullFields = (props) => {
 
             <Field
               name="lotname"
-              component="input"
+              component={TextInput}
+              validate={combinedValidators(required, minLength(5))}
               placeholder={formUi.offer.name}
+              sub={formUi.offer.lotnameSub}
             />
 
             <Field
               name="category"
-              component="input"
+              component={TextInput}
+              validate={required}
               placeholder={formUi.offer.category}
+              sub={formUi.offer.categorySub}
             />
-
-            <p className={styles.subinput}>{formUi.offer.categorySub}</p>
 
             <Field
               name="overprice"
-              component="input"
+              component={TextInput}
               placeholder={formUi.offer.price}
+              sub={formUi.offer.priceSub}
             />
 
-            <p className={styles.subinput}>{formUi.offer.priceSub}</p>
-
-            <p className={styles.subtitle}>Загрузите фотографии:</p>
-
             <div className={styles.photos}>
-              {photoArr && (
-                <div className={styles.loaded}>
-                  <PhotoLoaded
-                    photo={photo1}
-                    deletePhoto={deletePhoto}
-                    deleteIcon={props.icons.delete}
-                  />
-                  <PhotoLoaded
-                    photo={photo2}
-                    deletePhoto={deletePhoto}
-                    deleteIcon={props.icons.delete}
-                  />
-                  <PhotoLoaded
-                    photo={photo3}
-                    deletePhoto={deletePhoto}
-                    deleteIcon={props.icons.delete}
-                  />
-                </div>
+              <p className={styles.subtitle}>Фотографии:</p>
+
+              {photos.length > 0 && (
+                <PhotosCont photos={photos} icons={props.icons} />
               )}
 
-              <div className={styles.addPhoto}>
-                <Field name="photos">
-                  {({ input: { value, onChange, ...input } }) => {
-                    // console.log(value);
-                    return (
-                      <>
-                        <input
-                          {...input}
-                          type="file"
-                          id="choosePhotos"
-                          onChange={({ target }) => onChange(target.files)}
-                        />
-                        <label htmlFor="choosePhotos">Загрузить фото</label>
-                      </>
-                    );
-                  }}
-                </Field>
-              </div>
+              <Field
+                name="photos"
+                title="Добавить фото"
+                component={PhotoFiles}
+              />
             </div>
           </div>
 
           <div className={styles.pad}>
             <h2 className={styles.title}>{formUi.description.title}</h2>
 
-            <Field name="description">
-              {(props) => (
-                <TextareaAutosize
-                  name={props.input.name}
-                  placeholder={formUi.description.description}
-                  maxRows={12}
-                  value={props.input.value}
-                  onChange={props.input.onChange}
-                />
-              )}
-            </Field>
-
-            <p className={styles.subinput}>
-              {formUi.description.descriptionSub}
-            </p>
+            <Field
+              name="description"
+              component={TextArea}
+              validate={combinedValidators(required, minLength(15))}
+              maxRows={12}
+              placeholder={formUi.description.description}
+              sub={formUi.description.descriptionSub}
+            />
           </div>
 
           <div className={styles.pad}>
@@ -153,22 +127,21 @@ export const FormFullFields = (props) => {
 
             <Field
               name="lotwWish"
-              component="input"
+              component={TextInput}
               placeholder={formUi.wish.category}
+              sub={formUi.wish.categorySub}
             />
-
-            <p className={styles.subinput}>{formUi.wish.categorySub}</p>
 
             <Field
               name="addpayment"
-              component="input"
+              component={TextInput}
               placeholder={formUi.wish.addPayment}
+              sub={formUi.wish.addPaymentSub}
             />
-
-            <p className={styles.subinput}>{formUi.wish.addPaymentSub}</p>
           </div>
         </div>
       </div>
+
       <Buttons icons={props.icons} notation={formUi.notation} />
     </form>
   );

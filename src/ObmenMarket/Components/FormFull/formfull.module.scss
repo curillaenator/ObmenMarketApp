@@ -1,8 +1,5 @@
 @import "../../../palette.scss";
 
-@mixin photo {
-}
-
 .formfull {
   margin-bottom: 40px;
   .cloudtail {
@@ -14,7 +11,6 @@
     width: 100%;
     padding: 32px 24px;
     margin-bottom: 28px;
-    background-color: $shape;
     border-radius: 16px;
     background-color: $shape;
     z-index: -10;
@@ -38,73 +34,6 @@
           color: $fontTitle;
           margin-bottom: 8px;
           user-select: none;
-        }
-        .subtitle {
-          margin-top: 16px;
-          font-weight: 600;
-        }
-        .subinput {
-          font-weight: 500;
-          font-size: 11px;
-          line-height: 16px;
-          letter-spacing: -0.149333px;
-          color: $fontSub;
-          user-select: none;
-          // margin-bottom: 16px;
-        }
-        & > input {
-          width: 100%;
-          height: 52px;
-          background-color: transparent;
-          border: 0;
-          border-bottom: 1px solid $formSpacer;
-          font-family: Inter;
-          font-weight: 700;
-          font-size: 13px;
-          line-height: 19px;
-          letter-spacing: -0.08px;
-          color: $fontTitle;
-          outline: none;
-          &::placeholder {
-            font-weight: 600;
-            font-size: 13px;
-            line-height: 20px;
-            letter-spacing: -0.149333px;
-            color: $fontGrey;
-            transition: 0.12s;
-          }
-          &:focus::placeholder {
-            opacity: 0;
-          }
-        }
-        & > textarea {
-          width: 100%;
-          min-height: 52px;
-          padding-top: 16px;
-          resize: none;
-          overflow-y: auto;
-          outline: none;
-          background-color: transparent;
-          border: 0;
-          border-bottom: 1px solid $formSpacer;
-          // margin-bottom: 13px;
-          font-family: Inter;
-          font-weight: 700;
-          font-size: 13px;
-          line-height: 19px;
-          letter-spacing: -0.08px;
-          color: $fontTitle;
-          &::placeholder {
-            font-weight: 600;
-            font-size: 13px;
-            line-height: 20px;
-            letter-spacing: -0.149333px;
-            color: $fontGrey;
-            transition: 0.12s;
-          }
-          &:focus::placeholder {
-            opacity: 0;
-          }
         }
       }
       .photos {
@@ -158,43 +87,10 @@
             }
           }
         }
-        .addPhoto {
-          position: relative;
-          & > input {
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: -10;
-            opacity: 0;
-          }
-          & > label {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 185px;
-            border-radius: 16px;
-            height: 40px;
-            background-color: $primary;
-            color: $fontWhite;
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: -0.149333px;
-            transition: 0.12s linear;
-            z-index: 10;
-            user-select: none;
-            cursor: pointer;
-            filter: drop-shadow(0 4px 4px $primaryIdleShadow)
-              drop-shadow(0 0 1px $primaryIdleShadow)
-              drop-shadow(0 0 1px $primaryIdleShadow);
-            &:hover {
-              background-color: $primaryHover;
-            }
-            &:active {
-              background-color: $primary;
-              color: $primaryFontClicked;
-              filter: none;
-            }
-          }
+        & > p {
+          margin-top: 16px;
+          margin-bottom: 16px;
+          font-weight: 600;
         }
       }
     }
