@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Welcome } from "./Welcome/Welcome";
 import { Cta } from "./CTA/CTA";
 import { Lots } from "./Lots/Lots";
+import { Warning } from "./Warning/Warning";
 import { FormFull } from "../Components/FormFull/FormFull";
 
 import { setFormMode } from "../../Redux/Reducers/home";
@@ -23,16 +24,20 @@ const Home = (props) => {
         user={props.user}
         firestore={props.firestore}
       />
-      <FormFull
-        isFormModeOn={props.isFormModeOn}
-        icons={props.icons}
-        furmFullUi={props.furmFullUi}
-      />
+      {!props.isAuth && props.isFormModeOn && <Warning />}
+      {props.isAuth && (
+        <FormFull
+          isFormModeOn={props.isFormModeOn}
+          icons={props.icons}
+          furmFullUi={props.furmFullUi}
+        />
+      )}
     </div>
   );
 };
 
 const mstp = (state) => ({
+  isAuth: state.auth.isAuth,
   icons: state.ui.icons,
   furmFullUi: state.ui.formFull,
   isFormModeOn: state.home.isFormModeOn,

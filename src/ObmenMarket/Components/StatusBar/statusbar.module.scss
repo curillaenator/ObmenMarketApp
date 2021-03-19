@@ -1,0 +1,52 @@
+@import "../../../palette.scss";
+
+.statusbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  .offers {
+    display: flex;
+    align-items: center;
+    & > img {
+      margin-right: 9px;
+    }
+    & > p {
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 16px;
+      letter-spacing: -0.08px;
+      color: $fontGrey;
+    }
+  }
+  .timing {
+    display: flex;
+    align-items: center;
+    & > p {
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 16px;
+      text-align: right;
+      letter-spacing: -0.08px;
+      color: $fontGrey;
+    }
+    & > img {
+      margin-left: 9px;
+    }
+  }
+}
+
+@media (min-width: 375px) {
+  .statusbar {
+    .offers {
+      & > p {
+        font-size: 13px;
+      }
+    }
+    .timing {
+      & > p {
+        font-size: 13px;
+      }
+    }
+  }
+}

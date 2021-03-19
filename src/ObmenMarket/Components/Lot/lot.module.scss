@@ -92,62 +92,9 @@
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-    .statusbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-      .offers {
-        display: flex;
-        align-items: center;
-        & > img {
-          margin-right: 9px;
-        }
-        & > p {
-          font-weight: 600;
-          font-size: 12px;
-          line-height: 16px;
-          letter-spacing: -0.08px;
-          color: $fontGrey;
-        }
-      }
-      .timing {
-        display: flex;
-        align-items: center;
-        & > p {
-          font-weight: 600;
-          font-size: 12px;
-          line-height: 16px;
-          text-align: right;
-          letter-spacing: -0.08px;
-          color: $fontGrey;
-        }
-        & > img {
-          margin-left: 9px;
-        }
-      }
-    }
   }
 }
 
-@media (min-width: 375px) {
-  .lot {
-    .content {
-      .statusbar {
-        .offers {
-          & > p {
-            font-size: 13px;
-          }
-        }
-        .timing {
-          & > p {
-            font-size: 13px;
-          }
-        }
-      }
-    }
-  }
-}
 @media (min-width: 640px) {
   .lot {
     width: calc(50% - 16px);

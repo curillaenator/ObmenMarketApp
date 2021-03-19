@@ -1,0 +1,23 @@
+@import "../../../palette.scss";
+
+.warning {
+  .cloudtail {
+    margin-left: 110px;
+    margin-bottom: -3px;
+    transform: translateX(-50%);
+  }
+  .form {
+    width: 100%;
+    padding: 24px 24px;
+    margin-bottom: 28px;
+    border-radius: 16px;
+    background-color: $shape;
+    z-index: -10;
+    .title {
+      margin-bottom: 12px;
+    }
+    // .note {
+    //   margin-bottom: 4px;
+    // }
+  }
+}

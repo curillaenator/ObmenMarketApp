@@ -8,6 +8,7 @@ import { HeaderCont } from "./Header/Header";
 import { LoginCont } from "./Login/Login";
 import { HomeCont } from "./Home/Home";
 import { ProfileCont } from "./Profile/Profile";
+import { LotFullCont } from "./LotFull/LotFull";
 
 import { setAuthIfLogined } from "../Redux/Reducers/auth";
 
@@ -20,8 +21,9 @@ function Obmen({ setAuthIfLogined, ...props }) {
 
   return (
     <div className={styles.container}>
-      <HeaderCont userLoading={userLoading} />
+      <HeaderCont userLoading={userLoading} isFormModeOn={props.isFormModeOn} />
       <Route exact path="/" render={() => <HomeCont />} />
+      <Route path="/lot" render={() => <LotFullCont />} />
       <Route path="/login" render={() => <LoginCont />} />
       <Route path="/profile" render={() => <ProfileCont />} />
     </div>

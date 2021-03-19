@@ -1,8 +1,8 @@
 import styles from "./button.module.scss";
 
 const Shape = ({ width, height, active, disabled }) => {
-  const smoothQ = 70;
-  const radius = 28;
+  const smoothQ = 72;
+  const radius = 25;
 
   const W = width;
   const H = height;
