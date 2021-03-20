@@ -1,8 +1,8 @@
 import styles from "./buttonoutline.module.scss";
 
 const Shape = ({ width, height, active, disabled }) => {
-  const smoothQ = 70;
-  const radius = 28;
+  const smoothQ = 72;
+  const radius = 25;
 
   const W = width - 2;
   const H = height - 2;

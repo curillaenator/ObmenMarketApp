@@ -72,7 +72,7 @@ export const FormFullFields = (props) => {
             <h2 className={styles.title}>{formUi.offer.title}</h2>
 
             <Field
-              name="lotname"
+              name="title"
               component={TextInput}
               validate={combinedValidators(required, minLength(5))}
               placeholder={formUi.offer.name}
@@ -80,7 +80,7 @@ export const FormFullFields = (props) => {
             />
 
             <Field
-              name="category"
+              name="categories"
               component={TextInput}
               validate={required}
               placeholder={formUi.offer.category}
@@ -88,7 +88,7 @@ export const FormFullFields = (props) => {
             />
 
             <Field
-              name="overprice"
+              name="price"
               component={TextInput}
               placeholder={formUi.offer.price}
               sub={formUi.offer.priceSub}
@@ -126,14 +126,14 @@ export const FormFullFields = (props) => {
             <h2 className={styles.title}>{formUi.wish.title}</h2>
 
             <Field
-              name="lotwWish"
+              name="wishes"
               component={TextInput}
               placeholder={formUi.wish.category}
               sub={formUi.wish.categorySub}
             />
 
             <Field
-              name="addpayment"
+              name="overprice"
               component={TextInput}
               placeholder={formUi.wish.addPayment}
               sub={formUi.wish.addPaymentSub}

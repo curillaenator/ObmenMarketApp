@@ -20,9 +20,9 @@
 
   .shapeIdle {
     fill: $primary;
-    // filter: drop-shadow(0 4px 4px $primaryIdleShadow)
-    //   drop-shadow(0 0 1px $primaryIdleShadow)
-    //   drop-shadow(0 0 1px $primaryIdleShadow);
+    filter: drop-shadow(0 4px 11px $primaryIdleShadow)
+      drop-shadow(0 0 2px $primaryIdleShadow2)
+      drop-shadow(0 0 1px $primaryIdleShadow3);
   }
   &:hover .shapeIdle {
     fill: $primaryHover;

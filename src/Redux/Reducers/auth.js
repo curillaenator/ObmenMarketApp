@@ -1,5 +1,6 @@
 import firebase from "firebase";
 import { setUser } from "./user";
+import { setUidForLotForm } from "./createLot";
 import { fireauth, firestore } from "../../Utils/firebase";
 
 const IS_AUTH = "auth/IS_AUTH";
@@ -63,11 +64,13 @@ export const authWithGoogle = () => async (dispatch) => {
 
   dispatch(setUser(user));
   dispatch(setIsAuth(true));
+  dispatch(setUidForLotForm(user.uid));
 };
 
-export const setAuthIfLogined = (userData) => (dispatch) => {
-  dispatch(setUser(userData));
-  userData !== null ? dispatch(setIsAuth(true)) : dispatch(setIsAuth(false));
+export const setAuthIfLogined = (user) => (dispatch) => {
+  dispatch(setUser(user));
+  user !== null && dispatch(setUidForLotForm(user.uid));
+  user !== null ? dispatch(setIsAuth(true)) : dispatch(setIsAuth(false));
 };
 
 export const logout = () => async (dispatch) => {

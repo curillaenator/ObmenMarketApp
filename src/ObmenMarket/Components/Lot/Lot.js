@@ -1,4 +1,5 @@
 import { StatusBar } from "../StatusBar/StatusBar";
+import { Link } from "react-router-dom";
 
 import lotpic from "../../../Assets/Images/lot.jpg";
 import avapic from "../../../Assets/Images/ava.jpg";
@@ -23,11 +24,12 @@ const LotImage = (props) => {
 };
 
 export const Lot = ({ data }) => {
+  console.log(data);
   return (
     <div className={styles.lot}>
       <Owner avatar={avapic} ownerName={"Кирилл Арт"} />
 
-      <div className={styles.content}>
+      <Link to={`/posts/${data.lotId}`} className={styles.content}>
         <LotImage lotImage={lotpic} lotnName={data.title} />
 
         <div className={styles.title}>{data.title}</div>
@@ -35,7 +37,8 @@ export const Lot = ({ data }) => {
         <div className={styles.description}>{data.description}</div>
 
         <StatusBar offersQty={5} expiryDate={data.expireDate.seconds} />
-      </div>
+
+      </Link>
     </div>
   );
 };

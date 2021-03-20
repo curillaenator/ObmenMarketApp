@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 
 import { StatusBar } from "../Components/StatusBar/StatusBar";
@@ -6,7 +6,9 @@ import { Button } from "../Components/Button/Button";
 import { ButtonOutline } from "../Components/Button/ButtonOutline";
 
 import lotpic from "../../Assets/Images/lot.jpg";
-import avapic from "../../Assets/Images/ava.jpg";
+
+import { setIsCurrentLotAfterRedirect } from "../../Redux/Reducers/lots";
+import { setFormMode } from "../../Redux/Reducers/home";
 
 import styles from "./lotfull.module.scss";
 
@@ -30,19 +32,49 @@ const Gallery = () => {
 };
 
 const LotFull = (props) => {
+  const { setIsCurrentLotAfterRedirect, setFormMode } = props;
+  useEffect(() => {
+    setFormMode(false);
+    setIsCurrentLotAfterRedirect(false);
+  }, [setIsCurrentLotAfterRedirect, setFormMode]);
+
   const ref = useRef(0);
-  const [width, setWidth] = useState(window.innerWidth);
-  console.log(width);
+  const initial = ref.current.clientWidth;
+
+  const [followTitle, setFollowTitle] = useState(
+    initial < 440 ? "" : "Следить за лотом"
+  );
+
+  const [buttonsContWidth, setButtonsContWidth] = useState(initial);
+  const [buttons, setButtons] = useState({ offer: 0, follow: 0 });
 
   const widthHandler = () => {
-    const width = window.innerWidth;
-    setWidth(width);
+    const win = window.innerWidth;
+    if (win >= 1024) setButtonsContWidth(440);
+    if (win < 1024) setButtonsContWidth(win / 2 - 48);
+    if (win < 375) setButtonsContWidth(win / 2 - 40);
   };
 
   useEffect(() => {
-    document.addEventListener("resize", widthHandler());
-    return document.removeEventListener("resize", widthHandler());
-  });
+    const win = window.innerWidth;
+    const moreThan1024 = (!buttonsContWidth ? initial : buttonsContWidth) - 237;
+    const lessThan1024 = (!buttonsContWidth ? initial : buttonsContWidth) - 76;
+    if (win >= 1024) {
+      setFollowTitle("Следить за лотом");
+      setButtons({ offer: 217, follow: moreThan1024 });
+    }
+    if (win < 1024) {
+      setFollowTitle("");
+      setButtons({ offer: lessThan1024, follow: 56 });
+    }
+  }, [initial, buttonsContWidth]);
+
+  useEffect(() => {
+    window.addEventListener("resize", widthHandler);
+    return () => {
+      window.removeEventListener("resize", widthHandler);
+    };
+  }, []);
 
   return (
     <div className={styles.lot}>
@@ -56,8 +88,18 @@ const LotFull = (props) => {
         <div className={styles.spacer}></div>
 
         <div className={styles.buttons} ref={ref}>
-          <Button width={217} height={56} title="Предложить обмен" />
-          <ButtonOutline width={217} height={56} title="Добавить 72 часа" />
+          <Button
+            width={buttons.offer}
+            height={56}
+            title="Предложить обмен"
+            icon={props.icons.add}
+          />
+          <ButtonOutline
+            width={buttons.follow}
+            height={56}
+            title={followTitle}
+            icon={props.icons.bell}
+          />
         </div>
 
         {/* <div class="thelot__main-stats">
@@ -111,6 +153,11 @@ const LotFull = (props) => {
   );
 };
 
-const mstp = (state) => ({});
+const mstp = (state) => ({
+  icons: state.ui.icons,
+});
 
-export const LotFullCont = connect(mstp, {})(LotFull);
+export const LotFullCont = connect(mstp, {
+  setIsCurrentLotAfterRedirect,
+  setFormMode,
+})(LotFull);

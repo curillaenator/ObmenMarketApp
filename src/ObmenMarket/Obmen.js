@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
-import { Route } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import { connect } from "react-redux";
 
 import { HeaderCont } from "./Header/Header";
@@ -16,16 +16,17 @@ import styles from "./obmen.module.scss";
 
 function Obmen({ setAuthIfLogined, ...props }) {
   const [user, userLoading] = useAuthState(props.fireauth);
-
   useEffect(() => setAuthIfLogined(user), [user, setAuthIfLogined]);
 
   return (
     <div className={styles.container}>
       <HeaderCont userLoading={userLoading} isFormModeOn={props.isFormModeOn} />
-      <Route exact path="/" render={() => <HomeCont />} />
-      <Route path="/lot" render={() => <LotFullCont />} />
-      <Route path="/login" render={() => <LoginCont />} />
-      <Route path="/profile" render={() => <ProfileCont />} />
+      <Switch>
+        <Route exact path="/" render={() => <HomeCont />} />
+        <Route path="/posts/:id" render={() => <LotFullCont />} />
+        <Route path="/login" render={() => <LoginCont />} />
+        <Route path="/profile" render={() => <ProfileCont />} />
+      </Switch>
     </div>
   );
 }
