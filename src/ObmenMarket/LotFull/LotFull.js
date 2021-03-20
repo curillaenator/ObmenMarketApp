@@ -56,8 +56,8 @@ const LotFull = (props) => {
         <div className={styles.spacer}></div>
 
         <div className={styles.buttons} ref={ref}>
-          <Button width={220} height={56} title="Предложить обмен" />
-          <ButtonOutline width={220} height={56} title="Добавить 72 часа" />
+          <Button width={217} height={56} title="Предложить обмен" />
+          <ButtonOutline width={217} height={56} title="Добавить 72 часа" />
         </div>
 
         {/* <div class="thelot__main-stats">
