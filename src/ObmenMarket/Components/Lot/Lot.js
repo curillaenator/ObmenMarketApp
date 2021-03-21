@@ -24,7 +24,7 @@ const LotImage = (props) => {
 };
 
 export const Lot = ({ data }) => {
-  console.log(data);
+  // console.log(data);
   return (
     <div className={styles.lot}>
       <Owner avatar={avapic} ownerName={"Кирилл Арт"} />

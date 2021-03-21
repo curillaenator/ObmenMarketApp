@@ -8,18 +8,17 @@ import { Warning } from "./Warning/Warning";
 import { FormFull } from "../Components/FormFull/FormFull";
 
 import { setFormMode } from "../../Redux/Reducers/home";
+
 import {
+  getLotsList,
   initializeLot,
   deleteCanceledLot,
   publishLotFromForm,
-} from "../../Redux/Reducers/createLot";
-
-import { getLotsList } from "../../Redux/Reducers/lots";
+} from "../../Redux/Reducers/lots";
 
 import styles from "./home.module.scss";
 
 const Home = (props) => {
-  // console.log(setIsCurrentLotAfterRedirect);
   if (props.isCurrentLot) return <Redirect to="/post" />;
   return (
     <div className={styles.home}>
@@ -61,9 +60,9 @@ const mstp = (state) => ({
   furmFullUi: state.ui.formFull,
   isFormModeOn: state.home.isFormModeOn,
   firestore: state.auth.firestore,
-  user: state.user.user,
-  newLot: state.createLot.newLot,
-  newLotId: state.createLot.newLotId,
+  // user: state.user.user,
+  newLot: state.lots.newLot,
+  newLotId: state.lots.newLotId,
   lotsList: state.lots.lotsList,
   isLotsLoaded: state.lots.isLotsLoaded,
   isCurrentLot: state.lots.isCurrentLot,

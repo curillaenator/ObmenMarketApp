@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { Button } from "../Components/Button/Button";
 import { Redirect } from "react-router-dom";
 
-import { authWithGoogle } from "../../Redux/Reducers/auth";
+import { googleSignIn } from "../../Redux/Reducers/auth";
 
 import styles from "./login.module.scss";
 
@@ -20,7 +20,7 @@ const Login = (props) => {
           width={56}
           height={56}
           icon={props.icons.google}
-          handler={props.authWithGoogle}
+          handler={props.googleSignInRedirectResult}
         />
       </div>
     </div>
@@ -32,4 +32,6 @@ const mstp = (state) => ({
   isAuth: state.auth.isAuth,
 });
 
-export const LoginCont = connect(mstp, { authWithGoogle })(Login);
+export const LoginCont = connect(mstp, {
+  googleSignInRedirectResult: googleSignIn,
+})(Login);

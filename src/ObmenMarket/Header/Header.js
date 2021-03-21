@@ -1,7 +1,6 @@
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { Button } from "../Components/Button/Button";
-import { LOGIN_ROUTE } from "../../Utils/routes";
 import { Link, withRouter } from "react-router-dom";
 
 import { setFormMode } from "../../Redux/Reducers/home";
@@ -10,11 +9,11 @@ import logo from "../../Assets/Icons/logo.svg";
 
 import styles from "./header.module.scss";
 
-const User = (props) => {
+const User = ({ username, avatar }) => {
   return (
     <Link to="/profile" className={styles.user}>
-      <p>{props.user.displayName}</p>
-      <img src={props.user.photoURL} alt={props.user.displayName} />
+      <p>{username}</p>
+      <img src={avatar} alt={username} />
     </Link>
   );
 };
@@ -22,9 +21,9 @@ const User = (props) => {
 export const Header = (props) => {
   const handleLoginButton = () => props.setFormMode(false);
 
-  const loginButtonClicked = props.location.pathname === LOGIN_ROUTE;
-  const loginButtonPath =
-    props.location.pathname === LOGIN_ROUTE ? "/" : LOGIN_ROUTE;
+  const loginButtonClicked = props.location.pathname === "/login";
+  const loginButtonPath = props.location.pathname === "/login" ? "/" : "/login";
+
   return (
     <div className={styles.header}>
       <div className={styles.pad}>
@@ -35,9 +34,7 @@ export const Header = (props) => {
 
       <div className={styles.pad}>
         {props.isAuth ? (
-          <User name={props.name} avatar={props.avatar} user={props.user} />
-        ) : props.userLoading ? (
-          <div>Загрузка...</div>
+          <User username={props.user.username} avatar={props.user.avatar} />
         ) : (
           <Link to={loginButtonPath} className={styles.loginButton}>
             <Button
@@ -56,8 +53,7 @@ export const Header = (props) => {
 
 const mstp = (state) => ({
   isAuth: state.auth.isAuth,
-  appName: state.auth.appName,
-  user: state.user.user,
+  user: state.auth.user,
   icons: state.ui.icons,
   isFormModeOn: state.home.isFormModeOn,
 });

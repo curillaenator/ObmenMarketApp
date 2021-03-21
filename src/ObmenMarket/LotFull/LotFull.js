@@ -13,7 +13,7 @@ import { setFormMode } from "../../Redux/Reducers/home";
 import styles from "./lotfull.module.scss";
 
 const Gallery = () => {
-  const temp = ["1", "2", "3", "4", "5"];
+  const temp = ["1", "2", "3"];
   return (
     <div className={styles.gallery}>
       <div className={styles.big}>
@@ -56,6 +56,7 @@ const LotFull = (props) => {
   };
 
   useEffect(() => {
+    console.log(initial);
     const win = window.innerWidth;
     const moreThan1024 = (!buttonsContWidth ? initial : buttonsContWidth) - 237;
     const lessThan1024 = (!buttonsContWidth ? initial : buttonsContWidth) - 76;

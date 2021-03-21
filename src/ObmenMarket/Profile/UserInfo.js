@@ -12,10 +12,10 @@ export const UserInfo = (props) => {
   return (
     <div className={styles.userInfo}>
       <div className={styles.shape}></div>
-      <img className={styles.photo} src={props.user.photoURL} alt="" />
+      <img className={styles.photo} src={props.user.avatar} alt={props.user.username} />
 
       <div className={styles.info}>
-        <h2 className={styles.userName}>{props.user.displayName}</h2>
+        <h2 className={styles.userName}>{props.user.username}</h2>
 
         <div className={styles.buttons}>
           <ButtonOutline width={160} height={40} title="Редактировать" />

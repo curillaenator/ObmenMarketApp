@@ -15,7 +15,7 @@ const Profile = (props) => {
 };
 
 const mstp = (state) => ({
-  user: state.user.user,
+  user: state.auth.user,
   isAuth: state.auth.isAuth,
 });
 
