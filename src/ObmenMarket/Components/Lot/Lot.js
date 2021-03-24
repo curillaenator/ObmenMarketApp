@@ -1,8 +1,9 @@
+import { useState } from "react";
+import { fb } from "../../../Utils/firebase";
 import { StatusBar } from "../StatusBar/StatusBar";
 import { Link } from "react-router-dom";
 
-import lotpic from "../../../Assets/Images/lot.jpg";
-import avapic from "../../../Assets/Images/ava.jpg";
+// import lotpic from "../../../Assets/Images/lot.jpg";
 
 import styles from "./lot.module.scss";
 
@@ -24,20 +25,26 @@ const LotImage = (props) => {
 };
 
 export const Lot = ({ data }) => {
-  // console.log(data);
+  // console.log(data.uid, data.postid);
+  const [photo, setPhoto] = useState(null);
+  fb.storage()
+    .ref()
+    .child("posts/" + data.uid + "/" + data.postid + "/0_1280x1280")
+    .getDownloadURL()
+    .then((url) => setPhoto(url));
+
   return (
     <div className={styles.lot}>
-      <Owner avatar={avapic} ownerName={"Кирилл Арт"} />
+      <Owner avatar={data.avatar} ownerName={data.username} />
 
-      <Link to={`/posts/${data.lotId}`} className={styles.content}>
-        <LotImage lotImage={lotpic} lotnName={data.title} />
+      <Link to={`/posts/${data.postid}`} className={styles.content}>
+        <LotImage lotImage={photo} lotnName={data.title} />
 
         <div className={styles.title}>{data.title}</div>
 
         <div className={styles.description}>{data.description}</div>
 
-        <StatusBar offersQty={5} expiryDate={data.expireDate.seconds} />
-
+        <StatusBar offersQty={data.offersQty} expiryDate={data.expireDate} />
       </Link>
     </div>
   );

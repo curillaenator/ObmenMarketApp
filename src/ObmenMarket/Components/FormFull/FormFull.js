@@ -5,26 +5,30 @@ export const FormFull = (props) => {
   const onSubmit = (formData) => {
     const curDate = new Date();
 
-    const addSubmitData = {
+    const updData = {
       acceptedOffer: "",
+      offersQty: 0,
       publishedAt: new Date(),
       expireDate: new Date(curDate.setDate(curDate.getDate() + 7)),
       published: true,
     };
-    
-    props.publishLotFromForm(props.newLotId, { ...formData, ...addSubmitData });
+
+    // console.log({ ...formData, ...updData });
+    props.publishNewLotFromForm(props.createLotId, { ...formData, ...updData });
   };
-  return (
+
+  return props.isFormModeOn && (
     <Form
       onSubmit={onSubmit}
       render={({ handleSubmit, form, values }) => (
         <FormFullFields
-          isFormModeOn={props.isFormModeOn}
+          // isFormModeOn={props.isFormModeOn}
           handleSubmit={handleSubmit}
           form={form}
           values={values}
           icons={props.icons}
           furmFullUi={props.furmFullUi}
+          createLotId={props.createLotId}
         />
       )}
     />

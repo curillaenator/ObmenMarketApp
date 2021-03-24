@@ -1,4 +1,4 @@
-import { fb, fa, db, fn, fs } from "../../Utils/firebase";
+import { fb, fa, db } from "../../Utils/firebase";
 
 const SET_IS_AUTH = "auth/IS_AUTH";
 const SET_USER = "auth/SET_USER";
@@ -21,52 +21,46 @@ export const auth = (state = initialState, action) => {
 
 // ACTIONs
 
-const setIsAuth = (auth) => ({ type: SET_IS_AUTH, auth });
+export const setIsAuth = (auth) => ({ type: SET_IS_AUTH, auth });
 const setCurrentUser = (user) => ({ type: SET_USER, user });
 
 // THUNKs
 
-export const googleSignIn = () => (dispatch) => {
-  const newUser = (us) => {
-    console.log("ttt");
-    fb.database()
-      .ref("users/" + us.uid)
-      .set({
-        username: us.displayName,
-        email: us.email,
-        avatar: us.photoURL,
-      });
+export const googleSignIn = (curUser) => (dispatch) => {
+  const newUser = (u) => {
+    db.ref("users/" + u.uid).set({
+      username: u.displayName,
+      email: u.email,
+      avatar: u.photoURL,
+    });
   };
 
-  const login = async () => {
+  const toLogin = async () => {
     const provider = new fb.auth.GoogleAuthProvider();
-
     await fb.auth().signInWithPopup(provider);
 
     await fb.auth().onAuthStateChanged((u) => {
-      const ref = fb.database().ref("users/" + u.uid);
+      const ref = db.ref("users/" + u.uid);
       ref.once("value", (snapshot) => {
         dispatch(setCurrentUser(snapshot.val()));
         !snapshot.exists && newUser(u);
+        dispatch(setIsAuth(true));
       });
     });
-
-    dispatch(setIsAuth(true));
   };
 
-  const check = () => dispatch(setIsAuth(true));
+  const toAuthCheck = async (u) => {
+    await db.ref("users/" + u.uid).once("value", (snapshot) => {
+      dispatch(setCurrentUser(snapshot.val()));
+      dispatch(setIsAuth(true));
+    });
+  };
 
-  fb.auth().currentUser ? check() : login();
-
-  // await functions.auth.user().onCreate((user) => {
-  //   db.ref("users/" + user.uid).set({
-  //     username: user.displayName,
-  //     email: user.email,
-  //     avatar: user.photoURL,
-  //   });
-  // });
+  curUser !== null ? toAuthCheck(curUser) : toLogin();
 };
 
 export const logout = () => async (dispatch) => {
-  fa.signOut().then(() => dispatch(setIsAuth(false)));
+  await fa.signOut();
+  dispatch(setIsAuth(false));
+  dispatch(setCurrentUser(null));
 };
