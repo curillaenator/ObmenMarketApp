@@ -36,7 +36,6 @@ export const Header = (props) => {
 
       <div className={styles.pad}>
         {props.user && !props.userLoading && props.isAuth && <User user={props.user} />}
-        {/* {!props.userLoading && props.isAuth && <User user={props.user} />} */}
 
         {!props.userLoading && !props.isAuth && (
           <Link to={loginButtonPath} className={styles.loginButton}>

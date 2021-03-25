@@ -1,6 +1,8 @@
-import { db, fa } from "../../Utils/firebase";
+import { db, fb } from "../../Utils/firebase";
 import { useState, useEffect, useRef } from "react";
+import { compose } from "redux";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 
 import { StatusBar } from "../Components/StatusBar/StatusBar";
 import { Button } from "../Components/Button/Button";
@@ -8,23 +10,41 @@ import { ButtonOutline } from "../Components/Button/ButtonOutline";
 
 import lotpic from "../../Assets/Images/lot.jpg";
 
-// import { setIsCurrentLotAfterRedirect } from "../../Redux/Reducers/lots";
 import { setFormMode } from "../../Redux/Reducers/home";
 
 import styles from "./lotfull.module.scss";
 
-const Gallery = () => {
-  const temp = ["1", "2", "3"];
+const Gallery = ({ lotMeta }) => {
+  const [lotPhotos, setLotPhotos] = useState([]);
+  const photosHandler = (url) => {
+    console.log(lotPhotos);
+    setLotPhotos(lotPhotos.concat([url]));
+  };
+
+  const getLotPhotos = async () => {
+    const res = await fb
+      .storage()
+      .ref()
+      .child("posts/" + lotMeta.uid + "/" + lotMeta.postid)
+      .listAll();
+
+    const getUrl = async (item) => photosHandler(await item.getDownloadURL());
+
+    await res.items.forEach((item) => getUrl(item));
+  };
+
+  useEffect(() => lotMeta && getLotPhotos(), [lotMeta]);
+
   return (
     <div className={styles.gallery}>
       <div className={styles.big}>
-        <img src={lotpic} alt="" />
+        <img src={lotPhotos[0]} alt="" />
       </div>
 
       <div className={styles.track}>
-        {temp.map((ph) => (
+        {lotPhotos.map((ph) => (
           <div className={styles.small} key={ph}>
-            <img src={lotpic} alt="" />
+            <img src={ph} alt="" />
           </div>
         ))}
       </div>
@@ -32,15 +52,7 @@ const Gallery = () => {
   );
 };
 
-const LotFull = (props) => {
-  const uid = fa.currentUser.ui;
-
-  const { setIsCurrentLotAfterRedirect, setFormMode } = props;
-  useEffect(() => {
-    setFormMode(false);
-    // setIsCurrentLotAfterRedirect(false);
-  }, [setIsCurrentLotAfterRedirect, setFormMode]);
-
+const Buttons = ({ icons }) => {
   const ref = useRef(0);
   const initial = ref.current.clientWidth;
 
@@ -58,20 +70,20 @@ const LotFull = (props) => {
     if (win < 375) setButtonsContWidth(win / 2 - 40);
   };
 
+  const win = window.innerWidth;
+  const more1024 = (!buttonsContWidth ? initial : buttonsContWidth) - 237;
+  const less1024 = (!buttonsContWidth ? initial : buttonsContWidth) - 76;
+
   useEffect(() => {
-    console.log(initial);
-    const win = window.innerWidth;
-    const moreThan1024 = (!buttonsContWidth ? initial : buttonsContWidth) - 237;
-    const lessThan1024 = (!buttonsContWidth ? initial : buttonsContWidth) - 76;
     if (win >= 1024) {
       setFollowTitle("Следить за лотом");
-      setButtons({ offer: 217, follow: moreThan1024 });
+      setButtons({ offer: 217, follow: more1024 });
     }
     if (win < 1024) {
       setFollowTitle("");
-      setButtons({ offer: lessThan1024, follow: 56 });
+      setButtons({ offer: less1024, follow: 56 });
     }
-  }, [initial, buttonsContWidth]);
+  }, [initial, buttonsContWidth, win, more1024, less1024]);
 
   useEffect(() => {
     window.addEventListener("resize", widthHandler);
@@ -81,9 +93,41 @@ const LotFull = (props) => {
   }, []);
 
   return (
+    <div className={styles.buttons} ref={ref}>
+      {initial && (
+        <>
+          <Button
+            width={buttons.offer}
+            height={56}
+            title="Предложить обмен"
+            icon={icons.add}
+          />
+          <ButtonOutline
+            width={buttons.follow}
+            height={56}
+            title={followTitle}
+            icon={icons.bell}
+          />
+        </>
+      )}
+    </div>
+  );
+};
+
+const LotFull = ({ setFormMode, icons, match, ...props }) => {
+  useEffect(() => setFormMode(false), [setFormMode]);
+
+  const [lotMeta, setLotMeta] = useState(null);
+
+  const getLotMeta = (lotID) =>
+    db.ref("posts/" + lotID).once("value", (snap) => setLotMeta(snap.val()));
+
+  useEffect(() => getLotMeta(match.params.id), [match.params.id]);
+
+  return (
     <div className={styles.lot}>
       <div className={styles.info}>
-        <Gallery />
+        <Gallery lotMeta={lotMeta} />
 
         <div className={styles.status}>
           <StatusBar />
@@ -91,19 +135,8 @@ const LotFull = (props) => {
 
         <div className={styles.spacer}></div>
 
-        <div className={styles.buttons} ref={ref}>
-          <Button
-            width={buttons.offer}
-            height={56}
-            title="Предложить обмен"
-            icon={props.icons.add}
-          />
-          <ButtonOutline
-            width={buttons.follow}
-            height={56}
-            title={followTitle}
-            icon={props.icons.bell}
-          />
+        <div className={styles.buttonsRef}>
+          <Buttons icons={icons} />
         </div>
 
         {/* <div class="thelot__main-stats">
@@ -161,7 +194,9 @@ const mstp = (state) => ({
   icons: state.ui.icons,
 });
 
-export const LotFullCont = connect(mstp, {
-  // setIsCurrentLotAfterRedirect,
-  setFormMode,
-})(LotFull);
+export const LotFullCont = compose(
+  withRouter,
+  connect(mstp, {
+    setFormMode,
+  })
+)(LotFull);

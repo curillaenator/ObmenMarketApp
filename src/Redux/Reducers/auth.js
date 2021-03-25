@@ -27,40 +27,35 @@ const setCurrentUser = (user) => ({ type: SET_USER, user });
 // THUNKs
 
 export const googleSignIn = (curUser) => (dispatch) => {
-  const newUser = (u) => {
-    db.ref("users/" + u.uid).set({
-      username: u.displayName,
-      email: u.email,
-      avatar: u.photoURL,
+  const toAuthSet = async (u) => {
+    await db.ref("users/" + u.uid).once("value", (snapshot) => {
+      dispatch(setCurrentUser(snapshot.val()));
+      dispatch(setIsAuth(true));
     });
   };
 
-  const toLogin = async () => {
+  const newUser = (u) => {
+    db.ref("users/" + u.uid)
+      .set({
+        username: u.displayName,
+        email: u.email,
+        avatar: u.photoURL,
+      })
+      .then(() => toAuthSet(u));
+  };
+
+  const toAuthCreate = async () => {
     const provider = new fb.auth.GoogleAuthProvider();
     await fb.auth().signInWithPopup(provider);
 
     await fb.auth().onAuthStateChanged((u) => {
       const ref = db.ref("users/" + u.uid);
-      ref.once("value", (snapshot) => {
-        console.log(snapshot);
-        !snapshot.exists() && newUser(u);
-        dispatch(setCurrentUser(snapshot.val()));
-        dispatch(setIsAuth(true));
-      });
+      ref.once("value", (snapshot) => !snapshot.exists() && newUser(u));
     });
   };
 
-  const toAuthCheck = async (u) => {
-    await db.ref("users/" + u.uid).once("value", (snapshot) => {
-      // console.log(u, snapshot.val());
-      // console.log(snapshot.exists());
-      // !snapshot.exists() && newUser(u);
-      dispatch(setCurrentUser(snapshot.val()));
-      dispatch(setIsAuth(true));
-    });
-  };
   // console.log(curUser);
-  curUser !== null ? toAuthCheck(curUser) : toLogin();
+  curUser !== null ? toAuthSet(curUser) : toAuthCreate();
 };
 
 export const logout = () => async (dispatch) => {
