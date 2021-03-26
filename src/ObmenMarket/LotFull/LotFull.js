@@ -176,7 +176,7 @@ const LotStats = ({ lotMeta }) => {
   );
 };
 
-const LotFull = ({ setFormMode, icons, match, ...props }) => {
+const LotFull = ({ setFormMode, icons, match, isAuth, ...props }) => {
   useEffect(() => setFormMode(false), [setFormMode]);
 
   const [lotMeta, setLotMeta] = useState(null);
@@ -191,7 +191,7 @@ const LotFull = ({ setFormMode, icons, match, ...props }) => {
   return (
     lotMeta && (
       <div className={styles.lotwrapper}>
-        <Controls />
+        <Controls isAuth={isAuth} lotMeta={lotMeta} />
 
         <div className={styles.lot}>
           <div className={styles.info}>
@@ -222,6 +222,7 @@ const LotFull = ({ setFormMode, icons, match, ...props }) => {
 
 const mstp = (state) => ({
   icons: state.ui.icons,
+  isAuth: state.auth.isAuth,
 });
 
 export const LotFullCont = compose(

@@ -1,6 +1,6 @@
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { Button } from "../Components/Button/Button";
+import { ButtonOutline } from "../Components/Button/ButtonOutline";
 import { Link, withRouter } from "react-router-dom";
 
 import { setFormMode } from "../../Redux/Reducers/home";
@@ -35,11 +35,13 @@ export const Header = (props) => {
       </div>
 
       <div className={styles.pad}>
-        {props.user && !props.userLoading && props.isAuth && <User user={props.user} />}
+        {props.user && !props.userLoading && props.isAuth && (
+          <User user={props.user} />
+        )}
 
         {!props.userLoading && !props.isAuth && (
           <Link to={loginButtonPath} className={styles.loginButton}>
-            <Button
+            <ButtonOutline
               width={83}
               height={40}
               title="Вход"
