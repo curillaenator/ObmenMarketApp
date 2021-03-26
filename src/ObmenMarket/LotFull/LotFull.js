@@ -7,6 +7,7 @@ import { withRouter } from "react-router-dom";
 import { StatusBar } from "../Components/StatusBar/StatusBar";
 import { Button } from "../Components/Button/Button";
 import { ButtonOutline } from "../Components/Button/ButtonOutline";
+import { Controls } from "../Components/Controls/Controls";
 
 import { setFormMode } from "../../Redux/Reducers/home";
 
@@ -189,27 +190,31 @@ const LotFull = ({ setFormMode, icons, match, ...props }) => {
 
   return (
     lotMeta && (
-      <div className={styles.lot}>
-        <div className={styles.info}>
-          <Gallery lotMeta={lotMeta} />
+      <div className={styles.lotwrapper}>
+        <Controls />
 
-          <div className={styles.status}>
-            <StatusBar
-              offersQty={lotMeta.offersQty}
-              expiryDate={lotMeta.expireDate}
-            />
+        <div className={styles.lot}>
+          <div className={styles.info}>
+            <Gallery lotMeta={lotMeta} />
+
+            <div className={styles.status}>
+              <StatusBar
+                offersQty={lotMeta.offersQty}
+                expiryDate={lotMeta.expireDate}
+              />
+            </div>
+
+            <div className={styles.spacer}></div>
+
+            <div className={styles.buttonsRef}>
+              <Buttons icons={icons} />
+            </div>
+
+            <LotStats lotMeta={lotMeta} />
           </div>
 
-          <div className={styles.spacer}></div>
-
-          <div className={styles.buttonsRef}>
-            <Buttons icons={icons} />
-          </div>
-
-          <LotStats lotMeta={lotMeta} />
+          <Descrption lotMeta={lotMeta} />
         </div>
-
-        <Descrption lotMeta={lotMeta} />
       </div>
     )
   );
