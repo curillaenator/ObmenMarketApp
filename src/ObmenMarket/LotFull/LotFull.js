@@ -74,8 +74,9 @@ const Buttons = ({ icons }) => {
   const widthHandler = () => {
     const win = window.innerWidth;
     if (win >= 1024) setButtonsContWidth(440);
-    if (win < 1024) setButtonsContWidth(win / 2 - 48);
-    if (win < 375) setButtonsContWidth(win / 2 - 40);
+    if (win >= 640 && win < 1024) setButtonsContWidth(win / 2 - 48);
+    if (win >= 375 && win < 640) setButtonsContWidth(win - 64);
+    if (win >= 320 && win < 375) setButtonsContWidth(win - 48);
   };
 
   const win = window.innerWidth;
@@ -102,7 +103,7 @@ const Buttons = ({ icons }) => {
 
   return (
     <div className={styles.buttons} ref={ref}>
-      {initial && (
+      {!isNaN(more1024) && !isNaN(less1024) && (
         <>
           <Button
             width={buttons.offer}
@@ -122,6 +123,58 @@ const Buttons = ({ icons }) => {
   );
 };
 
+const Descrption = ({ lotMeta }) => {
+  return (
+    <div className={styles.description}>
+      <div className={styles.user}>
+        <img src={lotMeta.avatar} alt="Username" />
+        <p>{lotMeta.username}</p>
+      </div>
+
+      <div className={styles.bigtitle}>{lotMeta.title}</div>
+
+      <div className={styles.lottext}>{lotMeta.description}</div>
+
+      <div className={styles.smalltitle}>Хочу обменять на:</div>
+
+      <div className={styles.lottext}>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque inventore
+        voluptates delectus, nisi ad, harum repudiandae nesciunt omnis quae
+        alias accusantium deleniti assumenda iste et velit eos officiis
+        distinctio quibusdam.
+      </div>
+    </div>
+  );
+};
+
+const LotStats = ({ lotMeta }) => {
+  return (
+    <div className={styles.stats}>
+      {lotMeta.price && (
+        <div className={styles.statsitem}>
+          <h3 className={styles.itemtitle}>Примерная оценка стоимости</h3>
+          <p className={styles.itemvalue}>{`${lotMeta.price} руб.`}</p>
+        </div>
+      )}
+
+      {lotMeta.overprice && (
+        <div className={styles.statsitem}>
+          <h3 className={styles.itemtitle}>Автор готов доплатить</h3>
+          <p className={styles.itemvalue}>Да</p>
+        </div>
+      )}
+
+      {lotMeta.categories && (
+        <div className={styles.statsitem}>
+          <h3 className={styles.itemtitle}>Приоритетные категории обмена</h3>
+
+          <p className={styles.itemvalue}>{lotMeta.categories}</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const LotFull = ({ setFormMode, icons, match, ...props }) => {
   useEffect(() => setFormMode(false), [setFormMode]);
 
@@ -132,69 +185,33 @@ const LotFull = ({ setFormMode, icons, match, ...props }) => {
 
   useEffect(() => getLotMeta(match.params.id), [match.params.id]);
 
+  console.log(lotMeta);
+
   return (
-    <div className={styles.lot}>
-      <div className={styles.info}>
-        <Gallery lotMeta={lotMeta} />
+    lotMeta && (
+      <div className={styles.lot}>
+        <div className={styles.info}>
+          <Gallery lotMeta={lotMeta} />
 
-        <div className={styles.status}>
-          <StatusBar />
+          <div className={styles.status}>
+            <StatusBar
+              offersQty={lotMeta.offersQty}
+              expiryDate={lotMeta.expireDate}
+            />
+          </div>
+
+          <div className={styles.spacer}></div>
+
+          <div className={styles.buttonsRef}>
+            <Buttons icons={icons} />
+          </div>
+
+          <LotStats lotMeta={lotMeta} />
         </div>
 
-        <div className={styles.spacer}></div>
-
-        <div className={styles.buttonsRef}>
-          <Buttons icons={icons} />
-        </div>
-
-        {/* <div class="thelot__main-stats">
-          <div class="thelot__main-statsItem">
-            <h3 class="thelot__main-statsName">Примерная оценка стоимости</h3>
-            <p class="thelot__main-statsValue">от 5000₽ до 7000₽</p>
-          </div>
-          <div class="thelot__main-statsItem">
-            <h3 class="thelot__main-statsName">Автор готов доплатить</h3>
-            <p class="thelot__main-statsValue">Да</p>
-          </div>
-          <div class="thelot__main-statsItem">
-            <h3 class="thelot__main-statsName">
-              Приоритетные категории обмена
-            </h3>
-            <p class="thelot__main-statsValue">Бытовая техника</p>
-            <p class="thelot__main-statsValue">Электроника</p>
-            <p class="thelot__main-statsValue">Одежда</p>
-            <p class="thelot__main-statsValue">Телефоны</p>
-          </div>
-        </div> */}
+        <Descrption lotMeta={lotMeta} />
       </div>
-
-      <div className={styles.description}>Description</div>
-      {/* <div class="thelot__desc">
-          <div class="thelot__desc-user">
-            <a href="#">
-              <img src="./img/img/ava1.jpg" alt="Username" />
-              <p>Username</p>
-            </a>
-          </div>
-          <h2 class="thelot__desc-titleH2">Название лота</h2>
-          <p class="thelot__desc-txt">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Veniam,
-            voluptates maiores impedit, facere ad culpa illo a consectetur
-            molestias velit odio aspernatur quasi distinctio unde! Rem, nam,
-            obcaecati aliquid quia commodi repudiandae libero voluptatibus ipsum
-            veniam excepturi asperiores totam porro natus ad eligendi?
-            Doloremque vero eos ut dignissimos dolores praesentium delectus in
-            suscipit quam facilis quisquam quae cumque, animi ad!
-          </p>
-          <h3 class="thelot__desc-titleH3">Хочу обменять на:</h3>
-          <p class="thelot__desc-txt">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque
-            inventore voluptates delectus, nisi ad, harum repudiandae nesciunt
-            omnis quae alias accusantium deleniti assumenda iste et velit eos
-            officiis distinctio quibusdam.
-          </p>
-        </div> */}
-    </div>
+    )
   );
 };
 

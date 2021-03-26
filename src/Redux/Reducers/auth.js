@@ -28,6 +28,7 @@ const setCurrentUser = (user) => ({ type: SET_USER, user });
 
 export const googleSignIn = (curUser) => (dispatch) => {
   const toAuthSet = async (u) => {
+    console.log(u);
     await db.ref("users/" + u.uid).once("value", (snapshot) => {
       dispatch(setCurrentUser(snapshot.val()));
       dispatch(setIsAuth(true));
@@ -41,7 +42,11 @@ export const googleSignIn = (curUser) => (dispatch) => {
         email: u.email,
         avatar: u.photoURL,
       })
-      .then(() => toAuthSet(u));
+      .then(() => {
+        console.log(u);
+        u.sendEmailVerification().then(() => console.log("sent"));
+        toAuthSet(u);
+      });
   };
 
   const toAuthCreate = async () => {

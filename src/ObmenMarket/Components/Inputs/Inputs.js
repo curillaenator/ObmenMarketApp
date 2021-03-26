@@ -58,10 +58,7 @@ export const PhotoFiles = ({
         "JPEG",
         40,
         0,
-        (uri) => {
-          console.log(uri);
-          props.uploadImg(uri);
-        },
+        (uri) => props.uploadImg(uri),
         "file"
       )
     );

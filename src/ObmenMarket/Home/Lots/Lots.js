@@ -10,7 +10,7 @@ export const Lots = ({ isFormModeOn }) => {
   const [lotList, setLotList] = useState([]);
   
   useEffect(() => {
-    postsRef.on("value", (snapshot) => setLotList(snapshot.val()));
+    postsRef.once("value", (snapshot) => setLotList(snapshot.val()));
   }, []); // сделать очистку слушателя
 
   return (

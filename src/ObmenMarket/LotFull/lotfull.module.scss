@@ -13,10 +13,12 @@
 
 .lot {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
 
   .info {
-    width: calc(50% - 16px);
+    width: 100%;
+    margin-bottom: 24px;
 
     .gallery {
       .big {
@@ -70,6 +72,7 @@
     .buttonsRef {
       width: 100%;
       min-height: 56px;
+      margin-bottom: 32px;
 
       .buttons {
         display: flex;
@@ -84,9 +87,98 @@
         }
       }
     }
+
+    .stats {
+
+      .statsitem {
+        margin-bottom: 24px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        .itemtitle {
+          font-weight: 600;
+          font-size: 13px;
+          line-height: 19px;
+          letter-spacing: -0.08px;
+          color: $fontGrey;
+          margin-bottom: 6px;
+        }
+
+        .itemvalue {
+          font-weight: bold;
+          font-size: 13px;
+          line-height: 19px;
+          letter-spacing: -0.08px;
+          color: $fontTitle;
+        }
+      }
+    }
   }
 
   .description {
-    width: calc(50% - 16px);
+    width: 100%;
+
+    .user {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+
+      & > img {
+        width: 32px;
+        height: 32px;
+        object-fit: cover;
+        border-radius: 16px;
+        margin-right: 16px;
+      }
+
+      & > p {
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 20px;
+        letter-spacing: -0.149333px;
+        color: $fontGrey;
+      }
+    }
+
+    .bigtitle {
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: -0.64px;
+      color: $fontTitle;
+      margin-bottom: 6px;
+    }
+
+    .smalltitle {
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.4px;
+      color: $fontTitle;
+      margin-bottom: 6px;
+    }
+
+    .lottext {
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 19px;
+      letter-spacing: -0.08px;
+      color: $fontGrey;
+      margin-bottom: 16px;
+    }
+  }
+}
+
+@media (min-width: 640px) {
+  .lot {
+    flex-direction: row;
+
+    .info {
+      width: calc(50% - 16px);
+    }
+
+    .description {
+      width: calc(50% - 16px);
+    }
   }
 }
