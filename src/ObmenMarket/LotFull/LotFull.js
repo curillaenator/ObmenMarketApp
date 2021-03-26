@@ -1,4 +1,4 @@
-import { db, fb } from "../../Utils/firebase";
+import { db, fb, st } from "../../Utils/firebase";
 import { useState, useEffect, useRef } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -17,21 +17,43 @@ import styles from "./lotfull.module.scss";
 const Gallery = ({ lotMeta }) => {
   const [lotPhotos, setLotPhotos] = useState([]);
   const photosHandler = (url) => {
-    console.log(lotPhotos);
     setLotPhotos(lotPhotos.concat([url]));
   };
+   const getLotPhotos = async () => {
+    var photoList = [];
+    
+     var res = await fb
+       .storage()
+       .ref("posts/");
+       var listRef = res.child(lotMeta.uid + "/" + lotMeta.postid);
+       
+       listRef.listAll()
+      .then((result) => {
+      result.items.forEach((itemRef) => {
 
-  const getLotPhotos = async () => {
-    const res = await fb
-      .storage()
-      .ref()
-      .child("posts/" + lotMeta.uid + "/" + lotMeta.postid)
-      .listAll();
 
-    const getUrl = async (item) => photosHandler(await item.getDownloadURL());
+        // var pathRef = st.refFromURL("gs://" + itemRef.bucket + "/" + itemRef.fullPath);
+        // pathRef.getDownloadURL()
+        //   .then((url) => {
+        //     photoList.push('url');
+        //   }).catch((error) => {
+        //     // Handle any errors
+        //   });
 
-    await res.items.forEach((item) => getUrl(item));
+
+        photoList.push("gs://" + itemRef.bucket + "/" + itemRef.fullPath);
+      });
+      var phArray = photoList.concat();
+      var photoArr = ([...phArray.entries()]);
+      console.log(photoList);
+      console.log(photoArr);
+    }).catch((error) => {
+      // Uh-oh, an error occurred!
+    });
   };
+
+ 
+
 
   useEffect(() => lotMeta && getLotPhotos(), [lotMeta]);
 
