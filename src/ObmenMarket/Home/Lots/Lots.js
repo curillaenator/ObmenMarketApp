@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import { Lot } from "../../Components/Lot/Lot";
 
-import { db } from "../../../Utils/firebase";
+import { postsRef } from "../../../Utils/firebase";
 
 import styles from "./lots.module.scss";
 
 export const Lots = ({ isFormModeOn }) => {
+  
   const [lotList, setLotList] = useState([]);
+  
   useEffect(() => {
-    db.ref("posts").on("value", (snapshot) => {
-      setLotList(snapshot.val());
-    });
+    postsRef.on("value", (snapshot) => setLotList(snapshot.val()));
   }, []); // сделать очистку слушателя
 
   return (

@@ -19,4 +19,6 @@ export const db = firebase.database();
 export const fn = firebase.functions();
 export const fs = firebase.firestore();
 
+export const postsRef = db.ref("posts");
+
 // export const firestore = firebase.firestore();
