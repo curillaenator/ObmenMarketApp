@@ -1,4 +1,4 @@
-import { db, fb, st } from "../../Utils/firebase";
+import { db, fb } from "../../Utils/firebase";
 import { useState, useEffect, useRef } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -8,52 +8,38 @@ import { StatusBar } from "../Components/StatusBar/StatusBar";
 import { Button } from "../Components/Button/Button";
 import { ButtonOutline } from "../Components/Button/ButtonOutline";
 
-import lotpic from "../../Assets/Images/lot.jpg";
-
 import { setFormMode } from "../../Redux/Reducers/home";
 
 import styles from "./lotfull.module.scss";
 
 const Gallery = ({ lotMeta }) => {
   const [lotPhotos, setLotPhotos] = useState([]);
-  const photosHandler = (url) => {
-    setLotPhotos(lotPhotos.concat([url]));
+  const photosHandler = (url) => setLotPhotos([...lotPhotos, ...url]);
+
+  const getLotPhotos = async () => {
+    const res = await fb
+      .storage()
+      .ref()
+      .child("posts/" + lotMeta.uid + "/" + lotMeta.postid)
+      .listAll();
+
+    const photoList = [];
+
+    res.items.forEach((item) =>
+      photoList.push(
+        "https://firebasestorage.googleapis.com/v0/b/" +
+          item.bucket +
+          "/o/posts%2F" +
+          lotMeta.uid +
+          "%2F" +
+          lotMeta.postid +
+          "%2F" +
+          item.name +
+          "?alt=media"
+      )
+    );
+    photosHandler(photoList);
   };
-   const getLotPhotos = async () => {
-    var photoList = [];
-    
-     var res = await fb
-       .storage()
-       .ref("posts/");
-       var listRef = res.child(lotMeta.uid + "/" + lotMeta.postid);
-       
-       listRef.listAll()
-      .then((result) => {
-      result.items.forEach((itemRef) => {
-        //photoList.push("gs://" + itemRef.bucket + "/" + itemRef.fullPath);
-        photoList.push("https://firebasestorage.googleapis.com/v0/b/" + itemRef.bucket + "/o/posts%2F" + lotMeta.uid + "%2F" + lotMeta.postid + "%2F" + itemRef.name + "?alt=media");
-      });
-      var phArray = photoList.concat();
-      var photoArr = ([...phArray.entries()]);
-      console.log(photoList);
-      console.log(photoArr);
-    }).catch((error) => {
-      // Uh-oh, an error occurred!
-    });
-  };
-
- 
-
-        // var pathRef = st.refFromURL("gs://" + itemRef.bucket + "/" + itemRef.fullPath);
-        // pathRef.getDownloadURL()
-        //   .then((url) => {
-        //     photoList.push('url');
-        //   }).catch((error) => {
-        //     // Handle any errors
-        //   });
-
-
-
 
   useEffect(() => lotMeta && getLotPhotos(), [lotMeta]);
 
