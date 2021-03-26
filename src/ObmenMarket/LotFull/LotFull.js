@@ -52,16 +52,17 @@ const Gallery = ({ lotMeta }) => {
   return (
     <div className={styles.gallery}>
       <div className={styles.big} onClick={() => setIsOpen(true)}>
-        <img src={lotPhotos[0]} alt="" />
+        <img src={lotPhotos[pIndex]} alt="" />
       </div>
 
       <div className={styles.track}>
-        {lotPhotos.map((ph) => (
-          <div className={styles.small} key={ph}>
-            <img src={ph} alt="" />
+        {lotPhotos.map((photo, i) => (
+          <div className={styles.small} key={photo} onClick={() => setIndex(i)}>
+            <img src={photo} alt="" />
           </div>
         ))}
       </div>
+
       {isOpen && (
         <Lightbox
           mainSrc={lotPhotos[pIndex]}
