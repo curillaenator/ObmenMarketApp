@@ -19,6 +19,7 @@
   }
 
   .shapeIdle {
+    will-change: filter;
     fill: $primary;
     filter: drop-shadow(0 4px 11px $primaryIdleShadow)
       drop-shadow(0 0 2px $primaryIdleShadow2)
