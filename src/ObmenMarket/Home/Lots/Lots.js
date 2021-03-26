@@ -6,18 +6,22 @@ import { postsRef } from "../../../Utils/firebase";
 import styles from "./lots.module.scss";
 
 export const Lots = ({ isFormModeOn }) => {
-  
   const [lotList, setLotList] = useState([]);
-  
+
   useEffect(() => {
-    postsRef.once("value", (snapshot) => setLotList(snapshot.val()));
+    postsRef.once("value", (snapshot) => {
+      setLotList(
+        Object.keys(snapshot.val())
+          .map((post) => snapshot.val()[post])
+          .reverse()
+      );
+    });
   }, []); // сделать очистку слушателя
 
   return (
     !isFormModeOn && (
       <div className={styles.lots}>
-        {lotList &&
-          Object.keys(lotList).map((l) => <Lot data={lotList[l]} key={l} />)}
+        {lotList && lotList.map((l) => <Lot data={l} key={l.postid} />)}
       </div>
     )
   );

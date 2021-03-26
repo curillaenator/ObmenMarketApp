@@ -7,17 +7,17 @@ import share from "../../../Assets/Icons/share.svg";
 import del from "../../../Assets/Icons/delete.svg";
 import edit from "../../../Assets/Icons/edit.svg";
 
-export const Controls = ({ isAuth, lotMeta }) => {
-  const uid = fa.currentUser.uid;
-  console.log(uid);
+export const Controls = ({ isAuth, lotMeta, goBack }) => {
+  const user = fa.currentUser;
+  //   console.log(user);
   return (
     <div className={styles.controls}>
-      <div className={styles.back}>
+      <div className={styles.back} onClick={goBack}>
         <img src={back} alt="Вернуться" />
         <p>Назад</p>
       </div>
-      
-      {uid === lotMeta.uid && isAuth && (
+
+      {isAuth && user && user.uid === lotMeta.uid && (
         <div className={styles.options}>
           <div className={styles.option}>
             <img src={share} alt="Поделиться" />

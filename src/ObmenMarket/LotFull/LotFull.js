@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import Lightbox from "react-image-lightbox";
 
 import { StatusBar } from "../Components/StatusBar/StatusBar";
 import { Button } from "../Components/Button/Button";
@@ -11,11 +12,15 @@ import { Controls } from "../Components/Controls/Controls";
 
 import { setFormMode } from "../../Redux/Reducers/home";
 
+import "react-image-lightbox/style.css";
 import styles from "./lotfull.module.scss";
 
 const Gallery = ({ lotMeta }) => {
   const [lotPhotos, setLotPhotos] = useState([]);
   const photosHandler = (url) => setLotPhotos([...lotPhotos, ...url]);
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [pIndex, setIndex] = useState(0);
 
   const getLotPhotos = async () => {
     const res = await fb
@@ -46,7 +51,7 @@ const Gallery = ({ lotMeta }) => {
 
   return (
     <div className={styles.gallery}>
-      <div className={styles.big}>
+      <div className={styles.big} onClick={() => setIsOpen(true)}>
         <img src={lotPhotos[0]} alt="" />
       </div>
 
@@ -57,6 +62,20 @@ const Gallery = ({ lotMeta }) => {
           </div>
         ))}
       </div>
+      {isOpen && (
+        <Lightbox
+          mainSrc={lotPhotos[pIndex]}
+          nextSrc={lotPhotos[(pIndex + 1) % lotPhotos.length]}
+          prevSrc={
+            lotPhotos[(pIndex + lotPhotos.length - 1) % lotPhotos.length]
+          }
+          onCloseRequest={() => setIsOpen(false)}
+          onMovePrevRequest={() =>
+            setIndex((pIndex + lotPhotos.length - 1) % lotPhotos.length)
+          }
+          onMoveNextRequest={() => setIndex((pIndex + 1) % lotPhotos.length)}
+        />
+      )}
     </div>
   );
 };
@@ -136,14 +155,14 @@ const Descrption = ({ lotMeta }) => {
 
       <div className={styles.lottext}>{lotMeta.description}</div>
 
-      <div className={styles.smalltitle}>Хочу обменять на:</div>
+      {/* <div className={styles.smalltitle}>Хочу обменять на:</div> */}
 
-      <div className={styles.lottext}>
+      {/* <div className={styles.lottext}>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque inventore
         voluptates delectus, nisi ad, harum repudiandae nesciunt omnis quae
         alias accusantium deleniti assumenda iste et velit eos officiis
         distinctio quibusdam.
-      </div>
+      </div> */}
     </div>
   );
 };
@@ -176,7 +195,7 @@ const LotStats = ({ lotMeta }) => {
   );
 };
 
-const LotFull = ({ setFormMode, icons, match, isAuth, ...props }) => {
+const LotFull = ({ setFormMode, icons, match, isAuth, history, ...props }) => {
   useEffect(() => setFormMode(false), [setFormMode]);
 
   const [lotMeta, setLotMeta] = useState(null);
@@ -186,12 +205,10 @@ const LotFull = ({ setFormMode, icons, match, isAuth, ...props }) => {
 
   useEffect(() => getLotMeta(match.params.id), [match.params.id]);
 
-  console.log(lotMeta);
-
   return (
     lotMeta && (
       <div className={styles.lotwrapper}>
-        <Controls isAuth={isAuth} lotMeta={lotMeta} />
+        <Controls isAuth={isAuth} lotMeta={lotMeta} goBack={history.goBack} />
 
         <div className={styles.lot}>
           <div className={styles.info}>
