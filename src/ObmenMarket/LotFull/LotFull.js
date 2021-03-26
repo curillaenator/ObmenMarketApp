@@ -30,18 +30,8 @@ const Gallery = ({ lotMeta }) => {
        listRef.listAll()
       .then((result) => {
       result.items.forEach((itemRef) => {
-
-
-        // var pathRef = st.refFromURL("gs://" + itemRef.bucket + "/" + itemRef.fullPath);
-        // pathRef.getDownloadURL()
-        //   .then((url) => {
-        //     photoList.push('url');
-        //   }).catch((error) => {
-        //     // Handle any errors
-        //   });
-
-
-        photoList.push("gs://" + itemRef.bucket + "/" + itemRef.fullPath);
+        //photoList.push("gs://" + itemRef.bucket + "/" + itemRef.fullPath);
+        photoList.push("https://firebasestorage.googleapis.com/v0/b/" + itemRef.bucket + "/o/posts%2F" + lotMeta.uid + "%2F" + lotMeta.postid + "%2F" + itemRef.name + "?alt=media");
       });
       var phArray = photoList.concat();
       var photoArr = ([...phArray.entries()]);
@@ -53,6 +43,16 @@ const Gallery = ({ lotMeta }) => {
   };
 
  
+
+        // var pathRef = st.refFromURL("gs://" + itemRef.bucket + "/" + itemRef.fullPath);
+        // pathRef.getDownloadURL()
+        //   .then((url) => {
+        //     photoList.push('url');
+        //   }).catch((error) => {
+        //     // Handle any errors
+        //   });
+
+
 
 
   useEffect(() => lotMeta && getLotPhotos(), [lotMeta]);
