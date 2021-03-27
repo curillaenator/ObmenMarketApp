@@ -44,14 +44,22 @@
           height: 0;
           padding-top: calc(20% - 3.2px);
           margin-right: 4px;
-
+          
           & > img {
             @include image;
             mask-image: url(../../Assets/Masks/commonBtn.svg);
+            filter: brightness(0.7);
           }
 
           &:last-child {
             margin-right: 0;
+          }
+
+          &:hover {
+            cursor: pointer;
+            & > img {
+              filter: brightness(0.9);
+            }
           }
         }
       }
