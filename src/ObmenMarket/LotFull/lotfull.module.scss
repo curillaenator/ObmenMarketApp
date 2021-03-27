@@ -21,7 +21,7 @@
     margin-bottom: 24px;
 
     .gallery {
-      .big {
+      .mainphoto {
         position: relative;
         width: 100%;
         height: 0;
@@ -34,32 +34,51 @@
         }
       }
 
-      .track {
+      .thumbtrack {
         display: flex;
         margin-bottom: 24px;
 
-        .small {
+        .thumb {
           position: relative;
           width: calc(20% - 3.2px);
           height: 0;
           padding-top: calc(20% - 3.2px);
           margin-right: 4px;
-          
+          cursor: pointer;
+
           & > img {
             @include image;
             mask-image: url(../../Assets/Masks/commonBtn.svg);
-            filter: brightness(0.7);
+            transition: 0.12s linear;
+          }
+
+          &::after {
+            @include image;
+            content: "";
+            mask-image: url(../../Assets/Masks/commonBtn.svg);
+            opacity: 0.3;
+            background-color: $fontGrey;
+            transition: 0.12s linear;
+          }
+
+          &:hover::after {
+            opacity: 0;
           }
 
           &:last-child {
             margin-right: 0;
           }
+        }
 
-          &:hover {
-            cursor: pointer;
-            & > img {
-              filter: brightness(0.9);
-            }
+        .thumb_active {
+          &::after {
+            opacity: 0.8; // tint opacity
+            background-color: $primary; // tint color
+            transition: 0.12s linear;
+          }
+          &:hover::after {
+            opacity: 0.8; // tint opacity
+            background-color: $primary; // tint color
           }
         }
       }
@@ -97,7 +116,6 @@
     }
 
     .stats {
-
       .statsitem {
         margin-bottom: 24px;
 

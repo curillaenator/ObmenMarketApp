@@ -49,17 +49,31 @@ const Gallery = ({ lotMeta }) => {
 
   useEffect(() => lotMeta && getLotPhotos(), [lotMeta]);
 
+  const Thumb = ({ photo, index }) => {
+    const thumbClassName =
+      index === pIndex
+        ? `${styles.thumb} ${styles.thumb_active}`
+        : styles.thumb;
+    return (
+      <div
+        className={thumbClassName}
+        key={photo}
+        onClick={() => setIndex(index)}
+      >
+        <img src={photo} alt="" />
+      </div>
+    );
+  };
+
   return (
     <div className={styles.gallery}>
-      <div className={styles.big} onClick={() => setIsOpen(true)}>
+      <div className={styles.mainphoto} onClick={() => setIsOpen(true)}>
         <img src={lotPhotos[pIndex]} alt="" />
       </div>
 
-      <div className={styles.track}>
+      <div className={styles.thumbtrack}>
         {lotPhotos.map((photo, i) => (
-          <div className={styles.small} key={photo} onClick={() => setIndex(i)}>
-            <img src={photo} alt="" />
-          </div>
+          <Thumb photo={photo} index={i} />
         ))}
       </div>
 
