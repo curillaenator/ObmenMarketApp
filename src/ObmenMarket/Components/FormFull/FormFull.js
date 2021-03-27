@@ -16,7 +16,7 @@ export const FormFull = (props) => {
       draft: false,
     };
 
-    console.log({ ...formData, ...updData });
+    // console.log({ ...formData, ...updData });
     props.publishNewLotFromForm(props.createLotId, { ...formData, ...updData });
   };
 
@@ -26,12 +26,11 @@ export const FormFull = (props) => {
         onSubmit={onSubmit}
         render={({ handleSubmit, form, values }) => (
           <FormFullFields
-            // isFormModeOn={props.isFormModeOn}
             handleSubmit={handleSubmit}
             form={form}
             values={values}
             icons={props.icons}
-            furmFullUi={props.furmFullUi}
+            formFullUI={props.formFullUI}
             createLotId={props.createLotId}
           />
         )}

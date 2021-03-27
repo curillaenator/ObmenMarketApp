@@ -86,7 +86,7 @@ export const FormFullFields = (props) => {
     );
   };
 
-  const formUI = props.furmFullUi;
+  const formUI = props.formFullUI;
 
   return (
     <form onSubmit={props.handleSubmit} className={styles.formfull}>

@@ -1,5 +1,5 @@
-import { Button } from "../../Components/Button/Button";
-import { Search } from "../../Components/Search/Search";
+import { Button } from "../Button/Button";
+import { Search } from "../Search/Search";
 
 import styles from "./cta.module.scss";
 

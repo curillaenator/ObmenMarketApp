@@ -2,8 +2,8 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 
 import { Welcome } from "./Welcome/Welcome";
-import { Cta } from "./CTA/CTA";
-import { Lots } from "./Lots/Lots";
+import { Cta } from "../Components/CTA/CTA";
+import { LotsContainer } from "../Components/LotsContainer/LotsContainer";
 import { Warning } from "./Warning/Warning";
 import { FormFull } from "../Components/FormFull/FormFull";
 
@@ -19,9 +19,11 @@ import styles from "./home.module.scss";
 
 const Home = (props) => {
   if (props.isCurrentLot) return <Redirect to="/post" />;
+
   return (
     <div className={styles.home}>
       <Welcome />
+
       <Cta
         icons={props.icons}
         isAuth={props.isAuth}
@@ -31,13 +33,16 @@ const Home = (props) => {
         onLotCreateFromForm={props.onLotCreateFromForm}
         onLotCreateFormCancel={props.onLotCreateFormCancel}
       />
-      <Lots isFormModeOn={props.isFormModeOn} />
+
+      <LotsContainer isFormModeOn={props.isFormModeOn} toRender="all" />
+
       {!props.isAuth && props.isFormModeOn && <Warning />}
+
       {props.isAuth && (
         <FormFull
           isFormModeOn={props.isFormModeOn}
           icons={props.icons}
-          furmFullUi={props.furmFullUi}
+          formFullUI={props.formFullUI}
           createLotId={props.createLotId}
           publishNewLotFromForm={props.publishNewLotFromForm}
         />
@@ -49,7 +54,7 @@ const Home = (props) => {
 const mstp = (state) => ({
   isAuth: state.auth.isAuth,
   icons: state.ui.icons,
-  furmFullUi: state.ui.formFull,
+  formFullUI: state.ui.formFull,
   isFormModeOn: state.home.isFormModeOn,
   createLotId: state.lots.createLotId,
 });

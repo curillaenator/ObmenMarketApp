@@ -41,45 +41,49 @@ const setLotMeta = (payload) => ({ type: SET_CURRENT_LOTMETA, payload });
 const setLotPhotos = (payload) => ({ type: SET_CURRENT_LOTPHOTOS, payload });
 
 export const onLotCreateFromForm = () => async (dispatch) => {
-  const authedUser = await fa.currentUser;
-  const newLotId = await db.ref().child("posts").push().key;
+  const author = await fa.currentUser;
+  const lotID = await db.ref().child("posts").push().key;
 
   const newLotData = {
-    uid: authedUser.uid,
-    postid: newLotId,
-    username: authedUser.displayName,
-    avatar: authedUser.photoURL,
+    uid: author.uid,
+    postid: lotID,
+    username: author.displayName,
+    avatar: author.photoURL,
     published: false,
     draft: true,
   };
 
-  dispatch(setNewLotId(newLotId));
+  dispatch(setNewLotId(lotID));
+
   const updates = {};
-  updates["/posts/" + newLotId] = newLotData;
+  updates["/posts/" + lotID] = newLotData;
   // console.log(updates);
   db.ref().update(updates);
 };
 
-export const onLotCreateFormCancel = (id) => async (dispatch) => {
-  await db.ref("posts/" + id).remove();
+export const onLotCreateFormCancel = (lotID) => async (dispatch) => {
+  const author = await fa.currentUser;
+
+  await db.ref("posts/" + lotID).remove();
   dispatch(setNewLotId(null));
 
   const storage = fb.storage().ref();
   storage
-    .child("posts/" + fa.currentUser.uid + "/" + id)
+    .child("posts/" + author.uid + "/" + lotID)
     .listAll()
     .then((res) => res.items.forEach((item) => item.delete()));
 };
 
-export const publishNewLotFromForm = (id, updData) => async (dispatch) => {
+export const publishNewLotFromForm = (lotID, updData) => async (dispatch) => {
   const onUpdate = (error) => {
     if (error) return console.log("ошибка записи");
-    db.ref("posts/" + id).once("value", (snap) => {
+    db.ref("posts/" + lotID).once("value", (snap) => {
       dispatch(setLotMeta(snap.val()));
       dispatch(setFormMode(false));
     });
   };
-  await db.ref("posts/" + id).update(updData, onUpdate);
+
+  await db.ref("posts/" + lotID).update(updData, onUpdate);
 };
 
 export const getLotMeta = (lotID) => (dispatch) => {
@@ -117,4 +121,3 @@ export const getLotMeta = (lotID) => (dispatch) => {
     dispatch(setFormMode(false));
   });
 };
-
