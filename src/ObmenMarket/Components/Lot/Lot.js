@@ -1,18 +1,17 @@
 import { useState } from "react";
 import { fb } from "../../../Utils/firebase";
-import { StatusBar } from "../StatusBar/StatusBar";
 import { Link } from "react-router-dom";
 
-// import lotpic from "../../../Assets/Images/lot.jpg";
+import { StatusBar } from "../StatusBar/StatusBar";
 
 import styles from "./lot.module.scss";
 
-const Owner = (props) => {
+const Owner = ({ avatar, username, uid }) => {
   return (
-    <div className={styles.owner}>
-      <img src={props.avatar} alt={props.username} draggable="false" />
-      <p>{props.ownerName}</p>
-    </div>
+    <Link to={`/profile/${uid}`} className={styles.author}>
+      <img src={avatar} alt={username} draggable="false" />
+      <p>{username}</p>
+    </Link>
   );
 };
 
@@ -35,7 +34,7 @@ export const Lot = ({ data }) => {
 
   return (
     <div className={styles.lot}>
-      <Owner avatar={data.avatar} ownerName={data.username} />
+      <Owner avatar={data.avatar} username={data.username} uid={data.uid} />
 
       <Link to={`/posts/${data.postid}`} className={styles.content}>
         <LotImage lotImage={photo} lotnName={data.title} />

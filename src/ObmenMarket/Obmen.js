@@ -26,7 +26,7 @@ function Obmen({ googleSignIn, ...props }) {
         <Route exact path="/" render={() => <HomeCont />} />
         <Route path="/posts/:id" render={() => <LotFullCont />} />
         <Route path="/login" render={() => <LoginCont />} />
-        <Route path="/profile" render={() => <ProfileCont />} />
+        <Route path="/profile/:id?" render={() => <ProfileCont />} />
       </Switch>
     </div>
   );

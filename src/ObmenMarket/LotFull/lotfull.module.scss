@@ -195,10 +195,16 @@
   .description {
     width: 100%;
 
-    .user {
+    .author {
       display: flex;
       align-items: center;
       margin-bottom: 16px;
+      text-decoration: none;
+      transition: 0.12s linear;
+      
+      &:hover {
+        opacity: 0.7;
+      }
 
       & > img {
         width: 32px;

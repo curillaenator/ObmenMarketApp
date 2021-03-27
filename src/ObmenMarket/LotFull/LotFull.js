@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import Lightbox from "react-image-lightbox";
 
 import { StatusBar } from "../Components/StatusBar/StatusBar";
@@ -164,10 +164,10 @@ const Buttons = ({ icons }) => {
 const Descrption = ({ lotMeta }) => {
   return (
     <div className={styles.description}>
-      <div className={styles.user}>
+      <Link to={`/profile/${lotMeta.uid}`} className={styles.author}>
         <img src={lotMeta.avatar} alt="Username" />
         <p>{lotMeta.username}</p>
-      </div>
+      </Link>
 
       <div className={styles.bigtitle}>{lotMeta.title}</div>
 

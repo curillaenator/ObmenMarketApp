@@ -7,36 +7,45 @@ import city from "../../Assets/Icons/city.svg";
 import mail from "../../Assets/Icons/mail.svg";
 import tel from "../../Assets/Icons/tel.svg";
 
-export const UserInfo = (props) => {
-  //   console.log(props);
+export const UserInfo = ({ isOwner, profile, logout }) => {
   return (
     <div className={styles.userInfo}>
       <div className={styles.shape}></div>
-      <img className={styles.photo} src={props.user.avatar} alt={props.user.username} />
+      <img
+        className={styles.photo}
+        src={profile.avatar}
+        alt={profile.username}
+      />
 
       <div className={styles.info}>
-        <h2 className={styles.userName}>{props.user.username}</h2>
+        <h2 className={styles.userName}>{profile.username}</h2>
 
-        <div className={styles.buttons}>
-          <ButtonOutline width={160} height={40} title="Редактировать" />
-          <ButtonOutline
-            width={95}
-            height={40}
-            title="Выйти"
-            handler={props.logout}
-          />
-        </div>
+        {isOwner && (
+          <div className={styles.buttons}>
+            <ButtonOutline width={160} height={40} title="Редактировать" />
+            <ButtonOutline
+              width={95}
+              height={40}
+              title="Выйти"
+              handler={logout}
+            />
+          </div>
+        )}
 
         <div className={styles.details}>
-          <div className={styles.item}>
-            <img src={tel} alt="Телефон" />
-            <p>+7 999 555 66 44</p>
-          </div>
+          {isOwner && (
+            <div className={styles.item}>
+              <img src={tel} alt="Телефон" />
+              <p>+7 999 555 66 44</p>
+            </div>
+          )}
 
-          <div className={styles.item}>
-            <img src={mail} alt="E-mail" />
-            <p>useremail@email.ru</p>
-          </div>
+          {isOwner && (
+            <div className={styles.item}>
+              <img src={mail} alt="E-mail" />
+              <p>useremail@email.ru</p>
+            </div>
+          )}
 
           <div className={styles.item}>
             <img src={country} alt="Страна" />
