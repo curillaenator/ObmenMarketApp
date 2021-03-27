@@ -1,4 +1,3 @@
-import { db, fb } from "../../Utils/firebase";
 import { useState, useEffect, useRef } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -10,50 +9,49 @@ import { Button } from "../Components/Button/Button";
 import { ButtonOutline } from "../Components/Button/ButtonOutline";
 import { Controls } from "../Components/Controls/Controls";
 
-import { setFormMode } from "../../Redux/Reducers/home";
+import { getLotMeta } from "../../Redux/Reducers/lots";
+
+import openGallery from "../../Assets/Icons/openGallery.svg";
 
 import "react-image-lightbox/style.css";
 import styles from "./lotfull.module.scss";
 
-const Gallery = ({ lotMeta }) => {
-  const [lotPhotos, setLotPhotos] = useState([]);
-  const photosHandler = (url) => setLotPhotos([...lotPhotos, ...url]);
-
+const Gallery = ({ lotPhotos }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [pIndex, setIndex] = useState(0);
 
-  const getLotPhotos = async () => {
-    const res = await fb
-      .storage()
-      .ref()
-      .child("posts/" + lotMeta.uid + "/" + lotMeta.postid)
-      .listAll();
+  const Tint = ({ title, icon, count }) => {
+    const iconMargin = title ? { marginRight: "18px" } : {};
+    const tableBorder = title
+      ? {
+          // width: "217px",
+          // height: "56px",
+          // borderRadius: "16px",
+          // border: "2px solid #fff",
+        }
+      : {};
 
-    const photoList = [];
-
-    res.items.forEach((item) =>
-      photoList.push(
-        "https://firebasestorage.googleapis.com/v0/b/" +
-          item.bucket +
-          "/o/posts%2F" +
-          lotMeta.uid +
-          "%2F" +
-          lotMeta.postid +
-          "%2F" +
-          item.name +
-          "?alt=media"
-      )
+    return (
+      <div className={styles.tint}>
+        <div className={styles.table} style={tableBorder}>
+          {icon && <img src={icon} alt={title} style={iconMargin} />}
+          {title && (
+            <div className={styles.tabletitle}>
+              <h3>{title}</h3>
+              <p>{`${count} фото`}</p>
+            </div>
+          )}
+        </div>
+      </div>
     );
-    photosHandler(photoList);
   };
-
-  useEffect(() => lotMeta && getLotPhotos(), [lotMeta]);
 
   const Thumb = ({ photo, index }) => {
     const thumbClassName =
       index === pIndex
         ? `${styles.thumb} ${styles.thumb_active}`
         : styles.thumb;
+
     return (
       <div
         className={thumbClassName}
@@ -69,11 +67,16 @@ const Gallery = ({ lotMeta }) => {
     <div className={styles.gallery}>
       <div className={styles.mainphoto} onClick={() => setIsOpen(true)}>
         <img src={lotPhotos[pIndex]} alt="" />
+        <Tint
+          title="Открыть галлерею"
+          icon={openGallery}
+          count={lotPhotos.length}
+        />
       </div>
 
       <div className={styles.thumbtrack}>
         {lotPhotos.map((photo, i) => (
-          <Thumb photo={photo} index={i} />
+          <Thumb photo={photo} index={i} key={photo} />
         ))}
       </div>
 
@@ -210,24 +213,27 @@ const LotStats = ({ lotMeta }) => {
   );
 };
 
-const LotFull = ({ setFormMode, icons, match, isAuth, history, ...props }) => {
-  useEffect(() => setFormMode(false), [setFormMode]);
-
-  const [lotMeta, setLotMeta] = useState(null);
-
-  const getLotMeta = (lotID) =>
-    db.ref("posts/" + lotID).once("value", (snap) => setLotMeta(snap.val()));
-
-  useEffect(() => getLotMeta(match.params.id), [match.params.id]);
+const LotFull = ({
+  icons,
+  match,
+  isAuth,
+  history,
+  isLotMeta,
+  lotMeta,
+  lotPhotos,
+  getLotMeta,
+  ...props
+}) => {
+  useEffect(() => getLotMeta(match.params.id), [match.params.id, getLotMeta]);
 
   return (
-    lotMeta && (
+    isLotMeta && (
       <div className={styles.lotwrapper}>
         <Controls isAuth={isAuth} lotMeta={lotMeta} goBack={history.goBack} />
 
         <div className={styles.lot}>
           <div className={styles.info}>
-            <Gallery lotMeta={lotMeta} />
+            {lotPhotos && <Gallery lotMeta={lotMeta} lotPhotos={lotPhotos} />}
 
             <div className={styles.status}>
               <StatusBar
@@ -255,11 +261,14 @@ const LotFull = ({ setFormMode, icons, match, isAuth, history, ...props }) => {
 const mstp = (state) => ({
   icons: state.ui.icons,
   isAuth: state.auth.isAuth,
+  isLotMeta: state.lots.isLotMeta,
+  lotMeta: state.lots.currentLotMeta,
+  lotPhotos: state.lots.currentLotPhotos,
 });
 
 export const LotFullCont = compose(
   withRouter,
   connect(mstp, {
-    setFormMode,
+    getLotMeta,
   })
 )(LotFull);

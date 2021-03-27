@@ -3,19 +3,31 @@ import { fb, db, fa } from "../../Utils/firebase";
 import { setFormMode } from "./home";
 
 const SET_NEWLOT_ID = "lots/SET_NEWLOT_ID";
-const SET_CURRENT_LOT = "lots/SET_CURRENT_LOT";
+const SET_IS_LOTMETA = "lots/SET_IS_LOTMETA";
+const SET_CURRENT_LOTMETA = "lots/SET_CURRENT_LOT";
+const SET_CURRENT_LOTPHOTOS = "lots/SET_CURRENT_LOTPHOTOS";
 
 const initialState = {
   createLotId: null,
-  currentLot: null,
+  isLotMeta: false,
+  currentLotMeta: null,
+  currentLotPhotos: null,
 };
 
 export const lots = (state = initialState, action) => {
   switch (action.type) {
     case SET_NEWLOT_ID:
       return { ...state, createLotId: action.id };
-    case SET_CURRENT_LOT:
-      return { ...state, currentLot: action.payload };
+
+    case SET_CURRENT_LOTMETA:
+      return { ...state, currentLotMeta: action.payload };
+
+    case SET_CURRENT_LOTPHOTOS:
+      return { ...state, currentLotPhotos: action.payload };
+
+    case SET_IS_LOTMETA:
+      return { ...state, isLotMeta: action.payload };
+
     default:
       return state;
   }
@@ -24,13 +36,13 @@ export const lots = (state = initialState, action) => {
 // ACTIONS
 
 const setNewLotId = (id) => ({ type: SET_NEWLOT_ID, id });
-const setCurrentLot = (payload) => ({ type: SET_CURRENT_LOT, payload });
+const setIsLotMeta = (payload) => ({ type: SET_IS_LOTMETA, payload });
+const setLotMeta = (payload) => ({ type: SET_CURRENT_LOTMETA, payload });
+const setLotPhotos = (payload) => ({ type: SET_CURRENT_LOTPHOTOS, payload });
 
 export const onLotCreateFromForm = () => async (dispatch) => {
   const authedUser = await fa.currentUser;
   const newLotId = await db.ref().child("posts").push().key;
-
-  // console.log(authedUser);
 
   const newLotData = {
     uid: authedUser.uid,
@@ -60,21 +72,49 @@ export const onLotCreateFormCancel = (id) => async (dispatch) => {
 };
 
 export const publishNewLotFromForm = (id, updData) => async (dispatch) => {
-
   const onUpdate = (error) => {
     if (error) return console.log("ошибка записи");
     db.ref("posts/" + id).once("value", (snap) => {
-      dispatch(setCurrentLot(snap.val()));
+      dispatch(setLotMeta(snap.val()));
       dispatch(setFormMode(false));
     });
   };
   await db.ref("posts/" + id).update(updData, onUpdate);
 };
 
-// export const setCurrentLotFull = (lotID) => (dispatch) => {
-//   db.ref("posts/" + lotID).once("value", (snap) =>
-//     dispatch(setCurrentLot(snap.val()))
-//   );
-// };
+export const getLotMeta = (lotID) => (dispatch) => {
+  const getLotPhotos = async (lotMeta) => {
+    const res = await fb
+      .storage()
+      .ref()
+      .child("posts/" + lotMeta.uid + "/" + lotMeta.postid)
+      .listAll();
 
-export const setIsCurrentLotAfterRedirect = (boolean) => (dispatch) => {};
+    const photoList = [];
+
+    await res.items.forEach((item) =>
+      photoList.push(
+        "https://firebasestorage.googleapis.com/v0/b/" +
+          item.bucket +
+          "/o/posts%2F" +
+          lotMeta.uid +
+          "%2F" +
+          lotMeta.postid +
+          "%2F" +
+          item.name +
+          "?alt=media"
+      )
+    );
+
+    dispatch(setLotPhotos(photoList));
+  };
+
+  db.ref("posts/" + lotID).once("value", (snap) => {
+    const lotMeta = snap.val();
+    getLotPhotos(lotMeta);
+    dispatch(setLotMeta(lotMeta));
+    dispatch(setIsLotMeta(true));
+    dispatch(setFormMode(false));
+  });
+};
+

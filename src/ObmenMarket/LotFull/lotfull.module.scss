@@ -11,6 +11,17 @@
   mask-repeat: no-repeat;
 }
 
+@mixin activeTint {
+  opacity: 1; // tint opacity
+  background-color: $primaryTransparent; // tint color
+}
+
+@mixin hoverTint {
+  opacity: 0;
+  background-color: $galleryTint;
+  transition: 0.12s linear;
+}
+
 .lot {
   display: flex;
   flex-direction: column;
@@ -27,10 +38,50 @@
         height: 0;
         padding-top: calc(100% * 0.563);
         margin-bottom: 4px;
+        cursor: pointer;
 
         & > img {
           @include image;
           mask-image: url(../../Assets/Masks/lotPhoto.svg);
+        }
+
+        .tint {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          @include image;
+          @include hoverTint;
+          mask-image: url(../../Assets/Masks/lotPhoto.svg);
+
+          .table {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            .tabletitle {
+              & > h3 {
+                font-size: 14px;
+                font-weight: 700;
+                line-height: 20px;
+                letter-spacing: -0.149333px;
+                color: $fontWhite;
+                z-index: 5;
+              }
+
+              & > p {
+                font-size: 12px;
+                font-weight: 500;
+                font-size: 12px;
+                line-height: 20px;
+                letter-spacing: -0.149333px;
+                color: rgba(255, 255, 255, 0.64);
+              }
+            }
+          }
+        }
+
+        &:hover .tint {
+          opacity: 1;
         }
       }
 
@@ -54,15 +105,13 @@
 
           &::after {
             @include image;
+            @include hoverTint;
             content: "";
             mask-image: url(../../Assets/Masks/commonBtn.svg);
-            opacity: 0.3;
-            background-color: $fontGrey;
-            transition: 0.12s linear;
           }
 
           &:hover::after {
-            opacity: 0;
+            opacity: 1;
           }
 
           &:last-child {
@@ -72,13 +121,13 @@
 
         .thumb_active {
           &::after {
-            opacity: 0.8; // tint opacity
-            background-color: $primary; // tint color
-            transition: 0.12s linear;
+            @include activeTint;
+            background-image: url(../../Assets/Icons/check.svg);
+            background-position: center;
+            background-repeat: no-repeat;
           }
           &:hover::after {
-            opacity: 0.8; // tint opacity
-            background-color: $primary; // tint color
+            @include activeTint;
           }
         }
       }
