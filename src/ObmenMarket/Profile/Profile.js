@@ -75,6 +75,7 @@ const Profile = ({
         )}
 
         <ProfileLots
+          isAuth={isAuth}
           isOwner={isOwner}
           isFormModeOn={isFormModeOn}
           matchedID={match.params.id}

@@ -48,6 +48,7 @@ const Buttons = (props) => {
         height={56}
         title="Сохранить черновик"
         icon={props.icons.drafts}
+        handler={props.formSubmitDraft}
       />
       <p>{props.notation}</p>
     </div>
@@ -56,6 +57,8 @@ const Buttons = (props) => {
 
 // Main form
 export const FormFullFields = (props) => {
+  console.log(props.form);
+
   const uid = fa.currentUser.uid;
 
   const [photos, setPhotos] = useState([]);
@@ -63,8 +66,17 @@ export const FormFullFields = (props) => {
 
   const formSubmit = (e) => {
     e.preventDefault();
-    // props.form.change("photos", photos);
     props.form.change("photos", null);
+    props.form.change("draft", false);
+    props.form.change("published", true);
+    props.form.submit();
+  };
+
+  const formSubmitDraft = (e) => {
+    e.preventDefault();
+    props.form.change("photos", null);
+    props.form.change("draft", true);
+    props.form.change("published", false);
     props.form.submit();
   };
 
@@ -72,7 +84,9 @@ export const FormFullFields = (props) => {
 
   const uploadImg = (file) => {
     const uploadTask = storage
-      .child("posts/" + uid + "/" + props.createLotId + "/photo" + photos.length)
+      .child(
+        "posts/" + uid + "/" + props.createLotId + "/photo" + photos.length
+      )
       .put(file);
 
     uploadTask.on(
@@ -164,6 +178,22 @@ export const FormFullFields = (props) => {
               placeholder={formUI.wish.addPayment}
               sub={formUI.wish.addPaymentSub}
             />
+
+            <div className={styles.hidenfields}>
+              <Field
+                name="draft"
+                component="input"
+                type="checkbox"
+                initialValue="true"
+              />
+
+              <Field
+                name="published"
+                component="input"
+                type="checkbox"
+                initialValue="false"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -172,6 +202,7 @@ export const FormFullFields = (props) => {
         icons={props.icons}
         notation={formUI.notation}
         formSubmit={formSubmit}
+        formSubmitDraft={formSubmitDraft}
       />
     </form>
   );

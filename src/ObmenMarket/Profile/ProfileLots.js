@@ -47,7 +47,8 @@ export const ProfileLots = ({ isOwner, isFormModeOn, matchedID }) => {
 
       <LotsContainer
         isFormModeOn={isFormModeOn}
-        toRender={selected}
+        toRender="profile"
+        selected={selected}
         matchedID={userID}
       />
     </>

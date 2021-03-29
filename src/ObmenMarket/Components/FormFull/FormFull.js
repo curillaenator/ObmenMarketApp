@@ -12,11 +12,9 @@ export const FormFull = (props) => {
       offersQty: 0,
       publishedAt: new Date(),
       expireDate: new Date(curDate.setDate(curDate.getDate() + 7)),
-      published: true,
-      draft: false,
     };
 
-    // console.log({ ...formData, ...updData });
+    console.log({ ...formData, ...updData });
     props.publishNewLotFromForm(props.createLotId, { ...formData, ...updData });
   };
 
