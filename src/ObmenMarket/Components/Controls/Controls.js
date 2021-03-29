@@ -7,7 +7,7 @@ import share from "../../../Assets/Icons/share.svg";
 import del from "../../../Assets/Icons/delete.svg";
 import edit from "../../../Assets/Icons/edit.svg";
 
-export const Controls = ({ isAuth, lotMeta, goBack }) => {
+export const Controls = ({ isAuth, lotMeta, goBack, handleEditLot }) => {
   const user = fa.currentUser;
   //   console.log(user);
   return (
@@ -24,7 +24,7 @@ export const Controls = ({ isAuth, lotMeta, goBack }) => {
             <p>Поделиться</p>
           </div>
 
-          <div className={styles.option}>
+          <div className={styles.option} onClick={handleEditLot}>
             <img src={edit} alt="Редактировать" />
             <p>Редактировать</p>
           </div>

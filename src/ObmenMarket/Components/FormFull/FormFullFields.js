@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { fb, fa } from "../../../Utils/firebase";
 import { Field } from "react-final-form";
 
@@ -56,13 +56,15 @@ const Buttons = (props) => {
 };
 
 // Main form
-export const FormFullFields = (props) => {
-  console.log(props.form);
+export const FormFullFields = ({ lotPhotos, ...props }) => {
+  // console.log(props.form);
 
   const uid = fa.currentUser.uid;
 
   const [photos, setPhotos] = useState([]);
   const photosHandler = (add) => setPhotos([...photos, add]);
+
+  useEffect(() => lotPhotos && setPhotos(lotPhotos), [lotPhotos]);
 
   const formSubmit = (e) => {
     e.preventDefault();
@@ -84,9 +86,7 @@ export const FormFullFields = (props) => {
 
   const uploadImg = (file) => {
     const uploadTask = storage
-      .child(
-        "posts/" + uid + "/" + props.createLotId + "/photo" + photos.length
-      )
+      .child("posts/" + uid + "/" + props.lotID + "/photo" + photos.length)
       .put(file);
 
     uploadTask.on(

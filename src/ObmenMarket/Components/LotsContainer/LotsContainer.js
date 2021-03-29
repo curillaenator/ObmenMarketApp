@@ -31,12 +31,7 @@ const lotListPublishedByUser = (matchedID, setLotList) => {
 
 // COMPONENT
 
-export const LotsContainer = ({
-  isFormModeOn,
-  toRender,
-  matchedID,
-  selected,
-}) => {
+export const LotsContainer = ({ toRender, matchedID, selected }) => {
   const [lotList, setLotList] = useState([]);
   const [listToRender, setListToRender] = useState([]);
 
@@ -53,11 +48,8 @@ export const LotsContainer = ({
   }, [selected, lotList]);
 
   return (
-    !isFormModeOn && (
-      <div className={styles.lots}>
-        {listToRender &&
-          listToRender.map((l) => <Lot data={l} key={l.postid} />)}
-      </div>
-    )
+    <div className={styles.lots}>
+      {listToRender && listToRender.map((l) => <Lot data={l} key={l.postid} />)}
+    </div>
   );
 };

@@ -64,13 +64,14 @@ const Profile = ({
               onLotCreateFormCancel={onLotCreateFormCancel}
             />
 
-            <FormFull
-              isFormModeOn={isFormModeOn}
-              icons={icons}
-              formFullUI={formFullUI}
-              createLotId={createLotId}
-              publishNewLotFromForm={publishNewLotFromForm}
-            />
+            {isFormModeOn && (
+              <FormFull
+                icons={icons}
+                formFullUI={formFullUI}
+                lotID={createLotId}
+                formHandler={publishNewLotFromForm}
+              />
+            )}
           </>
         )}
 

@@ -26,31 +26,32 @@ export const ProfileLots = ({ isOwner, isFormModeOn, matchedID }) => {
   const authored = isOwner ? "Мои лоты" : "Лоты автора";
 
   return (
-    <>
-      <div className={styles.titles}>
-        <Title
-          name="published"
-          title={authored}
-          active={selected}
-          setSelected={setSelected}
-        />
-
-        {isOwner && (
+    !isFormModeOn && (
+      <>
+        <div className={styles.titles}>
           <Title
-            name="drafts"
-            title="Черновики"
+            name="published"
+            title={authored}
             active={selected}
             setSelected={setSelected}
           />
-        )}
-      </div>
 
-      <LotsContainer
-        isFormModeOn={isFormModeOn}
-        toRender="profile"
-        selected={selected}
-        matchedID={userID}
-      />
-    </>
+          {isOwner && (
+            <Title
+              name="drafts"
+              title="Черновики"
+              active={selected}
+              setSelected={setSelected}
+            />
+          )}
+        </div>
+
+        <LotsContainer
+          toRender="profile"
+          selected={selected}
+          matchedID={userID}
+        />
+      </>
+    )
   );
 };

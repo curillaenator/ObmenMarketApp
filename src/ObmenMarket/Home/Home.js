@@ -34,17 +34,16 @@ const Home = (props) => {
         onLotCreateFormCancel={props.onLotCreateFormCancel}
       />
 
-      <LotsContainer isFormModeOn={props.isFormModeOn} toRender="all" />
+      {!props.isFormModeOn && <LotsContainer toRender="all" />}
 
       {!props.isAuth && props.isFormModeOn && <Warning />}
 
-      {props.isAuth && (
+      {props.isAuth && props.isFormModeOn && (
         <FormFull
-          isFormModeOn={props.isFormModeOn}
           icons={props.icons}
           formFullUI={props.formFullUI}
-          createLotId={props.createLotId}
-          publishNewLotFromForm={props.publishNewLotFromForm}
+          lotID={props.createLotId}
+          formHandler={props.publishNewLotFromForm}
         />
       )}
     </div>

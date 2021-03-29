@@ -3,12 +3,14 @@ import { fb, db, fa } from "../../Utils/firebase";
 import { setFormMode } from "./home";
 
 const SET_NEWLOT_ID = "lots/SET_NEWLOT_ID";
+const SET_CURRENT_ID = "lots/SET_CURRENT_ID";
 const SET_IS_LOTMETA = "lots/SET_IS_LOTMETA";
 const SET_CURRENT_LOTMETA = "lots/SET_CURRENT_LOT";
 const SET_CURRENT_LOTPHOTOS = "lots/SET_CURRENT_LOTPHOTOS";
 
 const initialState = {
   createLotId: null,
+  currentLotId: null,
   isLotMeta: false,
   currentLotMeta: null,
   currentLotPhotos: null,
@@ -18,6 +20,9 @@ export const lots = (state = initialState, action) => {
   switch (action.type) {
     case SET_NEWLOT_ID:
       return { ...state, createLotId: action.id };
+
+    case SET_CURRENT_ID:
+      return { ...state, currentLotId: action.id };
 
     case SET_CURRENT_LOTMETA:
       return { ...state, currentLotMeta: action.payload };
@@ -36,6 +41,7 @@ export const lots = (state = initialState, action) => {
 // ACTIONS
 
 const setNewLotId = (id) => ({ type: SET_NEWLOT_ID, id });
+const setCurrentLotId = (id) => ({ type: SET_CURRENT_ID, id });
 const setIsLotMeta = (payload) => ({ type: SET_IS_LOTMETA, payload });
 const setLotMeta = (payload) => ({ type: SET_CURRENT_LOTMETA, payload });
 const setLotPhotos = (payload) => ({ type: SET_CURRENT_LOTPHOTOS, payload });
@@ -120,4 +126,10 @@ export const getLotMeta = (lotID) => (dispatch) => {
     dispatch(setIsLotMeta(true));
     dispatch(setFormMode(false));
   });
+};
+
+export const editLot = (lotID, isFormModeOn) => (dispatch) => {
+  // console.log(lotID);
+  dispatch(setCurrentLotId(lotID));
+  dispatch(setFormMode(!isFormModeOn));
 };

@@ -8,8 +8,9 @@ import { StatusBar } from "../Components/StatusBar/StatusBar";
 import { Button } from "../Components/Button/Button";
 import { ButtonOutline } from "../Components/Button/ButtonOutline";
 import { Controls } from "../Components/Controls/Controls";
+import { FormFull } from "../Components/FormFull/FormFull";
 
-import { getLotMeta } from "../../Redux/Reducers/lots";
+import { getLotMeta, editLot } from "../../Redux/Reducers/lots";
 
 import openGallery from "../../Assets/Icons/openGallery.svg";
 
@@ -217,50 +218,83 @@ const LotFull = ({
   icons,
   match,
   isAuth,
+  formFullUI,
+  isFormModeOn,
   history,
+  currentLotId,
+  currentLotMeta,
   isLotMeta,
   lotMeta,
   lotPhotos,
   getLotMeta,
+  editLot,
   ...props
 }) => {
   useEffect(() => getLotMeta(match.params.id), [match.params.id, getLotMeta]);
 
+  const handleEditLot = () => editLot(match.params.id, isFormModeOn);
+
   return (
-    isLotMeta && (
-      <div className={styles.lotwrapper}>
-        <Controls isAuth={isAuth} lotMeta={lotMeta} goBack={history.goBack} />
+    <div className={styles.lotwrapper}>
+      {isLotMeta && (
+        <>
+          <Controls
+            isAuth={isAuth}
+            lotMeta={lotMeta}
+            goBack={history.goBack}
+            handleEditLot={handleEditLot}
+          />
 
-        <div className={styles.lot}>
-          <div className={styles.info}>
-            {lotPhotos && <Gallery lotMeta={lotMeta} lotPhotos={lotPhotos} />}
+          {!isFormModeOn && (
+            <div className={styles.lot}>
+              <div className={styles.info}>
+                {lotPhotos && (
+                  <Gallery lotMeta={lotMeta} lotPhotos={lotPhotos} />
+                )}
 
-            <div className={styles.status}>
-              <StatusBar
-                offersQty={lotMeta.offersQty}
-                expiryDate={lotMeta.expireDate}
-              />
+                <div className={styles.status}>
+                  <StatusBar
+                    offersQty={lotMeta.offersQty}
+                    expiryDate={lotMeta.expireDate}
+                  />
+                </div>
+
+                <div className={styles.spacer}></div>
+
+                <div className={styles.buttonsRef}>
+                  <Buttons icons={icons} />
+                </div>
+
+                <LotStats lotMeta={lotMeta} />
+              </div>
+
+              <Descrption lotMeta={lotMeta} />
             </div>
+          )}
+        </>
+      )}
 
-            <div className={styles.spacer}></div>
-
-            <div className={styles.buttonsRef}>
-              <Buttons icons={icons} />
-            </div>
-
-            <LotStats lotMeta={lotMeta} />
-          </div>
-
-          <Descrption lotMeta={lotMeta} />
-        </div>
-      </div>
-    )
+      {isFormModeOn && (
+        <FormFull
+          icons={icons}
+          formFullUI={formFullUI}
+          lotID={currentLotId}
+          lotMeta={currentLotMeta}
+          lotPhotos={lotPhotos}
+          formHandler={() => {}}
+        />
+      )}
+    </div>
   );
 };
 
 const mstp = (state) => ({
   icons: state.ui.icons,
   isAuth: state.auth.isAuth,
+  formFullUI: state.ui.formFull,
+  isFormModeOn: state.home.isFormModeOn,
+  currentLotId: state.lots.currentLotId,
+  currentLotMeta: state.lots.currentLotMeta,
   isLotMeta: state.lots.isLotMeta,
   lotMeta: state.lots.currentLotMeta,
   lotPhotos: state.lots.currentLotPhotos,
@@ -270,5 +304,6 @@ export const LotFullCont = compose(
   withRouter,
   connect(mstp, {
     getLotMeta,
+    editLot,
   })
 )(LotFull);
