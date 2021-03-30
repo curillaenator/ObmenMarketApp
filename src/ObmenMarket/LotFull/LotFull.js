@@ -235,7 +235,6 @@ const LotFull = ({
   updateLotFromEditForm,
   ...props
 }) => {
-  console.log(props);
 
   useEffect(() => getLotMeta(match.params.id), [match.params.id, getLotMeta]);
 
