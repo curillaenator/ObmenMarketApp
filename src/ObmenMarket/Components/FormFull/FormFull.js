@@ -7,6 +7,7 @@ export const FormFull = ({
   lotID,
   lotMeta,
   lotPhotos,
+  update,
   formHandler,
 }) => {
   // console.log(currentLotMeta);
@@ -24,7 +25,8 @@ export const FormFull = ({
     };
 
     // console.log({ ...formData, ...updData });
-    formHandler(lotID, { ...formData, ...updData });
+    if (!update) formHandler(lotID, { ...formData, ...updData });
+    if (update) formHandler(lotID, { ...lotMeta, ...formData });
   };
 
   return (
@@ -40,6 +42,7 @@ export const FormFull = ({
           icons={icons}
           formFullUI={formFullUI}
           lotID={lotID}
+          update={update}
         />
       )}
     />

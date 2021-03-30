@@ -69,6 +69,7 @@ const Profile = ({
                 icons={icons}
                 formFullUI={formFullUI}
                 lotID={createLotId}
+                update={false}
                 formHandler={publishNewLotFromForm}
               />
             )}

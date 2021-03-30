@@ -46,6 +46,8 @@ const setIsLotMeta = (payload) => ({ type: SET_IS_LOTMETA, payload });
 const setLotMeta = (payload) => ({ type: SET_CURRENT_LOTMETA, payload });
 const setLotPhotos = (payload) => ({ type: SET_CURRENT_LOTPHOTOS, payload });
 
+// FIREBASE
+
 export const onLotCreateFromForm = () => async (dispatch) => {
   const author = await fa.currentUser;
   const lotID = await db.ref().child("posts").push().key;
@@ -92,6 +94,18 @@ export const publishNewLotFromForm = (lotID, updData) => async (dispatch) => {
   await db.ref("posts/" + lotID).update(updData, onUpdate);
 };
 
+export const updateLotFromEditForm = (lotID, updData) => (dispatch) => {
+  const onUpdate = (error) => {
+    if (error) return console.log("ошибка записи");
+    db.ref("posts/" + lotID).once("value", (snap) => {
+      dispatch(setLotMeta(snap.val()));
+      dispatch(setFormMode(false));
+    });
+  };
+
+  db.ref('posts/' + lotID).update(updData, onUpdate)
+};
+
 export const getLotMeta = (lotID) => (dispatch) => {
   const getLotPhotos = async (lotMeta) => {
     const res = await fb
@@ -128,8 +142,10 @@ export const getLotMeta = (lotID) => (dispatch) => {
   });
 };
 
-export const editLot = (lotID, isFormModeOn) => (dispatch) => {
+export const setEditLotForm = (lotID, isFormModeOn) => (dispatch) => {
   // console.log(lotID);
   dispatch(setCurrentLotId(lotID));
   dispatch(setFormMode(!isFormModeOn));
 };
+
+

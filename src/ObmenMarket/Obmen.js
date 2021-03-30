@@ -15,13 +15,13 @@ import { googleSignIn } from "../Redux/Reducers/auth";
 
 import styles from "./obmen.module.scss";
 
-function Obmen({ googleSignIn, ...props }) {
+function Obmen({ googleSignIn }) {
   const [user, userLoading] = useAuthState(fa);
   useEffect(() => user && googleSignIn(user), [user, googleSignIn]);
 
   return (
     <div className={styles.container}>
-      <HeaderCont isFormModeOn={props.isFormModeOn} userLoading={userLoading} />
+      <HeaderCont userLoading={userLoading} />
       <Switch>
         <Route exact path="/" render={() => <HomeCont />} />
         <Route path="/posts/:id" render={() => <LotFullCont />} />

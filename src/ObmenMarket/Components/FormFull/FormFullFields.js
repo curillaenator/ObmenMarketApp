@@ -19,44 +19,67 @@ import cloudtail from "../../../Assets/Icons/cloudtail.svg";
 import styles from "./formfull.module.scss";
 
 // Components
-const PhotosCont = (props) => {
+const PhotosCont = ({ photos, icons }) => {
   const deletePhoto = () => console.log("delete");
   return (
     <div className={styles.loaded}>
-      {props.photos.map((p, i) => (
+      {photos.map((p, i) => (
         <div className={styles.imgCont} onClick={deletePhoto} key={i}>
           <img src={p} alt="" draggable={false} />
-          <div className={styles.delete}>{props.icons.delete}</div>
+          <div className={styles.delete}>{icons.delete}</div>
         </div>
       ))}
     </div>
   );
 };
 
-const Buttons = (props) => {
+const Buttons = ({
+  icons,
+  notation,
+  update,
+  formSubmit,
+  formSubmitDraft,
+  formSubmitUpdate,
+}) => {
   return (
     <div className={styles.buttons}>
-      <Button
-        width={220}
-        height={56}
-        title="Опубликовать"
-        icon={props.icons.success}
-        handler={props.formSubmit}
-      />
-      <ButtonOutline
-        width={220}
-        height={56}
-        title="Сохранить черновик"
-        icon={props.icons.drafts}
-        handler={props.formSubmitDraft}
-      />
-      <p>{props.notation}</p>
+      {!update && (
+        <>
+          <Button
+            width={220}
+            height={56}
+            title="Опубликовать"
+            icon={icons.success}
+            handler={formSubmit}
+          />
+
+          <ButtonOutline
+            width={220}
+            height={56}
+            title="Сохранить черновик"
+            icon={icons.drafts}
+            handler={formSubmitDraft}
+          />
+        </>
+      )}
+
+      {update && (
+        <Button
+          width={220}
+          height={56}
+          title="Сохранить"
+          icon={icons.success}
+          handler={formSubmitUpdate}
+        />
+      )}
+
+      {!update && <p>{notation}</p>}
     </div>
   );
 };
 
 // Main form
-export const FormFullFields = ({ lotPhotos, ...props }) => {
+export const FormFullFields = ({ lotPhotos, update, ...props }) => {
   // console.log(props.form);
 
   const uid = fa.currentUser.uid;
@@ -79,6 +102,12 @@ export const FormFullFields = ({ lotPhotos, ...props }) => {
     props.form.change("photos", null);
     props.form.change("draft", true);
     props.form.change("published", false);
+    props.form.submit();
+  };
+
+  const formSubmitUpdate = (e) => {
+    e.preventDefault();
+    props.form.change("photos", null);
     props.form.submit();
   };
 
@@ -184,14 +213,14 @@ export const FormFullFields = ({ lotPhotos, ...props }) => {
                 name="draft"
                 component="input"
                 type="checkbox"
-                initialValue="true"
+                // initialValue="true"
               />
 
               <Field
                 name="published"
                 component="input"
                 type="checkbox"
-                initialValue="false"
+                // initialValue="false"
               />
             </div>
           </div>
@@ -203,6 +232,8 @@ export const FormFullFields = ({ lotPhotos, ...props }) => {
         notation={formUI.notation}
         formSubmit={formSubmit}
         formSubmitDraft={formSubmitDraft}
+        formSubmitUpdate={formSubmitUpdate}
+        update={update}
       />
     </form>
   );

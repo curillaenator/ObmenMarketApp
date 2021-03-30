@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
+// import { Redirect } from "react-router-dom";
 
 import { Welcome } from "./Welcome/Welcome";
 import { Cta } from "../Components/CTA/CTA";
@@ -17,33 +18,46 @@ import {
 
 import styles from "./home.module.scss";
 
-const Home = (props) => {
-  if (props.isCurrentLot) return <Redirect to="/post" />;
+const Home = ({
+  isAuth,
+  icons,
+  formFullUI,
+  isFormModeOn,
+  createLotId,
+  setFormMode,
+  onLotCreateFromForm,
+  onLotCreateFormCancel,
+  publishNewLotFromForm,
+}) => {
+  useEffect(() => setFormMode(false), []);
+
+  // if (props.isCurrentLot) return <Redirect to="/post" />;
 
   return (
     <div className={styles.home}>
       <Welcome />
 
       <Cta
-        icons={props.icons}
-        isAuth={props.isAuth}
-        isFormModeOn={props.isFormModeOn}
-        setFormMode={props.setFormMode}
-        createLotId={props.createLotId}
-        onLotCreateFromForm={props.onLotCreateFromForm}
-        onLotCreateFormCancel={props.onLotCreateFormCancel}
+        icons={icons}
+        isAuth={isAuth}
+        isFormModeOn={isFormModeOn}
+        setFormMode={setFormMode}
+        createLotId={createLotId}
+        onLotCreateFromForm={onLotCreateFromForm}
+        onLotCreateFormCancel={onLotCreateFormCancel}
       />
 
-      {!props.isFormModeOn && <LotsContainer toRender="all" />}
+      {!isFormModeOn && <LotsContainer toRender="all" />}
 
-      {!props.isAuth && props.isFormModeOn && <Warning />}
+      {!isAuth && isFormModeOn && <Warning />}
 
-      {props.isAuth && props.isFormModeOn && (
+      {isAuth && isFormModeOn && (
         <FormFull
-          icons={props.icons}
-          formFullUI={props.formFullUI}
-          lotID={props.createLotId}
-          formHandler={props.publishNewLotFromForm}
+          icons={icons}
+          formFullUI={formFullUI}
+          lotID={createLotId}
+          update={false}
+          formHandler={publishNewLotFromForm}
         />
       )}
     </div>

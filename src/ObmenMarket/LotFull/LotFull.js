@@ -10,7 +10,11 @@ import { ButtonOutline } from "../Components/Button/ButtonOutline";
 import { Controls } from "../Components/Controls/Controls";
 import { FormFull } from "../Components/FormFull/FormFull";
 
-import { getLotMeta, editLot } from "../../Redux/Reducers/lots";
+import {
+  getLotMeta,
+  setEditLotForm,
+  updateLotFromEditForm,
+} from "../../Redux/Reducers/lots";
 
 import openGallery from "../../Assets/Icons/openGallery.svg";
 
@@ -227,12 +231,15 @@ const LotFull = ({
   lotMeta,
   lotPhotos,
   getLotMeta,
-  editLot,
+  setEditLotForm,
+  updateLotFromEditForm,
   ...props
 }) => {
+  console.log(props);
+
   useEffect(() => getLotMeta(match.params.id), [match.params.id, getLotMeta]);
 
-  const handleEditLot = () => editLot(match.params.id, isFormModeOn);
+  const handleEditLot = () => setEditLotForm(match.params.id, isFormModeOn);
 
   return (
     <div className={styles.lotwrapper}>
@@ -281,7 +288,8 @@ const LotFull = ({
           lotID={currentLotId}
           lotMeta={currentLotMeta}
           lotPhotos={lotPhotos}
-          formHandler={() => {}}
+          update={true}
+          formHandler={updateLotFromEditForm}
         />
       )}
     </div>
@@ -304,6 +312,7 @@ export const LotFullCont = compose(
   withRouter,
   connect(mstp, {
     getLotMeta,
-    editLot,
+    setEditLotForm,
+    updateLotFromEditForm,
   })
 )(LotFull);
