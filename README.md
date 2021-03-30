@@ -1,4 +1,4 @@
 # Обмен.маркет
 
-####[Открыть сайт](https://obmen.market)
+[Открыть сайт](https://obmen.market)
 
