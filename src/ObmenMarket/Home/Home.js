@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { connect } from "react-redux";
-// import { Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 import { Welcome } from "./Welcome/Welcome";
+import { Warning } from "./Warning/Warning";
 import { Cta } from "../Components/CTA/CTA";
 import { LotsContainer } from "../Components/LotsContainer/LotsContainer";
-import { Warning } from "./Warning/Warning";
 import { FormFull } from "../Components/FormFull/FormFull";
 
 import { setFormMode } from "../../Redux/Reducers/home";
@@ -24,14 +24,15 @@ const Home = ({
   formFullUI,
   isFormModeOn,
   createLotId,
+  isLotCreated,
   setFormMode,
   onLotCreateFromForm,
   onLotCreateFormCancel,
   publishNewLotFromForm,
 }) => {
-  useEffect(() => setFormMode(false), []);
+  useEffect(() => setFormMode(false), [setFormMode]);
 
-  // if (props.isCurrentLot) return <Redirect to="/post" />;
+  if (isLotCreated) return <Redirect to={`/posts/${createLotId}`} />;
 
   return (
     <div className={styles.home}>
@@ -69,6 +70,7 @@ const mstp = (state) => ({
   icons: state.ui.icons,
   formFullUI: state.ui.formFull,
   isFormModeOn: state.home.isFormModeOn,
+  isLotCreated: state.lots.isLotCreated,
   createLotId: state.lots.createLotId,
 });
 

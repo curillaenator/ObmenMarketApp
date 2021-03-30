@@ -3,6 +3,7 @@ import { fb, db, fa } from "../../Utils/firebase";
 import { setFormMode } from "./home";
 
 const SET_NEWLOT_ID = "lots/SET_NEWLOT_ID";
+const SET_IS_LOTCREATED = "lots/SET_IS_LOTCREATED";
 const SET_CURRENT_ID = "lots/SET_CURRENT_ID";
 const SET_IS_LOTMETA = "lots/SET_IS_LOTMETA";
 const SET_CURRENT_LOTMETA = "lots/SET_CURRENT_LOT";
@@ -10,6 +11,7 @@ const SET_CURRENT_LOTPHOTOS = "lots/SET_CURRENT_LOTPHOTOS";
 
 const initialState = {
   createLotId: null,
+  isLotCreated: false,
   currentLotId: null,
   isLotMeta: false,
   currentLotMeta: null,
@@ -20,6 +22,9 @@ export const lots = (state = initialState, action) => {
   switch (action.type) {
     case SET_NEWLOT_ID:
       return { ...state, createLotId: action.id };
+
+    case SET_IS_LOTCREATED:
+      return { ...state, isLotCreated: action.bool };
 
     case SET_CURRENT_ID:
       return { ...state, currentLotId: action.id };
@@ -40,7 +45,8 @@ export const lots = (state = initialState, action) => {
 
 // ACTIONS
 
-const setNewLotId = (id) => ({ type: SET_NEWLOT_ID, id });
+export const setNewLotId = (id) => ({ type: SET_NEWLOT_ID, id });
+export const setIsLotCreated = (bool) => ({ type: SET_IS_LOTCREATED, bool });
 const setCurrentLotId = (id) => ({ type: SET_CURRENT_ID, id });
 const setIsLotMeta = (payload) => ({ type: SET_IS_LOTMETA, payload });
 const setLotMeta = (payload) => ({ type: SET_CURRENT_LOTMETA, payload });
@@ -88,6 +94,8 @@ export const publishNewLotFromForm = (lotID, updData) => async (dispatch) => {
     db.ref("posts/" + lotID).once("value", (snap) => {
       dispatch(setLotMeta(snap.val()));
       dispatch(setFormMode(false));
+      // dispatch(setNewLotId(null));
+      dispatch(setIsLotCreated(true));
     });
   };
 
@@ -103,7 +111,7 @@ export const updateLotFromEditForm = (lotID, updData) => (dispatch) => {
     });
   };
 
-  db.ref('posts/' + lotID).update(updData, onUpdate)
+  db.ref("posts/" + lotID).update(updData, onUpdate);
 };
 
 export const getLotMeta = (lotID) => (dispatch) => {
@@ -147,5 +155,3 @@ export const setEditLotForm = (lotID, isFormModeOn) => (dispatch) => {
   dispatch(setCurrentLotId(lotID));
   dispatch(setFormMode(!isFormModeOn));
 };
-
-

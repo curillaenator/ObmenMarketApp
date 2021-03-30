@@ -11,6 +11,8 @@ import { Controls } from "../Components/Controls/Controls";
 import { FormFull } from "../Components/FormFull/FormFull";
 
 import {
+  setNewLotId,
+  setIsLotCreated,
   getLotMeta,
   setEditLotForm,
   updateLotFromEditForm,
@@ -221,20 +223,26 @@ const LotStats = ({ lotMeta }) => {
 const LotFull = ({
   icons,
   match,
+  history,
+  location,
   isAuth,
   formFullUI,
   isFormModeOn,
-  history,
   currentLotId,
   currentLotMeta,
   isLotMeta,
   lotMeta,
   lotPhotos,
+  setNewLotId,
+  setIsLotCreated,
   getLotMeta,
   setEditLotForm,
   updateLotFromEditForm,
-  ...props
 }) => {
+  useEffect(() => {
+    setNewLotId(null);
+    setIsLotCreated(false);
+  }, [setNewLotId, setIsLotCreated]);
 
   useEffect(() => getLotMeta(match.params.id), [match.params.id, getLotMeta]);
 
@@ -310,6 +318,8 @@ const mstp = (state) => ({
 export const LotFullCont = compose(
   withRouter,
   connect(mstp, {
+    setNewLotId,
+    setIsLotCreated,
     getLotMeta,
     setEditLotForm,
     updateLotFromEditForm,
