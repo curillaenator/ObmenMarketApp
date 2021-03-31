@@ -42,25 +42,27 @@ export const UserInfo = ({ isOwner, profile, logout, handleEdit }) => {
           {isOwner && (
             <div className={styles.item}>
               <img src={tel} alt="Телефон" />
-              <p>+7 999 555 66 44</p>
+              <p>{profile.tel ? profile.tel : "пользователь не указал"}</p>
             </div>
           )}
 
           {isOwner && (
             <div className={styles.item}>
               <img src={mail} alt="E-mail" />
-              <p>useremail@email.ru</p>
+              <p>{profile.email ? profile.email : "пользователь не указал"}</p>
             </div>
           )}
 
           <div className={styles.item}>
             <img src={country} alt="Страна" />
-            <p>Россия</p>
+            <p>
+              {profile.country ? profile.country : "пользователь не указал"}
+            </p>
           </div>
 
           <div className={styles.item}>
             <img src={city} alt="Город" />
-            <p>Москва</p>
+            <p>{profile.city ? profile.city : "пользователь не указал"}</p>
           </div>
         </div>
       </div>

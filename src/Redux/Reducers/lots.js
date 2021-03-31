@@ -54,14 +54,16 @@ const setLotPhotos = (payload) => ({ type: SET_CURRENT_LOTPHOTOS, payload });
 
 // FIREBASE
 
-export const onLotCreateFromForm = () => async (dispatch) => {
+export const onLotCreateFromForm = () => async (dispatch, getState) => {
+  console.log(getState().auth.user);
   const author = await fa.currentUser;
   const lotID = await db.ref().child("posts").push().key;
 
   const newLotData = {
     uid: author.uid,
     postid: lotID,
-    username: author.displayName,
+    // username: author.displayName,
+    username: getState().auth.user.username,
     avatar: author.photoURL,
     published: false,
     draft: true,

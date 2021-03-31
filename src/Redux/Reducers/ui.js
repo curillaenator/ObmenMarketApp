@@ -175,11 +175,27 @@ const initialState = {
       "Вы можете продолжить заполнение формы позже, сохраненный черновик будет находится в вашем профиле",
   },
   formProfile: {
-    fullname: { icon: usericon, sup: "Полное имя" },
-    tel: { icon: tel, sup: "Телефон" },
-    email: { icon: email, sup: "Электронная почта" },
-    country: { icon: country, sup: "Страна" },
-    city: { icon: city, sup: "Город" },
+    fullname: {
+      icon: usericon,
+      sup: "Полное имя",
+      placeholder: "Введите ваше имя",
+    },
+    tel: {
+      icon: tel,
+      sup: "Телефон",
+      placeholder: "Укажите ваш номер телефона для связи",
+    },
+    email: {
+      icon: email,
+      sup: "Электронная почта",
+      placeholder: "Ваша электронная почта",
+    },
+    country: {
+      icon: country,
+      sup: "Страна",
+      placeholder: "Из какой вы страны?",
+    },
+    city: { icon: city, sup: "Город", placeholder: "Из какого вы города?" },
   },
 };
 

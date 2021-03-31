@@ -28,27 +28,26 @@ const setCurrentUser = (user) => ({ type: SET_USER, user });
 
 export const googleSignIn = (curUser) => (dispatch) => {
   const toAuthSet = async (u) => {
-    // console.log(u);
     await db.ref("users/" + u.uid).once("value", (snapshot) => {
       dispatch(setCurrentUser(snapshot.val()));
       dispatch(setIsAuth(true));
     });
   };
 
-// // SendGrid
-// const email = {
-// to: 'info@obmen.market',
-// from: 'noreply@obmen.market',
-// subject: 'Sending with SendGrid is Fun',
-// html: 'and easy to do anywhere, even with Node.js',
-// }
-// sg.send(email).then(() => {
-//   console.log('Email sent')
-// })
-// .catch((error) => {
-//   console.error(error)
-// });
-// // End of SendGrid
+  // // SendGrid
+  // const email = {
+  // to: 'info@obmen.market',
+  // from: 'noreply@obmen.market',
+  // subject: 'Sending with SendGrid is Fun',
+  // html: 'and easy to do anywhere, even with Node.js',
+  // }
+  // sg.send(email).then(() => {
+  //   console.log('Email sent')
+  // })
+  // .catch((error) => {
+  //   console.error(error)
+  // });
+  // // End of SendGrid
 
   const newUser = (u) => {
     db.ref("users/" + u.uid)
@@ -58,7 +57,6 @@ export const googleSignIn = (curUser) => (dispatch) => {
         avatar: u.photoURL,
       })
       .then(() => {
-        // console.log(u);
         u.sendEmailVerification().then(() => console.log("sent"));
         toAuthSet(u);
       });
@@ -74,7 +72,6 @@ export const googleSignIn = (curUser) => (dispatch) => {
     });
   };
 
-  // console.log(curUser);
   curUser !== null ? toAuthSet(curUser) : toAuthCreate();
 };
 
@@ -82,4 +79,18 @@ export const logout = () => async (dispatch) => {
   await fa.signOut();
   dispatch(setIsAuth(false));
   dispatch(setCurrentUser(null));
+};
+
+export const updateUserProfile = (userUpdData) => (dispatch) => {
+  const userID = fa.currentUser.uid;
+
+  const onUpdate = (error) => {
+    if (error) return console.log("ошибка записи");
+    
+    db.ref("users/" + userID).once("value", (snapshot) => {
+      dispatch(setCurrentUser(snapshot.val()));
+    });
+  };
+
+  db.ref("users/" + userID).update(userUpdData, onUpdate);
 };

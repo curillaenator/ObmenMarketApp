@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { Redirect, withRouter } from "react-router-dom";
 
-import { logout } from "../../Redux/Reducers/auth";
+import { logout, updateUserProfile } from "../../Redux/Reducers/auth";
 import { setFormMode, getProfile } from "../../Redux/Reducers/home";
 import {
   onLotCreateFromForm,
@@ -33,6 +33,7 @@ const Profile = ({
   profile,
   getProfile,
   logout,
+  updateUserProfile,
   setFormMode,
   onLotCreateFromForm,
   onLotCreateFormCancel,
@@ -57,7 +58,9 @@ const Profile = ({
       {isEdit && (
         <ProfileEdit
           icons={icons}
+          user={user}
           handleEdit={handleEdit}
+          updateUserProfile={updateUserProfile}
           formProfile={formProfile}
         />
       )}
@@ -126,6 +129,7 @@ export const ProfileCont = compose(
     setFormMode,
     getProfile,
     logout,
+    updateUserProfile,
     onLotCreateFromForm,
     onLotCreateFormCancel,
     publishNewLotFromForm,

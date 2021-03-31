@@ -68,7 +68,7 @@ export const PhotoFiles = ({
         "JPEG",
         40,
         0,
-        (uri) => props.uploadImg(uri),
+        (resized) => props.uploadImg(resized),
         "file"
       )
     );
@@ -82,7 +82,6 @@ export const PhotoFiles = ({
         id="choosePhotos"
         onChange={({ target }) => {
           resizedFile(target.files[0]);
-          // props.uploadImg(target.files[0]);
         }}
       />
       <label className={styles.photofilesLabel} htmlFor="choosePhotos">

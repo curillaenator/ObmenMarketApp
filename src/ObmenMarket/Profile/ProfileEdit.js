@@ -7,27 +7,37 @@ import {
   minLength,
   combinedValidators,
   TextInput,
-  TextArea,
-  PhotoFiles,
+  // TextArea,
+  // PhotoFiles,
 } from "../Components/Inputs/Inputs";
-
-import ava from "../../Assets/Images/ava.jpg";
 
 import styles from "./profileedit.module.scss";
 
-export const ProfileEdit = ({ icons, formProfile, handleEdit }) => {
+export const ProfileEdit = ({
+  // icons,
+  user,
+  formProfile,
+  handleEdit,
+  updateUserProfile,
+}) => {
   const onSubmit = (formData) => {
-    console.log(formData);
+    updateUserProfile({ ...user, ...formData });
     handleEdit();
   };
 
   return (
     <Form
       onSubmit={onSubmit}
+      initialValues={user}
       render={({ handleSubmit, form }) => {
         const onSave = (e) => {
           e.preventDefault();
           form.submit();
+        };
+
+        const onCancel = (e) => {
+          e.preventDefault();
+          handleEdit();
         };
 
         const uploadPhoto = (e) => {
@@ -41,7 +51,7 @@ export const ProfileEdit = ({ icons, formProfile, handleEdit }) => {
 
               <div className={styles.editable}>
                 <div className={styles.photo}>
-                  <img className={styles.avatar} src={ava} alt="" />
+                  <img className={styles.avatar} src={user.avatar} alt="" />
 
                   <div className={styles.username}>Кирилл АРТ</div>
 
@@ -63,7 +73,7 @@ export const ProfileEdit = ({ icons, formProfile, handleEdit }) => {
                       sup={formProfile.fullname.sup}
                       supicon={formProfile.fullname.icon}
                       validate={combinedValidators(required, minLength(5))}
-                      placeholder={formProfile.fullname.sup}
+                      placeholder={formProfile.fullname.placeholder}
                     />
                   </div>
 
@@ -73,7 +83,7 @@ export const ProfileEdit = ({ icons, formProfile, handleEdit }) => {
                       component={TextInput}
                       sup={formProfile.tel.sup}
                       supicon={formProfile.tel.icon}
-                      placeholder={formProfile.tel.sup}
+                      placeholder={formProfile.tel.placeholder}
                     />
                   </div>
 
@@ -83,7 +93,7 @@ export const ProfileEdit = ({ icons, formProfile, handleEdit }) => {
                       component={TextInput}
                       sup={formProfile.email.sup}
                       supicon={formProfile.email.icon}
-                      placeholder={formProfile.email.sup}
+                      placeholder={formProfile.email.placeholder}
                     />
                   </div>
 
@@ -93,7 +103,7 @@ export const ProfileEdit = ({ icons, formProfile, handleEdit }) => {
                       component={TextInput}
                       sup={formProfile.country.sup}
                       supicon={formProfile.country.icon}
-                      placeholder={formProfile.country.sup}
+                      placeholder={formProfile.country.placeholder}
                     />
                   </div>
 
@@ -103,7 +113,7 @@ export const ProfileEdit = ({ icons, formProfile, handleEdit }) => {
                       component={TextInput}
                       sup={formProfile.city.sup}
                       supicon={formProfile.city.icon}
-                      placeholder={formProfile.city.sup}
+                      placeholder={formProfile.city.placeholder}
                     />
                   </div>
                 </div>
@@ -111,13 +121,25 @@ export const ProfileEdit = ({ icons, formProfile, handleEdit }) => {
             </div>
 
             <div className={styles.buttons}>
-              <Button
-                width={220}
-                height={56}
-                title="Сохранить"
-                // icon={icons.success}
-                handler={onSave}
-              />
+              <div className={styles.save}>
+                <Button
+                  width={220}
+                  height={56}
+                  title="Сохранить"
+                  // icon={icons.success}
+                  handler={onSave}
+                />
+              </div>
+
+              <div className={styles.cancel}>
+                <ButtonOutline
+                  width={220}
+                  height={56}
+                  title="Отмена"
+                  // icon={icons.success}
+                  handler={onCancel}
+                />
+              </div>
             </div>
           </form>
         );
