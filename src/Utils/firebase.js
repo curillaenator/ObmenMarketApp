@@ -23,3 +23,6 @@ export const postsRef = db.ref("posts");
 // export const usersRef = db.ref("users");
 
 // export const firestore = firebase.firestore();
+
+// using SendGrid's Node.js Library - https://github.com/sendgrid/sendgrid-nodejs
+export const sg = require("sendgrid")("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");
