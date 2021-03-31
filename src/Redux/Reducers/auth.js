@@ -64,8 +64,6 @@ export const googleSignIn = (curUser) => (dispatch) => {
       });
   };
 
-
-
   const toAuthCreate = async () => {
     const provider = new fb.auth.GoogleAuthProvider();
     await fb.auth().signInWithPopup(provider);

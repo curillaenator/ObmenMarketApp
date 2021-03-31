@@ -1,0 +1,27 @@
+@import "../../palette.scss";
+
+.edit {
+  .container {
+    display: flex;
+    width: 100%;
+    padding: 32px 24px;
+    margin-bottom: 28px;
+    border-radius: 16px;
+    background-color: $shape;
+    z-index: -10;
+
+    .photo {
+      width: 30%;
+      background-color: yellowgreen;
+    }
+
+    .fields {
+      width: 70%;
+    }
+  }
+
+  .buttons {
+    display: flex;
+    width: 100%;
+  }
+}

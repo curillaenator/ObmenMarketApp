@@ -7,7 +7,7 @@ import city from "../../Assets/Icons/city.svg";
 import mail from "../../Assets/Icons/mail.svg";
 import tel from "../../Assets/Icons/tel.svg";
 
-export const UserInfo = ({ isOwner, profile, logout }) => {
+export const UserInfo = ({ isOwner, profile, logout, handleEdit }) => {
   return (
     <div className={styles.userInfo}>
       <div className={styles.shape}></div>
@@ -22,7 +22,13 @@ export const UserInfo = ({ isOwner, profile, logout }) => {
 
         {isOwner && (
           <div className={styles.buttons}>
-            <ButtonOutline width={160} height={40} title="Редактировать" />
+            <ButtonOutline
+              width={160}
+              height={40}
+              title="Редактировать"
+              handler={handleEdit}
+            />
+
             <ButtonOutline
               width={95}
               height={40}
