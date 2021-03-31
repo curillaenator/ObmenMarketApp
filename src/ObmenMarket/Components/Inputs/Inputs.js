@@ -15,14 +15,24 @@ export const combinedValidators = (...validators) => (value) =>
 // Inputs
 export const TextInput = ({ input, meta, ...props }) => {
   const error = meta.touched && meta.error;
+
   return (
     <div className={styles.input}>
+      {props.sup && (
+        <div className={styles.sup}>
+          <img src={props.supicon} alt={props.sup} />
+          <p>{props.sup}</p>
+        </div>
+      )}
+
       <input
         {...input}
         {...props}
         style={error ? { borderBottom: "1px solid #f2002c" } : {}}
       />
+
       {!error && <p>{props.sub}</p>}
+
       {error && <p className={styles.error}>{meta.error}</p>}
     </div>
   );

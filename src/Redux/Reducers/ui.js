@@ -1,3 +1,9 @@
+import usericon from "../../Assets/Icons/user.svg";
+import tel from "../../Assets/Icons/tel.svg";
+import email from "../../Assets/Icons/mail.svg";
+import country from "../../Assets/Icons/country.svg";
+import city from "../../Assets/Icons/city.svg";
+
 const HANDLE_CTA = "ui/HANDLE_CTA";
 
 const initialState = {
@@ -167,6 +173,13 @@ const initialState = {
     },
     notation:
       "Вы можете продолжить заполнение формы позже, сохраненный черновик будет находится в вашем профиле",
+  },
+  formProfile: {
+    fullname: { icon: usericon, sup: "Полное имя" },
+    tel: { icon: tel, sup: "Телефон" },
+    email: { icon: email, sup: "Электронная почта" },
+    country: { icon: country, sup: "Страна" },
+    city: { icon: city, sup: "Город" },
   },
 };
 

@@ -21,6 +21,7 @@ import styles from "./profile.module.scss";
 
 const Profile = ({
   icons,
+  formProfile,
   formFullUI,
   user,
   isAuth,
@@ -53,7 +54,13 @@ const Profile = ({
 
   return (
     <div className={styles.profile}>
-      {isEdit && <ProfileEdit icons={icons} handleEdit={handleEdit} />}
+      {isEdit && (
+        <ProfileEdit
+          icons={icons}
+          handleEdit={handleEdit}
+          formProfile={formProfile}
+        />
+      )}
 
       {!isEdit && profile && (
         <div className={styles.display}>
@@ -102,6 +109,7 @@ const Profile = ({
 
 const mstp = (state) => ({
   icons: state.ui.icons,
+  formProfile: state.ui.formProfile,
   formFullUI: state.ui.formFull,
   user: state.auth.user,
   isAuth: state.auth.isAuth,

@@ -1,104 +1,135 @@
-@import '../../../palette.scss';
+@import "../../../palette.scss";
 
 .input {
-    position: relative; // for photofiles
-    & > input {
-      width: 100%;
-      height: 52px;
-      background-color: transparent;
-      border: 0;
-      border-bottom: 1px solid $formSpacer;
-      font-family: Inter;
-      font-weight: 700;
+  position: relative; // for photofiles
+
+  & > input {
+    width: 100%;
+    height: 52px;
+    background-color: transparent;
+    border: 0;
+    border-bottom: 1px solid $formSpacer;
+    font-family: Inter;
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 19px;
+    letter-spacing: -0.08px;
+    color: $fontTitle;
+    outline: none;
+
+    &::placeholder {
+      font-weight: 600;
       font-size: 13px;
-      line-height: 19px;
-      letter-spacing: -0.08px;
-      color: $fontTitle;
-      outline: none;
-      &::placeholder {
-        font-weight: 600;
-        font-size: 13px;
-        line-height: 20px;
-        letter-spacing: -0.149333px;
-        color: $fontGrey;
-        transition: 0.12s;
-      }
-      &:focus::placeholder {
-        opacity: 0;
-      }
-    }
-    & > textarea {
-      width: 100%;
-      min-height: 52px;
-      padding-top: 16px;
-      resize: none;
-      overflow-y: auto;
-      outline: none;
-      background-color: transparent;
-      border: 0;
-      border-bottom: 1px solid $formSpacer;
-      font-family: Inter;
-      font-weight: 700;
-      font-size: 13px;
-      line-height: 19px;
-      letter-spacing: -0.08px;
-      color: $fontTitle;
-      &::placeholder {
-        font-weight: 600;
-        font-size: 13px;
-        line-height: 20px;
-        letter-spacing: -0.149333px;
-        color: $fontGrey;
-        transition: 0.12s;
-      }
-      &:focus::placeholder {
-        opacity: 0;
-      }
-    }
-    .photofiles {
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: -10;
-        opacity: 0;
-      }
-    .photofilesLabel {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 185px;
-        border-radius: 16px;
-        height: 40px;
-        background-color: $primary;
-        color: $fontWhite;
-        font-size: 14px;
-        font-weight: 700;
-        letter-spacing: -0.149333px;
-        transition: 0.12s linear;
-        z-index: 10;
-        user-select: none;
-        cursor: pointer;
-        filter: drop-shadow(0 4px 4px $primaryIdleShadow)
-          drop-shadow(0 0 1px $primaryIdleShadow)
-          drop-shadow(0 0 1px $primaryIdleShadow);
-        &:hover {
-          background-color: $primaryHover;
-        }
-        &:active {
-          background-color: $primary;
-          color: $primaryFontClicked;
-          filter: none;
-        }
-      }
-    & > p {
-      font-weight: 500;
-      font-size: 11px;
-      line-height: 16px;
+      line-height: 20px;
       letter-spacing: -0.149333px;
-      color: $fontSub;
-      user-select: none;
+      color: $fontGrey;
+      transition: 0.12s;
     }
-    .error {
-      color: $fontDanger;
+
+    &:focus::placeholder {
+      opacity: 0;
     }
   }
+
+  & > textarea {
+    width: 100%;
+    min-height: 52px;
+    padding-top: 16px;
+    resize: none;
+    overflow-y: auto;
+    outline: none;
+    background-color: transparent;
+    border: 0;
+    border-bottom: 1px solid $formSpacer;
+    font-family: Inter;
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 19px;
+    letter-spacing: -0.08px;
+    color: $fontTitle;
+
+    &::placeholder {
+      font-weight: 600;
+      font-size: 13px;
+      line-height: 20px;
+      letter-spacing: -0.149333px;
+      color: $fontGrey;
+      transition: 0.12s;
+    }
+
+    &:focus::placeholder {
+      opacity: 0;
+    }
+  }
+
+  .photofiles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -10;
+    opacity: 0;
+  }
+
+  .photofilesLabel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 185px;
+    border-radius: 16px;
+    height: 40px;
+    background-color: $primary;
+    color: $fontWhite;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.149333px;
+    transition: 0.12s linear;
+    z-index: 10;
+    user-select: none;
+    cursor: pointer;
+
+    filter: drop-shadow(0 4px 4px $primaryIdleShadow)
+      drop-shadow(0 0 1px $primaryIdleShadow)
+      drop-shadow(0 0 1px $primaryIdleShadow);
+
+    &:hover {
+      background-color: $primaryHover;
+    }
+
+    &:active {
+      background-color: $primary;
+      color: $primaryFontClicked;
+      filter: none;
+    }
+  }
+
+  .sup {
+    display: flex;
+    align-items: center;
+
+    & > img {
+      margin-right: 8px;
+    }
+
+    & > P {
+      font-weight: 600;
+      font-size: 13px;
+      line-height: 16px;
+      letter-spacing: -0.08px;
+      color: $fontGrey;
+      user-select: none;
+    }
+  }
+
+  & > p {
+    font-weight: 500;
+    font-size: 11px;
+    line-height: 16px;
+    letter-spacing: -0.149333px;
+    color: $fontSub;
+    user-select: none;
+  }
+
+  .error {
+    color: $fontDanger;
+  }
+}
