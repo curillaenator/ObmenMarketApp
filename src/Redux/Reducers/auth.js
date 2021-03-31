@@ -35,6 +35,21 @@ export const googleSignIn = (curUser) => (dispatch) => {
     });
   };
 
+// // SendGrid
+// const email = {
+// to: 'info@obmen.market',
+// from: 'noreply@obmen.market',
+// subject: 'Sending with SendGrid is Fun',
+// html: 'and easy to do anywhere, even with Node.js',
+// }
+// sg.send(email).then(() => {
+//   console.log('Email sent')
+// })
+// .catch((error) => {
+//   console.error(error)
+// });
+// // End of SendGrid
+
   const newUser = (u) => {
     db.ref("users/" + u.uid)
       .set({
@@ -48,6 +63,8 @@ export const googleSignIn = (curUser) => (dispatch) => {
         toAuthSet(u);
       });
   };
+
+
 
   const toAuthCreate = async () => {
     const provider = new fb.auth.GoogleAuthProvider();

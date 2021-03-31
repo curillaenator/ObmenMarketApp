@@ -1,4 +1,5 @@
 import firebase from "firebase";
+
 // import "firebase/<PACKAGE>";
 // import "firebase/firestore";
 
@@ -25,4 +26,5 @@ export const postsRef = db.ref("posts");
 // export const firestore = firebase.firestore();
 
 // using SendGrid's Node.js Library - https://github.com/sendgrid/sendgrid-nodejs
-export const sg = require("sendgrid")("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");
+// export const sg = require("@sendgrid/mail")
+// sg.setApiKey(process.env.SENDGRID_API_KEY)
