@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { Redirect, withRouter } from "react-router-dom";
 
+import { fa } from "../../Utils/firebase";
 import { logout, updateUserProfile } from "../../Redux/Reducers/auth";
 import { setFormMode, getProfile } from "../../Redux/Reducers/home";
 import {
@@ -49,7 +50,7 @@ const Profile = ({
     getProfile,
   ]);
 
-  if (!isAuth) return <Redirect to="/login" />;
+  if (!fa.currentUser) return <Redirect to="/login" />;
 
   if (isProfilePending) return <div></div>;
 

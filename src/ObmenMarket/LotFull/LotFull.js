@@ -105,16 +105,10 @@ const Gallery = ({ lotPhotos }) => {
   );
 };
 
-const Buttons = ({ icons }) => {
-  const ref = useRef(0);
-  const initial = ref.current.clientWidth;
-
-  const [followTitle, setFollowTitle] = useState(
-    initial < 440 ? "" : "Следить за лотом"
-  );
-
-  const [buttonsContWidth, setButtonsContWidth] = useState(initial);
-  const [buttons, setButtons] = useState({ offer: 0, follow: 0 });
+const Buttons = ({ icons, buttonsContainer }) => {
+  const [buttonsContWidth, setButtonsContWidth] = useState(buttonsContainer);
+  const [buttonsWidths, setButtons] = useState({ offer: 0, follow: 0 });
+  const [followTitle, setFollowTitle] = useState("");
 
   const widthHandler = () => {
     const win = window.innerWidth;
@@ -124,20 +118,16 @@ const Buttons = ({ icons }) => {
     if (win >= 320 && win < 375) setButtonsContWidth(win - 48);
   };
 
-  const win = window.innerWidth;
-  const more1024 = (!buttonsContWidth ? initial : buttonsContWidth) - 237;
-  const less1024 = (!buttonsContWidth ? initial : buttonsContWidth) - 76;
-
   useEffect(() => {
-    if (win >= 1024) {
+    if (window.innerWidth >= 1024) {
       setFollowTitle("Следить за лотом");
-      setButtons({ offer: 217, follow: more1024 });
+      setButtons({ offer: 217, follow: buttonsContWidth - 237 });
     }
-    if (win < 1024) {
+    if (window.innerWidth < 1024) {
       setFollowTitle("");
-      setButtons({ offer: less1024, follow: 56 });
+      setButtons({ offer: buttonsContWidth - 76, follow: 56 });
     }
-  }, [initial, buttonsContWidth, win, more1024, less1024]);
+  }, [buttonsContainer, buttonsContWidth]);
 
   useEffect(() => {
     window.addEventListener("resize", widthHandler);
@@ -147,23 +137,21 @@ const Buttons = ({ icons }) => {
   }, []);
 
   return (
-    <div className={styles.buttons} ref={ref}>
-      {!isNaN(more1024) && !isNaN(less1024) && (
-        <>
-          <Button
-            width={buttons.offer}
-            height={56}
-            title="Предложить обмен"
-            icon={icons.add}
-          />
-          <ButtonOutline
-            width={buttons.follow}
-            height={56}
-            title={followTitle}
-            icon={icons.bell}
-          />
-        </>
-      )}
+    <div className={styles.buttons}>
+      <>
+        <Button
+          width={buttonsWidths.offer}
+          height={56}
+          title="Предложить обмен"
+          icon={icons.add}
+        />
+        <ButtonOutline
+          width={buttonsWidths.follow}
+          height={56}
+          title={followTitle}
+          icon={icons.bell}
+        />
+      </>
     </div>
   );
 };
@@ -239,6 +227,9 @@ const LotFull = ({
   setEditLotForm,
   updateLotFromEditForm,
 }) => {
+  const ref = useRef(0);
+  const buttonsContainer = ref.current.clientWidth;
+
   useEffect(() => {
     setNewLotId(null);
     setIsLotCreated(false);
@@ -275,8 +266,13 @@ const LotFull = ({
 
                 <div className={styles.spacer}></div>
 
-                <div className={styles.buttonsRef}>
-                  <Buttons icons={icons} />
+                <div className={styles.buttonsRef} ref={ref}>
+                  {buttonsContainer && (
+                    <Buttons
+                      icons={icons}
+                      buttonsContainer={buttonsContainer}
+                    />
+                  )}
                 </div>
 
                 <LotStats lotMeta={lotMeta} />

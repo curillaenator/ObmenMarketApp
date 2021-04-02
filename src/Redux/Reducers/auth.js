@@ -6,6 +6,8 @@ const SET_USER = "auth/SET_USER";
 const initialState = {
   isAuth: false,
   user: null,
+  isOwner: false,
+  isUser: false,
 };
 
 export const auth = (state = initialState, action) => {
@@ -86,7 +88,7 @@ export const updateUserProfile = (userUpdData) => (dispatch) => {
 
   const onUpdate = (error) => {
     if (error) return console.log("ошибка записи");
-    
+
     db.ref("users/" + userID).once("value", (snapshot) => {
       dispatch(setCurrentUser(snapshot.val()));
     });

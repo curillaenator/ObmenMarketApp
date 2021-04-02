@@ -3,7 +3,7 @@ import { Lot } from "../Lot/Lot";
 
 import { postsRef } from "../../../Utils/firebase";
 
-import styles from "./lots.module.scss";
+import styles from "./lotscontainer.module.scss";
 
 // UTILS
 
