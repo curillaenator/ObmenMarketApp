@@ -55,7 +55,7 @@ const Icon = ({ icon, disabled, title, active }) => {
   }
   return null;
 };
-const Title = ({ title, disabled, active }) => {
+const Title = ({ title, disabled, active, fontsize }) => {
   const titlePresent = active
     ? `${styles.title} ${styles.titleActive}`
     : `${styles.title} ${styles.titleIdle}`;
@@ -65,7 +65,11 @@ const Title = ({ title, disabled, active }) => {
     : titlePresent;
 
   if (title) {
-    return <div className={titleClassname}>{title}</div>;
+    return (
+      <div className={titleClassname} style={{ fontSize: fontsize }}>
+        {title}
+      </div>
+    );
   }
   return null;
 };
@@ -78,6 +82,7 @@ export const Button = ({
   active,
   disabled,
   handler,
+  fontsize = "14px",
 }) => {
   return (
     <button
@@ -93,7 +98,12 @@ export const Button = ({
         disabled={disabled}
       />
       <Icon icon={icon} disabled={disabled} title={title} active={active} />
-      <Title title={title} disabled={disabled} active={active} />
+      <Title
+        title={title}
+        disabled={disabled}
+        active={active}
+        fontsize={fontsize}
+      />
     </button>
   );
 };

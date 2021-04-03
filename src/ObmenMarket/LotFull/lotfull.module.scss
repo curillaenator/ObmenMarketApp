@@ -171,22 +171,49 @@
         .offer {
           .header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            height: 72px;
+            padding: 0 12px 0 8px;
+            border-radius: 16px;
+            cursor: pointer;
+
+            &:hover {
+              background-color: $primaryActive;
+            }
 
             &_photo {
-              position: relative;
-              width: 12.8%;
-              height: 0;
-              padding-top: 12.8%;
+              width: 56px;
+              height: 56px;
+              flex-shrink: 0;
+              margin-right: 16px;
 
               & > img {
-                @include image;
+                width: 100%;
+                height: 100%;
+
                 mask-image: url(../../Assets/Masks/commonBtn.svg);
+                object-fit: cover;
+                mask-size: cover;
+                mask-repeat: no-repeat;
               }
             }
 
             &_offername {
+              width: 100%;
+              font-weight: 700;
+              font-size: 13px;
+              line-height: 26px;
+              letter-spacing: -0.08px;
+              color: $fontTitle;
+            }
+
+            &_buttons {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              flex-shrink: 0;
+              width: 128px;
+              z-index: 50;
             }
           }
         }

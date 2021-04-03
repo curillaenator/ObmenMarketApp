@@ -31,8 +31,6 @@ const OfferFormFields = ({
   const [photos, setPhotos] = useState([]);
   const photosHandler = (add) => setPhotos([...photos, add]);
 
-  // const offersCount = lotMeta.offers ? Object.keys(lotMeta.offers).length : 0;
-
   const storage = fb.storage().ref();
   const offerUserID = fa.currentUser.uid;
 
@@ -123,7 +121,7 @@ export const OfferForm = ({
   setIsOfferForm,
 }) => {
   const onSubmit = (formData) => {
-    createOffer(newOfferMeta.offerID, { ...newOfferMeta, ...formData });
+    createOffer(lotMeta, { ...newOfferMeta, ...formData });
     setIsOfferForm(false);
   };
 

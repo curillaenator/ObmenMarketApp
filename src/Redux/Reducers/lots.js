@@ -164,24 +164,24 @@ export const setEditLotForm = (lotID, isFormModeOn) => (dispatch) => {
 export const onOfferCreate = (lotMeta) => (dispatch) => {
   const offerAuthorID = fa.currentUser.uid;
 
-  const offerID = db_offers.child("offers").push().key;
+  const offerID = db_offers.child(lotMeta.postid).push().key;
 
   const offerInitial = {
     offerID: offerID,
     authorID: offerAuthorID,
-    postID: lotMeta.postid,
+    // postID: lotMeta.postid,
     photospath: `/offers/${lotMeta.postid}/${offerID}`,
   };
 
   const offerUpdate = {};
-  offerUpdate["/offers/" + offerID] = offerInitial;
+  offerUpdate[`${lotMeta.postid}/${offerID}`] = offerInitial;
   db_offers.update(offerUpdate);
 
   dispatch(setNewOfferMeta(offerInitial));
 };
 
-export const onOfferCancel = (offerMeta) => (dispatch) => {
-  db_offers.child("offers/" + offerMeta.offerID).remove();
+export const onOfferCancel = (offerMeta, lotMeta) => (dispatch) => {
+  db_offers.child(`${lotMeta.postid}/${offerMeta.offerID}`).remove();
   dispatch(setNewOfferMeta(null));
 
   const storage = fb.storage().ref();
@@ -192,9 +192,9 @@ export const onOfferCancel = (offerMeta) => (dispatch) => {
     .then((res) => res.items.forEach((item) => item.delete()));
 };
 
-export const createOffer = (offerID, offerFormData) => async (dispatch) => {
+export const createOffer = (lotMeta, offerFormData) => async (dispatch) => {
   const offerUpdate = {};
-  offerUpdate["/offers/" + offerID] = offerFormData;
+  offerUpdate[`${lotMeta.postid}/${offerFormData.offerID}`] = offerFormData;
   db_offers.update(offerUpdate);
 
   dispatch(setNewOfferMeta(null));

@@ -23,8 +23,8 @@ import {
   createOffer,
 } from "../../Redux/Reducers/lots";
 
+import deleteBtn from "../../Assets/Icons/delete_2.svg";
 import openGallery from "../../Assets/Icons/openGallery.svg";
-// import offerpic from "../../Assets/Images/1.jpg";
 
 import "react-image-lightbox/style.css";
 import styles from "./lotfull.module.scss";
@@ -225,63 +225,53 @@ const OfferCard = ({ data, lotMeta }) => {
   const [photoLinks, setPhotoLinks] = useState([]);
 
   useEffect(() => {
-    const handlePhotoLinks = (url) => setPhotoLinks([...photoLinks, url]);
-
     fb.storage()
       .ref()
       .child(data.photospath)
       .listAll()
-      .then((res) =>
-        res.items.forEach((item, i) => {
-          handlePhotoLinks(
+      .then((res) => {
+        const links = res.items.map(
+          (item, i) =>
             `https://firebasestorage.googleapis.com/v0/b/${item.bucket}/o/offers%2F${lotMeta.postid}%2F${data.offerID}%2Foffer${i}?alt=media`
-          );
-        })
-      );
-  }, [
-    data.photospath,
-    data.authorID,
-    lotMeta.postid,
-    lotMeta.uid,
-    data.offerID,
-    // photoLinks
-  ]);
+        );
+        setPhotoLinks(links);
+      });
+  }, [lotMeta, data]);
 
   return (
     <div className={styles.offer}>
       <div className={styles.header}>
         <div className={styles.header_photo}>
-          <img src={photoLinks[0]} alt="" />
+          <img src={photoLinks[0]} alt={data.name} />
         </div>
 
-        <div className={styles.header_offername}></div>
+        <div className={styles.header_offername}>{data.name}</div>
+
+        <div className={styles.header_buttons}>
+          <Button width={92} height={24} title="Согласиться" fontsize={12} />
+
+          <img src={deleteBtn} alt="отказаться" />
+        </div>
       </div>
     </div>
   );
 };
 
 const Offers = ({ lotMeta }) => {
-  // const [allOffers, setAllOffers] = useState(null);
   const [offers, setOffers] = useState(null);
 
-  console.log(offers);
-
-  useEffect(
-    () =>
-      db_offers
-        .child("offers")
-        .orderByChild("postID")
-        .equalTo(lotMeta.postid)
-        .once("value", (snapshot) =>
-          setOffers(
-            Object.keys(snapshot.val()).map((offer) => ({
-              ...snapshot.val()[offer],
-              offerID: offer,
-            }))
-          )
-        ),
-    [lotMeta.postid]
-  );
+  useEffect(() => {
+    db_offers.child(lotMeta.postid).once("value", (snapshot) => {
+      // console.log(snapshot.val());
+      snapshot.val() &&
+        setOffers(
+          Object.keys(snapshot.val()).map((of) => ({
+            ...snapshot.val()[of],
+            postID: of,
+          }))
+        );
+    });
+  }, [lotMeta.postid]);
 
   return (
     <div className={styles.offers}>
@@ -327,7 +317,7 @@ const LotFull = ({
   const handleOfferForm = () => {
     if (isOfferForm) {
       setIsOfferForm(false);
-      onOfferCancel(newOfferMeta);
+      onOfferCancel(newOfferMeta, lotMeta);
     }
 
     if (!isOfferForm) {
