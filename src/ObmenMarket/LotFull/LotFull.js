@@ -12,7 +12,6 @@ import { FormFull } from "../Components/FormFull/FormFull";
 import { OfferForm } from "./OfferForm/OfferForm";
 
 import {
-  setIsAuthor,
   setNewLotId,
   setIsLotCreated,
   getLotMeta,
@@ -107,8 +106,10 @@ const Gallery = ({ lotPhotos }) => {
   );
 };
 
-const Buttons = ({ icons, buttonsContainer, handleOfferForm, isOfferForm }) => {
-  const [buttonsContWidth, setButtonsContWidth] = useState(buttonsContainer);
+const Buttons = ({ icons, handleOfferForm, isOfferForm, lotMeta, ownerID }) => {
+  const ref = useRef(0);
+
+  const [buttonsContWidth, setButtonsContWidth] = useState(null);
   const [buttonsWidths, setButtons] = useState({ offer: 0, follow: 0 });
   const [followTitle, setFollowTitle] = useState("");
 
@@ -121,43 +122,55 @@ const Buttons = ({ icons, buttonsContainer, handleOfferForm, isOfferForm }) => {
   };
 
   useEffect(() => {
-    if (window.innerWidth >= 1024) {
+    if (buttonsContWidth && window.innerWidth >= 1024) {
       setFollowTitle("Следить за лотом");
       setButtons({ offer: 217, follow: buttonsContWidth - 237 });
     }
-    if (window.innerWidth < 1024) {
+    if (buttonsContWidth && window.innerWidth < 1024) {
       setFollowTitle("");
       setButtons({ offer: buttonsContWidth - 76, follow: 56 });
     }
-  }, [buttonsContainer, buttonsContWidth]);
+  }, [buttonsContWidth]);
 
   useEffect(() => {
+    if (ref.current.clientWidth > 0) {
+      setButtonsContWidth(ref.current.clientWidth);
+    }
+
     window.addEventListener("resize", widthHandler);
     return () => {
       window.removeEventListener("resize", widthHandler);
     };
   }, []);
 
+  const buttonsStyle =
+    lotMeta && ownerID !== lotMeta.uid
+      ? { height: "56px", marginBottom: "32px" }
+      : {};
+
   const offerTitle = isOfferForm ? "Передумал" : "Предложить обмен";
 
   return (
-    <div className={styles.buttons}>
-      <>
-        <Button
-          width={buttonsWidths.offer}
-          height={56}
-          title={offerTitle}
-          icon={icons.add}
-          handler={handleOfferForm}
-          active={isOfferForm}
-        />
-        <ButtonOutline
-          width={buttonsWidths.follow}
-          height={56}
-          title={followTitle}
-          icon={icons.bell}
-        />
-      </>
+    <div className={styles.buttons} ref={ref} style={buttonsStyle}>
+      {buttonsContWidth !== 0 && (
+        <>
+          <Button
+            width={buttonsWidths.offer}
+            height={56}
+            title={offerTitle}
+            icon={icons.add}
+            handler={handleOfferForm}
+            active={isOfferForm}
+          />
+
+          <ButtonOutline
+            width={buttonsWidths.follow}
+            height={56}
+            title={followTitle}
+            icon={icons.bell}
+          />
+        </>
+      )}
     </div>
   );
 };
@@ -229,16 +242,12 @@ const LotFull = ({
   isLotMeta,
   lotMeta,
   lotPhotos,
-  // setIsAuthor,
   setNewLotId,
   setIsLotCreated,
   getLotMeta,
   setEditLotForm,
   updateLotFromEditForm,
 }) => {
-  const ref = useRef(0);
-  const buttonsContainer = ref.current.clientWidth;
-
   const [isOfferForm, setIsOfferForm] = useState(false);
   const handleOfferForm = () => setIsOfferForm(!isOfferForm);
 
@@ -278,18 +287,20 @@ const LotFull = ({
 
                 <div className={styles.spacer}></div>
 
-                {ownerID !== lotMeta.uid && (
-                  <div className={styles.buttonsRef} ref={ref}>
-                    {buttonsContainer && (
-                      <Buttons
-                        icons={icons}
-                        buttonsContainer={buttonsContainer}
-                        handleOfferForm={handleOfferForm}
-                        isOfferForm={isOfferForm}
-                      />
-                    )}
-                  </div>
+                {/* <div
+                  className={styles.buttonsRef}
+                  style={buttonsStyle}
+                > */}
+                {lotMeta && ownerID !== lotMeta.uid && (
+                  <Buttons
+                    icons={icons}
+                    handleOfferForm={handleOfferForm}
+                    isOfferForm={isOfferForm}
+                    lotMeta={lotMeta}
+                    ownerID={ownerID}
+                  />
                 )}
+                {/* </div> */}
 
                 {isOfferForm && (
                   <OfferForm
@@ -340,7 +351,6 @@ const mstp = (state) => ({
 export const LotFullCont = compose(
   withRouter,
   connect(mstp, {
-    setIsAuthor,
     setNewLotId,
     setIsLotCreated,
     getLotMeta,
