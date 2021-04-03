@@ -17,9 +17,9 @@ const lotListAll = (setListToRender) => {
   postsRef
     .orderByChild("published")
     .equalTo(true)
-    .once("value", (snapshot) =>
-      setListToRender(lotListObjToArr(snapshot.val()))
-    );
+    .once("value", (snapshot) => {
+      setListToRender(lotListObjToArr(snapshot.val()));
+    });
 };
 
 const lotListPublishedByUser = (matchedID, setLotList) => {
@@ -34,6 +34,8 @@ const lotListPublishedByUser = (matchedID, setLotList) => {
 export const LotsContainer = ({ toRender, matchedID, selected }) => {
   const [lotList, setLotList] = useState([]);
   const [listToRender, setListToRender] = useState([]);
+
+  // console.log(listToRender);
 
   useEffect(() => {
     toRender === "all" && lotListAll(setListToRender);

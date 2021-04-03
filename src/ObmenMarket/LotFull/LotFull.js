@@ -9,8 +9,10 @@ import { Button } from "../Components/Button/Button";
 import { ButtonOutline } from "../Components/Button/ButtonOutline";
 import { Controls } from "../Components/Controls/Controls";
 import { FormFull } from "../Components/FormFull/FormFull";
+import { OfferForm } from "./OfferForm/OfferForm";
 
 import {
+  setIsAuthor,
   setNewLotId,
   setIsLotCreated,
   getLotMeta,
@@ -105,7 +107,7 @@ const Gallery = ({ lotPhotos }) => {
   );
 };
 
-const Buttons = ({ icons, buttonsContainer }) => {
+const Buttons = ({ icons, buttonsContainer, handleOfferForm, isOfferForm }) => {
   const [buttonsContWidth, setButtonsContWidth] = useState(buttonsContainer);
   const [buttonsWidths, setButtons] = useState({ offer: 0, follow: 0 });
   const [followTitle, setFollowTitle] = useState("");
@@ -136,14 +138,18 @@ const Buttons = ({ icons, buttonsContainer }) => {
     };
   }, []);
 
+  const offerTitle = isOfferForm ? "Передумал" : "Предложить обмен";
+
   return (
     <div className={styles.buttons}>
       <>
         <Button
           width={buttonsWidths.offer}
           height={56}
-          title="Предложить обмен"
+          title={offerTitle}
           icon={icons.add}
+          handler={handleOfferForm}
+          active={isOfferForm}
         />
         <ButtonOutline
           width={buttonsWidths.follow}
@@ -214,13 +220,16 @@ const LotFull = ({
   history,
   location,
   isAuth,
+  ownerID,
   formFullUI,
+  formOfferUI,
   isFormModeOn,
   currentLotId,
   currentLotMeta,
   isLotMeta,
   lotMeta,
   lotPhotos,
+  // setIsAuthor,
   setNewLotId,
   setIsLotCreated,
   getLotMeta,
@@ -229,6 +238,9 @@ const LotFull = ({
 }) => {
   const ref = useRef(0);
   const buttonsContainer = ref.current.clientWidth;
+
+  const [isOfferForm, setIsOfferForm] = useState(false);
+  const handleOfferForm = () => setIsOfferForm(!isOfferForm);
 
   useEffect(() => {
     setNewLotId(null);
@@ -266,14 +278,26 @@ const LotFull = ({
 
                 <div className={styles.spacer}></div>
 
-                <div className={styles.buttonsRef} ref={ref}>
-                  {buttonsContainer && (
-                    <Buttons
-                      icons={icons}
-                      buttonsContainer={buttonsContainer}
-                    />
-                  )}
-                </div>
+                {ownerID !== lotMeta.uid && (
+                  <div className={styles.buttonsRef} ref={ref}>
+                    {buttonsContainer && (
+                      <Buttons
+                        icons={icons}
+                        buttonsContainer={buttonsContainer}
+                        handleOfferForm={handleOfferForm}
+                        isOfferForm={isOfferForm}
+                      />
+                    )}
+                  </div>
+                )}
+
+                {isOfferForm && (
+                  <OfferForm
+                    icons={icons}
+                    formOfferUI={formOfferUI}
+                    lotMeta={lotMeta}
+                  />
+                )}
 
                 <LotStats lotMeta={lotMeta} />
               </div>
@@ -302,7 +326,9 @@ const LotFull = ({
 const mstp = (state) => ({
   icons: state.ui.icons,
   isAuth: state.auth.isAuth,
+  ownerID: state.auth.ownerID,
   formFullUI: state.ui.formFull,
+  formOfferUI: state.ui.formOffer,
   isFormModeOn: state.home.isFormModeOn,
   currentLotId: state.lots.currentLotId,
   currentLotMeta: state.lots.currentLotMeta,
@@ -314,6 +340,7 @@ const mstp = (state) => ({
 export const LotFullCont = compose(
   withRouter,
   connect(mstp, {
+    setIsAuthor,
     setNewLotId,
     setIsLotCreated,
     getLotMeta,

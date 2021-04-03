@@ -11,13 +11,13 @@ import { HomeCont } from "./Home/Home";
 import { ProfileCont } from "./Profile/Profile";
 import { LotFullCont } from "./LotFull/LotFull";
 
-import { googleSignIn } from "../Redux/Reducers/auth";
+import { authCheck } from "../Redux/Reducers/auth";
 
 import styles from "./obmen.module.scss";
 
-function Obmen({ googleSignIn }) {
+function Obmen({ authCheck }) {
   const [user, userLoading] = useAuthState(fa);
-  useEffect(() => user && googleSignIn(user), [user, googleSignIn]);
+  useEffect(() => user && authCheck(user), [user, authCheck]);
 
   return (
     <div className={styles.container}>
@@ -33,4 +33,4 @@ function Obmen({ googleSignIn }) {
 }
 const mstp = (state) => ({});
 
-export const ObmenCont = connect(mstp, { googleSignIn })(Obmen);
+export const ObmenCont = connect(mstp, { authCheck })(Obmen);

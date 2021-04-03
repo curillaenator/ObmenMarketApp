@@ -1,21 +1,26 @@
 import { fb, fa, db } from "../../Utils/firebase";
 
+const SET_OWNER_ID = "auth/SET_OWNER_ID";
 const SET_IS_AUTH = "auth/IS_AUTH";
 const SET_USER = "auth/SET_USER";
 
 const initialState = {
+  ownerID: null,
   isAuth: false,
   user: null,
-  isOwner: false,
-  isUser: false,
 };
 
 export const auth = (state = initialState, action) => {
   switch (action.type) {
+    case SET_OWNER_ID:
+      return { ...state, ownerID: action.payload };
+
     case SET_IS_AUTH:
       return { ...state, isAuth: action.auth };
+
     case SET_USER:
       return { ...state, user: action.user };
+
     default:
       return state;
   }
@@ -24,18 +29,12 @@ export const auth = (state = initialState, action) => {
 // ACTIONs
 
 export const setIsAuth = (auth) => ({ type: SET_IS_AUTH, auth });
+const setOwnerID = (payload) => ({ type: SET_OWNER_ID, payload });
 const setCurrentUser = (user) => ({ type: SET_USER, user });
 
 // THUNKs
 
-export const googleSignIn = (curUser) => (dispatch) => {
-  const toAuthSet = async (u) => {
-    await db.ref("users/" + u.uid).once("value", (snapshot) => {
-      dispatch(setCurrentUser(snapshot.val()));
-      dispatch(setIsAuth(true));
-    });
-  };
-
+export const googleSignIn = () => async (dispatch) => {
   // // SendGrid
   // const email = {
   // to: 'info@obmen.market',
@@ -51,30 +50,40 @@ export const googleSignIn = (curUser) => (dispatch) => {
   // });
   // // End of SendGrid
 
-  const newUser = (u) => {
-    db.ref("users/" + u.uid)
+  const newUser = (user) => {
+    db.ref("users/" + user.uid)
       .set({
-        username: u.displayName,
-        email: u.email,
-        avatar: u.photoURL,
+        username: user.displayName,
+        email: user.email,
+        avatar: user.photoURL,
       })
       .then(() => {
-        u.sendEmailVerification().then(() => console.log("sent"));
-        toAuthSet(u);
+        user.sendEmailVerification().then(() => console.log("sent"));
+        db.ref("users/" + user.uid).once("value", (snapshot) => {
+          dispatch(setOwnerID(user.uid));
+          dispatch(setCurrentUser(snapshot.val()));
+          dispatch(setIsAuth(true));
+        });
       });
   };
 
-  const toAuthCreate = async () => {
-    const provider = new fb.auth.GoogleAuthProvider();
-    await fb.auth().signInWithPopup(provider);
+  const provider = new fb.auth.GoogleAuthProvider();
+  await fb.auth().signInWithPopup(provider);
 
-    await fb.auth().onAuthStateChanged((u) => {
-      const ref = db.ref("users/" + u.uid);
-      ref.once("value", (snapshot) => !snapshot.exists() && newUser(u));
+  await fb.auth().onAuthStateChanged((u) => {
+    const ref = db.ref("users/" + u.uid);
+    ref.once("value", (snapshot) => !snapshot.exists() && newUser(u));
+  });
+};
+
+export const authCheck = (curUser) => (dispatch) => {
+  if (curUser) {
+    db.ref("users/" + curUser.uid).once("value", (snapshot) => {
+      dispatch(setOwnerID(curUser.uid));
+      dispatch(setCurrentUser(snapshot.val()));
+      dispatch(setIsAuth(true));
     });
-  };
-
-  curUser !== null ? toAuthSet(curUser) : toAuthCreate();
+  }
 };
 
 export const logout = () => async (dispatch) => {

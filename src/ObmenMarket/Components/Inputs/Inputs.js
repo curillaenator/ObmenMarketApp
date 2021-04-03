@@ -1,5 +1,8 @@
+import { useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import Resizer from "react-image-file-resizer";
+
+// import addphoto from "../../../Assets/Icons/add_photo.svg";
 
 import styles from "./inputs.module.scss";
 
@@ -28,12 +31,13 @@ export const TextInput = ({ input, meta, ...props }) => {
       <input
         {...input}
         {...props}
+        className={styles.textinput}
         style={error ? { borderBottom: "1px solid #f2002c" } : {}}
       />
 
-      {!error && <p>{props.sub}</p>}
+      {!error && <div className={styles.sub}>{props.sub}</div>}
 
-      {error && <p className={styles.error}>{meta.error}</p>}
+      {error && <p className={`${styles.sub} ${styles.error}`}>{meta.error}</p>}
     </div>
   );
 };
@@ -46,6 +50,7 @@ export const TextArea = ({ input, meta, ...props }) => {
         {...input}
         {...props}
         onChange={input.onChange}
+        className={styles.textarea}
         style={error ? { borderBottom: "1px solid #f2002c" } : {}}
       />
       {!error && <p>{props.sub}</p>}
@@ -87,6 +92,26 @@ export const PhotoFiles = ({
       <label className={styles.photofilesLabel} htmlFor="choosePhotos">
         {props.title}
       </label>
+    </div>
+  );
+};
+
+export const Checkbox = ({ input, meta, ...props }) => {
+  const [label, setLabel] = useState(false);
+  const labelHandle = () => setLabel(!label);
+
+  const labelText = label
+    ? "Cогласен/согласна на доплату при обмене"
+    : "Согласны на доплату при обмене?";
+
+  return (
+    <div className={styles.input}>
+      <div className={styles.checkbox}>
+        <input type="checkbox" id="agreetooverpay" {...input} {...props} />
+        <label htmlFor="agreetooverpay" onClick={labelHandle}>
+          {labelText}
+        </label>
+      </div>
     </div>
   );
 };

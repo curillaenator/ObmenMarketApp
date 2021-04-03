@@ -4,8 +4,6 @@ import email from "../../Assets/Icons/mail.svg";
 import country from "../../Assets/Icons/country.svg";
 import city from "../../Assets/Icons/city.svg";
 
-const HANDLE_CTA = "ui/HANDLE_CTA";
-
 const initialState = {
   icons: {
     add: (
@@ -197,13 +195,12 @@ const initialState = {
     },
     city: { icon: city, sup: "Город", placeholder: "Из какого вы города?" },
   },
+  formOffer: {
+    title: "Что вы хотите предложить взамен?",
+    name: { placeholder: "Название" },
+    description: { placeholder: "Описание" },
+    overprice: { title: "Согласны на доплату при обмене?" },
+  },
 };
 
-export const ui = (state = initialState, action) => {
-  switch (action.type) {
-    case HANDLE_CTA:
-      return { ...state };
-    default:
-      return state;
-  }
-};
+export const ui = (state = initialState) => state;

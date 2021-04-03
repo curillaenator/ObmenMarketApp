@@ -2,6 +2,7 @@ import { fb, db, fa } from "../../Utils/firebase";
 
 import { setFormMode } from "./home";
 
+const SET_IS_AUTHOR = "lots/SET_IS_AUTHOR";
 const SET_NEWLOT_ID = "lots/SET_NEWLOT_ID";
 const SET_IS_LOTCREATED = "lots/SET_IS_LOTCREATED";
 const SET_CURRENT_ID = "lots/SET_CURRENT_ID";
@@ -10,6 +11,7 @@ const SET_CURRENT_LOTMETA = "lots/SET_CURRENT_LOT";
 const SET_CURRENT_LOTPHOTOS = "lots/SET_CURRENT_LOTPHOTOS";
 
 const initialState = {
+  isAuthor: false,
   createLotId: null,
   isLotCreated: false,
   currentLotId: null,
@@ -20,6 +22,9 @@ const initialState = {
 
 export const lots = (state = initialState, action) => {
   switch (action.type) {
+    case SET_IS_AUTHOR:
+      return { ...state, isAuthor: action.payload };
+
     case SET_NEWLOT_ID:
       return { ...state, createLotId: action.id };
 
@@ -45,6 +50,7 @@ export const lots = (state = initialState, action) => {
 
 // ACTIONS
 
+export const setIsAuthor = (payload) => ({ type: SET_IS_AUTHOR, payload });
 export const setNewLotId = (id) => ({ type: SET_NEWLOT_ID, id });
 export const setIsLotCreated = (bool) => ({ type: SET_IS_LOTCREATED, bool });
 const setCurrentLotId = (id) => ({ type: SET_CURRENT_ID, id });
@@ -62,7 +68,6 @@ export const onLotCreateFromForm = () => async (dispatch, getState) => {
   const newLotData = {
     uid: author.uid,
     postid: lotID,
-    // username: author.displayName,
     username: getState().auth.user.username,
     avatar: author.photoURL,
     published: false,
