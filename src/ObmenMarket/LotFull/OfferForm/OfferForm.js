@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Form, Field } from "react-final-form";
-import { fb, fa } from "../../../Utils/firebase";
+import { fb } from "../../../Utils/firebase";
 
 import { Button } from "../../Components/Button/Button";
 
@@ -10,7 +10,7 @@ import {
   combinedValidators,
   TextInput,
   Checkbox,
-  // TextArea,
+  TextArea,
   PhotoFiles,
 } from "../../Components/Inputs/Inputs";
 
@@ -22,9 +22,8 @@ const OfferFormFields = ({
   icons,
   formOfferUI,
   newOfferMeta,
-  lotMeta,
+  // lotMeta,
   lotID,
-  authorID,
   handleSubmit,
   form,
 }) => {
@@ -32,14 +31,10 @@ const OfferFormFields = ({
   const photosHandler = (add) => setPhotos([...photos, add]);
 
   const storage = fb.storage().ref();
-  const offerUserID = fa.currentUser.uid;
 
   const uploadImg = (file) => {
     const uploadTask = storage
-      .child(
-        // `posts/${authorID}/${lotID}/${offerUserID}/${newOfferMeta.offerID}/offer${photos.length}`
-        `offers/${lotID}/${newOfferMeta.offerID}/offer${photos.length}`
-      )
+      .child(`offers/${lotID}/${newOfferMeta.offerID}/offer${photos.length}`)
       .put(file);
 
     uploadTask.on(
@@ -69,7 +64,7 @@ const OfferFormFields = ({
 
         <Field
           name="description"
-          component={TextInput}
+          component={TextArea}
           validate={combinedValidators(required, minLength(12))}
           placeholder={formOfferUI.description.placeholder}
         />
@@ -133,9 +128,9 @@ export const OfferForm = ({
           handleSubmit={handleSubmit}
           form={form}
           formOfferUI={formOfferUI}
-          lotMeta={lotMeta}
+          // lotMeta={lotMeta}
           newOfferMeta={newOfferMeta}
-          authorID={lotMeta.uid}
+          // authorID={lotMeta.uid}
           lotID={lotMeta.postid}
           icons={icons}
         />

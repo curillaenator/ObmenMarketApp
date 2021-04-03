@@ -7,12 +7,22 @@ import share from "../../../Assets/Icons/share.svg";
 import del from "../../../Assets/Icons/delete.svg";
 import edit from "../../../Assets/Icons/edit.svg";
 
-export const Controls = ({ isAuth, lotMeta, goBack, handleEditLot }) => {
+export const Controls = ({
+  isAuth,
+  lotMeta,
+  history,
+  handleEditLot,
+  onLotCreateFormCancel,
+}) => {
   const user = fa.currentUser;
-  //   console.log(user);
+
+  const handleDeletePost = () => {
+    onLotCreateFormCancel(lotMeta.postid);
+  };
+
   return (
     <div className={styles.controls}>
-      <div className={styles.back} onClick={goBack}>
+      <div className={styles.back} onClick={history.goBack}>
         <img src={back} alt="Вернуться" />
         <p>Назад</p>
       </div>
@@ -29,7 +39,7 @@ export const Controls = ({ isAuth, lotMeta, goBack, handleEditLot }) => {
             <p>Редактировать</p>
           </div>
 
-          <div className={styles.option}>
+          <div className={styles.option} onClick={handleDeletePost}>
             <img src={del} alt="Удалить" />
             <p>Удалить</p>
           </div>

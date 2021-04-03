@@ -84,7 +84,10 @@ export const onLotCreateFormCancel = (lotID) => async (dispatch) => {
   const author = await fa.currentUser;
 
   await db.ref("posts/" + lotID).remove();
+  dispatch(setIsLotMeta(false));
   dispatch(setNewLotId(null));
+  dispatch(setLotMeta(null));
+  dispatch(setLotPhotos(null));
 
   const storage = fb.storage().ref();
   storage
@@ -98,8 +101,8 @@ export const publishNewLotFromForm = (lotID, updData) => async (dispatch) => {
     if (error) return console.log("ошибка записи");
     db.ref("posts/" + lotID).once("value", (snap) => {
       dispatch(setLotMeta(snap.val()));
+      dispatch(setIsLotMeta(true));
       dispatch(setFormMode(false));
-      // dispatch(setNewLotId(null));
       dispatch(setIsLotCreated(true));
     });
   };
@@ -162,14 +165,15 @@ export const setEditLotForm = (lotID, isFormModeOn) => (dispatch) => {
 };
 
 export const onOfferCreate = (lotMeta) => (dispatch) => {
-  const offerAuthorID = fa.currentUser.uid;
+  const offerAuthor = fa.currentUser;
 
   const offerID = db_offers.child(lotMeta.postid).push().key;
 
   const offerInitial = {
+    avatar: offerAuthor.photoURL,
+    authorName: offerAuthor.displayName,
     offerID: offerID,
-    authorID: offerAuthorID,
-    // postID: lotMeta.postid,
+    authorID: offerAuthor.uid,
     photospath: `/offers/${lotMeta.postid}/${offerID}`,
   };
 

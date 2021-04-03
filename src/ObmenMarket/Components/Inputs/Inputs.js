@@ -53,8 +53,8 @@ export const TextArea = ({ input, meta, ...props }) => {
         className={styles.textarea}
         style={error ? { borderBottom: "1px solid #f2002c" } : {}}
       />
-      {!error && <p>{props.sub}</p>}
-      {error && <p className={styles.error}>{meta.error}</p>}
+      {!error && <p className={styles.sub}>{props.sub}</p>}
+      {error && <p className={`${styles.sub} ${styles.error}`}>{meta.error}</p>}
     </div>
   );
 };
