@@ -1,5 +1,9 @@
 import { useState, useEffect, useRef } from "react";
+<<<<<<< Updated upstream
 import { db_offers, fb, fa, db } from "../../Utils/firebase";
+=======
+import { db_offers, fb, fa } from "../../Utils/firebase";
+>>>>>>> Stashed changes
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter, Link } from "react-router-dom";
@@ -414,6 +418,7 @@ const LotFull = ({
   onOfferCancel,
   createOffer,
 }) => {
+  console.log(fa.currentUser);
   const [isOfferForm, setIsOfferForm] = useState(false);
 
   const handleOfferForm = () => {
