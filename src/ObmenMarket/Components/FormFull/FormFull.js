@@ -18,8 +18,8 @@ export const FormFull = ({
     const curDate = new Date();
 
     const updData = {
-      acceptedOffer: "",
-      offersQty: 0,
+      // acceptedOffer: null,
+      // offers: [],
       publishedAt: new Date(),
       expireDate: new Date(curDate.setDate(curDate.getDate() + 7)),
     };

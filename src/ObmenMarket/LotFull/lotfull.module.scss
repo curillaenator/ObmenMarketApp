@@ -158,29 +158,28 @@
       }
     }
 
-    .stats {
-      .statsitem {
-        margin-bottom: 24px;
+    .offers {
+      &_title {
+        font-weight: 700;
+        font-size: 15px;
+        letter-spacing: -0.4px;
+        color: $fontTitle;
+        margin-bottom: 16px;
+      }
 
-        &:last-child {
-          margin-bottom: 0;
-        }
+      &_list {
+        .offer {
+          .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            
+            &_photo {
+            }
 
-        .itemtitle {
-          font-weight: 600;
-          font-size: 13px;
-          line-height: 19px;
-          letter-spacing: -0.08px;
-          color: $fontGrey;
-          margin-bottom: 6px;
-        }
-
-        .itemvalue {
-          font-weight: bold;
-          font-size: 13px;
-          line-height: 19px;
-          letter-spacing: -0.08px;
-          color: $fontTitle;
+            &_offername {
+            }
+          }
         }
       }
     }
@@ -240,6 +239,33 @@
       letter-spacing: -0.08px;
       color: $fontGrey;
       margin-bottom: 16px;
+    }
+
+    .stats {
+      .statsitem {
+        margin-bottom: 24px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        .itemtitle {
+          font-weight: 600;
+          font-size: 13px;
+          line-height: 19px;
+          letter-spacing: -0.08px;
+          color: $fontGrey;
+          margin-bottom: 6px;
+        }
+
+        .itemvalue {
+          font-weight: bold;
+          font-size: 13px;
+          line-height: 19px;
+          letter-spacing: -0.08px;
+          color: $fontTitle;
+        }
+      }
     }
   }
 }

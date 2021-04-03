@@ -1,9 +1,8 @@
 import firebase from "firebase";
 
-// import "firebase/<PACKAGE>";
-// import "firebase/firestore";
+// POSTS
 
-firebase.initializeApp({
+const app = firebase.initializeApp({
   apiKey: "AIzaSyBmYNXLxCwaIR_U2RYWUAzCeRIQjixMVv4",
   authDomain: "obmen-market-666.firebaseapp.com",
   databaseURL: "https://obmenmarket.europe-west1.firebasedatabase.app/",
@@ -14,16 +13,22 @@ firebase.initializeApp({
   measurementId: "G-QBMC7DMV5G",
 });
 
-export const fb = firebase;
-export const fa = firebase.auth();
-export const db = firebase.database();
-export const fn = firebase.functions();
-export const fs = firebase.firestore();
+export const db = app.database();
 
 export const postsRef = db.ref("posts");
-// export const usersRef = db.ref("users");
 
-// export const firestore = firebase.firestore();
+/// OFFERS
+
+export const db_offers = app
+  .database("https://obmenmarket-offers.europe-west1.firebasedatabase.app/")
+  .ref();
+
+// COMMON
+
+export const fb = firebase;
+export const fa = firebase.auth();
+// export const fn = firebase.functions();
+// export const fs = firebase.firestore();
 
 // using SendGrid's Node.js Library - https://github.com/sendgrid/sendgrid-nodejs
 // export const sg = require("@sendgrid/mail")

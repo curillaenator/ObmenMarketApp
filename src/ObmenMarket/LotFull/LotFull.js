@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { db_offers, fb } from "../../Utils/firebase";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter, Link } from "react-router-dom";
@@ -17,9 +18,13 @@ import {
   getLotMeta,
   setEditLotForm,
   updateLotFromEditForm,
+  onOfferCreate,
+  onOfferCancel,
+  createOffer,
 } from "../../Redux/Reducers/lots";
 
 import openGallery from "../../Assets/Icons/openGallery.svg";
+import offerpic from "../../Assets/Images/1.jpg";
 
 import "react-image-lightbox/style.css";
 import styles from "./lotfull.module.scss";
@@ -30,18 +35,10 @@ const Gallery = ({ lotPhotos }) => {
 
   const Tint = ({ title, icon, count }) => {
     const iconMargin = title ? { marginRight: "18px" } : {};
-    const tableBorder = title
-      ? {
-          // width: "217px",
-          // height: "56px",
-          // borderRadius: "16px",
-          // border: "2px solid #fff",
-        }
-      : {};
 
     return (
       <div className={styles.tint}>
-        <div className={styles.table} style={tableBorder}>
+        <div className={styles.table}>
           {icon && <img src={icon} alt={title} style={iconMargin} />}
           {title && (
             <div className={styles.tabletitle}>
@@ -170,30 +167,6 @@ const Buttons = ({ icons, handleOfferForm, isOfferForm }) => {
   );
 };
 
-const Descrption = ({ lotMeta }) => {
-  return (
-    <div className={styles.description}>
-      <Link to={`/profile/${lotMeta.uid}`} className={styles.author}>
-        <img src={lotMeta.avatar} alt="Username" />
-        <p>{lotMeta.username}</p>
-      </Link>
-
-      <div className={styles.bigtitle}>{lotMeta.title}</div>
-
-      <div className={styles.lottext}>{lotMeta.description}</div>
-
-      {/* <div className={styles.smalltitle}>Хочу обменять на:</div> */}
-
-      {/* <div className={styles.lottext}>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque inventore
-        voluptates delectus, nisi ad, harum repudiandae nesciunt omnis quae
-        alias accusantium deleniti assumenda iste et velit eos officiis
-        distinctio quibusdam.
-      </div> */}
-    </div>
-  );
-};
-
 const LotStats = ({ lotMeta }) => {
   return (
     <div className={styles.stats}>
@@ -222,6 +195,111 @@ const LotStats = ({ lotMeta }) => {
   );
 };
 
+const Descrption = ({ lotMeta }) => {
+  return (
+    <div className={styles.description}>
+      <Link to={`/profile/${lotMeta.uid}`} className={styles.author}>
+        <img src={lotMeta.avatar} alt="Username" />
+        <p>{lotMeta.username}</p>
+      </Link>
+
+      <div className={styles.bigtitle}>{lotMeta.title}</div>
+
+      <div className={styles.lottext}>{lotMeta.description}</div>
+
+      {/* <div className={styles.smalltitle}>Хочу обменять на:</div> */}
+
+      {/* <div className={styles.lottext}>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque inventore
+        voluptates delectus, nisi ad, harum repudiandae nesciunt omnis quae
+        alias accusantium deleniti assumenda iste et velit eos officiis
+        distinctio quibusdam.
+      </div> */}
+
+      <LotStats lotMeta={lotMeta} />
+    </div>
+  );
+};
+
+const OfferCard = ({ data, lotMeta }) => {
+  const [photoLinks, setPhotoLinks] = useState([]);
+
+  // console.log(photoLinks);
+
+  useEffect(() => {
+    const handlePhotoLinks = (url) => setPhotoLinks([...photoLinks, url]);
+
+    fb.storage()
+      .ref()
+      .child(data.photospath)
+      .listAll()
+      .then((res) =>
+        res.items.forEach((item, i) => {
+          handlePhotoLinks(
+            `https://firebasestorage.googleapis.com/v0/b/${item.bucket}/o/posts%2F${lotMeta.uid}%2F${lotMeta.postid}%2F${data.authorID}%2F${data.offerID}%2Foffer${i}?alt=media`
+          );
+        })
+      );
+  }, [
+    data.photospath,
+    data.authorID,
+    lotMeta.postid,
+    lotMeta.uid,
+    data.offerID,
+    // photoLinks
+  ]);
+
+  return (
+    <div className={styles.offer}>
+      <div className={styles.header}>
+        <div className={styles.header_photo}>
+          <img src={offerpic} alt="" />
+        </div>
+
+        <div className={styles.header_offername}></div>
+      </div>
+    </div>
+  );
+};
+
+const Offers = ({ lotMeta }) => {
+  // const [allOffers, setAllOffers] = useState(null);
+  const [offers, setOffers] = useState(null);
+
+  console.log(offers);
+
+  useEffect(
+    () =>
+      db_offers
+        .child("offers")
+        .orderByChild("postID")
+        .equalTo(lotMeta.postid)
+        .once("value", (snapshot) =>
+          setOffers(
+            Object.keys(snapshot.val()).map((offer) => ({
+              ...snapshot.val()[offer],
+              offerID: offer,
+            }))
+          )
+        ),
+    [lotMeta.postid]
+  );
+
+  return (
+    <div className={styles.offers}>
+      <div className={styles.offers_title}>Вам предложили в обмен:</div>
+
+      {offers && (
+        <div className={styles.offers_list}>
+          {offers.map((offer) => (
+            <OfferCard key={offer.offerID} data={offer} lotMeta={lotMeta} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const LotFull = ({
   icons,
   match,
@@ -242,9 +320,23 @@ const LotFull = ({
   getLotMeta,
   setEditLotForm,
   updateLotFromEditForm,
+  newOfferMeta,
+  onOfferCreate,
+  onOfferCancel,
+  createOffer,
 }) => {
   const [isOfferForm, setIsOfferForm] = useState(false);
-  const handleOfferForm = () => setIsOfferForm(!isOfferForm);
+  const handleOfferForm = () => {
+    if (isOfferForm) {
+      setIsOfferForm(false);
+      onOfferCancel(newOfferMeta);
+    }
+
+    if (!isOfferForm) {
+      setIsOfferForm(true);
+      onOfferCreate(lotMeta);
+    }
+  };
 
   useEffect(() => {
     setNewLotId(null);
@@ -295,10 +387,13 @@ const LotFull = ({
                     icons={icons}
                     formOfferUI={formOfferUI}
                     lotMeta={lotMeta}
+                    newOfferMeta={newOfferMeta}
+                    createOffer={createOffer}
+                    setIsOfferForm={setIsOfferForm}
                   />
                 )}
 
-                <LotStats lotMeta={lotMeta} />
+                <Offers lotMeta={lotMeta} />
               </div>
 
               <Descrption lotMeta={lotMeta} />
@@ -334,6 +429,7 @@ const mstp = (state) => ({
   isLotMeta: state.lots.isLotMeta,
   lotMeta: state.lots.currentLotMeta,
   lotPhotos: state.lots.currentLotPhotos,
+  newOfferMeta: state.lots.newOfferMeta,
 });
 
 export const LotFullCont = compose(
@@ -344,5 +440,8 @@ export const LotFullCont = compose(
     getLotMeta,
     setEditLotForm,
     updateLotFromEditForm,
+    onOfferCreate,
+    onOfferCancel,
+    createOffer,
   })
 )(LotFull);

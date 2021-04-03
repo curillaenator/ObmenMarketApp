@@ -21,6 +21,8 @@ import styles from "./offerform.module.scss";
 const OfferFormFields = ({
   icons,
   formOfferUI,
+  newOfferMeta,
+  lotMeta,
   lotID,
   authorID,
   handleSubmit,
@@ -29,13 +31,15 @@ const OfferFormFields = ({
   const [photos, setPhotos] = useState([]);
   const photosHandler = (add) => setPhotos([...photos, add]);
 
+  // const offersCount = lotMeta.offers ? Object.keys(lotMeta.offers).length : 0;
+
   const storage = fb.storage().ref();
-  const uid = fa.currentUser.uid;
+  const offerUserID = fa.currentUser.uid;
 
   const uploadImg = (file) => {
     const uploadTask = storage
       .child(
-        "posts/" + authorID + "/" + lotID + "/" + uid + "/offer" + photos.length
+        `posts/${authorID}/${lotID}/${offerUserID}/${newOfferMeta.offerID}/offer${photos.length}`
       )
       .put(file);
 
@@ -109,9 +113,17 @@ const OfferFormFields = ({
   );
 };
 
-export const OfferForm = ({ formOfferUI, lotMeta, icons }) => {
+export const OfferForm = ({
+  formOfferUI,
+  newOfferMeta,
+  lotMeta,
+  icons,
+  createOffer,
+  setIsOfferForm,
+}) => {
   const onSubmit = (formData) => {
-    console.log(formData);
+    createOffer(newOfferMeta.offerID, { ...newOfferMeta, ...formData });
+    setIsOfferForm(false);
   };
 
   return (
@@ -122,6 +134,8 @@ export const OfferForm = ({ formOfferUI, lotMeta, icons }) => {
           handleSubmit={handleSubmit}
           form={form}
           formOfferUI={formOfferUI}
+          lotMeta={lotMeta}
+          newOfferMeta={newOfferMeta}
           authorID={lotMeta.uid}
           lotID={lotMeta.postid}
           icons={icons}

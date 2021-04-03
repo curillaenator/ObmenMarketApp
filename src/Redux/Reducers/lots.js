@@ -1,4 +1,4 @@
-import { fb, db, fa } from "../../Utils/firebase";
+import { fb, db, fa, db_offers } from "../../Utils/firebase";
 
 import { setFormMode } from "./home";
 
@@ -8,6 +8,7 @@ const SET_CURRENT_ID = "lots/SET_CURRENT_ID";
 const SET_IS_LOTMETA = "lots/SET_IS_LOTMETA";
 const SET_CURRENT_LOTMETA = "lots/SET_CURRENT_LOT";
 const SET_CURRENT_LOTPHOTOS = "lots/SET_CURRENT_LOTPHOTOS";
+const SET_NEW_OFFERMETA = "lots/SET_NEW_OFFER_ID";
 
 const initialState = {
   createLotId: null,
@@ -16,6 +17,7 @@ const initialState = {
   isLotMeta: false,
   currentLotMeta: null,
   currentLotPhotos: null,
+  newOfferMeta: null,
 };
 
 export const lots = (state = initialState, action) => {
@@ -38,6 +40,9 @@ export const lots = (state = initialState, action) => {
     case SET_IS_LOTMETA:
       return { ...state, isLotMeta: action.payload };
 
+    case SET_NEW_OFFERMETA:
+      return { ...state, newOfferMeta: action.payload };
+
     default:
       return state;
   }
@@ -51,6 +56,7 @@ const setCurrentLotId = (id) => ({ type: SET_CURRENT_ID, id });
 const setIsLotMeta = (payload) => ({ type: SET_IS_LOTMETA, payload });
 const setLotMeta = (payload) => ({ type: SET_CURRENT_LOTMETA, payload });
 const setLotPhotos = (payload) => ({ type: SET_CURRENT_LOTPHOTOS, payload });
+const setNewOfferMeta = (payload) => ({ type: SET_NEW_OFFERMETA, payload });
 
 // FIREBASE
 
@@ -153,4 +159,43 @@ export const setEditLotForm = (lotID, isFormModeOn) => (dispatch) => {
   // console.log(lotID);
   dispatch(setCurrentLotId(lotID));
   dispatch(setFormMode(!isFormModeOn));
+};
+
+export const onOfferCreate = (lotMeta) => (dispatch) => {
+  const offerAuthorID = fa.currentUser.uid;
+
+  const offerID = db_offers.child("offers").push().key;
+
+  const offerInitial = {
+    offerID: offerID,
+    authorID: offerAuthorID,
+    postID: lotMeta.postid,
+    photospath: `/posts/${lotMeta.uid}/${lotMeta.postid}/${offerAuthorID}/${offerID}`,
+  };
+
+  const offerUpdate = {};
+  offerUpdate["/offers/" + offerID] = offerInitial;
+  db_offers.update(offerUpdate);
+
+  dispatch(setNewOfferMeta(offerInitial));
+};
+
+export const onOfferCancel = (offerMeta) => (dispatch) => {
+  db_offers.child("offers/" + offerMeta.offerID).remove();
+  dispatch(setNewOfferMeta(null));
+
+  const storage = fb.storage().ref();
+
+  storage
+    .child(offerMeta.photospath)
+    .listAll()
+    .then((res) => res.items.forEach((item) => item.delete()));
+};
+
+export const createOffer = (offerID, offerFormData) => async (dispatch) => {
+  const offerUpdate = {};
+  offerUpdate["/offers/" + offerID] = offerFormData;
+  db_offers.update(offerUpdate);
+
+  dispatch(setNewOfferMeta(null));
 };
