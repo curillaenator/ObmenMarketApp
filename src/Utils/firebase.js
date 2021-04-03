@@ -1,5 +1,7 @@
 import firebase from "firebase";
 
+import "firebase/performance";
+
 // POSTS
 
 const app = firebase.initializeApp({
@@ -27,6 +29,7 @@ export const db_offers = app
 
 export const fb = firebase;
 export const fa = firebase.auth();
+export const perf = firebase.performance();
 // export const fn = firebase.functions();
 // export const fs = firebase.firestore();
 

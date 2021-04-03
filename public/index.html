@@ -4,6 +4,21 @@
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="first-input-delay.min.js"></script>
+    <script>
+      // The perfMetrics object is created by the code that goes in <head>.
+perfMetrics.onFirstInputDelay(function(delay, evt) {
+  ga('send', 'event', {
+    eventCategory: 'Perf Metrics',
+    eventAction: 'first-input-delay',
+    eventLabel: evt.type,
+    // Event values must be an integer.
+    eventValue: Math.round(delay),
+    // Exclude this event from bounce rate calculations.
+    nonInteraction: true,
+  });
+});
+    </script>
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
