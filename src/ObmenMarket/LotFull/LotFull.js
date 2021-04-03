@@ -24,7 +24,7 @@ import {
 } from "../../Redux/Reducers/lots";
 
 import openGallery from "../../Assets/Icons/openGallery.svg";
-import offerpic from "../../Assets/Images/1.jpg";
+// import offerpic from "../../Assets/Images/1.jpg";
 
 import "react-image-lightbox/style.css";
 import styles from "./lotfull.module.scss";
@@ -224,8 +224,6 @@ const Descrption = ({ lotMeta }) => {
 const OfferCard = ({ data, lotMeta }) => {
   const [photoLinks, setPhotoLinks] = useState([]);
 
-  // console.log(photoLinks);
-
   useEffect(() => {
     const handlePhotoLinks = (url) => setPhotoLinks([...photoLinks, url]);
 
@@ -253,7 +251,7 @@ const OfferCard = ({ data, lotMeta }) => {
     <div className={styles.offer}>
       <div className={styles.header}>
         <div className={styles.header_photo}>
-          <img src={offerpic} alt="" />
+          <img src={photoLinks[0]} alt="" />
         </div>
 
         <div className={styles.header_offername}></div>
