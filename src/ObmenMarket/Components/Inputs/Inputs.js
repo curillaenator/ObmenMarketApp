@@ -107,7 +107,7 @@ export const Checkbox = ({ input, meta, ...props }) => {
   return (
     <div className={styles.input}>
       <div className={styles.checkbox}>
-        <input type="checkbox" id="agreetooverpay" {...input} {...props} />
+        <input type="checkbox" id="agreetooverpay" {...input} />
         <label htmlFor="agreetooverpay" onClick={labelHandle}>
           {labelText}
         </label>

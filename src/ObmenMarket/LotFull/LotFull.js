@@ -106,7 +106,7 @@ const Gallery = ({ lotPhotos }) => {
   );
 };
 
-const Buttons = ({ icons, handleOfferForm, isOfferForm, lotMeta, ownerID }) => {
+const Buttons = ({ icons, handleOfferForm, isOfferForm }) => {
   const ref = useRef(0);
 
   const [buttonsContWidth, setButtonsContWidth] = useState(null);
@@ -143,15 +143,10 @@ const Buttons = ({ icons, handleOfferForm, isOfferForm, lotMeta, ownerID }) => {
     };
   }, []);
 
-  const buttonsStyle =
-    lotMeta && ownerID !== lotMeta.uid
-      ? { height: "56px", marginBottom: "32px" }
-      : {};
-
   const offerTitle = isOfferForm ? "Передумал" : "Предложить обмен";
 
   return (
-    <div className={styles.buttons} ref={ref} style={buttonsStyle}>
+    <div className={styles.buttons} ref={ref}>
       {buttonsContWidth !== 0 && (
         <>
           <Button
@@ -287,20 +282,13 @@ const LotFull = ({
 
                 <div className={styles.spacer}></div>
 
-                {/* <div
-                  className={styles.buttonsRef}
-                  style={buttonsStyle}
-                > */}
                 {lotMeta && ownerID !== lotMeta.uid && (
                   <Buttons
                     icons={icons}
                     handleOfferForm={handleOfferForm}
                     isOfferForm={isOfferForm}
-                    lotMeta={lotMeta}
-                    ownerID={ownerID}
                   />
                 )}
-                {/* </div> */}
 
                 {isOfferForm && (
                   <OfferForm

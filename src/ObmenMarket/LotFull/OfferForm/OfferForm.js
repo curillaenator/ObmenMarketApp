@@ -72,7 +72,12 @@ const OfferFormFields = ({
         />
 
         <div className={styles.overprice}>
-          <Field name="overprice" component={Checkbox} />
+          <Field
+            name="overprice"
+            component={Checkbox}
+            type="checkbox"
+            initialValue={false}
+          />
         </div>
 
         <div

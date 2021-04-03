@@ -8,6 +8,7 @@ import styles from "./lotscontainer.module.scss";
 // UTILS
 
 const lotListObjToArr = (snapshot) => {
+  if (!snapshot) return [];
   return Object.keys(snapshot)
     .map((lot) => snapshot[lot])
     .reverse();
@@ -26,7 +27,9 @@ const lotListPublishedByUser = (matchedID, setLotList) => {
   postsRef
     .orderByChild("uid")
     .equalTo(matchedID)
-    .once("value", (snapshot) => setLotList(lotListObjToArr(snapshot.val())));
+    .once("value", (snapshot) => {
+      setLotList(lotListObjToArr(snapshot.val()));
+    });
 };
 
 // COMPONENT
@@ -40,12 +43,14 @@ export const LotsContainer = ({ toRender, matchedID, selected }) => {
   useEffect(() => {
     toRender === "all" && lotListAll(setListToRender);
     toRender === "profile" && lotListPublishedByUser(matchedID, setLotList);
-  }, [toRender, matchedID]); // сделать очистку слушателя
+  }, [toRender, matchedID]);
 
   useEffect(() => {
     selected === "published" &&
+      lotList.length !== 0 &&
       setListToRender(lotList.filter((lot) => lot.published));
     selected === "drafts" &&
+      lotList.length !== 0 &&
       setListToRender(lotList.filter((lot) => lot.draft));
   }, [selected, lotList]);
 
