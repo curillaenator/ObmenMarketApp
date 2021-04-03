@@ -39,7 +39,8 @@ const OfferFormFields = ({
   const uploadImg = (file) => {
     const uploadTask = storage
       .child(
-        `posts/${authorID}/${lotID}/${offerUserID}/${newOfferMeta.offerID}/offer${photos.length}`
+        // `posts/${authorID}/${lotID}/${offerUserID}/${newOfferMeta.offerID}/offer${photos.length}`
+        `offers/${lotID}/${newOfferMeta.offerID}/offer${photos.length}`
       )
       .put(file);
 
