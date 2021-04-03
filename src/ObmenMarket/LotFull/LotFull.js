@@ -234,7 +234,7 @@ const OfferCard = ({ data, lotMeta }) => {
       .then((res) =>
         res.items.forEach((item, i) => {
           handlePhotoLinks(
-            `https://firebasestorage.googleapis.com/v0/b/${item.bucket}/o/posts%2F${lotMeta.uid}%2F${lotMeta.postid}%2F${data.authorID}%2F${data.offerID}%2Foffer${i}?alt=media`
+            `https://firebasestorage.googleapis.com/v0/b/${item.bucket}/o/offers%2F${lotMeta.postid}%2F${data.offerID}%2Foffer${i}?alt=media`
           );
         })
       );

@@ -170,7 +170,7 @@ export const onOfferCreate = (lotMeta) => (dispatch) => {
     offerID: offerID,
     authorID: offerAuthorID,
     postID: lotMeta.postid,
-    photospath: `/posts/${lotMeta.uid}/${lotMeta.postid}/${offerAuthorID}/${offerID}`,
+    photospath: `/offers/${lotMeta.postid}/${offerID}`,
   };
 
   const offerUpdate = {};
