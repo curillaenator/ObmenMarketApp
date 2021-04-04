@@ -417,6 +417,7 @@ const LotFull = ({
   onOfferCancel,
   createOffer,
 }) => {
+  console.log(fa.currentUser);
   const [isOfferForm, setIsOfferForm] = useState(false);
 
   const handleOfferForm = () => {
