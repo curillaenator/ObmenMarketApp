@@ -1,4 +1,5 @@
 import { useState } from "react";
+// import { fa } from "../../Utils/firebase";
 
 import { LotsContainer } from "../Components/LotsContainer/LotsContainer";
 
@@ -19,10 +20,10 @@ const Title = ({ name, title, active, setSelected, isOwner }) => {
   );
 };
 
-export const ProfileLots = ({ isOwner, matchedID }) => {
+export const ProfileLots = ({ ownerID, isOwner, matchedID }) => {
   const [selected, setSelected] = useState("published");
 
-  // const userID = matchedID ? matchedID : fa.currentUser.uid;
+  const userID = matchedID ? matchedID : ownerID;
 
   const authored = isOwner ? "Мои лоты" : "Лоты автора";
 
@@ -51,7 +52,7 @@ export const ProfileLots = ({ isOwner, matchedID }) => {
       <LotsContainer
         toRender="profile"
         selected={selected}
-        matchedID={matchedID}
+        matchedID={userID}
       />
     </>
   );

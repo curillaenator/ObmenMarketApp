@@ -260,8 +260,6 @@ const OfferCard = ({ data, lotMeta, onOfferCancel }) => {
   const [photoLinks, setPhotoLinks] = useState([]);
 
   useEffect(() => {
-    console.log("run");
-
     fb.storage()
       .ref()
       .child(data.photospath)
@@ -342,13 +340,14 @@ const OfferCard = ({ data, lotMeta, onOfferCancel }) => {
   );
 };
 
-const Offers = ({ lotMeta, onOfferCancel, ownerID }) => {
+const Offers = ({ lotMeta, onOfferCancel, ownerID, setOffersQty }) => {
   const [offers, setOffers] = useState(null);
-  const [filteredOffers, setFilteredOffers] = useState(null);
 
   useEffect(() => {
     db_offers.child(lotMeta.postid).on("value", (snapshot) => {
       if (snapshot.val()) {
+        setOffersQty(Object.keys(snapshot.val()).length);
+
         setOffers(
           Object.keys(snapshot.val()).map((offer) => ({
             ...snapshot.val()[offer],
@@ -357,31 +356,26 @@ const Offers = ({ lotMeta, onOfferCancel, ownerID }) => {
         );
       }
     });
-  }, [lotMeta]);
+  }, [lotMeta, setOffersQty]);
 
-  useEffect(() => {
-    if (ownerID !== lotMeta.uid) {
-      offers &&
-        setFilteredOffers(offers.filter((offer) => offer.authorID === ownerID));
-    }
+  const handleFilteredOffers = () => {
+    if (ownerID === lotMeta.uid) return offers;
+    if (ownerID !== lotMeta.uid)
+      return offers.filter((o) => o.authorID === ownerID);
+  };
 
-    if (ownerID === lotMeta.postid) {
-      offers && setFilteredOffers(offers);
-    }
-  }, [offers, lotMeta, ownerID]);
+  const filteredOffers = offers ? handleFilteredOffers() : null;
 
   const offersTitle =
-    ownerID === lotMeta.postid
+    ownerID === lotMeta.uid
       ? "Вам предложили в обмен:"
       : "Вы предлагали к обмену";
 
   return (
-    <div className={styles.offers}>
-      {filteredOffers && filteredOffers.length !== 0 && (
+    filteredOffers && (
+      <div className={styles.offers}>
         <div className={styles.offers_title}>{offersTitle}</div>
-      )}
 
-      {filteredOffers && (
         <div className={styles.offers_list}>
           {filteredOffers.map((offer) => (
             <OfferCard
@@ -392,8 +386,8 @@ const Offers = ({ lotMeta, onOfferCancel, ownerID }) => {
             />
           ))}
         </div>
-      )}
-    </div>
+      </div>
+    )
   );
 };
 
@@ -429,6 +423,8 @@ const LotFull = ({
 }) => {
   const [isOfferForm, setIsOfferForm] = useState(false);
   const handleEditLot = () => setEditLotForm(match.params.id, isFormModeOn);
+
+  const [offersQty, setOffersQty] = useState(0);
 
   const handleOfferForm = () => {
     if (!isAuth) return history.push("/login");
@@ -475,7 +471,7 @@ const LotFull = ({
 
               <div className={styles.status}>
                 <StatusBar
-                  offersQty={lotMeta.offersQty}
+                  offersQty={offersQty}
                   expiryDate={lotMeta.expireDate}
                 />
               </div>
@@ -501,11 +497,14 @@ const LotFull = ({
                 />
               )}
 
-              <Offers
-                lotMeta={lotMeta}
-                onOfferCancel={onOfferCancel}
-                ownerID={ownerID}
-              />
+              {isAuth && (
+                <Offers
+                  lotMeta={lotMeta}
+                  onOfferCancel={onOfferCancel}
+                  ownerID={ownerID}
+                  setOffersQty={setOffersQty}
+                />
+              )}
             </div>
 
             <Descrption lotMeta={lotMeta} />

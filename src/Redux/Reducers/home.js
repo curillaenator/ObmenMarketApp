@@ -36,12 +36,12 @@ export const setProfile = (payload) => ({ type: SET_PROFILE, payload });
 
 export const getProfile = (ownerID, matchedID) => (dispatch) => {
   const id = matchedID ? matchedID : ownerID;
-  const authID = fa.currentUser;
+  const auth = fa.currentUser;
 
   db.ref("users/" + id).once("value", (snap) => {
     dispatch(setProfile(snap.val()));
-    if (!authID) return dispatch(setIsOwner(false));
-    if (authID.uid === id) return dispatch(setIsOwner(true));
-    if (authID.uid !== id) return dispatch(setIsOwner(false));
+    if (!auth) return dispatch(setIsOwner(false));
+    if (auth.uid === id) return dispatch(setIsOwner(true));
+    if (auth.uid !== id) return dispatch(setIsOwner(false));
   });
 };

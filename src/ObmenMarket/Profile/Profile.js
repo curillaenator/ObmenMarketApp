@@ -5,7 +5,6 @@ import { withRouter } from "react-router-dom";
 
 import { logout, updateUserProfile } from "../../Redux/Reducers/auth";
 import { setFormMode, getProfile } from "../../Redux/Reducers/home";
-
 import {
   onLotCreateFromForm,
   onLotCreateFormCancel,
@@ -28,6 +27,7 @@ const Profile = ({
   isAuth,
   match,
   history,
+  location,
   createLotId,
   isFormModeOn,
   isOwner,
@@ -46,62 +46,69 @@ const Profile = ({
 
   useEffect(() => {
     setFormMode(false);
-    if (!match.params.id) history.push("/login");
-    getProfile(ownerID, match.params.id);
-  }, [ownerID, match.params.id, getProfile, setFormMode, history]);
-
+    if (!isAuth && !match.params.id) return history.push("/login");
+    if (!isAuth && match.params.id) return getProfile(null, match.params.id);
+    if (isAuth && !match.params.id) return getProfile(ownerID, null);
+    return getProfile(ownerID, match.params.id);
+  }, [ownerID, match.params.id, getProfile, setFormMode, history, isAuth]);
 
   return (
-    <div className={styles.profile}>
-      {isEdit && (
-        <ProfileEdit
-          icons={icons}
-          user={user}
-          handleEdit={handleEdit}
-          updateUserProfile={updateUserProfile}
-          formProfile={formProfile}
-        />
-      )}
+    profile && (
+      <div className={styles.profile}>
+        {isEdit && (
+          <ProfileEdit
+            icons={icons}
+            user={user}
+            handleEdit={handleEdit}
+            updateUserProfile={updateUserProfile}
+            formProfile={formProfile}
+          />
+        )}
 
-      {!isEdit && profile && (
-        <div className={styles.display}>
-          {isOwner && (
-            <Cta
-              icons={icons}
-              isAuth={isAuth}
-              isFormModeOn={isFormModeOn}
-              setFormMode={setFormMode}
-              createLotId={createLotId}
-              onLotCreateFromForm={onLotCreateFromForm}
-              onLotCreateFormCancel={onLotCreateFormCancel}
-            />
-          )}
-
-          {!isFormModeOn && (
-            <>
-              <UserInfo
-                isOwner={isOwner}
-                profile={profile}
-                logout={logout}
-                handleEdit={handleEdit}
+        {!isEdit && profile && (
+          <div className={styles.display}>
+            {isOwner && (
+              <Cta
+                icons={icons}
+                isAuth={isAuth}
+                isFormModeOn={isFormModeOn}
+                setFormMode={setFormMode}
+                createLotId={createLotId}
+                onLotCreateFromForm={onLotCreateFromForm}
+                onLotCreateFormCancel={onLotCreateFormCancel}
               />
+            )}
 
-              <ProfileLots isOwner={isOwner} matchedID={match.params.id} />
-            </>
-          )}
+            {!isFormModeOn && (
+              <>
+                <UserInfo
+                  isOwner={isOwner}
+                  profile={profile}
+                  logout={logout}
+                  handleEdit={handleEdit}
+                />
 
-          {isFormModeOn && (
-            <FormFull
-              icons={icons}
-              formFullUI={formFullUI}
-              lotID={createLotId}
-              update={false}
-              formHandler={publishNewLotFromForm}
-            />
-          )}
-        </div>
-      )}
-    </div>
+                <ProfileLots
+                  ownerID={ownerID}
+                  isOwner={isOwner}
+                  matchedID={match.params.id}
+                />
+              </>
+            )}
+
+            {isFormModeOn && (
+              <FormFull
+                icons={icons}
+                formFullUI={formFullUI}
+                lotID={createLotId}
+                update={false}
+                formHandler={publishNewLotFromForm}
+              />
+            )}
+          </div>
+        )}
+      </div>
+    )
   );
 };
 

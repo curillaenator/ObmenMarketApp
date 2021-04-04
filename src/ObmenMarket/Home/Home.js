@@ -33,9 +33,11 @@ const Home = ({
   publishNewLotFromForm,
   resetMetaState,
 }) => {
-  useEffect(() => setFormMode(false), [setFormMode]);
-  useEffect(() => resetMetaState(), [resetMetaState]);
-  useEffect(() => setProfile(null), [setProfile]);
+  useEffect(() => {
+    setFormMode(false);
+    resetMetaState();
+    setProfile(null);
+  }, [setFormMode, resetMetaState, setProfile]);
 
   if (isLotCreated) return <Redirect to={`/posts/${createLotId}`} />;
 

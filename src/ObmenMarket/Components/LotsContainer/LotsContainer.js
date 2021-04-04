@@ -14,12 +14,12 @@ const lotListObjToArr = (snapshot) => {
     .reverse();
 };
 
-const lotListAll = (setListToRender) => {
+const lotListAll = (setLotList) => {
   postsRef
     .orderByChild("published")
     .equalTo(true)
     .once("value", (snapshot) => {
-      setListToRender(lotListObjToArr(snapshot.val()));
+      setLotList(lotListObjToArr(snapshot.val()));
     });
 };
 
@@ -35,26 +35,35 @@ const lotListPublishedByUser = (matchedID, setLotList) => {
 // COMPONENT
 
 export const LotsContainer = ({ toRender, matchedID, selected }) => {
-  const [lotList, setLotList] = useState([]);
-  const [listToRender, setListToRender] = useState([]);
+  const [lotList, setLotList] = useState(null);
 
   useEffect(() => {
-    toRender === "all" && lotListAll(setListToRender);
+    toRender === "all" && lotListAll(setLotList);
     toRender === "profile" && lotListPublishedByUser(matchedID, setLotList);
   }, [toRender, matchedID]);
 
-  useEffect(() => {
-    selected === "published" &&
-      lotList.length !== 0 &&
-      setListToRender(lotList.filter((lot) => lot.published));
-    selected === "drafts" &&
-      lotList.length !== 0 &&
-      setListToRender(lotList.filter((lot) => lot.draft));
-  }, [selected, lotList]);
+  const handleSelected = () => {
+    if (lotList && selected === "published")
+      return lotList.filter((lot) => lot.published);
+    if (lotList && selected === "drafts")
+      return lotList.filter((lot) => lot.draft);
+    return null;
+  };
+
+  const handleLotList = () => {
+    if (!lotList) return null;
+    return lotList;
+  };
+
+  const listToRender = selected ? handleSelected() : handleLotList();
 
   return (
-    <div className={styles.lots}>
-      {listToRender && listToRender.map((l) => <Lot data={l} key={l.postid} />)}
-    </div>
+    listToRender && (
+      <div className={styles.lots}>
+        {listToRender.map((l) => (
+          <Lot data={l} key={l.postid} />
+        ))}
+      </div>
+    )
   );
 };

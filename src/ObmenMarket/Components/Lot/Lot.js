@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { fb } from "../../../Utils/firebase";
+import { useState, useEffect } from "react";
+import { fb, db_offers } from "../../../Utils/firebase";
 import { Link } from "react-router-dom";
 
 import { StatusBar } from "../StatusBar/StatusBar";
@@ -24,27 +24,44 @@ const LotImage = (props) => {
 };
 
 export const Lot = ({ data }) => {
-  // console.log(data.uid, data.postid);
-  const [photo, setPhoto] = useState(null);
-  fb.storage()
-    .ref()
-    .child("posts/" + data.uid + "/" + data.postid + "/photo0")
-    .getDownloadURL()
-    .then((url) => setPhoto(url));
+  // console.log("draw");
+  const initialState = {
+    photo: null,
+    offersQty: 0,
+  };
+  const [state, setState] = useState(initialState);
+
+  useEffect(() => {
+    const getNewState = async () => {
+      const url = await fb
+        .storage()
+        .ref()
+        .child("posts/" + data.uid + "/" + data.postid + "/photo0")
+        .getDownloadURL();
+
+      const qtySnap = await db_offers.child(data.postid).once("value");
+      const qty = Object.keys(await qtySnap.val()).length;
+
+      setState({ photo: url, offersQty: qty });
+    };
+    getNewState();
+  }, [data]);
 
   return (
-    <div className={styles.lot}>
-      <Owner avatar={data.avatar} username={data.username} uid={data.uid} />
+    state.photo && (
+      <div className={styles.lot}>
+        <Owner avatar={data.avatar} username={data.username} uid={data.uid} />
 
-      <Link to={`/posts/${data.postid}`} className={styles.content}>
-        <LotImage lotImage={photo} lotnName={data.title} />
+        <Link to={`/posts/${data.postid}`} className={styles.content}>
+          <LotImage lotImage={state.photo} lotnName={data.title} />
 
-        <div className={styles.title}>{data.title}</div>
+          <div className={styles.title}>{data.title}</div>
 
-        <div className={styles.description}>{data.description}</div>
+          <div className={styles.description}>{data.description}</div>
 
-        <StatusBar offersQty={data.offersQty} expiryDate={data.expireDate} />
-      </Link>
-    </div>
+          <StatusBar offersQty={state.offersQty} expiryDate={data.expireDate} />
+        </Link>
+      </div>
+    )
   );
 };
