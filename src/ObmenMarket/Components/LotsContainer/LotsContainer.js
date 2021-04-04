@@ -38,8 +38,6 @@ export const LotsContainer = ({ toRender, matchedID, selected }) => {
   const [lotList, setLotList] = useState([]);
   const [listToRender, setListToRender] = useState([]);
 
-  // console.log(listToRender);
-
   useEffect(() => {
     toRender === "all" && lotListAll(setListToRender);
     toRender === "profile" && lotListPublishedByUser(matchedID, setLotList);

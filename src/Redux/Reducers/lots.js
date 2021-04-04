@@ -6,6 +6,7 @@ const SET_NEWLOT_ID = "lots/SET_NEWLOT_ID";
 const SET_IS_LOTCREATED = "lots/SET_IS_LOTCREATED";
 const SET_CURRENT_ID = "lots/SET_CURRENT_ID";
 const SET_IS_LOTMETA = "lots/SET_IS_LOTMETA";
+const SET_IS_LOTPHOTOS = "lots/SET_IS_LOTPHOTOS";
 const SET_CURRENT_LOTMETA = "lots/SET_CURRENT_LOT";
 const SET_CURRENT_LOTPHOTOS = "lots/SET_CURRENT_LOTPHOTOS";
 const SET_NEW_OFFERMETA = "lots/SET_NEW_OFFER_ID";
@@ -15,6 +16,7 @@ const initialState = {
   isLotCreated: false,
   currentLotId: null,
   isLotMeta: false,
+  isLotPhotos: false,
   currentLotMeta: null,
   currentLotPhotos: null,
   newOfferMeta: null,
@@ -40,6 +42,9 @@ export const lots = (state = initialState, action) => {
     case SET_IS_LOTMETA:
       return { ...state, isLotMeta: action.payload };
 
+    case SET_IS_LOTPHOTOS:
+      return { ...state, isLotPhotos: action.payload };
+
     case SET_NEW_OFFERMETA:
       return { ...state, newOfferMeta: action.payload };
 
@@ -54,6 +59,7 @@ export const setNewLotId = (id) => ({ type: SET_NEWLOT_ID, id });
 export const setIsLotCreated = (bool) => ({ type: SET_IS_LOTCREATED, bool });
 const setCurrentLotId = (id) => ({ type: SET_CURRENT_ID, id });
 const setIsLotMeta = (payload) => ({ type: SET_IS_LOTMETA, payload });
+const setIsLotPhotos = (payload) => ({ type: SET_IS_LOTPHOTOS, payload });
 const setLotMeta = (payload) => ({ type: SET_CURRENT_LOTMETA, payload });
 const setLotPhotos = (payload) => ({ type: SET_CURRENT_LOTPHOTOS, payload });
 const setNewOfferMeta = (payload) => ({ type: SET_NEW_OFFERMETA, payload });
@@ -64,6 +70,7 @@ export const resetMetaState = () => (dispatch) => {
   dispatch(setNewLotId(null));
   dispatch(setCurrentLotId(null));
   dispatch(setIsLotMeta(false));
+  dispatch(setIsLotPhotos(false));
   dispatch(setLotMeta(null));
   dispatch(setLotPhotos(null));
   dispatch(setNewOfferMeta(null));
@@ -156,6 +163,7 @@ export const getLotMeta = (lotID) => (dispatch) => {
     );
 
     dispatch(setLotPhotos(photoList));
+    dispatch(setIsLotPhotos(true));
   };
 
   db.ref("posts/" + lotID).once("value", (snap) => {

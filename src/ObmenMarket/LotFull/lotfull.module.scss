@@ -66,11 +66,25 @@
         height: 0;
         padding-top: calc(100% * 0.563);
         margin-bottom: 4px;
+        overflow: hidden;
         cursor: pointer;
+        mask-image: url(../../Assets/Masks/lotPhoto.svg);
+        mask-size: cover;
+        mask-repeat: no-repeat;
 
-        & > img {
-          @include image;
-          mask-image: url(../../Assets/Masks/lotPhoto.svg);
+        .phototrack {
+          display: flex;
+          align-items: center;
+          position: absolute;
+          height: 100%;
+          top: 0;
+          left: 0;
+          transition: 0.2s ease-in-out;
+
+          & > img {
+            height: 100%;
+            object-fit: cover;
+          }
         }
 
         .tint {
@@ -128,7 +142,7 @@
           & > img {
             @include image;
             mask-image: url(../../Assets/Masks/commonBtn.svg);
-            transition: 0.12s linear;
+            // transition: 0.12s linear;
           }
 
           &::after {
@@ -150,6 +164,7 @@
         .thumb_active {
           &::after {
             @include activeTint;
+            transition: none;
             background-image: url(../../Assets/Icons/check.svg);
             background-position: center;
             background-repeat: no-repeat;

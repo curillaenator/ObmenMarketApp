@@ -31,7 +31,7 @@ export const fb = firebase;
 export const fa = firebase.auth();
 export const perf = firebase.performance();
 // export const fn = firebase.functions();
-// export const fs = firebase.firestore();
+export const fs = firebase.firestore().enablePersistence();
 
 // using SendGrid's Node.js Library - https://github.com/sendgrid/sendgrid-nodejs
 // export const sg = require("@sendgrid/mail")

@@ -1,4 +1,4 @@
-import { getLCP, getFID, getCLS } from "web-vitals";
+// import { getLCP, getFID, getCLS } from "web-vitals";
 
 import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -25,9 +25,9 @@ function Obmen({ authCheck }) {
     userLoading,
   ]);
 
-  getCLS(console.log);
-  getFID(console.log);
-  getLCP(console.log);
+  // getCLS(console.log);
+  // getFID(console.log);
+  // getLCP(console.log);
 
   return (
     <div className={styles.container}>

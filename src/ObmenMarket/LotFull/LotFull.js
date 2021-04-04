@@ -45,49 +45,69 @@ const Author = ({ authorID, avatar, name }) => {
   );
 };
 
+// GALLERY
+
+const Tint = ({ title, icon, count }) => {
+  const iconMargin = title ? { marginRight: "18px" } : {};
+
+  return (
+    <div className={styles.tint}>
+      <div className={styles.table}>
+        {icon && <img src={icon} alt={title} style={iconMargin} />}
+        {title && (
+          <div className={styles.tabletitle}>
+            <h3>{title}</h3>
+            <p>{`${count} фото`}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const Thumb = ({ photo, label, selected, setSelected }) => {
+  const thumbClassName =
+    label === selected
+      ? `${styles.thumb} ${styles.thumb_active}`
+      : styles.thumb;
+
+  return (
+    <div className={thumbClassName} onClick={() => setSelected(label)}>
+      <img src={photo} alt="" />
+    </div>
+  );
+};
+
+const Track = ({ lotPhotos, selected }) => {
+  const count = lotPhotos.length;
+
+  const trackStyle = {
+    width: `calc(100% * ${count})`,
+    left: `${-100 * selected}%`,
+  };
+
+  const photoStyle = {
+    width: `calc(100% / ${count})`,
+  };
+
+  return (
+    <div className={styles.phototrack} style={trackStyle}>
+      {lotPhotos.map((photo) => (
+        <img src={photo} alt="" key={photo} style={photoStyle} />
+      ))}
+    </div>
+  );
+};
+
 const Gallery = ({ lotPhotos }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [pIndex, setIndex] = useState(0);
-
-  const Tint = ({ title, icon, count }) => {
-    const iconMargin = title ? { marginRight: "18px" } : {};
-
-    return (
-      <div className={styles.tint}>
-        <div className={styles.table}>
-          {icon && <img src={icon} alt={title} style={iconMargin} />}
-          {title && (
-            <div className={styles.tabletitle}>
-              <h3>{title}</h3>
-              <p>{`${count} фото`}</p>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  const Thumb = ({ photo, index }) => {
-    const thumbClassName =
-      index === pIndex
-        ? `${styles.thumb} ${styles.thumb_active}`
-        : styles.thumb;
-
-    return (
-      <div
-        className={thumbClassName}
-        key={photo}
-        onClick={() => setIndex(index)}
-      >
-        <img src={photo} alt="" />
-      </div>
-    );
-  };
+  const [selected, setSelected] = useState(0);
 
   return (
     <div className={styles.gallery}>
       <div className={styles.mainphoto} onClick={() => setIsOpen(true)}>
-        <img src={lotPhotos[pIndex]} alt="" />
+        <Track lotPhotos={lotPhotos} selected={selected} />
+
         <Tint
           title="Открыть галлерею"
           icon={openGallery}
@@ -97,22 +117,30 @@ const Gallery = ({ lotPhotos }) => {
 
       <div className={styles.thumbtrack}>
         {lotPhotos.map((photo, i) => (
-          <Thumb photo={photo} index={i} key={photo} />
+          <Thumb
+            key={photo}
+            photo={photo}
+            label={i}
+            selected={selected}
+            setSelected={setSelected}
+          />
         ))}
       </div>
 
       {isOpen && (
         <Lightbox
-          mainSrc={lotPhotos[pIndex]}
-          nextSrc={lotPhotos[(pIndex + 1) % lotPhotos.length]}
+          mainSrc={lotPhotos[selected]}
+          nextSrc={lotPhotos[(selected + 1) % lotPhotos.length]}
           prevSrc={
-            lotPhotos[(pIndex + lotPhotos.length - 1) % lotPhotos.length]
+            lotPhotos[(selected + lotPhotos.length - 1) % lotPhotos.length]
           }
           onCloseRequest={() => setIsOpen(false)}
           onMovePrevRequest={() =>
-            setIndex((pIndex + lotPhotos.length - 1) % lotPhotos.length)
+            setSelected((selected + lotPhotos.length - 1) % lotPhotos.length)
           }
-          onMoveNextRequest={() => setIndex((pIndex + 1) % lotPhotos.length)}
+          onMoveNextRequest={() =>
+            setSelected((selected + 1) % lotPhotos.length)
+          }
         />
       )}
     </div>
@@ -120,50 +148,38 @@ const Gallery = ({ lotPhotos }) => {
 };
 
 const Buttons = ({ icons, handleOfferForm, isOfferForm }) => {
+  const [draw, callDraw] = useState(0);
+
   const ref = useRef(0);
+  const butCont = ref.current.clientWidth;
 
-  const [buttonsContWidth, setButtonsContWidth] = useState(null);
-  const [buttonsWidths, setButtons] = useState({ offer: 0, follow: 0 });
-  const [followTitle, setFollowTitle] = useState("");
-
-  const widthHandler = () => {
-    const win = window.innerWidth;
-    if (win >= 1024) setButtonsContWidth(440);
-    if (win >= 640 && win < 1024) setButtonsContWidth(win / 2 - 48);
-    if (win >= 375 && win < 640) setButtonsContWidth(win - 64);
-    if (win >= 320 && win < 375) setButtonsContWidth(win - 48);
-  };
+  const drawCaller = () =>
+    window.innerWidth >= 320 &&
+    window.innerWidth < 1024 &&
+    callDraw(window.innerWidth);
 
   useEffect(() => {
-    if (buttonsContWidth && window.innerWidth >= 1024) {
-      setFollowTitle("Следить за лотом");
-      setButtons({ offer: 217, follow: buttonsContWidth - 237 });
-    }
-    if (buttonsContWidth && window.innerWidth < 1024) {
-      setFollowTitle("");
-      setButtons({ offer: buttonsContWidth - 76, follow: 56 });
-    }
-  }, [buttonsContWidth]);
-
-  useEffect(() => {
-    if (ref.current.clientWidth > 0) {
-      setButtonsContWidth(ref.current.clientWidth);
-    }
-
-    window.addEventListener("resize", widthHandler);
+    callDraw(window.innerWidth);
+    window.addEventListener("resize", drawCaller);
     return () => {
-      window.removeEventListener("resize", widthHandler);
+      window.removeEventListener("resize", drawCaller);
     };
   }, []);
 
   const offerTitle = isOfferForm ? "Передумал" : "Предложить обмен";
+  const followTitle = draw >= 1024 ? "Следить за лотом" : null;
+
+  const buttonWidths =
+    draw >= 1024
+      ? { offer: 217, follow: butCont - 237 }
+      : { offer: butCont - 76, follow: 56 };
 
   return (
     <div className={styles.buttons} ref={ref}>
-      {buttonsContWidth !== 0 && (
+      {butCont && (
         <>
           <Button
-            width={buttonsWidths.offer}
+            width={buttonWidths.offer}
             height={56}
             title={offerTitle}
             icon={icons.add}
@@ -172,7 +188,7 @@ const Buttons = ({ icons, handleOfferForm, isOfferForm }) => {
           />
 
           <ButtonOutline
-            width={buttonsWidths.follow}
+            width={buttonWidths.follow}
             height={56}
             title={followTitle}
             icon={icons.bell}
@@ -223,15 +239,6 @@ const Descrption = ({ lotMeta }) => {
       <div className={styles.bigtitle}>{lotMeta.title}</div>
 
       <div className={styles.lottext}>{lotMeta.description}</div>
-
-      {/* <div className={styles.smalltitle}>Хочу обменять на:</div> */}
-
-      {/* <div className={styles.lottext}>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque inventore
-        voluptates delectus, nisi ad, harum repudiandae nesciunt omnis quae
-        alias accusantium deleniti assumenda iste et velit eos officiis
-        distinctio quibusdam.
-      </div> */}
 
       <LotStats lotMeta={lotMeta} />
     </div>
@@ -404,6 +411,7 @@ const LotFull = ({
   currentLotId,
   currentLotMeta,
   isLotMeta,
+  isLotPhotos,
   lotMeta,
   lotPhotos,
   setNewLotId,
@@ -418,6 +426,7 @@ const LotFull = ({
   createOffer,
 }) => {
   const [isOfferForm, setIsOfferForm] = useState(false);
+  const handleEditLot = () => setEditLotForm(match.params.id, isFormModeOn);
 
   const handleOfferForm = () => {
     if (!isAuth) return history.push("/login");
@@ -443,83 +452,78 @@ const LotFull = ({
       snapshot.exists() && getLotMeta(match.params.id);
       !snapshot.exists() && history.push("/");
     });
-  }, [match.params.id, getLotMeta, isLotMeta, history]);
-
-  const handleEditLot = () => setEditLotForm(match.params.id, isFormModeOn);
+  }, [match.params.id, getLotMeta, history]);
 
   return (
-    <div className={styles.lotwrapper}>
-      {isLotMeta && (
-        <>
-          <Controls
-            isAuth={isAuth}
-            lotMeta={lotMeta}
-            history={history}
-            handleEditLot={handleEditLot}
-            onLotCreateFormCancel={onLotCreateFormCancel}
-          />
+    isLotMeta &&
+    isLotPhotos && (
+      <div className={styles.lotwrapper}>
+        <Controls
+          isAuth={isAuth}
+          lotMeta={lotMeta}
+          history={history}
+          handleEditLot={handleEditLot}
+          onLotCreateFormCancel={onLotCreateFormCancel}
+        />
 
-          {!isFormModeOn && (
-            <div className={styles.lot}>
-              <div className={styles.info}>
-                {lotPhotos && (
-                  <Gallery lotMeta={lotMeta} lotPhotos={lotPhotos} />
-                )}
+        {!isFormModeOn && (
+          <div className={styles.lot}>
+            <div className={styles.info}>
+              <Gallery lotMeta={lotMeta} lotPhotos={lotPhotos} />
 
-                <div className={styles.status}>
-                  <StatusBar
-                    offersQty={lotMeta.offersQty}
-                    expiryDate={lotMeta.expireDate}
-                  />
-                </div>
-
-                <div className={styles.spacer}></div>
-
-                {lotMeta && ownerID !== lotMeta.uid && (
-                  <Buttons
-                    icons={icons}
-                    handleOfferForm={handleOfferForm}
-                    isOfferForm={isOfferForm}
-                  />
-                )}
-
-                {isOfferForm && (
-                  <OfferForm
-                    icons={icons}
-                    formOfferUI={formOfferUI}
-                    lotMeta={lotMeta}
-                    newOfferMeta={newOfferMeta}
-                    createOffer={createOffer}
-                    setIsOfferForm={setIsOfferForm}
-                  />
-                )}
-
-                <Offers
-                  lotMeta={lotMeta}
-                  onOfferCancel={onOfferCancel}
-                  ownerID={ownerID}
+              <div className={styles.status}>
+                <StatusBar
+                  offersQty={lotMeta.offersQty}
+                  expiryDate={lotMeta.expireDate}
                 />
               </div>
 
-              <Descrption lotMeta={lotMeta} />
-            </div>
-          )}
-        </>
-      )}
+              <div className={styles.spacer}></div>
 
-      {isFormModeOn && (
-        <FormFull
-          setFormMode={setFormMode}
-          icons={icons}
-          formFullUI={formFullUI}
-          lotID={currentLotId}
-          lotMeta={currentLotMeta}
-          lotPhotos={lotPhotos}
-          update={true}
-          formHandler={updateLotFromEditForm}
-        />
-      )}
-    </div>
+              {ownerID !== lotMeta.uid && (
+                <Buttons
+                  icons={icons}
+                  handleOfferForm={handleOfferForm}
+                  isOfferForm={isOfferForm}
+                />
+              )}
+
+              {isOfferForm && (
+                <OfferForm
+                  icons={icons}
+                  formOfferUI={formOfferUI}
+                  lotMeta={lotMeta}
+                  newOfferMeta={newOfferMeta}
+                  createOffer={createOffer}
+                  setIsOfferForm={setIsOfferForm}
+                />
+              )}
+
+              <Offers
+                lotMeta={lotMeta}
+                onOfferCancel={onOfferCancel}
+                ownerID={ownerID}
+              />
+            </div>
+
+            <Descrption lotMeta={lotMeta} />
+          </div>
+        )}
+
+        {isFormModeOn && (
+          <FormFull
+            setFormMode={setFormMode}
+            icons={icons}
+            formFullUI={formFullUI}
+            lotID={currentLotId}
+            lotMeta={currentLotMeta}
+            lotPhotos={lotPhotos}
+            update={true}
+            formHandler={updateLotFromEditForm}
+          />
+        )}
+      </div>
+    )
   );
 };
 
@@ -533,6 +537,7 @@ const mstp = (state) => ({
   currentLotId: state.lots.currentLotId,
   currentLotMeta: state.lots.currentLotMeta,
   isLotMeta: state.lots.isLotMeta,
+  isLotPhotos: state.lots.isLotPhotos,
   lotMeta: state.lots.currentLotMeta,
   lotPhotos: state.lots.currentLotPhotos,
   newOfferMeta: state.lots.newOfferMeta,
