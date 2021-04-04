@@ -260,6 +260,8 @@ const OfferCard = ({ data, lotMeta, onOfferCancel }) => {
   const [photoLinks, setPhotoLinks] = useState([]);
 
   useEffect(() => {
+    console.log("run");
+
     fb.storage()
       .ref()
       .child(data.photospath)

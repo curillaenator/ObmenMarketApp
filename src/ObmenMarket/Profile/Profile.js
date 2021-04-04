@@ -5,6 +5,7 @@ import { withRouter } from "react-router-dom";
 
 import { logout, updateUserProfile } from "../../Redux/Reducers/auth";
 import { setFormMode, getProfile } from "../../Redux/Reducers/home";
+
 import {
   onLotCreateFromForm,
   onLotCreateFormCancel,
@@ -26,6 +27,7 @@ const Profile = ({
   user,
   isAuth,
   match,
+  history,
   createLotId,
   isFormModeOn,
   isOwner,
@@ -44,8 +46,10 @@ const Profile = ({
 
   useEffect(() => {
     setFormMode(false);
+    if (!match.params.id) history.push("/login");
     getProfile(ownerID, match.params.id);
-  }, [ownerID, match.params.id, getProfile, setFormMode]);
+  }, [ownerID, match.params.id, getProfile, setFormMode, history]);
+
 
   return (
     <div className={styles.profile}>
