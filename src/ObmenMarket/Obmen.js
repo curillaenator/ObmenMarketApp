@@ -1,3 +1,5 @@
+import {getLCP, getFID, getCLS} from 'web-vitals';
+
 import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { fa } from "../Utils/firebase";
@@ -18,7 +20,9 @@ import styles from "./obmen.module.scss";
 function Obmen({ authCheck }) {
   const [user, userLoading] = useAuthState(fa);
   useEffect(() => user && authCheck(user), [user, authCheck]);
-
+  getCLS(console.log);
+  getFID(console.log);
+  getLCP(console.log);
   return (
     <div className={styles.container}>
       <HeaderCont userLoading={userLoading} />
