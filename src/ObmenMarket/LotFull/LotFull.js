@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { db_offers, fb, fa, db } from "../../Utils/firebase";
+import { db_offers, fb, db } from "../../Utils/firebase";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter, Link } from "react-router-dom";
@@ -23,6 +23,8 @@ import {
   onOfferCancel,
   createOffer,
 } from "../../Redux/Reducers/lots";
+
+import { setFormMode } from "../../Redux/Reducers/home";
 
 import readytopay from "../../Assets/Icons/readytopay.svg";
 import deleteBtn from "../../Assets/Icons/delete_2.svg";
@@ -264,13 +266,15 @@ const OfferCard = ({ data, lotMeta, onOfferCancel }) => {
       });
   }, [lotMeta, data]);
 
-  const styleButtons = isOpen || isMouse ? { width: 128 } : { width: 0 };
+  const styleButtons = isOpen || isMouse ? { opacity: 1 } : { opacity: 0 };
 
   const headerClassName = isOpen
     ? `${styles.header} ${styles.header_active}`
     : styles.header;
 
-  const offerbodyStyle = isOpen ? { height: "fit-content" } : {};
+  const offerbodyStyle = isOpen
+    ? styles.offerbody
+    : `${styles.offerbody} ${styles.offerbody_hiden}`;
 
   const offerMBootom = isOpen ? { marginBottom: "8px" } : {};
 
@@ -300,7 +304,7 @@ const OfferCard = ({ data, lotMeta, onOfferCancel }) => {
         </div>
       </div>
 
-      <div className={styles.offerbody} style={offerbodyStyle}>
+      <div className={offerbodyStyle}>
         <h3>{data.name}</h3>
 
         <Gallery lotPhotos={photoLinks} />
@@ -329,9 +333,7 @@ const OfferCard = ({ data, lotMeta, onOfferCancel }) => {
   );
 };
 
-const Offers = ({ lotMeta, onOfferCancel }) => {
-  const ownerID = fa.currentUser.uid;
-
+const Offers = ({ lotMeta, onOfferCancel, ownerID }) => {
   const [offers, setOffers] = useState(null);
   const [filteredOffers, setFilteredOffers] = useState(null);
 
@@ -398,6 +400,7 @@ const LotFull = ({
   formFullUI,
   formOfferUI,
   isFormModeOn,
+  setFormMode,
   currentLotId,
   currentLotMeta,
   isLotMeta,
@@ -417,6 +420,8 @@ const LotFull = ({
   const [isOfferForm, setIsOfferForm] = useState(false);
 
   const handleOfferForm = () => {
+    if (!isAuth) return history.push("/login");
+
     if (isOfferForm) {
       setIsOfferForm(false);
       onOfferCancel(newOfferMeta, lotMeta);
@@ -441,8 +446,6 @@ const LotFull = ({
   }, [match.params.id, getLotMeta, isLotMeta, history]);
 
   const handleEditLot = () => setEditLotForm(match.params.id, isFormModeOn);
-
-  // if (!isLotMeta) return <Redirect to="/" />;
 
   return (
     <div className={styles.lotwrapper}>
@@ -491,7 +494,11 @@ const LotFull = ({
                   />
                 )}
 
-                <Offers lotMeta={lotMeta} onOfferCancel={onOfferCancel} />
+                <Offers
+                  lotMeta={lotMeta}
+                  onOfferCancel={onOfferCancel}
+                  ownerID={ownerID}
+                />
               </div>
 
               <Descrption lotMeta={lotMeta} />
@@ -502,6 +509,7 @@ const LotFull = ({
 
       {isFormModeOn && (
         <FormFull
+          setFormMode={setFormMode}
           icons={icons}
           formFullUI={formFullUI}
           lotID={currentLotId}
@@ -533,6 +541,7 @@ const mstp = (state) => ({
 export const LotFullCont = compose(
   withRouter,
   connect(mstp, {
+    setFormMode,
     setNewLotId,
     setIsLotCreated,
     getLotMeta,

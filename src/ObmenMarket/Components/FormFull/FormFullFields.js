@@ -40,6 +40,7 @@ const Buttons = ({
   formSubmit,
   formSubmitDraft,
   formSubmitUpdate,
+  formSubmitCancel,
 }) => {
   return (
     <div className={styles.buttons}>
@@ -64,13 +65,23 @@ const Buttons = ({
       )}
 
       {update && (
-        <Button
-          width={220}
-          height={56}
-          title="Сохранить"
-          icon={icons.success}
-          handler={formSubmitUpdate}
-        />
+        <>
+          <Button
+            width={220}
+            height={56}
+            title="Сохранить"
+            icon={icons.success}
+            handler={formSubmitUpdate}
+          />
+
+          <ButtonOutline
+            width={220}
+            height={56}
+            title="Отмена"
+            icon={icons.drafts}
+            handler={formSubmitCancel}
+          />
+        </>
       )}
 
       {!update && <p>{notation}</p>}
@@ -79,7 +90,12 @@ const Buttons = ({
 };
 
 // Main form
-export const FormFullFields = ({ lotPhotos, update, ...props }) => {
+export const FormFullFields = ({
+  lotPhotos,
+  update,
+  setFormMode,
+  ...props
+}) => {
   // console.log(props.form);
 
   const uid = fa.currentUser.uid;
@@ -109,6 +125,11 @@ export const FormFullFields = ({ lotPhotos, update, ...props }) => {
     e.preventDefault();
     props.form.change("photos", null);
     props.form.submit();
+  };
+
+  const formSubmitCancel = (e) => {
+    e.preventDefault();
+    setFormMode(false);
   };
 
   const storage = fb.storage().ref();
@@ -233,6 +254,7 @@ export const FormFullFields = ({ lotPhotos, update, ...props }) => {
         formSubmit={formSubmit}
         formSubmitDraft={formSubmitDraft}
         formSubmitUpdate={formSubmitUpdate}
+        formSubmitCancel={formSubmitCancel}
         update={update}
       />
     </form>

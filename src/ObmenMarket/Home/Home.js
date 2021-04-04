@@ -8,9 +8,10 @@ import { Cta } from "../Components/CTA/CTA";
 import { LotsContainer } from "../Components/LotsContainer/LotsContainer";
 import { FormFull } from "../Components/FormFull/FormFull";
 
-import { setFormMode } from "../../Redux/Reducers/home";
+import { setFormMode, setProfile } from "../../Redux/Reducers/home";
 
 import {
+  resetMetaState,
   onLotCreateFromForm,
   onLotCreateFormCancel,
   publishNewLotFromForm,
@@ -26,11 +27,15 @@ const Home = ({
   createLotId,
   isLotCreated,
   setFormMode,
+  setProfile,
   onLotCreateFromForm,
   onLotCreateFormCancel,
   publishNewLotFromForm,
+  resetMetaState,
 }) => {
   useEffect(() => setFormMode(false), [setFormMode]);
+  useEffect(() => resetMetaState(), [resetMetaState]);
+  useEffect(() => setProfile(null), [setProfile]);
 
   if (isLotCreated) return <Redirect to={`/posts/${createLotId}`} />;
 
@@ -75,7 +80,9 @@ const mstp = (state) => ({
 });
 
 export const HomeCont = connect(mstp, {
+  resetMetaState,
   setFormMode,
+  setProfile,
   onLotCreateFromForm,
   onLotCreateFormCancel,
   publishNewLotFromForm,

@@ -8,6 +8,7 @@ import { setFormMode } from "../../Redux/Reducers/home";
 import logo from "../../Assets/Icons/logo.svg";
 
 import styles from "./header.module.scss";
+// import { auth } from "../../Redux/Reducers/auth";
 
 const User = ({ user }) => {
   return (
@@ -18,28 +19,30 @@ const User = ({ user }) => {
   );
 };
 
-export const Header = (props) => {
-  // console.log(props.user);
+export const Header = ({
+  user,
+  isInitialized,
+  location,
+  setFormMode,
+  isAuth,
+}) => {
+  const handleLoginButton = () => setFormMode(false);
 
-  const handleLoginButton = () => props.setFormMode(false);
-
-  const loginButtonClicked = props.location.pathname === "/login";
-  const loginButtonPath = props.location.pathname === "/login" ? "/" : "/login";
+  const loginButtonClicked = location.pathname === "/login";
+  const loginButtonPath = location.pathname === "/login" ? "/" : "/login";
 
   return (
     <div className={styles.header}>
       <div className={styles.pad}>
         <Link to="/" className={styles.logo}>
-          <img src={logo} alt={props.appName} />
+          <img src={logo} alt="Обмен маркет" />
         </Link>
       </div>
 
       <div className={styles.pad}>
-        {props.user && !props.userLoading && props.isAuth && (
-          <User user={props.user} />
-        )}
+        {isInitialized && isAuth && <User user={user} />}
 
-        {!props.userLoading && !props.isAuth && (
+        {isInitialized && !isAuth && (
           <Link to={loginButtonPath} className={styles.loginButton}>
             <ButtonOutline
               width={83}
@@ -58,7 +61,7 @@ export const Header = (props) => {
 const mstp = (state) => ({
   isAuth: state.auth.isAuth,
   user: state.auth.user,
-  icons: state.ui.icons,
+  isInitialized: state.auth.isInitialized,
   isFormModeOn: state.home.isFormModeOn,
 });
 

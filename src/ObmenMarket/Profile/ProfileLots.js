@@ -5,20 +5,22 @@ import { LotsContainer } from "../Components/LotsContainer/LotsContainer";
 
 import styles from "./profilelots.module.scss";
 
-const Title = ({ name, title, active, setSelected }) => {
+const Title = ({ name, title, active, setSelected, isOwner }) => {
   const activeHandler = () => setSelected(name);
 
   const titleClassName =
     active === name ? `${styles.title} ${styles.title_active}` : styles.title;
 
+  const titlesStyle = isOwner ? { cursor: "pointer" } : {};
+
   return (
-    <div className={titleClassName} onClick={activeHandler}>
+    <div className={titleClassName} onClick={activeHandler} style={titlesStyle}>
       {title}
     </div>
   );
 };
 
-export const ProfileLots = ({ isOwner, isFormModeOn, matchedID }) => {
+export const ProfileLots = ({ isOwner, matchedID }) => {
   const [selected, setSelected] = useState("published");
 
   const userID = matchedID ? matchedID : fa.currentUser.uid;
@@ -26,32 +28,32 @@ export const ProfileLots = ({ isOwner, isFormModeOn, matchedID }) => {
   const authored = isOwner ? "Мои лоты" : "Лоты автора";
 
   return (
-    !isFormModeOn && (
-      <>
-        <div className={styles.titles}>
+    <>
+      <div className={styles.titles}>
+        <Title
+          name="published"
+          title={authored}
+          active={selected}
+          setSelected={setSelected}
+          isOwner={isOwner}
+        />
+
+        {isOwner && (
           <Title
-            name="published"
-            title={authored}
+            name="drafts"
+            title="Черновики"
             active={selected}
             setSelected={setSelected}
+            isOwner={isOwner}
           />
+        )}
+      </div>
 
-          {isOwner && (
-            <Title
-              name="drafts"
-              title="Черновики"
-              active={selected}
-              setSelected={setSelected}
-            />
-          )}
-        </div>
-
-        <LotsContainer
-          toRender="profile"
-          selected={selected}
-          matchedID={userID}
-        />
-      </>
-    )
+      <LotsContainer
+        toRender="profile"
+        selected={selected}
+        matchedID={userID}
+      />
+    </>
   );
 };

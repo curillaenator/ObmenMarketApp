@@ -284,12 +284,12 @@
       }
 
       .offerbody {
-        height: 0;
+        // height: 500px;
         padding: 0 8px;
         border-radius: 0 0 16px 16px;
         overflow: hidden;
         background-color: $primaryActive;
-        transition: 0.2s ease-in-out;
+        transition: 0.08s linear;
 
         & > h3 {
           margin-top: 16px;
@@ -331,6 +331,10 @@
             }
           }
         }
+      }
+
+      .offerbody_hiden {
+        height: 0;
       }
     }
   }

@@ -9,6 +9,7 @@ export const FormFull = ({
   lotPhotos,
   update,
   formHandler,
+  setFormMode,
 }) => {
   // console.log(currentLotMeta);
 
@@ -24,7 +25,6 @@ export const FormFull = ({
       expireDate: new Date(curDate.setDate(curDate.getDate() + 7)),
     };
 
-    // console.log({ ...formData, ...updData });
     if (!update) formHandler(lotID, { ...formData, ...updData });
     if (update) formHandler(lotID, { ...lotMeta, ...formData });
   };
@@ -43,6 +43,7 @@ export const FormFull = ({
           formFullUI={formFullUI}
           lotID={lotID}
           update={update}
+          setFormMode={setFormMode}
         />
       )}
     />

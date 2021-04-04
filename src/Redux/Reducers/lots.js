@@ -60,6 +60,15 @@ const setNewOfferMeta = (payload) => ({ type: SET_NEW_OFFERMETA, payload });
 
 // FIREBASE
 
+export const resetMetaState = () => (dispatch) => {
+  dispatch(setNewLotId(null));
+  dispatch(setCurrentLotId(null));
+  dispatch(setIsLotMeta(false));
+  dispatch(setLotMeta(null));
+  dispatch(setLotPhotos(null));
+  dispatch(setNewOfferMeta(null));
+};
+
 export const onLotCreateFromForm = () => async (dispatch, getState) => {
   const author = await fa.currentUser;
   const lotID = await db.ref().child("posts").push().key;
@@ -159,7 +168,6 @@ export const getLotMeta = (lotID) => (dispatch) => {
 };
 
 export const setEditLotForm = (lotID, isFormModeOn) => (dispatch) => {
-  // console.log(lotID);
   dispatch(setCurrentLotId(lotID));
   dispatch(setFormMode(!isFormModeOn));
 };

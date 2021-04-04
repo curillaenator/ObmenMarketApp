@@ -16,12 +16,16 @@ import { authCheck } from "../Redux/Reducers/auth";
 import styles from "./obmen.module.scss";
 
 function Obmen({ authCheck }) {
-  const [user, userLoading] = useAuthState(fa);
-  useEffect(() => user && authCheck(user), [user, authCheck]);
+  const [user, userLoading] = useAuthState(fa); // userLoading
+  useEffect(() => !userLoading && authCheck(user), [
+    user,
+    authCheck,
+    userLoading,
+  ]);
 
   return (
     <div className={styles.container}>
-      <HeaderCont userLoading={userLoading} />
+      <HeaderCont />
       <Switch>
         <Route exact path="/" render={() => <HomeCont />} />
         <Route path="/posts/:id" render={() => <LotFullCont />} />
@@ -31,6 +35,8 @@ function Obmen({ authCheck }) {
     </div>
   );
 }
-const mstp = (state) => ({});
+const mstp = (state) => ({
+  // isInitialized: state.auth.isInitialized,
+});
 
 export const ObmenCont = connect(mstp, { authCheck })(Obmen);
