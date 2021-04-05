@@ -3,8 +3,8 @@ import styles from "./statusbar.module.scss";
 import offerspic from "../../../Assets/Icons/offers.svg";
 import timepic from "../../../Assets/Icons/time.svg";
 
-export const StatusBar = (props) => {
-  const diff = new Date(props.expiryDate) - new Date();
+export const StatusBar = ({ expiryDate, offersQty }) => {
+  const diff = new Date(expiryDate) - new Date();
   const date = new Date(diff);
 
   const getLeftTime = () => {
@@ -45,12 +45,25 @@ export const StatusBar = (props) => {
       ? `${hours(date.getHours())} ${minutes(date.getMinutes())}`
       : days(date.getDate() - 1);
   };
-  
+
+  const getOffers = (qty) => {
+    switch (true) {
+      case qty > 10 && qty < 15:
+        return `${qty} предложений`;
+      case qty % 10 === 1:
+        return `${qty} предложение`;
+      case qty % 10 > 1 && qty % 10 < 5:
+        return `${qty} предложения`;
+      default:
+        return `${qty} предложений`;
+    }
+  };
+
   return (
     <div className={styles.statusbar}>
       <div className={styles.offers}>
         <img src={offerspic} alt="O" />
-        <p>{props.offersQty} предложений</p>
+        <p>{getOffers(offersQty)}</p>
       </div>
       <div className={styles.timing}>
         <p>{getLeftTime()}</p>

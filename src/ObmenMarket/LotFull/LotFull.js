@@ -356,6 +356,8 @@ const Offers = ({ lotMeta, onOfferCancel, ownerID, setOffersQty }) => {
         );
       }
     });
+
+    return () => db_offers.child(lotMeta.postid).off();
   }, [lotMeta, setOffersQty]);
 
   const handleFilteredOffers = () => {
@@ -369,7 +371,7 @@ const Offers = ({ lotMeta, onOfferCancel, ownerID, setOffersQty }) => {
   const offersTitle =
     ownerID === lotMeta.uid
       ? "Вам предложили в обмен:"
-      : "Вы предлагали к обмену";
+      : "Вы предложили к обмену:";
 
   return (
     filteredOffers && (

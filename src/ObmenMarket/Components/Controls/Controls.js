@@ -18,6 +18,7 @@ export const Controls = ({
 
   const handleDeletePost = () => {
     onLotCreateFormCancel(lotMeta.postid);
+    history.push("/");
   };
 
   return (
