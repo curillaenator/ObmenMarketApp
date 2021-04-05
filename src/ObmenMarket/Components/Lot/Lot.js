@@ -40,7 +40,10 @@ export const Lot = ({ data }) => {
         .getDownloadURL();
 
       const qtySnap = await db_offers.child(data.postid).once("value");
-      const qty = Object.keys(await qtySnap.val()).length;
+
+      const qty = qtySnap.exists()
+        ? Object.keys(await qtySnap.val()).length
+        : 0;
 
       setState({ photo: url, offersQty: qty });
     };

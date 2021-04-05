@@ -33,9 +33,13 @@ const OfferFormFields = ({
   const storage = fb.storage().ref();
 
   const uploadImg = (file) => {
+    const metadata = {
+      cacheControl: "public,max-age=7200",
+    };
+
     const uploadTask = storage
       .child(`offers/${lotID}/${newOfferMeta.offerID}/offer${photos.length}`)
-      .put(file);
+      .put(file, metadata);
 
     uploadTask.on(
       "state_changed",

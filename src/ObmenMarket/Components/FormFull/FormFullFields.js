@@ -135,9 +135,13 @@ export const FormFullFields = ({
   const storage = fb.storage().ref();
 
   const uploadImg = (file) => {
+    const metadata = {
+      cacheControl: "public,max-age=3600",
+    };
+
     const uploadTask = storage
       .child("posts/" + uid + "/" + props.lotID + "/photo" + photos.length)
-      .put(file);
+      .put(file, metadata);
 
     uploadTask.on(
       "state_changed",
