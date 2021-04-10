@@ -10,6 +10,7 @@
   outline: none;
   background-color: transparent;
   cursor: pointer;
+  will-change: filter;
   
   .shape {
     position: absolute;
