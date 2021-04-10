@@ -388,7 +388,6 @@ const OfferCard = ({
           {!!lotMeta.acceptedOffer &&
             lotMeta.acceptedOffer === data.offerID &&
             data.authorID === ownerID && (
-              // <div className={styles.offerinfo}>Предложение принято</div>
               <Button
                 width={126}
                 height={24}
@@ -465,6 +464,7 @@ const Offers = ({
   const handleOffersIfAccepted = () => {
     if (lotMeta.acceptedOffer)
       return offers.filter((offer) => offer.offerID === lotMeta.acceptedOffer);
+
     return offers;
   };
 
@@ -472,9 +472,8 @@ const Offers = ({
     if (!lotMeta.offerConfirmed && !lotMeta.acceptedOffer) {
       return offers.filter((offer) => offer.authorID === ownerID);
     }
-    // if (!lotMeta.offerConfirmed && lotMeta.acceptedOffer) {
+
     return offers.filter((offer) => offer.offerID === lotMeta.acceptedOffer);
-    // }
   };
 
   const handleFilteredOffers = () => {
@@ -488,8 +487,6 @@ const Offers = ({
     ownerID === lotMeta.uid
       ? "Вам предложили в обмен:"
       : "Вы предложили к обмену:";
-
-  // const acceptedOfferTitle = lotMeta.acceptedOffer ?
 
   return (
     filteredOffers && (
@@ -602,8 +599,6 @@ const LotFull = ({
                   expiryDate={lotMeta.expireDate}
                 />
               </div>
-
-              {/* <div className={styles.spacer}></div> */}
 
               <Buttons
                 icons={icons}
