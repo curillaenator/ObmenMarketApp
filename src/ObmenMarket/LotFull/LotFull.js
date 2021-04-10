@@ -22,6 +22,7 @@ import {
   onOfferCreate,
   onOfferCancel,
   createOffer,
+  acceptConfirmOffer,
 } from "../../Redux/Reducers/lots";
 
 import { setFormMode } from "../../Redux/Reducers/home";
@@ -147,7 +148,7 @@ const Gallery = ({ lotPhotos }) => {
   );
 };
 
-const Buttons = ({ icons, handleOfferForm, isOfferForm }) => {
+const Buttons = ({ icons, handleOfferForm, isOfferForm, lotMeta }) => {
   const [draw, callDraw] = useState(0);
 
   const ref = useRef(0);
@@ -176,25 +177,48 @@ const Buttons = ({ icons, handleOfferForm, isOfferForm }) => {
 
   return (
     <div className={styles.buttons} ref={ref}>
-      {butCont && (
-        <>
-          <Button
-            width={buttonWidths.offer}
-            height={56}
-            title={offerTitle}
-            icon={icons.add}
-            handler={handleOfferForm}
-            active={isOfferForm}
-          />
+      <>
+        {butCont && !lotMeta.acceptedOffer && (
+          <>
+            <Button
+              width={buttonWidths.offer}
+              height={56}
+              title={offerTitle}
+              icon={icons.add}
+              handler={handleOfferForm}
+              active={isOfferForm}
+            />
 
-          <ButtonOutline
-            width={buttonWidths.follow}
-            height={56}
-            title={followTitle}
-            icon={icons.bell}
-          />
-        </>
-      )}
+            <ButtonOutline
+              width={buttonWidths.follow}
+              height={56}
+              title={followTitle}
+              icon={icons.bell}
+            />
+          </>
+        )}
+
+        {butCont && lotMeta.acceptedOffer && (
+          <>
+            <Button
+              width={butCont}
+              height={56}
+              title="Перейти в чат"
+              disabled={!lotMeta.offerConfirmed}
+              // icon={icons.add}
+              // handler={handleOfferForm}
+              // active={isOfferForm}
+            />
+
+            {/* <ButtonOutline
+              width={buttonWidths.follow}
+              height={56}
+              title={followTitle}
+              icon={icons.bell}
+            /> */}
+          </>
+        )}
+      </>
     </div>
   );
 };
@@ -247,7 +271,13 @@ const Descrption = ({ lotMeta }) => {
 
 // OFFERS
 
-const OfferCard = ({ data, lotMeta, onOfferCancel }) => {
+const OfferCard = ({
+  data,
+  lotMeta,
+  ownerID,
+  onOfferCancel,
+  acceptConfirmOffer,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const handleOpen = () => setIsOpen(!isOpen);
 
@@ -255,9 +285,37 @@ const OfferCard = ({ data, lotMeta, onOfferCancel }) => {
   const mouseEnter = () => setIsMouse(true);
   const mouseLeave = () => setIsMouse(false);
 
-  const handleRemoveOffer = () => onOfferCancel(data, lotMeta);
-
   const [photoLinks, setPhotoLinks] = useState([]);
+
+  const acceptConfirmReset = {
+    acceptedOffer: null,
+    offerConfirmed: false,
+  };
+
+  const handleRemoveOffer = () => {
+    onOfferCancel(data, lotMeta);
+    acceptConfirmOffer(lotMeta.postid, null, acceptConfirmReset);
+  };
+
+  const approveOfferByLotAuthor = () => {
+    lotMeta.acceptedOffer
+      ? acceptConfirmOffer(lotMeta.postid, null, acceptConfirmReset)
+      : acceptConfirmOffer(lotMeta.postid, data.offerID, {
+          acceptedOffer: data.offerID,
+        });
+  };
+
+  const confirmOfferByOfferAuthor = () => {
+    lotMeta.offerConfirmed
+      ? acceptConfirmOffer(lotMeta.postid, null, acceptConfirmReset)
+      : acceptConfirmOffer(lotMeta.postid, data.offerID, {
+          offerConfirmed: true,
+        });
+  };
+
+  useEffect(() => {
+    if (lotMeta.offerConfirmed) setIsOpen(true);
+  }, [lotMeta.offerConfirmed]);
 
   useEffect(() => {
     fb.storage()
@@ -303,7 +361,30 @@ const OfferCard = ({ data, lotMeta, onOfferCancel }) => {
         </div>
 
         <div className={styles.header_buttons} style={styleButtons}>
-          <Button width={92} height={24} title="Согласиться" fontsize={12} />
+          {ownerID !== data.authorID && (
+            <Button
+              width={92}
+              height={24}
+              title={lotMeta.acceptedOffer ? "Отмена" : "Согласиться"}
+              fontsize={12}
+              handler={approveOfferByLotAuthor}
+              active={lotMeta.acceptedOffer}
+            />
+          )}
+
+          {!!lotMeta.acceptedOffer &&
+            lotMeta.acceptedOffer === data.offerID &&
+            data.authorID === ownerID && (
+              // <div className={styles.offerinfo}>Предложение принято</div>
+              <Button
+                width={92}
+                height={24}
+                title={lotMeta.offerConfirmed ? "Отмена" : "Подтвердить"}
+                fontsize={12}
+                handler={confirmOfferByOfferAuthor}
+                active={lotMeta.offerConfirmed}
+              />
+            )}
 
           <div className={styles.deleteoffer} onClick={handleRemoveOffer}>
             <img src={deleteBtn} alt="Отказаться" />
@@ -340,7 +421,13 @@ const OfferCard = ({ data, lotMeta, onOfferCancel }) => {
   );
 };
 
-const Offers = ({ lotMeta, onOfferCancel, ownerID, setOffersQty }) => {
+const Offers = ({
+  lotMeta,
+  onOfferCancel,
+  acceptConfirmOffer,
+  ownerID,
+  setOffersQty,
+}) => {
   const [offers, setOffers] = useState(null);
 
   useEffect(() => {
@@ -360,10 +447,22 @@ const Offers = ({ lotMeta, onOfferCancel, ownerID, setOffersQty }) => {
     return () => db_offers.child(lotMeta.postid).off();
   }, [lotMeta, setOffersQty]);
 
+  const handleOffersIfAccepted = () => {
+    if (lotMeta.acceptedOffer)
+      return offers.filter((offer) => offer.offerID === lotMeta.acceptedOffer);
+    return offers;
+  };
+
+  const handleOffersIfConfirmed = () => {
+    if (lotMeta.offerConfirmed) {
+      return offers.filter((offer) => offer.offerID === lotMeta.acceptedOffer);
+    }
+    return offers.filter((offer) => offer.authorID === ownerID);
+  };
+
   const handleFilteredOffers = () => {
-    if (ownerID === lotMeta.uid) return offers;
-    if (ownerID !== lotMeta.uid)
-      return offers.filter((o) => o.authorID === ownerID);
+    if (ownerID === lotMeta.uid) return handleOffersIfAccepted();
+    if (ownerID !== lotMeta.uid) return handleOffersIfConfirmed();
   };
 
   const filteredOffers = offers ? handleFilteredOffers() : null;
@@ -373,18 +472,24 @@ const Offers = ({ lotMeta, onOfferCancel, ownerID, setOffersQty }) => {
       ? "Вам предложили в обмен:"
       : "Вы предложили к обмену:";
 
+  // const acceptedOfferTitle = lotMeta.acceptedOffer ?
+
   return (
     filteredOffers && (
       <div className={styles.offers}>
-        <div className={styles.offers_title}>{offersTitle}</div>
+        {filteredOffers.length > 0 && (
+          <div className={styles.offers_title}>{offersTitle}</div>
+        )}
 
         <div className={styles.offers_list}>
           {filteredOffers.map((offer) => (
             <OfferCard
               key={offer.offerID}
+              ownerID={ownerID}
               data={offer}
               lotMeta={lotMeta}
               onOfferCancel={onOfferCancel}
+              acceptConfirmOffer={acceptConfirmOffer}
             />
           ))}
         </div>
@@ -422,6 +527,7 @@ const LotFull = ({
   onOfferCreate,
   onOfferCancel,
   createOffer,
+  acceptConfirmOffer,
 }) => {
   const [isOfferForm, setIsOfferForm] = useState(false);
   const handleEditLot = () => setEditLotForm(match.params.id, isFormModeOn);
@@ -485,6 +591,7 @@ const LotFull = ({
                   icons={icons}
                   handleOfferForm={handleOfferForm}
                   isOfferForm={isOfferForm}
+                  lotMeta={lotMeta}
                 />
               )}
 
@@ -503,6 +610,7 @@ const LotFull = ({
                 <Offers
                   lotMeta={lotMeta}
                   onOfferCancel={onOfferCancel}
+                  acceptConfirmOffer={acceptConfirmOffer}
                   ownerID={ownerID}
                   setOffersQty={setOffersQty}
                 />
@@ -559,5 +667,6 @@ export const LotFullCont = compose(
     onOfferCreate,
     onOfferCancel,
     createOffer,
+    acceptConfirmOffer,
   })
 )(LotFull);

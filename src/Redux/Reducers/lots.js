@@ -1,6 +1,7 @@
 import { fb, db, fa, db_offers } from "../../Utils/firebase";
 
 import { setFormMode } from "./home";
+import { createNewChatRoom } from "./chat";
 
 const SET_NEWLOT_ID = "lots/SET_NEWLOT_ID";
 const SET_IS_LOTCREATED = "lots/SET_IS_LOTCREATED";
@@ -218,4 +219,21 @@ export const createOffer = (lotMeta, offerFormData) => async (dispatch) => {
   db_offers.update(offerUpdate);
 
   dispatch(setNewOfferMeta(null));
+};
+
+export const acceptConfirmOffer = (lotID, offerID, payload) => async (
+  dispatch
+) => {
+  const onUpdate = (error) => {
+    if (error) return console.log("ошибка записи");
+
+    db.ref("posts/" + lotID).once("value", (snap) => {
+      const lotMeta = snap.val();
+      dispatch(setLotMeta(lotMeta));
+      dispatch(setIsLotMeta(true));
+      dispatch(setFormMode(false));
+    });
+  };
+
+  await db.ref("posts/" + lotID).update(payload, onUpdate);
 };

@@ -10,6 +10,7 @@
   outline: none;
   background-color: transparent;
   cursor: pointer;
+  
   .shape {
     position: absolute;
     top: 0;
@@ -25,9 +26,11 @@
       drop-shadow(0 0 2px $primaryIdleShadow2)
       drop-shadow(0 0 1px $primaryIdleShadow3);
   }
+
   &:hover .shapeIdle {
     fill: $primaryHover;
   }
+
   &:active .shapeIdle {
     fill: $primary;
     filter: none;

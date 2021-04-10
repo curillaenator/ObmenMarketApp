@@ -162,12 +162,10 @@
         }
 
         .thumb_active {
+          position: relative;
           &::after {
             @include activeTint;
             transition: none;
-            background-image: url(../../Assets/Icons/check.svg);
-            background-position: center;
-            background-repeat: no-repeat;
           }
           &:hover::after {
             @include activeTint;
@@ -273,13 +271,13 @@
           justify-content: space-between;
           align-items: center;
           flex-shrink: 0;
-          width: 128px;
           z-index: 50;
           // opacity: 0;
           transition: 0.08s linear;
           overflow: hidden;
 
           .deleteoffer {
+            margin-left: 12px;
             cursor: pointer;
 
             & > img {
@@ -299,7 +297,7 @@
       }
 
       .offerbody {
-        // height: 500px;
+        height: fit-content;
         padding: 0 8px;
         border-radius: 0 0 16px 16px;
         overflow: hidden;
