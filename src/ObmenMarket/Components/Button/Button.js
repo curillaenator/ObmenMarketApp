@@ -35,6 +35,7 @@ const Shape = ({ width, height, active, disabled }) => {
     </svg>
   );
 };
+
 const Icon = ({ icon, disabled, title, active }) => {
   const iconStyle = title ? { marginRight: "8px" } : {};
 
@@ -55,19 +56,25 @@ const Icon = ({ icon, disabled, title, active }) => {
   }
   return null;
 };
-const Title = ({ title, disabled, active, fontsize }) => {
+
+const Title = ({ title, subtitle, disabled, active, fontsize, titlewidth }) => {
   const titlePresent = active
-    ? `${styles.title} ${styles.titleActive}`
-    : `${styles.title} ${styles.titleIdle}`;
+    ? `${styles.ctabutton_title} ${styles.titleActive}`
+    : `${styles.ctabutton_title} ${styles.titleIdle}`;
 
   const titleClassname = disabled
-    ? `${styles.title} ${styles.titleDisabled}`
+    ? `${styles.ctabutton_title} ${styles.titleDisabled}`
     : titlePresent;
+
+  const titleW = titlewidth ? { width: titlewidth } : {};
+  const titleFz = fontsize ? { fontSize: fontsize } : {};
+  const titleStyle = { ...titleW, ...titleFz };
 
   if (title) {
     return (
-      <div className={titleClassname} style={{ fontSize: fontsize }}>
-        {title}
+      <div className={titleClassname} style={titleStyle}>
+        <div>{title}</div>
+        {subtitle && <div className={styles.subtitle}>{subtitle}</div>}
       </div>
     );
   }
@@ -78,15 +85,17 @@ export const Button = ({
   width,
   height,
   title,
+  subtitle,
   icon,
   active,
   disabled,
   handler,
-  fontsize = "14px",
+  titlewidth,
+  fontsize,
 }) => {
   return (
     <button
-      className={styles.button}
+      className={styles.ctabutton}
       style={{ width, height }}
       onClick={handler}
       disabled={disabled}
@@ -97,9 +106,13 @@ export const Button = ({
         active={active}
         disabled={disabled}
       />
+
       <Icon icon={icon} disabled={disabled} title={title} active={active} />
+
       <Title
         title={title}
+        titlewidth={titlewidth}
+        subtitle={subtitle}
         disabled={disabled}
         active={active}
         fontsize={fontsize}

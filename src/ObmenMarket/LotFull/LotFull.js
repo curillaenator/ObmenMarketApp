@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { withRouter, Link } from "react-router-dom";
 import Lightbox from "react-image-lightbox";
 
+import { Prolong } from "./Prolong/Prolong";
 import { StatusBar } from "../Components/StatusBar/StatusBar";
 import { Button } from "../Components/Button/Button";
 // import { ButtonOutline } from "../Components/Button/ButtonOutline";
@@ -23,9 +24,10 @@ import {
   onOfferCancel,
   createOffer,
   acceptConfirmOffer,
+  add48hours,
 } from "../../Redux/Reducers/lots";
 
-import { setFormMode } from "../../Redux/Reducers/home";
+import { setFormMode, setIsModalOn } from "../../Redux/Reducers/home";
 
 import readytopay from "../../Assets/Icons/readytopay.svg";
 import deleteBtn from "../../Assets/Icons/delete_2.svg";
@@ -148,7 +150,15 @@ const Gallery = ({ lotPhotos }) => {
   );
 };
 
-const Buttons = ({ icons, handleOfferForm, isOfferForm, lotMeta, ownerID }) => {
+const Buttons = ({
+  icons,
+  handleOfferForm,
+  isOfferForm,
+  lotMeta,
+  ownerID,
+  setIsModalOn,
+  add48hours,
+}) => {
   // eslint-disable-next-line
   const [draw, callDraw] = useState(0);
 
@@ -187,13 +197,6 @@ const Buttons = ({ icons, handleOfferForm, isOfferForm, lotMeta, ownerID }) => {
             handler={handleOfferForm}
             active={isOfferForm}
           />
-
-          {/* <ButtonOutline
-              width={buttonWidths.follow}
-              height={56}
-              title={followTitle}
-              icon={icons.bell}
-            /> */}
         </div>
       )}
 
@@ -213,14 +216,12 @@ const Buttons = ({ icons, handleOfferForm, isOfferForm, lotMeta, ownerID }) => {
 
       {butCont && !lotMeta.acceptedOffer && ownerID === lotMeta.uid && (
         <div className={styles.buttons_block}>
-          <Button
-            width={butCont}
-            height={56}
-            title="Поднять"
-            // disabled={!lotMeta.offerConfirmed}
-            // icon={icons.add}
-            // handler={handleOfferForm}
-            // active={isOfferForm}
+          <Prolong
+            butCont={butCont}
+            icons={icons}
+            setIsModalOn={setIsModalOn}
+            add48hours={add48hours}
+            lotMeta={lotMeta}
           />
         </div>
       )}
@@ -375,7 +376,7 @@ const OfferCard = ({
         <div className={styles.header_buttons} style={styleButtons}>
           {ownerID !== data.authorID && (
             <Button
-              width={100}
+              width={116}
               height={24}
               title={lotMeta.acceptedOffer ? "Отменить обмен" : "Согласиться"}
               fontsize={12}
@@ -389,7 +390,7 @@ const OfferCard = ({
             data.authorID === ownerID && (
               // <div className={styles.offerinfo}>Предложение принято</div>
               <Button
-                width={100}
+                width={126}
                 height={24}
                 title={
                   lotMeta.offerConfirmed ? "Отменить обмен" : "Подтвердить"
@@ -407,11 +408,11 @@ const OfferCard = ({
       </div>
 
       <div className={offerbodyStyle}>
-        <h3>{data.name}</h3>
+        <div className={styles.offerbody_title}>{data.name}</div>
 
         <Gallery lotPhotos={photoLinks} />
 
-        <div className={styles.offerdescr}>
+        <div className={styles.offerbody_descr}>
           <Author
             authorID={data.authorID}
             avatar={data.avatar}
@@ -544,6 +545,8 @@ const LotFull = ({
   onOfferCancel,
   createOffer,
   acceptConfirmOffer,
+  setIsModalOn,
+  add48hours,
 }) => {
   const [isOfferForm, setIsOfferForm] = useState(false);
   const handleEditLot = () => setEditLotForm(match.params.id, isFormModeOn);
@@ -608,6 +611,8 @@ const LotFull = ({
                 isOfferForm={isOfferForm}
                 lotMeta={lotMeta}
                 ownerID={ownerID}
+                setIsModalOn={setIsModalOn}
+                add48hours={add48hours}
               />
 
               {isOfferForm && (
@@ -685,5 +690,7 @@ export const LotFullCont = compose(
     onOfferCancel,
     createOffer,
     acceptConfirmOffer,
+    setIsModalOn,
+    add48hours,
   })
 )(LotFull);

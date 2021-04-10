@@ -299,10 +299,8 @@
         background-color: $primaryActive;
         transition: 0.08s linear;
 
-        & > h3 {
-          margin-top: 16px;
-          margin-left: 8px;
-          margin-bottom: 20px;
+        &_title {
+          margin: 16px 8px 20px;
           font-weight: 800;
           font-size: 22px;
           line-height: 28px;
@@ -310,7 +308,7 @@
           color: $fontTitle;
         }
 
-        .offerdescr {
+        &_descr {
           padding: 0 8px;
 
           .offertext {
@@ -418,12 +416,12 @@
   }
 }
 
-@media (min-width: 1024px) {
-  .lot {
-    .info {
-      .buttons {
-        width: 440px;
-      }
-    }
-  }
-}
+// @media (min-width: 1024px) {
+//   .lot {
+//     .info {
+//       .buttons {
+//         width: 440px;
+//       }
+//     }
+//   }
+// }

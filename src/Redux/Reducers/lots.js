@@ -221,6 +221,23 @@ export const createOffer = (lotMeta, offerFormData) => async (dispatch) => {
   dispatch(setNewOfferMeta(null));
 };
 
+export const add48hours = (lotMeta) => (dispatch) => {
+  const onUpdate = (error) => {
+    if (error) return console.log("ошибка записи");
+
+    db.ref("posts/" + lotMeta.postid).once("value", (snap) => {
+      dispatch(setLotMeta(snap.val()));
+      dispatch(setIsLotMeta(true));
+    });
+  };
+
+  const newExpiry = new Date(
+    Date.parse(lotMeta.expireDate) + 48 * 60 * 60 * 1000
+  );
+
+  db.ref("posts/" + lotMeta.postid).update({ expireDate: newExpiry }, onUpdate);
+};
+
 export const acceptConfirmOffer = (lotID, offerID, payload) => async (
   dispatch
 ) => {

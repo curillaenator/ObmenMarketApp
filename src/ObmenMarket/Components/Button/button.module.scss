@@ -1,6 +1,6 @@
 @import "../../../palette.scss";
 
-.button {
+.ctabutton {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -11,7 +11,7 @@
   background-color: transparent;
   cursor: pointer;
   will-change: filter;
-  
+
   .shape {
     position: absolute;
     top: 0;
@@ -51,12 +51,14 @@
     transition: 0.12s linear;
     max-width: 24px;
   }
+
   .iconIdle {
     & > svg {
       fill: $fontWhite;
       transition: 0.12s linear;
     }
   }
+
   .iconActive {
     & > svg {
       fill: $fontTitle;
@@ -64,35 +66,49 @@
       transition: 0.12s linear;
     }
   }
+
   .iconDisabled {
     & > svg {
       fill: $primaryDisabled;
     }
   }
+
   &:active .iconIdle {
     & > svg {
       fill: $primaryFontClicked;
     }
   }
 
-  .title {
+  &_title {
     font-family: Inter;
     font-style: normal;
+    font-size: 14px;
     font-weight: 700;
-    // font-size: 14px;
-    line-height: 24px;
+    line-height: 1.4;
     letter-spacing: -0.149333px;
     transition: 0.12s linear;
+
+    .subtitle {
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 16px;
+      letter-spacing: -0.15px;
+      opacity: 0.72;
+    }
   }
+
   .titleIdle {
     color: $fontWhite;
   }
+
   .titleActive {
     color: $fontTitle;
   }
+
   .titleDisabled {
     color: $primaryDisabled;
   }
+
   &:active .titleIdle {
     color: $primaryFontClicked;
   }
