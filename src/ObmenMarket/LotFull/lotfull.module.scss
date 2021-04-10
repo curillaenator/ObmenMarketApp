@@ -201,9 +201,9 @@
 
     .offers {
       &_title {
-        font-weight: 700;
-        font-size: 15px;
-        letter-spacing: -0.4px;
+        font-weight: 800;
+        font-size: 22px;
+        letter-spacing: -0.64px;
         color: $fontTitle;
         margin-bottom: 16px;
       }
@@ -274,7 +274,6 @@
           z-index: 50;
           // opacity: 0;
           transition: 0.08s linear;
-          overflow: hidden;
 
           .deleteoffer {
             margin-left: 12px;
