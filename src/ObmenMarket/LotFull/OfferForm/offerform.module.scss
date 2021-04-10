@@ -2,10 +2,10 @@
 
 .offer {
   margin-top: -23px;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 
   .cloudtail {
-    margin-left: 110px;
+    margin-left: 50%;
     margin-bottom: -3px;
     transform: translateX(-50%);
   }
@@ -64,15 +64,16 @@
   .buttons {
     display: flex;
     justify-content: center;
+    width: 100%;
 
     z-index: 50;
   }
 }
 
-@media (min-width: 640px) {
-  .offer {
-    .buttons {
-      justify-content: flex-start;
-    }
-  }
-}
+// @media (min-width: 640px) {
+//   .offer {
+//     .buttons {
+//       justify-content: flex-start;
+//     }
+//   }
+// }

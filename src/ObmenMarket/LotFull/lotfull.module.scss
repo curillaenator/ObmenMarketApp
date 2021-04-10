@@ -187,15 +187,11 @@
     }
 
     .buttons {
-      display: flex;
-      width: 100%;
-      margin-bottom: 32px;
-
-      & > button {
-        margin-right: 20px;
-        &:last-child {
-          margin-right: 0;
-        }
+      &_block {
+        display: flex;
+        justify-content: space-between;
+        // width: 100%;
+        margin-bottom: 32px;
       }
     }
 
@@ -418,6 +414,16 @@
 
     .description {
       width: calc(50% - 16px);
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  .lot {
+    .info {
+      .buttons {
+        width: 440px;
+      }
     }
   }
 }

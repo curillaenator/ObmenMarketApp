@@ -7,7 +7,7 @@ import Lightbox from "react-image-lightbox";
 
 import { StatusBar } from "../Components/StatusBar/StatusBar";
 import { Button } from "../Components/Button/Button";
-import { ButtonOutline } from "../Components/Button/ButtonOutline";
+// import { ButtonOutline } from "../Components/Button/ButtonOutline";
 import { Controls } from "../Components/Controls/Controls";
 import { FormFull } from "../Components/FormFull/FormFull";
 import { OfferForm } from "./OfferForm/OfferForm";
@@ -148,16 +148,14 @@ const Gallery = ({ lotPhotos }) => {
   );
 };
 
-const Buttons = ({ icons, handleOfferForm, isOfferForm, lotMeta }) => {
+const Buttons = ({ icons, handleOfferForm, isOfferForm, lotMeta, ownerID }) => {
+  // eslint-disable-next-line
   const [draw, callDraw] = useState(0);
 
   const ref = useRef(0);
   const butCont = ref.current.clientWidth;
 
-  const drawCaller = () =>
-    window.innerWidth >= 320 &&
-    window.innerWidth < 1024 &&
-    callDraw(window.innerWidth);
+  const drawCaller = () => callDraw(window.innerWidth);
 
   useEffect(() => {
     callDraw(window.innerWidth);
@@ -168,57 +166,64 @@ const Buttons = ({ icons, handleOfferForm, isOfferForm, lotMeta }) => {
   }, []);
 
   const offerTitle = isOfferForm ? "Передумал" : "Предложить обмен";
-  const followTitle = draw >= 1024 ? "Следить за лотом" : null;
+  // const followTitle = draw >= 1024 ? "Следить за лотом" : null;
 
-  const buttonWidths =
-    draw >= 1024
-      ? { offer: 217, follow: butCont - 237 }
-      : { offer: butCont - 76, follow: 56 };
+  // const buttonWidths =
+  //   draw >= 1024
+  //     ? { offer: 217, follow: butCont - 237 }
+  //     : { offer: butCont - 76, follow: 56 };
 
   return (
     <div className={styles.buttons} ref={ref}>
-      <>
-        {butCont && !lotMeta.acceptedOffer && (
-          <>
-            <Button
-              width={buttonWidths.offer}
-              height={56}
-              title={offerTitle}
-              icon={icons.add}
-              handler={handleOfferForm}
-              active={isOfferForm}
-            />
+      <div className={styles.spacer}></div>
 
-            <ButtonOutline
-              width={buttonWidths.follow}
-              height={56}
-              title={followTitle}
-              icon={icons.bell}
-            />
-          </>
-        )}
+      {butCont && !lotMeta.acceptedOffer && ownerID !== lotMeta.uid && (
+        <div className={styles.buttons_block}>
+          <Button
+            width={butCont}
+            height={56}
+            title={offerTitle}
+            icon={icons.add}
+            handler={handleOfferForm}
+            active={isOfferForm}
+          />
 
-        {butCont && lotMeta.acceptedOffer && (
-          <>
-            <Button
-              width={butCont}
-              height={56}
-              title="Перейти в чат"
-              disabled={!lotMeta.offerConfirmed}
-              // icon={icons.add}
-              // handler={handleOfferForm}
-              // active={isOfferForm}
-            />
-
-            {/* <ButtonOutline
+          {/* <ButtonOutline
               width={buttonWidths.follow}
               height={56}
               title={followTitle}
               icon={icons.bell}
             /> */}
-          </>
-        )}
-      </>
+        </div>
+      )}
+
+      {butCont && lotMeta.acceptedOffer && (
+        <div className={styles.buttons_block}>
+          <Button
+            width={butCont}
+            height={56}
+            title="Перейти в чат"
+            disabled={!lotMeta.offerConfirmed}
+            // icon={icons.add}
+            // handler={handleOfferForm}
+            // active={isOfferForm}
+          />
+        </div>
+      )}
+
+      {butCont && !lotMeta.acceptedOffer && ownerID === lotMeta.uid && (
+        <div className={styles.buttons_block}>
+          <Button
+            width={butCont}
+            height={56}
+            title="Поднять"
+            // disabled={!lotMeta.offerConfirmed}
+            // icon={icons.add}
+            // handler={handleOfferForm}
+            // active={isOfferForm}
+          />
+        </div>
+      )}
     </div>
   );
 };
@@ -343,29 +348,36 @@ const OfferCard = ({
 
   const offerMBootom = isOpen ? { marginBottom: "8px" } : {};
 
+  const headerJustify = lotMeta.acceptedOffer
+    ? { justifyContent: "flex-end" }
+    : {};
+
   return (
     <div className={styles.offer} style={offerMBootom}>
       <div
         className={headerClassName}
         onMouseEnter={mouseEnter}
         onMouseLeave={mouseLeave}
+        style={headerJustify}
       >
-        <div className={styles.header_photo_name} onClick={handleOpen}>
-          <div className={styles.header_photo}>
-            <img src={isOpen ? shrink : photoLinks[0]} alt={data.name} />
-          </div>
+        {!lotMeta.acceptedOffer && (
+          <div className={styles.header_photo_name} onClick={handleOpen}>
+            <div className={styles.header_photo}>
+              <img src={isOpen ? shrink : photoLinks[0]} alt={data.name} />
+            </div>
 
-          <div className={styles.header_offername}>
-            {isOpen ? "Свернуть" : data.name}
+            <div className={styles.header_offername}>
+              {isOpen ? "Свернуть" : data.name}
+            </div>
           </div>
-        </div>
+        )}
 
         <div className={styles.header_buttons} style={styleButtons}>
           {ownerID !== data.authorID && (
             <Button
-              width={92}
+              width={100}
               height={24}
-              title={lotMeta.acceptedOffer ? "Отмена" : "Согласиться"}
+              title={lotMeta.acceptedOffer ? "Отменить обмен" : "Согласиться"}
               fontsize={12}
               handler={approveOfferByLotAuthor}
               active={lotMeta.acceptedOffer}
@@ -377,9 +389,11 @@ const OfferCard = ({
             data.authorID === ownerID && (
               // <div className={styles.offerinfo}>Предложение принято</div>
               <Button
-                width={92}
+                width={100}
                 height={24}
-                title={lotMeta.offerConfirmed ? "Отмена" : "Подтвердить"}
+                title={
+                  lotMeta.offerConfirmed ? "Отменить обмен" : "Подтвердить"
+                }
                 fontsize={12}
                 handler={confirmOfferByOfferAuthor}
                 active={lotMeta.offerConfirmed}
@@ -586,18 +600,15 @@ const LotFull = ({
                 />
               </div>
 
-              <div className={styles.spacer}></div>
+              {/* <div className={styles.spacer}></div> */}
 
-              {ownerID !== lotMeta.uid && (
-                <Buttons
-                  icons={icons}
-                  handleOfferForm={handleOfferForm}
-                  isOfferForm={isOfferForm}
-                  lotMeta={lotMeta}
-                />
-              )}
-
-              <div className={styles.spacer}></div>
+              <Buttons
+                icons={icons}
+                handleOfferForm={handleOfferForm}
+                isOfferForm={isOfferForm}
+                lotMeta={lotMeta}
+                ownerID={ownerID}
+              />
 
               {isOfferForm && (
                 <OfferForm
@@ -609,6 +620,8 @@ const LotFull = ({
                   setIsOfferForm={setIsOfferForm}
                 />
               )}
+
+              <div className={styles.spacer}></div>
 
               {isAuth && (
                 <Offers
