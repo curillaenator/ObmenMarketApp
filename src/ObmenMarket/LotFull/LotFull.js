@@ -454,10 +454,12 @@ const Offers = ({
   };
 
   const handleOffersIfConfirmed = () => {
-    if (lotMeta.offerConfirmed) {
-      return offers.filter((offer) => offer.offerID === lotMeta.acceptedOffer);
+    if (!lotMeta.offerConfirmed && !lotMeta.acceptedOffer) {
+      return offers.filter((offer) => offer.authorID === ownerID);
     }
-    return offers.filter((offer) => offer.authorID === ownerID);
+    // if (!lotMeta.offerConfirmed && lotMeta.acceptedOffer) {
+    return offers.filter((offer) => offer.offerID === lotMeta.acceptedOffer);
+    // }
   };
 
   const handleFilteredOffers = () => {
@@ -594,6 +596,8 @@ const LotFull = ({
                   lotMeta={lotMeta}
                 />
               )}
+
+              <div className={styles.spacer}></div>
 
               {isOfferForm && (
                 <OfferForm
