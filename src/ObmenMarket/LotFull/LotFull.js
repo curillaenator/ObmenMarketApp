@@ -314,8 +314,8 @@ const OfferCard = ({
   };
 
   useEffect(() => {
-    if (lotMeta.offerConfirmed) setIsOpen(true);
-  }, [lotMeta.offerConfirmed]);
+    if (lotMeta.acceptedOffer) setIsOpen(true);
+  }, [lotMeta.acceptedOffer]);
 
   useEffect(() => {
     fb.storage()
