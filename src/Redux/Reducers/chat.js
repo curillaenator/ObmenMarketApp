@@ -1,4 +1,4 @@
-import { db_chat, db_offers } from "../../Utils/firebase";
+import { db_chat } from "../../Utils/firebase";
 
 const initialState = {};
 

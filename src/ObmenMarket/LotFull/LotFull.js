@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { db_offers, fb, db } from "../../Utils/firebase";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -107,55 +107,59 @@ const Gallery = ({ lotPhotos }) => {
   const [selected, setSelected] = useState(0);
 
   return (
-    <div className={styles.gallery}>
-      <div className={styles.mainphoto} onClick={() => setIsOpen(true)}>
-        <Track lotPhotos={lotPhotos} selected={selected} />
+    lotPhotos && (
+      <div className={styles.gallery}>
+        <div className={styles.mainphoto} onClick={() => setIsOpen(true)}>
+          <Track lotPhotos={lotPhotos} selected={selected} />
 
-        <Tint
-          title="Открыть галлерею"
-          icon={openGallery}
-          count={lotPhotos.length}
-        />
-      </div>
-
-      <div className={styles.thumbtrack}>
-        {lotPhotos.map((photo, i) => (
-          <Thumb
-            key={photo}
-            photo={photo}
-            label={i}
-            selected={selected}
-            setSelected={setSelected}
+          <Tint
+            title="Открыть галлерею"
+            icon={openGallery}
+            count={lotPhotos.length}
           />
-        ))}
-      </div>
+        </div>
 
-      {isOpen && (
-        <Lightbox
-          mainSrc={lotPhotos[selected]}
-          nextSrc={lotPhotos[(selected + 1) % lotPhotos.length]}
-          prevSrc={
-            lotPhotos[(selected + lotPhotos.length - 1) % lotPhotos.length]
-          }
-          onCloseRequest={() => setIsOpen(false)}
-          onMovePrevRequest={() =>
-            setSelected((selected + lotPhotos.length - 1) % lotPhotos.length)
-          }
-          onMoveNextRequest={() =>
-            setSelected((selected + 1) % lotPhotos.length)
-          }
-        />
-      )}
-    </div>
+        <div className={styles.thumbtrack}>
+          {lotPhotos.map((photo, i) => (
+            <Thumb
+              key={photo}
+              photo={photo}
+              label={i}
+              selected={selected}
+              setSelected={setSelected}
+            />
+          ))}
+        </div>
+
+        {isOpen && (
+          <Lightbox
+            mainSrc={lotPhotos[selected]}
+            nextSrc={lotPhotos[(selected + 1) % lotPhotos.length]}
+            prevSrc={
+              lotPhotos[(selected + lotPhotos.length - 1) % lotPhotos.length]
+            }
+            onCloseRequest={() => setIsOpen(false)}
+            onMovePrevRequest={() =>
+              setSelected((selected + lotPhotos.length - 1) % lotPhotos.length)
+            }
+            onMoveNextRequest={() =>
+              setSelected((selected + 1) % lotPhotos.length)
+            }
+          />
+        )}
+      </div>
+    )
   );
 };
 
+// CTA_BUTTONS
+
 const Buttons = ({
   icons,
-  handleOfferForm,
   isOfferForm,
   lotMeta,
   ownerID,
+  handleOfferForm,
   setIsModalOn,
   add48hours,
 }) => {
@@ -218,10 +222,8 @@ const Buttons = ({
         <div className={styles.buttons_block}>
           <Prolong
             butCont={butCont}
-            icons={icons}
             setIsModalOn={setIsModalOn}
             add48hours={add48hours}
-            lotMeta={lotMeta}
           />
         </div>
       )}
@@ -229,33 +231,7 @@ const Buttons = ({
   );
 };
 
-const LotStats = ({ lotMeta }) => {
-  return (
-    <div className={styles.stats}>
-      {lotMeta.price && (
-        <div className={styles.statsitem}>
-          <h3 className={styles.itemtitle}>Примерная оценка стоимости</h3>
-          <p className={styles.itemvalue}>{`${lotMeta.price} руб.`}</p>
-        </div>
-      )}
-
-      {lotMeta.overprice && (
-        <div className={styles.statsitem}>
-          <h3 className={styles.itemtitle}>Автор готов доплатить</h3>
-          <p className={styles.itemvalue}>Да</p>
-        </div>
-      )}
-
-      {lotMeta.categories && (
-        <div className={styles.statsitem}>
-          <h3 className={styles.itemtitle}>Приоритетные категории обмена</h3>
-
-          <p className={styles.itemvalue}>{lotMeta.categories}</p>
-        </div>
-      )}
-    </div>
-  );
-};
+//DESCRIPTION
 
 const Descrption = ({ lotMeta }) => {
   return (
@@ -266,11 +242,32 @@ const Descrption = ({ lotMeta }) => {
         name={lotMeta.username}
       />
 
-      <div className={styles.bigtitle}>{lotMeta.title}</div>
+      <div className={styles.majortitle}>{lotMeta.title}</div>
 
-      <div className={styles.lottext}>{lotMeta.description}</div>
+      <div className={styles.majortext}>{lotMeta.description}</div>
 
-      <LotStats lotMeta={lotMeta} />
+      {lotMeta.price && (
+        <div className={styles.addinfo}>
+          <h3 className={styles.addinfo_title}>Примерная оценка стоимости</h3>
+          <p className={styles.addinfo_value}>{`${lotMeta.price} руб.`}</p>
+        </div>
+      )}
+
+      {lotMeta.overprice && (
+        <div className={styles.addinfo}>
+          <h3 className={styles.addinfo_title}>Автор готов доплатить</h3>
+          <p className={styles.addinfo_value}>Да</p>
+        </div>
+      )}
+
+      {lotMeta.categories && (
+        <div className={styles.addinfo}>
+          <h3 className={styles.addinfo_title}>
+            Приоритетные категории обмена
+          </h3>
+          <p className={styles.addinfo_value}>{lotMeta.categories}</p>
+        </div>
+      )}
     </div>
   );
 };
@@ -278,20 +275,54 @@ const Descrption = ({ lotMeta }) => {
 // OFFERS
 
 const OfferCard = ({
-  data,
+  offerMeta,
   lotMeta,
   ownerID,
   onOfferCancel,
   acceptConfirmOffer,
+  selectedOffer,
+  setSelectedOffer,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const handleOpen = () => setIsOpen(!isOpen);
+  const ref = useRef({});
 
-  const [isMouse, setIsMouse] = useState(false);
-  const mouseEnter = () => setIsMouse(true);
-  const mouseLeave = () => setIsMouse(false);
+  const [openHeigth, setOpenHeigth] = useState(null);
+  const [photoLinks, setPhotoLinks] = useState(null);
 
-  const [photoLinks, setPhotoLinks] = useState([]);
+  useEffect(() => {
+    fb.storage()
+      .ref()
+      .child(offerMeta.photospath)
+      .listAll()
+      .then((res) => {
+        const links = res.items.map(
+          (item, i) =>
+            `https://firebasestorage.googleapis.com/v0/b/${item.bucket}/o/offers%2F${lotMeta.postid}%2F${offerMeta.offerID}%2Foffer${i}?alt=media`
+        );
+        setPhotoLinks(links);
+      });
+  }, [lotMeta, offerMeta]);
+
+  const select = useCallback(() => {
+    setSelectedOffer(offerMeta.offerID);
+    setOpenHeigth(ref.current.scrollHeight);
+  }, [offerMeta.offerID, setSelectedOffer]);
+
+  const unselect = () => setOpenHeigth(null);
+
+  useEffect(() => {
+    if (lotMeta.acceptedOffer && photoLinks) select();
+
+    if (offerMeta.offerID !== selectedOffer) unselect();
+  }, [
+    select,
+    photoLinks,
+    selectedOffer,
+    ref.current.scrollHeight,
+    lotMeta.acceptedOffer,
+    offerMeta.offerID,
+  ]);
+
+  const handleSelectOffer = () => (openHeigth ? unselect() : select());
 
   const acceptConfirmReset = {
     acceptedOffer: null,
@@ -299,82 +330,58 @@ const OfferCard = ({
   };
 
   const handleRemoveOffer = () => {
-    onOfferCancel(data, lotMeta);
+    onOfferCancel(offerMeta, lotMeta);
     acceptConfirmOffer(lotMeta.postid, null, acceptConfirmReset);
   };
 
   const approveOfferByLotAuthor = () => {
     lotMeta.acceptedOffer
       ? acceptConfirmOffer(lotMeta.postid, null, acceptConfirmReset)
-      : acceptConfirmOffer(lotMeta.postid, data.offerID, {
-          acceptedOffer: data.offerID,
+      : acceptConfirmOffer(lotMeta.postid, offerMeta.offerID, {
+          acceptedOffer: offerMeta.offerID,
         });
   };
 
   const confirmOfferByOfferAuthor = () => {
     lotMeta.offerConfirmed
       ? acceptConfirmOffer(lotMeta.postid, null, acceptConfirmReset)
-      : acceptConfirmOffer(lotMeta.postid, data.offerID, {
+      : acceptConfirmOffer(lotMeta.postid, offerMeta.offerID, {
           offerConfirmed: true,
         });
   };
 
-  useEffect(() => {
-    if (lotMeta.acceptedOffer) setIsOpen(true);
-  }, [lotMeta.acceptedOffer]);
+  const minimizedClasses = openHeigth
+    ? `${styles.minimized} ${styles.minimized_active}`
+    : styles.minimized;
 
-  useEffect(() => {
-    fb.storage()
-      .ref()
-      .child(data.photospath)
-      .listAll()
-      .then((res) => {
-        const links = res.items.map(
-          (item, i) =>
-            `https://firebasestorage.googleapis.com/v0/b/${item.bucket}/o/offers%2F${lotMeta.postid}%2F${data.offerID}%2Foffer${i}?alt=media`
-        );
-        setPhotoLinks(links);
-      });
-  }, [lotMeta, data]);
-
-  const styleButtons = isOpen || isMouse ? { opacity: 1 } : { opacity: 0 };
-
-  const headerClassName = isOpen
-    ? `${styles.header} ${styles.header_active}`
-    : styles.header;
-
-  const offerbodyStyle = isOpen
-    ? styles.offerbody
-    : `${styles.offerbody} ${styles.offerbody_hiden}`;
-
-  const offerMBootom = isOpen ? { marginBottom: "8px" } : {};
-
-  const headerJustify = lotMeta.acceptedOffer
+  const minimizedJustify = lotMeta.acceptedOffer
     ? { justifyContent: "flex-end" }
     : {};
 
   return (
-    <div className={styles.offer} style={offerMBootom}>
-      <div
-        className={headerClassName}
-        onMouseEnter={mouseEnter}
-        onMouseLeave={mouseLeave}
-        style={headerJustify}
-      >
+    <div className={styles.offer}>
+      <div className={minimizedClasses} style={minimizedJustify}>
         {!lotMeta.acceptedOffer && (
-          <div className={styles.header_photo_name} onClick={handleOpen}>
-            <div className={styles.header_photo}>
-              <img src={isOpen ? shrink : photoLinks[0]} alt={data.name} />
-            </div>
+          <div
+            className={styles.minimized_detailes}
+            onClick={handleSelectOffer}
+          >
+            {photoLinks && (
+              <img
+                className={styles.minimized_detailes_img}
+                src={openHeigth ? shrink : photoLinks[0]}
+                alt={offerMeta.name}
+              />
+            )}
 
-            <div className={styles.header_offername}>
-              {isOpen ? "Свернуть" : data.name}
+            <div className={styles.minimized_detailes_title}>
+              {openHeigth ? "Свернуть" : offerMeta.name}
             </div>
           </div>
         )}
 
-        <div className={styles.header_buttons} style={styleButtons}>
-          {ownerID !== data.authorID && (
+        <div className={styles.minimized_buttons}>
+          {ownerID !== offerMeta.authorID && (
             <Button
               width={116}
               height={24}
@@ -386,8 +393,8 @@ const OfferCard = ({
           )}
 
           {!!lotMeta.acceptedOffer &&
-            lotMeta.acceptedOffer === data.offerID &&
-            data.authorID === ownerID && (
+            lotMeta.acceptedOffer === offerMeta.offerID &&
+            offerMeta.authorID === ownerID && (
               <Button
                 width={126}
                 height={24}
@@ -406,29 +413,33 @@ const OfferCard = ({
         </div>
       </div>
 
-      <div className={offerbodyStyle}>
-        <div className={styles.offerbody_title}>{data.name}</div>
+      <div
+        className={styles.maximized}
+        ref={ref}
+        style={{ maxHeight: `${openHeigth ? openHeigth : 0}px` }}
+      >
+        <div className={styles.maximized_title}>{offerMeta.name}</div>
 
         <Gallery lotPhotos={photoLinks} />
 
-        <div className={styles.offerbody_descr}>
+        <div className={styles.maximized_author}>
           <Author
-            authorID={data.authorID}
-            avatar={data.avatar}
-            name={data.authorName}
+            authorID={offerMeta.authorID}
+            avatar={offerMeta.avatar}
+            name={offerMeta.authorName}
           />
+        </div>
 
-          <div className={styles.offertext}>{data.description}</div>
+        <div className={styles.maximized_text}>{offerMeta.description}</div>
 
-          <div className={styles.offerpayment}>
-            {data.overprice && <img src={readytopay} alt="" />}
+        <div className={styles.maximized_overprice}>
+          {offerMeta.overprice && <img src={readytopay} alt="" />}
 
-            <p>
-              {data.overprice
-                ? "Автор готов доплатить"
-                : "Автор не готов к доплате"}
-            </p>
-          </div>
+          <p>
+            {offerMeta.overprice
+              ? "Автор готов доплатить"
+              : "Автор не готов к доплате"}
+          </p>
         </div>
       </div>
     </div>
@@ -436,22 +447,23 @@ const OfferCard = ({
 };
 
 const Offers = ({
+  ownerID,
   lotMeta,
   onOfferCancel,
   acceptConfirmOffer,
-  ownerID,
   setOffersQty,
 }) => {
   const [offers, setOffers] = useState(null);
+  const [selectedOffer, setSelectedOffer] = useState(null);
 
   useEffect(() => {
-    db_offers.child(lotMeta.postid).on("value", (snapshot) => {
-      if (snapshot.val()) {
-        setOffersQty(Object.keys(snapshot.val()).length);
+    db_offers.child(lotMeta.postid).on("value", (snap) => {
+      if (snap.val()) {
+        setOffersQty(Object.keys(snap.val()).length);
 
         setOffers(
-          Object.keys(snapshot.val()).map((offer) => ({
-            ...snapshot.val()[offer],
+          Object.keys(snap.val()).map((offer) => ({
+            ...snap.val()[offer],
             postID: offer,
           }))
         );
@@ -473,7 +485,10 @@ const Offers = ({
       return offers.filter((offer) => offer.authorID === ownerID);
     }
 
-    return offers.filter((offer) => offer.offerID === lotMeta.acceptedOffer);
+    return offers.filter(
+      (offer) =>
+        offer.offerID === lotMeta.acceptedOffer && offer.authorID === ownerID
+    );
   };
 
   const handleFilteredOffers = () => {
@@ -500,10 +515,12 @@ const Offers = ({
             <OfferCard
               key={offer.offerID}
               ownerID={ownerID}
-              data={offer}
+              offerMeta={offer}
               lotMeta={lotMeta}
               onOfferCancel={onOfferCancel}
               acceptConfirmOffer={acceptConfirmOffer}
+              selectedOffer={selectedOffer}
+              setSelectedOffer={setSelectedOffer}
             />
           ))}
         </div>
@@ -581,7 +598,9 @@ const LotFull = ({
     isLotPhotos && (
       <div className={styles.lotwrapper}>
         <Controls
+          icons={icons}
           isAuth={isAuth}
+          isFormModeOn={isFormModeOn}
           lotMeta={lotMeta}
           history={history}
           handleEditLot={handleEditLot}
@@ -590,7 +609,7 @@ const LotFull = ({
 
         {!isFormModeOn && (
           <div className={styles.lot}>
-            <div className={styles.info}>
+            <div className={styles.detailes}>
               <Gallery lotMeta={lotMeta} lotPhotos={lotPhotos} />
 
               <div className={styles.status}>
@@ -602,10 +621,10 @@ const LotFull = ({
 
               <Buttons
                 icons={icons}
-                handleOfferForm={handleOfferForm}
                 isOfferForm={isOfferForm}
                 lotMeta={lotMeta}
                 ownerID={ownerID}
+                handleOfferForm={handleOfferForm}
                 setIsModalOn={setIsModalOn}
                 add48hours={add48hours}
               />

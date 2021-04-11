@@ -14,7 +14,7 @@ import {
   PhotoFiles,
 } from "../Inputs/Inputs";
 
-import cloudtail from "../../../Assets/Icons/cloudtail.svg";
+import cloudtailpic from "../../../Assets/Icons/cloudtail.svg";
 
 import styles from "./formfull.module.scss";
 
@@ -91,6 +91,7 @@ const Buttons = ({
 
 // Main form
 export const FormFullFields = ({
+  cloudtail,
   lotPhotos,
   update,
   setFormMode,
@@ -158,7 +159,9 @@ export const FormFullFields = ({
 
   return (
     <form onSubmit={props.handleSubmit} className={styles.formfull}>
-      <img className={styles.cloudtail} src={cloudtail} alt="tail" />
+      {cloudtail && (
+        <img className={styles.cloudtail} src={cloudtailpic} alt="tail" />
+      )}
       <div className={styles.shape}>
         <div className={styles.fields}>
           <div className={styles.pad}>

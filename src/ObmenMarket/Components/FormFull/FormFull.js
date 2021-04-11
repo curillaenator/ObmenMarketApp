@@ -2,6 +2,7 @@ import { Form } from "react-final-form";
 import { FormFullFields } from "./FormFullFields";
 
 export const FormFull = ({
+  cloudtail,
   icons,
   formFullUI,
   lotID,
@@ -35,6 +36,7 @@ export const FormFull = ({
       onSubmit={onSubmit}
       render={({ handleSubmit, form, values }) => (
         <FormFullFields
+          cloudtail={cloudtail}
           handleSubmit={handleSubmit}
           lotPhotos={lotPhotos}
           form={form}

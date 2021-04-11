@@ -46,7 +46,7 @@ const Icon = ({ icon, disabled, title, active }) => {
   const iconClassName = disabled
     ? `${styles.icon} ${styles.iconDisabled}`
     : iconPresent;
-
+ 
   if (icon) {
     return (
       <div className={iconClassName} style={iconStyle}>

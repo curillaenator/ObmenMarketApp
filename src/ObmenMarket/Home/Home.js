@@ -61,6 +61,7 @@ const Home = ({
 
       {isAuth && isFormModeOn && (
         <FormFull
+          cloudtail={true}
           icons={icons}
           formFullUI={formFullUI}
           lotID={createLotId}

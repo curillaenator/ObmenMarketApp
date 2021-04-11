@@ -1,10 +1,9 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import Popup from "reactjs-popup";
 import { Button } from "../../Components/Button/Button";
 import { ButtonOutline } from "../../Components/Button/ButtonOutline";
 
-import time from "../../../Assets/Icons/modal_time.svg";
-import rock from "../../../Assets/Icons/rock.svg";
 import bankcard from "../../../Assets/Icons/bankcard.svg";
 import googlepay from "../../../Assets/Icons/googlepay.svg";
 import applepay from "../../../Assets/Icons/applepay.svg";
@@ -39,7 +38,7 @@ const Option = ({ title, icon, option, payment, setPayment }) => {
   );
 };
 
-const Modal = ({ close, add48hours, lotMeta }) => {
+const Modal = ({ close, add48hours, lotMeta, addTimeModal }) => {
   const [payment, setPayment] = useState("bankcard");
   const [modalPage, setModalPage] = useState(0);
 
@@ -59,11 +58,9 @@ const Modal = ({ close, add48hours, lotMeta }) => {
       {modalPage === 0 && (
         <div className={styles.modalpage}>
           <ModalInfo
-            icon={time}
-            title="Продление объявления на 48 часов"
-            text="К счетчику времени публикации вашего объявления будет добавлено 48
-              часов с момента продления. Таким образом вы можете успеть получить
-              больше интересных предложений"
+            icon={addTimeModal.addTimeP1.icon}
+            title={addTimeModal.addTimeP1.title}
+            text={addTimeModal.addTimeP1.text}
           />
 
           <div className={styles.payment}>
@@ -104,10 +101,9 @@ const Modal = ({ close, add48hours, lotMeta }) => {
       {modalPage === 1 && (
         <div className={styles.modalpage}>
           <ModalInfo
-            icon={rock}
-            title="При βeta-тестировании всё бесплатно!"
-            text="На данный момент все платные фичи ресурса obmen.market предоставляются абсолютно бесплатно, т.к. мы собираем много важной для нас информации, которая поможет сделать сайт намного удобнее и полезней!
-            Спасибо за проявленный интерес к платной услуге, пожалуйста, продолжайте пользоваться сайтом в обычном режиме и нажимать любые кнопки, если вы чувствуете в этом необходимость! "
+            icon={addTimeModal.addTimeP2.icon}
+            title={addTimeModal.addTimeP2.title}
+            text={addTimeModal.addTimeP2.text}
           />
 
           <div className={styles.paybutton}>
@@ -124,22 +120,29 @@ const Modal = ({ close, add48hours, lotMeta }) => {
   );
 };
 
-export const Prolong = ({
-  butCont,
-  icons,
-  setIsModalOn,
-  add48hours,
-  lotMeta,
-}) => {
+export const Prolong = ({ butCont, setIsModalOn, add48hours }) => {
+  const AddTimeModalUI = useSelector((state) => state.ui);
+  const lotMeta = useSelector((state) => state.lots.currentLotMeta);
+
+  const { icons, addTimeModal } = AddTimeModalUI;
+
+  const daysLeft =
+    new Date(new Date(lotMeta.expireDate) - new Date()).getDate() - 1;
+
   const Trigger = (open) => (
     <div className={styles.prolongButton}>
       <Button
         width={butCont}
         height={56}
-        title="Продлить объявление на 48 часов"
-        subtitle="за 30 рублей"
+        title={
+          daysLeft > 7
+            ? "Вы достигли лимита продления срока"
+            : "Продлить объявление на 48 часов"
+        }
+        subtitle={daysLeft > 7 ? null : "за 30 рублей"}
         titlewidth="calc(100% - 64px)"
         icon={icons.prolong}
+        disabled={daysLeft > 7}
       />
     </div>
   );
@@ -153,10 +156,15 @@ export const Prolong = ({
       closeOnDocumentClick={false}
       onOpen={() => setIsModalOn(true)}
       onClose={() => setIsModalOn(false)}
-      //   nested
+      disabled={daysLeft > 7}
     >
       {(close) => (
-        <Modal close={close} add48hours={add48hours} lotMeta={lotMeta} />
+        <Modal
+          close={close}
+          add48hours={add48hours}
+          lotMeta={lotMeta}
+          addTimeModal={addTimeModal}
+        />
       )}
     </Popup>
   );

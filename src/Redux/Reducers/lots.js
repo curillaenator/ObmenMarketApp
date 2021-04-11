@@ -1,7 +1,6 @@
 import { fb, db, fa, db_offers } from "../../Utils/firebase";
 
 import { setFormMode } from "./home";
-import { createNewChatRoom } from "./chat";
 
 const SET_NEWLOT_ID = "lots/SET_NEWLOT_ID";
 const SET_IS_LOTCREATED = "lots/SET_IS_LOTCREATED";

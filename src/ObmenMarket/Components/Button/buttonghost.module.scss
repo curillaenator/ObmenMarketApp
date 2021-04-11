@@ -1,0 +1,98 @@
+@import "../../../palette.scss";
+
+.ghost {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  height: 40px;
+  position: relative;
+  padding: 0 16px;
+  flex-shrink: 0;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  cursor: pointer;
+  will-change: filter;
+
+  .shape {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    background-color: $shape;
+    z-index: -10;
+  }
+
+  .title {
+    font-family: Inter;
+    font-style: normal;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: -0.149333px;
+    transition: 0.08s linear;
+  }
+
+  &:hover .title {
+    color: $primary;
+  }
+
+  &:active .title {
+    color: $fontActive;
+  }
+
+  .icon {
+    display: flex;
+    align-items: center;
+    transition: 0.12s linear;
+    max-width: 24px;
+    & > svg {
+      transition: 0.12s linear;
+    }
+  }
+
+  &:hover .icon {
+    color: $primary;
+    & > svg {
+      fill: $primary;
+    }
+  }
+
+  &:active .icon {
+    color: $fontActive;
+    & > svg {
+      fill: $fontActive;
+    }
+  }
+
+  .titleIdle {
+    color: $fontTitle;
+  }
+
+  .titleActive {
+    color: $fontTitle;
+  }
+
+  .titleDisabled {
+    color: $fontDisabled;
+  }
+
+  .iconIdle {
+    & > svg {
+      fill: $primary;
+    }
+  }
+
+  .iconActive {
+    & > svg {
+      fill: $fontTitle;
+    }
+  }
+
+  .iconDisabled {
+    color: $fontDisabled;
+  }
+}

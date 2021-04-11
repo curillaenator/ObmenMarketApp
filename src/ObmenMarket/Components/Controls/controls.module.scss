@@ -1,21 +1,5 @@
 @import "../../../palette.scss";
 
-@mixin optionAlign {
-  display: flex;
-  align-items: center;
-  border: none;
-  text-decoration: none;
-  background-color: transparent;
-  cursor: pointer;
-}
-
-@mixin optionText {
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 24px;
-  letter-spacing: -0.149333px;
-}
-
 .controls {
   display: flex;
   justify-content: space-between;
@@ -25,38 +9,19 @@
   height: 72px;
   border-top: 1px solid $spacer;
 
-  .back {
-    @include optionAlign;
-    margin-left: 0;
-
-    & > img {
-      margin-right: 8px;
-    }
-
-    & > p {
-      @include optionText;
-      color: $fontGrey;
-    }
-  }
-
   .options {
     display: flex;
     align-items: center;
     margin-right: 16px;
 
-    .option {
-      @include optionAlign;
-      margin-left: 48px;
+    .editbtn {
+      position: relative;
 
-      & > img {
-        transform: translateY(-2px);
-      }
-
-      & > p {
-        @include optionText;
-        display: none;
-        color: $fontGrey;
-        margin-left: 11px;
+      .cloudtail {
+        position: absolute;
+        left: 50%;
+        bottom: -16px;
+        transform: translateX(-50%);
       }
     }
   }
@@ -69,9 +34,9 @@
     .options {
       margin-right: 0;
 
-      .option {
-        & > p {
-          display: inline;
+      .editbtn {
+        .cloudtail {
+          bottom: -16px;
         }
       }
     }
@@ -81,5 +46,13 @@
   .controls {
     margin-top: 57px;
     height: 96px;
+
+    .options {
+      .editbtn {
+        .cloudtail {
+          bottom: -27px;
+        }
+      }
+    }
   }
 }
