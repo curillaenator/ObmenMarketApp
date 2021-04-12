@@ -98,6 +98,7 @@ const Profile = ({
 
             {isFormModeOn && (
               <FormFull
+                cloudtail={true}
                 icons={icons}
                 formFullUI={formFullUI}
                 lotID={createLotId}

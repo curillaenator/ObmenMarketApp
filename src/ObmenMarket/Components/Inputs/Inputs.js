@@ -68,10 +68,10 @@ export const PhotoFiles = ({
     new Promise((resolve) =>
       Resizer.imageFileResizer(
         file,
-        1280,
-        720,
+        1440,
+        1440,
         "JPEG",
-        40,
+        60,
         0,
         (resized) => props.uploadImg(resized),
         "file"

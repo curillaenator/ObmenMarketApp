@@ -1,13 +1,16 @@
-import firebase from "firebase";
-
+import firebase from "firebase/app";
+import "firebase/storage";
+import "firebase/auth";
 import "firebase/performance";
 import "firebase/analytics";
+import "firebase/database";
+import "firebase/functions";
 
 // POSTS
+// authDomain: "obmen-market-666.firebaseapp.com",
 
 const app = firebase.initializeApp({
   apiKey: "AIzaSyBmYNXLxCwaIR_U2RYWUAzCeRIQjixMVv4",
-  // authDomain: "obmen-market-666.firebaseapp.com",
   authDomain: "obmen.market",
   databaseURL: "https://obmenmarket.europe-west1.firebasedatabase.app/",
   projectId: "obmen-market-666",
@@ -36,9 +39,8 @@ export const db_chat = app.database("https://obmenmarket-chat.firebaseio.com/");
 export const fb = firebase;
 export const fa = firebase.auth();
 export const perf = firebase.performance();
-// export const fn = firebase.functions();
-// export const fs = firebase.firestore().enablePersistence();
-export const analytics = firebase.analytics();
+export const fn = firebase.functions();
+export const an = firebase.analytics();
 
 // using SendGrid's Node.js Library - https://github.com/sendgrid/sendgrid-nodejs
 // export const sg = require("@sendgrid/mail")

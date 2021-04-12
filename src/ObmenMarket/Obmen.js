@@ -1,5 +1,4 @@
 // import { getLCP, getFID, getCLS } from "web-vitals";
-
 import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { fa } from "../Utils/firebase";

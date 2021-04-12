@@ -6,6 +6,7 @@
   .cloudtail {
     margin-left: 110px;
     margin-bottom: -3px;
+    opacity: 0;
     transform: translateX(-50%);
   }
 
@@ -130,6 +131,14 @@
     & > p {
       width: 100%;
       text-align: center;
+    }
+  }
+}
+
+@media (min-width: 640px) {
+  .formfull {
+    .cloudtail {
+      opacity: 1;
     }
   }
 }

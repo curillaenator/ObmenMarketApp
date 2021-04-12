@@ -46,7 +46,7 @@ const Icon = ({ icon, disabled, title, active }) => {
   const iconClassName = disabled
     ? `${styles.icon} ${styles.iconDisabled}`
     : iconPresent;
- 
+
   if (icon) {
     return (
       <div className={iconClassName} style={iconStyle}>
@@ -59,11 +59,11 @@ const Icon = ({ icon, disabled, title, active }) => {
 
 const Title = ({ title, subtitle, disabled, active, fontsize, titlewidth }) => {
   const titlePresent = active
-    ? `${styles.ctabutton_title} ${styles.titleActive}`
-    : `${styles.ctabutton_title} ${styles.titleIdle}`;
+    ? `${styles.title} ${styles.titleActive}`
+    : `${styles.title} ${styles.titleIdle}`;
 
   const titleClassname = disabled
-    ? `${styles.ctabutton_title} ${styles.titleDisabled}`
+    ? `${styles.title} ${styles.titleDisabled}`
     : titlePresent;
 
   const titleW = titlewidth ? { width: titlewidth } : {};

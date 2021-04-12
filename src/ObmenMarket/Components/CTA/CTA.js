@@ -27,7 +27,7 @@ export const Cta = ({
         width={217}
         height={56}
         title={ctaTitle}
-        icon={icons.add}
+        icon={icons.pencil}
         active={isFormModeOn}
         handler={isAuth ? formModeHandlerAuthed : formModeHandlerUnauthed}
       />

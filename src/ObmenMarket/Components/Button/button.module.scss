@@ -22,18 +22,20 @@
 
   .shapeIdle {
     will-change: filter;
-    fill: $primary;
-    filter: drop-shadow(0 4px 11px $primaryIdleShadow)
-      drop-shadow(0 0 2px $primaryIdleShadow2)
-      drop-shadow(0 0 1px $primaryIdleShadow3);
+    fill: $primary2;
+    filter: drop-shadow(0 12px 16px $primary2IdleShadow);
+    // filter: drop-shadow(0 4px 11px $primary2IdleShadow)
+    // drop-shadow(0 0 2px $primaryIdleShadow2)
+    // drop-shadow(0 0 1px $primaryIdleShadow3);
   }
 
   &:hover .shapeIdle {
-    fill: $primaryHover;
+    fill: $primary2Hover;
+    filter: drop-shadow(0 4px 8px $primary2IdleShadow);
   }
 
   &:active .shapeIdle {
-    fill: $primary;
+    fill: $primary2;
     filter: none;
   }
 
@@ -45,25 +47,43 @@
     fill: $primaryActive;
   }
 
+  // ICON
+
   .icon {
     display: flex;
     align-items: center;
     transition: 0.12s linear;
     max-width: 24px;
+
+    & > svg {
+      transition: 0.12s linear;
+    }
   }
 
   .iconIdle {
-    & > svg {
+    :global(.cta_path2) {
       fill: $fontWhite;
-      transition: 0.12s linear;
+      opacity: 0.4;
+    }
+
+    :global(.cta_path1) {
+      fill: $fontWhite;
     }
   }
 
   .iconActive {
     & > svg {
       fill: $fontTitle;
-      transform: rotate(45deg);
       transition: 0.12s linear;
+    }
+
+    :global(.cta_path2) {
+      fill: $fontTitle;
+      opacity: 0.4;
+    }
+
+    :global(.cta_path1) {
+      fill: $fontTitle;
     }
   }
 
@@ -71,15 +91,50 @@
     & > svg {
       fill: $primaryDisabled;
     }
+
+    :global(.cta_path2) {
+      fill: $primaryDisabled;
+      opacity: 0.4;
+    }
+
+    :global(.cta_path1) {
+      fill: $primaryDisabled;
+    }
+  }
+
+  &:hover .iconIdle {
+    & > svg {
+      fill: $fontWhite;
+    }
+
+    :global(.cta_path1) {
+      fill: $fontWhite;
+    }
+
+    :global(.cta_path2) {
+      fill: $ctaIconHover2;
+      opacity: 1;
+    }
   }
 
   &:active .iconIdle {
     & > svg {
       fill: $primaryFontClicked;
     }
+
+    :global(.cta_path1) {
+      fill: $ctaIconHover1;
+    }
+
+    :global(.cta_path2) {
+      fill: $ctaIconHover2;
+      opacity: 1;
+    }
   }
 
-  &_title {
+  // TITLE
+
+  .title {
     font-family: Inter;
     font-style: normal;
     font-size: 14px;
