@@ -34,7 +34,8 @@ import deleteBtn from "../../Assets/Icons/delete_2.svg";
 import openGallery from "../../Assets/Icons/openGallery.svg";
 import shrink from "../../Assets/Icons/shrink.svg";
 
-import "react-image-lightbox/style.css";
+// import "react-image-lightbox/style.css";
+import "./lightbox.css";
 import styles from "./lotfull.module.scss";
 
 // COMPONENTS
