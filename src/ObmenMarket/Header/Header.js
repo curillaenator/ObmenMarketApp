@@ -9,11 +9,12 @@ import logo from "../../Assets/Icons/logo.svg";
 
 import styles from "./header.module.scss";
 // import { auth } from "../../Redux/Reducers/auth";
+//      <p>{user.username}</p>
 
 const User = ({ user }) => {
   return (
     <Link to="/profile" className={styles.user}>
-      <p>{user.username}</p>
+
       <img src={user.avatar} alt={user.username} />
     </Link>
   );
@@ -35,7 +36,7 @@ export const Header = ({
     <div className={styles.header}>
       <div className={styles.pad}>
         <Link to="/" className={styles.logo}>
-          <img src={logo} alt="Обмен маркет" />
+          <img src={logo} alt="Обмен.маркет" />
         </Link>
       </div>
 
@@ -47,7 +48,7 @@ export const Header = ({
             <ButtonOutline
               width={83}
               height={40}
-              title="Вход"
+              title="Войти"
               handler={handleLoginButton}
               active={loginButtonClicked}
             />

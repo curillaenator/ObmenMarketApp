@@ -10,20 +10,21 @@
   outline: none;
   background-color: transparent;
   cursor: pointer;
+  transition: 0.06s linear;
   will-change: filter;
 
   .shape {
     position: absolute;
     top: 0;
     left: 0;
-    transition: 0.12s linear;
+    transition: 0.06s linear;
     z-index: -1;
   }
 
   .shapeIdle {
     will-change: filter;
     fill: $primary2;
-    filter: drop-shadow(0 12px 16px $primary2IdleShadow);
+    filter: drop-shadow(0 10px 14px $primary2IdleShadow);
     // filter: drop-shadow(0 4px 11px $primary2IdleShadow)
     // drop-shadow(0 0 2px $primaryIdleShadow2)
     // drop-shadow(0 0 1px $primaryIdleShadow3);
@@ -31,7 +32,7 @@
 
   &:hover .shapeIdle {
     fill: $primary2Hover;
-    filter: drop-shadow(0 4px 8px $primary2IdleShadow);
+    filter: drop-shadow(0 12px 16px $primary2HoverShadow);
   }
 
   &:active .shapeIdle {
@@ -167,4 +168,10 @@
   &:active .titleIdle {
     color: $primaryFontClicked;
   }
+
+  &:hover {
+    transform: scale(1.05);
 }
+}
+
+
