@@ -16,7 +16,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    transition: 0.12s linear;
+    transition: 0.08s linear;
     z-index: -1;
   }
 
@@ -29,6 +29,14 @@
     // drop-shadow(0 0 1px $primaryIdleShadow3);
   }
 
+  .shapeActive {
+    fill: $primaryActive;
+  }
+
+  .shapeDisabled {
+    fill: $primaryActive;
+  }
+
   &:hover .shapeIdle {
     fill: $primary2Hover;
     filter: drop-shadow(0 4px 8px $primary2IdleShadow);
@@ -37,14 +45,6 @@
   &:active .shapeIdle {
     fill: $primary2;
     filter: none;
-  }
-
-  .shapeActive {
-    fill: $primaryActive;
-  }
-
-  .shapeDisabled {
-    fill: $primaryActive;
   }
 
   // ICON
@@ -56,11 +56,15 @@
     max-width: 24px;
 
     & > svg {
-      transition: 0.12s linear;
+      transition: 0.08s linear;
     }
   }
 
   .iconIdle {
+    & > svg {
+      fill: $fontTitle;
+    }
+
     :global(.cta_path2) {
       fill: $fontWhite;
       opacity: 0.4;
@@ -74,7 +78,6 @@
   .iconActive {
     & > svg {
       fill: $fontTitle;
-      transition: 0.12s linear;
     }
 
     :global(.cta_path2) {
@@ -108,7 +111,7 @@
     }
 
     :global(.cta_path1) {
-      fill: $fontWhite;
+      fill: $ctaIconHover1;
     }
 
     :global(.cta_path2) {
@@ -118,9 +121,9 @@
   }
 
   &:active .iconIdle {
-    & > svg {
-      fill: $primaryFontClicked;
-    }
+    // & > svg {
+    //   fill: $primaryFontClicked;
+    // }
 
     :global(.cta_path1) {
       fill: $ctaIconHover1;
@@ -164,7 +167,7 @@
     color: $primaryDisabled;
   }
 
-  &:active .titleIdle {
-    color: $primaryFontClicked;
-  }
+  // &:active .titleIdle {
+  //   color: $primaryFontClicked;
+  // }
 }

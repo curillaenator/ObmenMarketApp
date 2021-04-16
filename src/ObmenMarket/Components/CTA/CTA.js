@@ -20,6 +20,8 @@ export const Cta = ({
   };
 
   const ctaTitle = isFormModeOn ? "Передумал" : "Есть что обменять";
+  const ctaIcon = isFormModeOn ? icons.add : icons.pencil;
+
   const ctaMarginBottom = isFormModeOn ? { marginBottom: "13px" } : {};
   return (
     <div className={styles.cta} style={ctaMarginBottom}>
@@ -27,7 +29,7 @@ export const Cta = ({
         width={217}
         height={56}
         title={ctaTitle}
-        icon={icons.pencil}
+        icon={ctaIcon}
         active={isFormModeOn}
         handler={isAuth ? formModeHandlerAuthed : formModeHandlerUnauthed}
       />
