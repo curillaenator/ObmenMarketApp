@@ -16,11 +16,14 @@
     background-color: transparent;
     margin-right: 8px;
 
-    font-family: "Inter", serif;
-    font-weight: 800;
-    font-size: 28px;
-    line-height: 1;
-    letter-spacing: -0.576px;
+    font-style: normal;
+font-weight: 700;
+font-size: 20px;
+line-height: 20px;
+/* identical to box height, or 100% */
+
+letter-spacing: -0.32px;
+
     color: $fontTitle;
 
     transform: translateY(-50%);

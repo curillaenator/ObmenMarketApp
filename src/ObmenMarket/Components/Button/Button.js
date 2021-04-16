@@ -37,7 +37,7 @@ const Shape = ({ width, height, active, disabled }) => {
 };
 
 const Icon = ({ icon, disabled, title, active }) => {
-  const iconStyle = title ? { marginRight: "8px" } : {};
+  const iconStyle = title ? { marginRight: "12px" } : {};
 
   const iconPresent = active
     ? `${styles.icon} ${styles.iconActive}`
