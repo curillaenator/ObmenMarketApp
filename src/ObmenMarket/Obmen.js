@@ -1,7 +1,7 @@
 // import { getLCP, getFID, getCLS } from "web-vitals";
 import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { fa, messaging } from "../Utils/firebase";
+import { fa } from "../Utils/firebase";
 
 import { Route, Switch, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -15,6 +15,8 @@ import { LotFullCont } from "./LotFull/LotFull";
 
 import { authCheck } from "../Redux/Reducers/auth";
 import { setIsModalOn } from "../Redux/Reducers/home";
+
+
 
 import styles from "./obmen.module.scss";
 
@@ -58,16 +60,18 @@ export const ObmenCont = compose(
   connect(mstp, { authCheck, setIsModalOn })
 )(Obmen);
 
-  messaging.getToken({ vapidKey: 'BOsXtfpHw1gYRFvpZ_bcpZvyRKlFtEJRdAmlcmK_aMdWq9YEsB30L2WKmpnGpe77jd0Cv5DFhjQKH9xHZoq2_fs' }).then((currentToken) => {
-    if (currentToken) {
-      // const token = messaging.getToken();
-    } else {
-      // Show permission request UI
-      console.log('No registration token available. Request permission to generate one.');
-      // ...
-    }
-  }).catch((err) => {
-    console.log('An error occurred while retrieving token. ', err);
-    // ...
-  });
-  navigator.serviceWorker.addEventListener("message", (message) => console.log(message));
+
+  // messaging.getToken(
+  //   { vapidKey: 'BOsXtfpHw1gYRFvpZ_bcpZvyRKlFtEJRdAmlcmK_aMdWq9YEsB30L2WKmpnGpe77jd0Cv5DFhjQKH9xHZoq2_fs' }).then((currentToken) => {
+  //   if (currentToken) {
+  //     // const token = messaging.getToken();
+  //   } else {
+  //     // Show permission request UI
+  //     console.log('No registration token available. Request permission to generate one.');
+  //     // ...
+  //   }
+  // }).catch((err) => {
+  //   console.log('An error occurred while retrieving token. ', err);
+  //   // ...
+  // });
+  // navigator.serviceWorker.addEventListener("message", (message) => console.log(message));

@@ -5,7 +5,9 @@ import "firebase/performance";
 import "firebase/analytics";
 import "firebase/database";
 import "firebase/functions";
-import "firebase/messaging";
+
+// NOTIFICATIONS
+// import "firebase/messaging";
 
 // POSTS
 // authDomain: "obmen-market-666.firebaseapp.com",
@@ -43,7 +45,12 @@ export const perf = firebase.performance();
 export const fn = firebase.functions();
 export const an = firebase.analytics();
 
-export const messaging = app.messaging();
+// NOTIFICATIONS
+// if (firebase.messaging.isSupported()) {
+//   var messaging = app.messaging();
+// }
+
+
 
 
 
