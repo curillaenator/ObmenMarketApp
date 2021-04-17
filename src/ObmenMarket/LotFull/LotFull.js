@@ -181,6 +181,7 @@ const Buttons = ({
   }, []);
 
   const offerTitle = isOfferForm ? "Передумал" : "Предложить обмен";
+  const ctaIcon = isOfferForm ? icons.cancel : icons.pencil;
   // const followTitle = draw >= 1024 ? "Следить за лотом" : null;
 
   // const buttonWidths =
@@ -198,7 +199,7 @@ const Buttons = ({
             width={butCont}
             height={56}
             title={offerTitle}
-            icon={icons.add}
+            icon={ctaIcon}
             handler={handleOfferForm}
             active={isOfferForm}
           />

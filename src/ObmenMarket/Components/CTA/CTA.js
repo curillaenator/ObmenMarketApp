@@ -20,7 +20,7 @@ export const Cta = ({
   };
 
   const ctaTitle = isFormModeOn ? "Передумал" : "Создать объявление";
-  const ctaIcon = isFormModeOn ? icons.add : icons.pencil;
+  const ctaIcon = isFormModeOn ? icons.cancel : icons.pencil;
   const ctaMarginBottom = isFormModeOn ? { marginBottom: "13px" } : {};
   return (
     <div className={styles.cta} style={ctaMarginBottom}>
