@@ -172,10 +172,10 @@
   }
 
   &:hover {
-    transform: scale3d(1.04,1.04,1.04);
+    transform: scale3d(1.04, 1.04, 1.04);
   }
 
   &:active {
-    transform: scale(1);
+    transform: scale3d(1);
   }
 }
