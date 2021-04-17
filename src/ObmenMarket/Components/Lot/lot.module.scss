@@ -88,9 +88,7 @@
       font-weight: 800;
       font-size: 24px;
       line-height: 28px;
-      /* identical to box height, or 127% */
       letter-spacing: -0.56px;
-      font-feature-settings: 'cv02' on, 'cv03' on, 'cv04' on, 'cv05' on, 'cv10' on, 'cv09' on, 'cv08' on, 'cv07' on, 'cv06' on;
       color: $fontTitle;
       margin-bottom: 12px;
     }
@@ -98,13 +96,10 @@
     .description {
       overflow-y: hidden;
       min-height: 57px;
-      font-family: Inter;
-font-style: normal;
-font-weight: normal;
-font-size: 14px;
-line-height: 20px;
-/* or 143% */
-letter-spacing: -0.16px;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 20px;
+      letter-spacing: -0.16px;
       color: $fontGrey;
       margin-bottom: 22px;
       display: -webkit-box;

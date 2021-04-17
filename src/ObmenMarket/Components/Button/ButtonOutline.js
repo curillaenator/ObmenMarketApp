@@ -1,14 +1,14 @@
 import styles from "./buttonoutline.module.scss";
 
 const Shape = ({ width, height, active, disabled }) => {
-  const smoothQ = 72;
-  const radius = 25;
+  const smoothQ = 98;
+  const radius = 44;
 
   const W = width - 2;
   const H = height - 2;
-  const R = height / 2 < radius ? height / 2 : radius;
-  const _smooth = height / 2 < radius ? 80 : smoothQ;
-  const S = (0.08 + R * 0.0009) * _smooth - 5 / _smooth - 4;
+  const R = height / 2.4 < radius ? height / 2.4 : radius;
+  const _smooth = height / 2 < radius ? 100 : smoothQ;
+  const S = (0.08 + R * 0.000012) * _smooth - 4 / _smooth - 3;
 
   const shapePresent = active
     ? `${styles.shape} ${styles.shapeActive}`
