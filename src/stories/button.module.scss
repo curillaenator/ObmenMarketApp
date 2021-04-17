@@ -1,4 +1,4 @@
-@import "../../../palette.scss";
+@import "../../../palette.s";
 
 .button {
   display: flex;
@@ -72,12 +72,7 @@
   }
 
   .title {
-    font-family: Inter;
-    font-style: normal;
-    font-weight: 700;
-    font-size: 14px;
-    line-height: 24px;
-    letter-spacing: -0.149333px;
+    
     transition: 0.12s linear;
   }
   .titleIdle {
