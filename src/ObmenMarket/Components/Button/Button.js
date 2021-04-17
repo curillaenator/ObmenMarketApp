@@ -1,14 +1,14 @@
 import styles from "./button.module.scss";
 
 const Shape = ({ width, height, active, disabled }) => {
-  const smoothQ = 72;
-  const radius = 25;
+  const smoothQ = 98;
+  const radius = 44;
 
   const W = width;
   const H = height;
-  const R = H / 2 < radius ? H / 2 : radius;
-  const _smooth = H / 2 < radius ? 85 : smoothQ;
-  const S = (0.08 + R * 0.0009) * _smooth - 5 / _smooth - 4;
+  const R = H / 2.4 < radius ? H / 2.4 : radius;
+  const _smooth = H / 2 < radius ? 100 : smoothQ;
+  const S = (0.08 + R * 0.000012) * _smooth - 4 / _smooth - 3;
 
   const shapePresent = active
     ? `${styles.shape} ${styles.shapeActive}`
@@ -37,7 +37,7 @@ const Shape = ({ width, height, active, disabled }) => {
 };
 
 const Icon = ({ icon, disabled, title, active }) => {
-  const iconStyle = title ? { marginRight: "12px" } : {};
+  const iconStyle = title ? { marginRight: "14px" } : {};
 
   const iconPresent = active
     ? `${styles.icon} ${styles.iconActive}`

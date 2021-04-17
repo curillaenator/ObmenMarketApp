@@ -19,6 +19,7 @@
     left: 0;
     transition: 0.06s linear;
     z-index: -1;
+    will-change: filter;
   }
 
   .shapeIdle {
@@ -36,6 +37,7 @@
   }
 
   &:hover .shapeIdle {
+    will-change: filter;
     fill: $primaryHover;
     filter: drop-shadow(0 12px 16px $primary2HoverShadow);
   }
@@ -139,17 +141,17 @@
     font-family: Inter;
     font-style: normal;
     font-size: 14px;
-    font-weight: 700;
-    line-height: 1.4;
-    letter-spacing: -0.149333px;
-    transition: 0.12s linear;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.008px;
+    transition: 0.08s linear;
 
     .subtitle {
       font-weight: 500;
       font-size: 12px;
       line-height: 16px;
-      letter-spacing: -0.15px;
-      opacity: 0.72;
+      letter-spacing: -0.16px;
+      opacity: 0.8;
     }
   }
 
@@ -170,7 +172,7 @@
   }
 
   &:hover {
-    transform: scale(1.05);
+    transform: scale3d(1.04,1.04,1.04);
   }
 
   &:active {
