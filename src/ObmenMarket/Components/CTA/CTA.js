@@ -26,7 +26,7 @@ export const Cta = ({
     <div className={styles.cta} style={ctaMarginBottom}>
       <div className={styles.button}>
         <Button
-          width={230}
+          width={226}
           height={56}
           title={ctaTitle}
           icon={ctaIcon}
