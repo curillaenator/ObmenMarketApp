@@ -80,12 +80,11 @@
     }
 
     :global(.cta_path2) {
-      fill: $fontTitle;
-      opacity: 0.4;
+      fill: $fontWhite;
     }
 
     :global(.cta_path1) {
-      fill: $fontTitle;
+      fill: $fontDanger;
     }
   }
 
