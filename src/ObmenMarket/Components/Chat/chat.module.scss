@@ -145,10 +145,12 @@
 
 .chat {
   position: fixed;
+  overflow: hidden;
   top: 0;
   right: 0;
-  width: 416px;
+  // width: 416px;
   height: 100vh;
   background-color: $chatbox;
+  transition: 0.12s ease-in-out;
   z-index: 1000;
 }

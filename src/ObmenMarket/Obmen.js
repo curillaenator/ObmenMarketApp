@@ -12,7 +12,7 @@ import { LoginCont } from "./Login/Login";
 import { HomeCont } from "./Home/Home";
 import { ProfileCont } from "./Profile/Profile";
 import { LotFullCont } from "./LotFull/LotFull";
-import { Chat } from "./Components/Chat/Chat";
+import { ChatCont } from "./Components/Chat/Chat";
 
 import { authCheck } from "../Redux/Reducers/auth";
 import { setIsModalOn } from "../Redux/Reducers/home";
@@ -38,7 +38,7 @@ function Obmen({ authCheck, isModalOn, history, setIsModalOn }) {
   return (
     <div className={styles.container} style={modalBlurStyle}>
       <HeaderCont />
-      <Chat />
+      <ChatCont />
       <Switch>
         <Route exact path="/" render={() => <HomeCont />} />
         <Route path="/posts/:id" render={() => <LotFullCont />} />

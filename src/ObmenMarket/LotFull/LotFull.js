@@ -29,6 +29,8 @@ import {
 
 import { setFormMode, setIsModalOn } from "../../Redux/Reducers/home";
 
+import { setChatFromLotFull } from "../../Redux/Reducers/chat";
+
 import readytopay from "../../Assets/Icons/readytopay.svg";
 import deleteBtn from "../../Assets/Icons/delete_2.svg";
 import openGallery from "../../Assets/Icons/openGallery.svg";
@@ -158,11 +160,13 @@ const Gallery = ({ lotPhotos }) => {
 const Buttons = ({
   icons,
   isOfferForm,
+  isChatOn,
   lotMeta,
   ownerID,
   handleOfferForm,
   setIsModalOn,
   add48hours,
+  setChatFromLotFull,
 }) => {
   // eslint-disable-next-line
   const [draw, callDraw] = useState(0);
@@ -212,9 +216,9 @@ const Buttons = ({
             width={butCont}
             height={56}
             title="Перейти в чат"
-            disabled={!lotMeta.offerConfirmed}
+            disabled={!lotMeta.offerConfirmed || isChatOn}
             // icon={icons.add}
-            // handler={handleOfferForm}
+            handler={setChatFromLotFull}
             // active={isOfferForm}
           />
         </div>
@@ -550,6 +554,7 @@ const LotFull = ({
   isLotPhotos,
   lotMeta,
   lotPhotos,
+  isChatOn,
   setNewLotId,
   setIsLotCreated,
   getLotMeta,
@@ -563,6 +568,7 @@ const LotFull = ({
   acceptConfirmOffer,
   setIsModalOn,
   add48hours,
+  setChatFromLotFull,
 }) => {
   const [isOfferForm, setIsOfferForm] = useState(false);
   const handleEditLot = () => setEditLotForm(match.params.id, isFormModeOn);
@@ -624,10 +630,12 @@ const LotFull = ({
               <Buttons
                 icons={icons}
                 isOfferForm={isOfferForm}
+                isChatOn={isChatOn}
                 lotMeta={lotMeta}
                 ownerID={ownerID}
                 handleOfferForm={handleOfferForm}
                 setIsModalOn={setIsModalOn}
+                setChatFromLotFull={setChatFromLotFull}
                 add48hours={add48hours}
               />
 
@@ -690,6 +698,7 @@ const mstp = (state) => ({
   lotMeta: state.lots.currentLotMeta,
   lotPhotos: state.lots.currentLotPhotos,
   newOfferMeta: state.lots.newOfferMeta,
+  isChatOn: state.chat.isChatOn,
 });
 
 export const LotFullCont = compose(
@@ -708,5 +717,6 @@ export const LotFullCont = compose(
     acceptConfirmOffer,
     setIsModalOn,
     add48hours,
+    setChatFromLotFull,
   })
 )(LotFull);

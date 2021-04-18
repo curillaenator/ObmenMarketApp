@@ -1,12 +1,25 @@
 import { db_chat } from "../../Utils/firebase";
 
-const initialState = {};
+const IS_CHAT_ON = "chat/IS_CHAT_ON";
+
+const initialState = {
+  isChatOn: true,
+};
 
 export const chat = (state = initialState, action) => {
   switch (action.type) {
+    case IS_CHAT_ON:
+      return { ...state, isChatOn: action.payload };
+
     default:
       return state;
   }
+};
+
+export const setIsChatOn = (payload) => ({ type: IS_CHAT_ON, payload });
+
+export const setChatFromLotFull = () => (dispatch) => {
+  dispatch(setIsChatOn(true));
 };
 
 export const createNewChatRoom = (lotID, offerID, lotAuthor, offerAuthor) => {

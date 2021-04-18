@@ -39,11 +39,13 @@
     will-change: filter;
     fill: $primaryHover;
     filter: drop-shadow(0 12px 16px $primary2HoverShadow);
+    // transform: scale3d(1.04, 1.04, 1.04);
   }
 
   &:active .shapeIdle {
     fill: $primary;
     filter: none;
+    // transform: scale3d(1, 1, 1);
   }
 
   // ICON
@@ -163,11 +165,15 @@
     color: $fontWhite;
   }
 
-  &:hover {
+  &:hover .shapeIdle,
+  &:hover .iconIdle,
+  &:hover .titleIdle {
     transform: scale3d(1.04, 1.04, 1.04);
   }
 
-  &:active {
+  &:active .shapeIdle,
+  &:active .iconIdle,
+  &:active .titleIdle {
     transform: scale3d(1, 1, 1);
   }
 }
