@@ -9,6 +9,7 @@
   letter-spacing: -0.04em;
   color: $fontWelcome;
 }
+
 @media (min-width: 375px) {
   .welcome {
     margin-bottom: 32px;
@@ -16,6 +17,7 @@
     line-height: 34px;
   }
 }
+
 @media (min-width: 640px) {
   .welcome {
     margin-bottom: 40px;
@@ -23,6 +25,7 @@
     line-height: 40px;
   }
 }
+
 @media (min-width: 1024px) {
   .welcome {
     margin-bottom: 40px;

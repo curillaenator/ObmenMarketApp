@@ -4,7 +4,7 @@ const IS_CHAT_ON = "chat/IS_CHAT_ON";
 const IS_DIALOGS_ON = "chat/IS_DIALOGS_ON";
 
 const initialState = {
-  isChatOn: true,
+  isChatOn: false,
   isDialogsOn: false,
 };
 
@@ -26,6 +26,7 @@ export const setIsDialogsOn = (payload) => ({ type: IS_DIALOGS_ON, payload });
 
 export const setChatFromLotFull = () => (dispatch) => {
   dispatch(setIsChatOn(true));
+  dispatch(setIsDialogsOn(true));
 };
 
 export const createNewChatRoom = (lotID, offerID, lotAuthor, offerAuthor) => {

@@ -1,3 +1,5 @@
+// FONTS
+
 $fontWhite: #ffffff;
 $fontWelcome: #c8c5d9;
 $fontGrey: #4e4c54;
@@ -7,6 +9,8 @@ $fontDanger: #ff2b2b;
 $fontNotification: #ff2b2b;
 $fontDisabled: #b9b5db;
 $fontSub: #948ea3;
+
+// CTA BUTTON
 
 $primary: #7000ff;
 $primary2IdleShadow: #1a1a1a3f;
@@ -20,17 +24,26 @@ $primaryFontClicked: #ccd1ff;
 $ctaIconHover1: #ffffff;
 $ctaIconHover2: #a966ff;
 
+// OUTLINE BUTTON
+
 $outline: #f9f8ff;
 $outlineStroke: #efecff;
 $outlineHover: #c6bcff;
 $outlineClick: #e7e3ff;
 $outlineFontClicked: #4617a8;
 
+// COMMON
+
+$headerButton: #4d4765;
 $shape: #ebe9ee;
 $formSpacer: #e1e1e8;
 $spacer: #d8d8d8;
 $galleryTint: #413f46ab;
 $modalfill: #080314e5;
+
+$disabledText: #d4d1eb;
+$disabledIdle: #f9f8ff;
+$disabledStrike: #efecff;
 
 // CHAT
 
@@ -39,14 +52,3 @@ $chathover: #d4d2dd;
 $chatfont1: #3d3158;
 $chatfont1hover: #a09cae;
 $chatfont2: #958aab;
-
-// $idleTransparent: #4d00f22f;
-
-$disabledText: #d4d1eb;
-$disabledIdle: #f9f8ff;
-$disabledStrike: #efecff;
-
-// $txt: #ffffff;
-// $txtclick: #ccd1ff;
-// $txtclick2: #4617a8;
-// $txtactive: #160242;

@@ -7,17 +7,6 @@ import styles from "./chat.module.scss";
 
 import ima from "../../../Assets/Images/2.jpg";
 
-const Header = ({ icons, title, closeChat }) => {
-  return (
-    <div className={styles.contacts_header}>
-      <div className={styles.title}>{title}</div>
-      <div className={styles.close} onClick={closeChat}>
-        {icons.cancel}
-      </div>
-    </div>
-  );
-};
-
 const Search = () => {
   return (
     <div className={styles.contacts_search}>
@@ -34,7 +23,6 @@ const ContactCard = ({
   contactID,
   selectedContact,
   handleSelectedContact,
-  // setIsDialogsOn,
 }) => {
   const className = () => {
     if (contactID === selectedContact)
@@ -116,7 +104,13 @@ const Chat = ({
       </div>
 
       <div className={styles.contacts} style={contactsOpen}>
-        <Header icons={icons} title="Мессенджер" closeChat={closeChat} />
+        <div className={styles.contacts_header}>
+          <div className={styles.title}>Мессенджер</div>
+
+          <div className={styles.close} onClick={closeChat}>
+            {icons.cancel}
+          </div>
+        </div>
 
         <Search />
 
@@ -131,7 +125,6 @@ const Chat = ({
               contactID={contactID}
               selectedContact={selectedContact}
               handleSelectedContact={handleSelectedContact}
-              // setIsDialogsOn={setIsDialogsOn}
             />
           ))}
         </div>

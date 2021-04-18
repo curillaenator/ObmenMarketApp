@@ -4,28 +4,68 @@ import { ButtonOutline } from "../Components/Button/ButtonOutline";
 import { Link, withRouter } from "react-router-dom";
 
 import { setFormMode } from "../../Redux/Reducers/home";
+import { setIsChatOn } from "../../Redux/Reducers/chat";
 
 import logo from "../../Assets/Icons/logo.svg";
+import chaticon from "../../Assets/Icons/chat.svg";
+import bellicon from "../../Assets/Icons/bell.svg";
 
 import styles from "./header.module.scss";
-// import { auth } from "../../Redux/Reducers/auth";
-//      <p>{user.username}</p>
 
-const User = ({ user }) => {
+const HeaderButton = ({ icon, iconpos = 0, notes, active, handler }) => {
+  const canvasClass = active
+    ? `${styles.canvas} ${styles.canvas_active}`
+    : styles.canvas;
+
   return (
-    <Link to="/profile" className={styles.user}>
+    <div className={styles.authbutton} onClick={handler}>
+      <div className={canvasClass}>
+        <img
+          src={icon}
+          alt=""
+          style={{ transform: `translateY(${iconpos}px)` }}
+        />
+      </div>
 
-      <img src={user.avatar} alt={user.username} />
-    </Link>
+      {notes > 0 && <div className={styles.note}>{notes}</div>}
+    </div>
+  );
+};
+
+const Authorized = ({ user, isChatOn, setIsChatOn }) => {
+  return (
+    <div className={styles.authorized}>
+      <Link to="/profile" className={styles.user}>
+        <img src={user.avatar} alt={user.username} />
+      </Link>
+
+      <HeaderButton
+        icon={chaticon}
+        iconpos={2}
+        notes={11}
+        active={isChatOn}
+        handler={() => setIsChatOn(true)}
+      />
+
+      <HeaderButton
+        icon={bellicon}
+        iconpos={0}
+        notes={0}
+        active={false}
+        handler={() => {}}
+      />
+    </div>
   );
 };
 
 export const Header = ({
   user,
+  isAuth,
   isInitialized,
   location,
+  isChatOn,
   setFormMode,
-  isAuth,
+  setIsChatOn,
 }) => {
   const handleLoginButton = () => setFormMode(false);
 
@@ -41,7 +81,13 @@ export const Header = ({
       </div>
 
       <div className={styles.pad}>
-        {isInitialized && isAuth && <User user={user} />}
+        {isInitialized && isAuth && (
+          <Authorized
+            user={user}
+            setIsChatOn={setIsChatOn}
+            isChatOn={isChatOn}
+          />
+        )}
 
         {isInitialized && !isAuth && (
           <Link to={loginButtonPath} className={styles.loginButton}>
@@ -64,9 +110,10 @@ const mstp = (state) => ({
   user: state.auth.user,
   isInitialized: state.auth.isInitialized,
   isFormModeOn: state.home.isFormModeOn,
+  isChatOn: state.chat.isChatOn,
 });
 
 export const HeaderCont = compose(
   withRouter,
-  connect(mstp, { setFormMode })
+  connect(mstp, { setFormMode, setIsChatOn })
 )(Header);
