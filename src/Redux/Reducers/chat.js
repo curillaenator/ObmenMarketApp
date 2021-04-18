@@ -1,9 +1,11 @@
 import { db_chat } from "../../Utils/firebase";
 
 const IS_CHAT_ON = "chat/IS_CHAT_ON";
+const IS_DIALOGS_ON = "chat/IS_DIALOGS_ON";
 
 const initialState = {
   isChatOn: true,
+  isDialogsOn: false,
 };
 
 export const chat = (state = initialState, action) => {
@@ -11,12 +13,16 @@ export const chat = (state = initialState, action) => {
     case IS_CHAT_ON:
       return { ...state, isChatOn: action.payload };
 
+    case IS_DIALOGS_ON:
+      return { ...state, isDialogsOn: action.payload };
+
     default:
       return state;
   }
 };
 
 export const setIsChatOn = (payload) => ({ type: IS_CHAT_ON, payload });
+export const setIsDialogsOn = (payload) => ({ type: IS_DIALOGS_ON, payload });
 
 export const setChatFromLotFull = () => (dispatch) => {
   dispatch(setIsChatOn(true));
