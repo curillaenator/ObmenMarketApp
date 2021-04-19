@@ -163,15 +163,15 @@ export const getLotMeta = (lotID) => (dispatch) => {
     );
 
     dispatch(setLotPhotos(photoList));
+    dispatch(setLotMeta(lotMeta));
     dispatch(setIsLotPhotos(true));
+    dispatch(setIsLotMeta(true));
   };
 
   db.ref("posts/" + lotID).once("value", (snap) => {
     const lotMeta = snap.val();
-    getLotPhotos(lotMeta);
-    dispatch(setLotMeta(lotMeta));
-    dispatch(setIsLotMeta(true));
     dispatch(setFormMode(false));
+    getLotPhotos(lotMeta);
   });
 };
 
@@ -237,7 +237,7 @@ export const add48hours = (lotMeta) => (dispatch) => {
   db.ref("posts/" + lotMeta.postid).update({ expireDate: newExpiry }, onUpdate);
 };
 
-export const acceptConfirmOffer = (lotID, offerID, payload) => async (
+export const acceptConfirmOffer = (lotID, payload) => (
   dispatch
 ) => {
   const onUpdate = (error) => {
@@ -251,5 +251,5 @@ export const acceptConfirmOffer = (lotID, offerID, payload) => async (
     });
   };
 
-  await db.ref("posts/" + lotID).update(payload, onUpdate);
+   db.ref("posts/" + lotID).update(payload, onUpdate);
 };

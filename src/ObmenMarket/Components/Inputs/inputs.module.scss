@@ -2,8 +2,6 @@
 
 .input {
   position: relative; // for photofiles
-  // width: 100%;
-  // height: 100%;
 
   .textinput {
     width: 100%;
@@ -43,6 +41,35 @@
     background-color: transparent;
     border: 0;
     border-bottom: 1px solid $formSpacer;
+    font-family: Inter;
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 19px;
+    letter-spacing: -0.08px;
+    color: $fontTitle;
+
+    &::placeholder {
+      font-weight: 600;
+      font-size: 13px;
+      line-height: 20px;
+      letter-spacing: -0.149333px;
+      color: $fontGrey;
+      transition: 0.12s;
+    }
+
+    &:focus::placeholder {
+      opacity: 0;
+    }
+  }
+
+  .message {
+    width: 100%;
+    height: 56px;
+    padding: 0 58px 0 16px;
+    outline: none;
+    border-radius: 16px;
+    background-color: $fontWhite;
+    border: 0;
     font-family: Inter;
     font-weight: 700;
     font-size: 13px;

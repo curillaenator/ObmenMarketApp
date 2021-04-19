@@ -29,21 +29,29 @@ export const setChatFromLotFull = () => (dispatch) => {
   dispatch(setIsDialogsOn(true));
 };
 
-export const createNewChatRoom = (lotID, offerID, lotAuthor, offerAuthor) => {
-  // db_chat.child(lotID).push().key;
+export const createNewChatRoom = (lotMeta, offerMeta) => (dispatch) => {
   const createRoom = () => {
-    console.log("create");
-    const newRoom = {
-      lotID,
-      offerID,
-      lotAuthor,
-      offerAuthor,
+    const onSet = (error) => {
+      if (error) return console.log("db error");
+      console.log("room set");
     };
-    db_chat.ref().child(lotID).set(newRoom);
+
+    const newRoom = {
+      lotID: lotMeta.postid,
+      offerID: offerMeta.offerID,
+      lotAuthor: lotMeta.uid,
+      offerAuthor: offerMeta.authorID,
+      confirmed: false,
+    };
+
+    db_chat.ref(`${lotMeta.uid}/${offerMeta.offerID}`).set(newRoom, onSet);
   };
 
-  db_chat.ref(lotID).once("value", (snap) => {
-    !snap.exists() && createRoom();
-    snap.exists() && console.log("exists");
+  db_chat.ref(`${lotMeta.uid}/${offerMeta.offerID}`).once("value", (snap) => {
+    !snap.exists() ? createRoom() : console.log("exists");
   });
 };
+
+// export const enterChatRoom = (lotMeta, offerMeta) => (dispatch) => {
+//   db_chat.ref(`${lotMeta}/`)
+// }

@@ -16,8 +16,13 @@ export const combinedValidators = (...validators) => (value) =>
   validators.reduce((err, val) => err || val(value), undefined);
 
 // Inputs
-export const TextInput = ({ input, meta, ...props }) => {
+export const TextInput = ({ input, meta, classN = "textinput", ...props }) => {
   const error = meta.touched && meta.error;
+
+  const errorStyle = () => {
+    if (classN === "textinput") return { borderBottom: "1px solid #f2002c" };
+    if (classN === "message") return { border: "1px solid #f2002c" };
+  };
 
   return (
     <div className={styles.input}>
@@ -31,8 +36,8 @@ export const TextInput = ({ input, meta, ...props }) => {
       <input
         {...input}
         {...props}
-        className={styles.textinput}
-        style={error ? { borderBottom: "1px solid #f2002c" } : {}}
+        className={styles[classN]}
+        style={error ? errorStyle() : {}}
       />
 
       {!error && <div className={styles.sub}>{props.sub}</div>}
@@ -42,16 +47,22 @@ export const TextInput = ({ input, meta, ...props }) => {
   );
 };
 
-export const TextArea = ({ input, meta, ...props }) => {
+export const TextArea = ({ input, meta, classN = "textarea", ...props }) => {
   const error = meta.touched && meta.error;
+
+  const errorStyle = () => {
+    if (classN === "textarea") return { borderBottom: "1px solid #f2002c" };
+    if (classN === "message") return { border: "1px solid #f2002c" };
+  };
+
   return (
     <div className={styles.input}>
       <TextareaAutosize
         {...input}
         {...props}
         onChange={input.onChange}
-        className={styles.textarea}
-        style={error ? { borderBottom: "1px solid #f2002c" } : {}}
+        className={styles[classN]}
+        style={error ? errorStyle() : {}}
       />
       {!error && <p className={styles.sub}>{props.sub}</p>}
       {error && <p className={`${styles.sub} ${styles.error}`}>{meta.error}</p>}

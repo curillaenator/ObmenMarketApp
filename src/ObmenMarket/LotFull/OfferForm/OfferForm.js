@@ -22,7 +22,6 @@ const OfferFormFields = ({
   icons,
   formOfferUI,
   newOfferMeta,
-  // lotMeta,
   lotID,
   handleSubmit,
   form,
@@ -129,14 +128,12 @@ export const OfferForm = ({
       onSubmit={onSubmit}
       render={({ handleSubmit, form }) => (
         <OfferFormFields
+          icons={icons}
+          formOfferUI={formOfferUI}
+          lotID={lotMeta.postid}
+          newOfferMeta={newOfferMeta}
           handleSubmit={handleSubmit}
           form={form}
-          formOfferUI={formOfferUI}
-          // lotMeta={lotMeta}
-          newOfferMeta={newOfferMeta}
-          // authorID={lotMeta.uid}
-          lotID={lotMeta.postid}
-          icons={icons}
         />
       )}
     />

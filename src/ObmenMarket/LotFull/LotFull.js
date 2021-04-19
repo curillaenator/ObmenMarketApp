@@ -8,7 +8,6 @@ import Lightbox from "react-image-lightbox";
 import { Prolong } from "./Prolong/Prolong";
 import { StatusBar } from "../Components/StatusBar/StatusBar";
 import { Button } from "../Components/Button/Button";
-// import { ButtonOutline } from "../Components/Button/ButtonOutline";
 import { Controls } from "../Components/Controls/Controls";
 import { FormFull } from "../Components/FormFull/FormFull";
 import { OfferForm } from "./OfferForm/OfferForm";
@@ -29,7 +28,10 @@ import {
 
 import { setFormMode, setIsModalOn } from "../../Redux/Reducers/home";
 
-import { setChatFromLotFull } from "../../Redux/Reducers/chat";
+import {
+  createNewChatRoom,
+  setChatFromLotFull,
+} from "../../Redux/Reducers/chat";
 
 import readytopay from "../../Assets/Icons/readytopay.svg";
 import deleteBtn from "../../Assets/Icons/delete_2.svg";
@@ -288,6 +290,7 @@ const OfferCard = ({
   acceptConfirmOffer,
   selectedOffer,
   setSelectedOffer,
+  createNewChatRoom,
 }) => {
   const ref = useRef({});
 
@@ -337,23 +340,32 @@ const OfferCard = ({
 
   const handleRemoveOffer = () => {
     onOfferCancel(offerMeta, lotMeta);
-    acceptConfirmOffer(lotMeta.postid, null, acceptConfirmReset);
+    acceptConfirmOffer(lotMeta.postid, acceptConfirmReset);
   };
 
   const approveOfferByLotAuthor = () => {
-    lotMeta.acceptedOffer
-      ? acceptConfirmOffer(lotMeta.postid, null, acceptConfirmReset)
-      : acceptConfirmOffer(lotMeta.postid, offerMeta.offerID, {
-          acceptedOffer: offerMeta.offerID,
-        });
+    if (lotMeta.acceptedOffer) {
+      acceptConfirmOffer(lotMeta.postid, acceptConfirmReset);
+      return null;
+    }
+
+    if (!lotMeta.acceptedOffer) {
+      acceptConfirmOffer(lotMeta.postid, { acceptedOffer: offerMeta.offerID });
+      createNewChatRoom(lotMeta, offerMeta);
+      return null;
+    }
   };
 
   const confirmOfferByOfferAuthor = () => {
-    lotMeta.offerConfirmed
-      ? acceptConfirmOffer(lotMeta.postid, null, acceptConfirmReset)
-      : acceptConfirmOffer(lotMeta.postid, offerMeta.offerID, {
-          offerConfirmed: true,
-        });
+    if (lotMeta.offerConfirmed) {
+      acceptConfirmOffer(lotMeta.postid, acceptConfirmReset);
+      return null;
+    }
+
+    if (!lotMeta.offerConfirmed) {
+      acceptConfirmOffer(lotMeta.postid, { offerConfirmed: true });
+      return null;
+    }
   };
 
   const minimizedClasses = openHeigth
@@ -458,6 +470,7 @@ const Offers = ({
   onOfferCancel,
   acceptConfirmOffer,
   setOffersQty,
+  createNewChatRoom,
 }) => {
   const [offers, setOffers] = useState(null);
   const [selectedOffer, setSelectedOffer] = useState(null);
@@ -527,6 +540,7 @@ const Offers = ({
               acceptConfirmOffer={acceptConfirmOffer}
               selectedOffer={selectedOffer}
               setSelectedOffer={setSelectedOffer}
+              createNewChatRoom={createNewChatRoom}
             />
           ))}
         </div>
@@ -568,6 +582,7 @@ const LotFull = ({
   acceptConfirmOffer,
   setIsModalOn,
   add48hours,
+  createNewChatRoom,
   setChatFromLotFull,
 }) => {
   const [isOfferForm, setIsOfferForm] = useState(false);
@@ -659,6 +674,7 @@ const LotFull = ({
                   acceptConfirmOffer={acceptConfirmOffer}
                   ownerID={ownerID}
                   setOffersQty={setOffersQty}
+                  createNewChatRoom={createNewChatRoom}
                 />
               )}
             </div>
@@ -717,6 +733,7 @@ export const LotFullCont = compose(
     acceptConfirmOffer,
     setIsModalOn,
     add48hours,
+    createNewChatRoom,
     setChatFromLotFull,
   })
 )(LotFull);
