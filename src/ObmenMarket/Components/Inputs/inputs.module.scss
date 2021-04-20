@@ -1,5 +1,16 @@
 @import "../../../palette.scss";
 
+@mixin placeholder {
+  &::placeholder {
+    color: $fontGrey;
+    transition: 0.08s;
+  }
+
+  &:focus::placeholder {
+    opacity: 0;
+  }
+}
+
 .input {
   position: relative; // for photofiles
 
@@ -9,25 +20,23 @@
     background-color: transparent;
     border: 0;
     border-bottom: 1px solid $formSpacer;
-    font-weight: 700;
-    font-size: 13px;
-    line-height: 19px;
-    letter-spacing: -0.08px;
     color: $fontTitle;
     outline: none;
 
-    &::placeholder {
-      font-weight: 600;
-      font-size: 13px;
-      line-height: 20px;
-      letter-spacing: -0.149333px;
-      color: $fontGrey;
-      transition: 0.12s;
-    }
+    @include placeholder;
+  }
 
-    &:focus::placeholder {
-      opacity: 0;
-    }
+  .message {
+    width: 100%;
+    height: 56px;
+    padding: 0 58px 0 16px;
+    outline: none;
+    border-radius: 16px;
+    background-color: $fontWhite;
+    border: 0;
+    color: $fontTitle;
+
+    @include placeholder;
   }
 
   .textarea {
@@ -40,53 +49,9 @@
     background-color: transparent;
     border: 0;
     border-bottom: 1px solid $formSpacer;
-    font-weight: 700;
-    font-size: 13px;
-    line-height: 19px;
-    letter-spacing: -0.08px;
     color: $fontTitle;
 
-    &::placeholder {
-      font-weight: 600;
-      font-size: 13px;
-      line-height: 20px;
-      letter-spacing: -0.149333px;
-      color: $fontGrey;
-      transition: 0.12s;
-    }
-
-    &:focus::placeholder {
-      opacity: 0;
-    }
-  }
-
-  .message {
-    width: 100%;
-    height: 56px;
-    padding: 0 58px 0 16px;
-    outline: none;
-    border-radius: 16px;
-    background-color: $fontWhite;
-    border: 0;
-    font-family: Inter;
-    font-weight: 700;
-    font-size: 13px;
-    line-height: 19px;
-    letter-spacing: -0.08px;
-    color: $fontTitle;
-
-    &::placeholder {
-      font-weight: 600;
-      font-size: 13px;
-      line-height: 20px;
-      letter-spacing: -0.149333px;
-      color: $fontGrey;
-      transition: 0.12s;
-    }
-
-    &:focus::placeholder {
-      opacity: 0;
-    }
+    @include placeholder;
   }
 
   .checkbox {

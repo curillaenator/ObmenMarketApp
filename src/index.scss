@@ -33,3 +33,17 @@ button {
   font-weight: 700;
   letter-spacing: -0.16px;
 }
+
+input {
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1;
+  letter-spacing: -0.16px;
+
+  &::placeholder {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: -0.16px;
+  }
+}
