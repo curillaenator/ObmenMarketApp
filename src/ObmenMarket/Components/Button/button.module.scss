@@ -137,9 +137,9 @@
 
   .title {
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 600;
     transition: 0.08s linear;
-    -webkit-font-smoothing: subpixel-antialiased;
+    letter-spacing: -0.16px;
 
     .subtitle {
       font-weight: 500;
