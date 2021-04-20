@@ -1,13 +1,17 @@
 import { db, db_chat } from "../../Utils/firebase";
+import { setUserChatsIDs } from "./auth";
 
 const IS_CHAT_ON = "chat/IS_CHAT_ON";
 const IS_DIALOGS_ON = "chat/IS_DIALOGS_ON";
 const SET_ROOMS = "chat/SET_ROOMS";
+const SET_ROOMS_IDS = "chat/SET_ROOMS_CNT";
 
 const initialState = {
   isChatOn: false,
   isDialogsOn: false,
+  isRoomIDs: false,
   rooms: null,
+  // roomsCnt: 0,
 };
 
 export const chat = (state = initialState, action) => {
@@ -21,6 +25,9 @@ export const chat = (state = initialState, action) => {
     case SET_ROOMS:
       return { ...state, rooms: action.payload };
 
+    case SET_ROOMS_IDS:
+      return { ...state, isRoomIDs: action.payload };
+
     default:
       return state;
   }
@@ -29,6 +36,7 @@ export const chat = (state = initialState, action) => {
 export const setIsChatOn = (payload) => ({ type: IS_CHAT_ON, payload });
 export const setIsDialogsOn = (payload) => ({ type: IS_DIALOGS_ON, payload });
 const setRooms = (payload) => ({ type: SET_ROOMS, payload });
+const setRoomIDs = (payload) => ({ type: SET_ROOMS_IDS, payload });
 
 export const setChatFromLotFull = () => (dispatch) => {
   dispatch(setIsChatOn(true));
@@ -64,16 +72,16 @@ export const chatRoom = (lotMeta, offerMeta) => async (dispatch) => {
   await db.ref().update(chatRoom, onUpd);
 };
 
-export const updateRoomList = (ownerID) => (dispatch, getState) => {
-  console.log(ownerID);
-
-  // db.ref(`users/${ownerID}/chats`).on("child_added", (snap) =>
-  //   console.log(snap.val())
-  // );
+export const updateRoomList = (ownerID) => (dispatch) => {
+  db.ref(`users/${ownerID}/chats`).on("value", (snap) => {
+    dispatch(setUserChatsIDs(snap.val()));
+    dispatch(setRoomIDs(true));
+  });
 };
 
 export const getChatRoomList = (roomList) => (dispatch) => {
-  const chatPromises = Object.keys(roomList).map((id) =>
+  const roomKeys = roomList ? roomList : {};
+  const chatPromises = Object.keys(roomKeys).map((id) =>
     db_chat.ref(`chats/${id}`).once("value", (sn) => sn.val())
   );
 

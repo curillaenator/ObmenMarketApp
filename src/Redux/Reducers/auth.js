@@ -4,6 +4,7 @@ const SET_INITIALIZED = "auth/SET_INITIALIZED";
 const SET_OWNER_ID = "auth/SET_OWNER_ID";
 const SET_IS_AUTH = "auth/IS_AUTH";
 const SET_USER = "auth/SET_USER";
+const SET_USER_CHATS = "auth/SET_USER_CHATS";
 
 const initialState = {
   isInitialized: false,
@@ -26,6 +27,9 @@ export const auth = (state = initialState, action) => {
     case SET_USER:
       return { ...state, user: action.user };
 
+    case SET_USER_CHATS:
+      return { ...state, user: { ...state.user, chats: action.payload } };
+
     default:
       return state;
   }
@@ -37,6 +41,7 @@ const setInitialized = (payload) => ({ type: SET_INITIALIZED, payload });
 export const setIsAuth = (auth) => ({ type: SET_IS_AUTH, auth });
 const setOwnerID = (payload) => ({ type: SET_OWNER_ID, payload });
 const setAuthedUser = (user) => ({ type: SET_USER, user });
+export const setUserChatsIDs = (payload) => ({ type: SET_USER_CHATS, payload });
 
 // THUNKs
 

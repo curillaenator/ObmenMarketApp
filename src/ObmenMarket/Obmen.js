@@ -1,4 +1,3 @@
-// import { getLCP, getFID, getCLS } from "web-vitals";
 import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { fa } from "../Utils/firebase";
@@ -19,8 +18,9 @@ import { setIsModalOn } from "../Redux/Reducers/home";
 
 import styles from "./obmen.module.scss";
 
-function Obmen({ authCheck, isModalOn, history, setIsModalOn }) {
+function Obmen({ isInitialized, authCheck, isModalOn, history, setIsModalOn }) {
   const [user, userLoading] = useAuthState(fa);
+
   useEffect(() => !userLoading && authCheck(user), [
     user,
     authCheck,
@@ -29,16 +29,12 @@ function Obmen({ authCheck, isModalOn, history, setIsModalOn }) {
 
   history.listen(() => isModalOn && setIsModalOn(false));
 
-  // getCLS(console.log);
-  // getFID(console.log);
-  // getLCP(console.log);
-
   const modalBlurStyle = isModalOn ? { filter: "blur(20px)" } : {};
 
   return (
     <div className={styles.container} style={modalBlurStyle}>
       <HeaderCont />
-      <ChatCont />
+      {isInitialized && <ChatCont />}
       <Switch>
         <Route exact path="/" render={() => <HomeCont />} />
         <Route path="/posts/:id" render={() => <LotFullCont />} />
@@ -49,7 +45,7 @@ function Obmen({ authCheck, isModalOn, history, setIsModalOn }) {
   );
 }
 const mstp = (state) => ({
-  // isInitialized: state.auth.isInitialized,
+  isInitialized: state.auth.isInitialized,
   isModalOn: state.home.isModalOn,
 });
 

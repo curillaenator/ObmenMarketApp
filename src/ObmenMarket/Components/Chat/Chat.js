@@ -58,6 +58,7 @@ const ContactCard = ({
 
 const Contacts = ({
   icons,
+  rooms,
   isChatOn,
   contacts,
   selectedID,
@@ -65,6 +66,8 @@ const Contacts = ({
   closeChat,
 }) => {
   const contactsOpen = isChatOn ? { width: "416px" } : { width: "0px" };
+
+  console.log(rooms);
 
   return (
     <div className={styles.contacts} style={contactsOpen}>
@@ -85,7 +88,7 @@ const Contacts = ({
           <ContactCard
             key={contactID}
             image={ima}
-            messqty={contact}
+            messqty={2}
             title="Мускулькар на Самокат Xiaomi"
             text="Фотоаппарат Zenith на Что-то, без чего вы жить не сможете никогда!"
             contactID={contactID}
@@ -142,11 +145,13 @@ const Dialogs = ({ isDialogsOn }) => {
 };
 
 const Chat = ({
+  icons,
   user,
   ownerID,
   isChatOn,
   isDialogsOn,
-  icons,
+  isRoomIDs,
+  rooms,
   setIsChatOn,
   setIsDialogsOn,
   getChatRoomList,
@@ -158,7 +163,12 @@ const Chat = ({
     ownerID,
     updateRoomList,
   ]);
-  useEffect(() => user && getChatRoomList(user.chats), [user, getChatRoomList]);
+
+  useEffect(() => isRoomIDs && getChatRoomList(user.chats), [
+    user.chats,
+    isRoomIDs,
+    getChatRoomList,
+  ]);
 
   const closeChat = () => {
     setSelectedID(null);
@@ -189,6 +199,7 @@ const Chat = ({
       <Contacts
         icons={icons}
         isChatOn={isChatOn}
+        rooms={rooms}
         contacts={contacts}
         selectedID={selectedID}
         handleSelected={handleSelected}
@@ -202,6 +213,7 @@ const mstp = (state) => ({
   icons: state.ui.icons,
   ownerID: state.auth.ownerID,
   user: state.auth.user,
+  isRoomIDs: state.chat.isRoomIDs,
   rooms: state.chat.rooms,
   isChatOn: state.chat.isChatOn,
   isDialogsOn: state.chat.isDialogsOn,
