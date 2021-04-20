@@ -165,15 +165,23 @@
     color: $fontWhite;
   }
 
-  &:hover .shapeIdle,
-  &:hover .iconIdle,
-  &:hover .titleIdle {
+  // &:hover .shapeIdle,
+  // &:hover .iconIdle,
+  // &:hover .titleIdle {
+  //   transform: scale3d(1.04, 1.04, 1.04);
+  // }
+
+  // &:active .shapeIdle,
+  // &:active .iconIdle,
+  // &:active .titleIdle {
+  //   transform: scale3d(1, 1, 1);
+  // }
+
+  &:hover {
     transform: scale3d(1.04, 1.04, 1.04);
   }
 
-  &:active .shapeIdle,
-  &:active .iconIdle,
-  &:active .titleIdle {
+  &:active {
     transform: scale3d(1, 1, 1);
   }
 }
