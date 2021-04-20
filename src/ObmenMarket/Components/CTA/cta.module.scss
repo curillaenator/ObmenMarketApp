@@ -5,14 +5,14 @@
   display: flex;
   align-items: center;
   width: 100%;
-  margin-bottom: 40px;
+  margin-bottom: 64px;
   .button {
     margin-right: 40px;
     z-index: 500;
   }
 }
 
-@media (max-width: 640px) {
+@media (min-width: 375px) {
   .cta {
     .button {
       position: fixed;
@@ -20,6 +20,60 @@
       left: 50%;
       margin-right: 0;
       transform: translateX(-50%);
+    }
+  }
+}
+
+@media (min-width: 640px) {
+  .cta {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 64px;
+    .button {
+      position: inherit;
+      bottom: auto;
+      left: auto;
+      margin-right: 40px;
+      z-index: 500;
+      transform: none;
+    }
+  }
+}
+
+@media (min-width: 720px) {
+  .cta {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 64px;
+    .button {
+      position: inherit;
+      bottom: auto;
+      left: auto;
+      margin-right: 40px;
+      z-index: 500;
+      transform: none;
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  .cta {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 64px;
+    .button {
+      position: inherit;
+      bottom: auto;
+      left: auto;
+      margin-right: 40px;
+      z-index: 500;
+      transform: none;
     }
   }
 }

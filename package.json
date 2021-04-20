@@ -1,5 +1,5 @@
 {
-  "name": "ObmenMarket",
+  "name": "obmenmarket",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -10,7 +10,6 @@
     "cors": "^2.8.5",
     "final-form": "^4.20.2",
     "firebase": "^8.2.10",
-    "node-mailjet": "^3.3.1",
     "node-sass": "^4.14.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
