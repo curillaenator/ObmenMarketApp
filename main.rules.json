@@ -9,6 +9,10 @@
             ".read": true,
             ".write": "auth != null && data.parent().hasChild(auth.uid) && auth.uid === $uid"
           }
+        //   ,
+        //   "chats/$cha": {
+        //       ".write": "auth != null && newData.child('authorID').val() === $uid"
+        //   }
       },
   
     "posts": {
