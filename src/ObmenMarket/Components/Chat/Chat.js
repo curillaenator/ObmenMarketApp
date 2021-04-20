@@ -1,10 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Form, Field } from "react-final-form";
+// import { db } from "../../../Utils/firebase";
 
 import { TextInput } from "../../Components/Inputs/Inputs";
 
-import { setIsChatOn, setIsDialogsOn } from "../../../Redux/Reducers/chat";
+import {
+  setIsChatOn,
+  setIsDialogsOn,
+  getChatRoomList,
+  updateRoomList,
+} from "../../../Redux/Reducers/chat";
 
 import sendmess from "../../../Assets/Icons/message.svg";
 
@@ -136,13 +142,23 @@ const Dialogs = ({ isDialogsOn }) => {
 };
 
 const Chat = ({
+  user,
+  ownerID,
   isChatOn,
   isDialogsOn,
   icons,
   setIsChatOn,
   setIsDialogsOn,
+  getChatRoomList,
+  updateRoomList,
 }) => {
   const [selectedID, setSelectedID] = useState(null);
+
+  useEffect(() => ownerID && updateRoomList(ownerID), [
+    ownerID,
+    updateRoomList,
+  ]);
+  useEffect(() => user && getChatRoomList(user.chats), [user, getChatRoomList]);
 
   const closeChat = () => {
     setSelectedID(null);
@@ -184,8 +200,16 @@ const Chat = ({
 
 const mstp = (state) => ({
   icons: state.ui.icons,
+  ownerID: state.auth.ownerID,
+  user: state.auth.user,
+  rooms: state.chat.rooms,
   isChatOn: state.chat.isChatOn,
   isDialogsOn: state.chat.isDialogsOn,
 });
 
-export const ChatCont = connect(mstp, { setIsChatOn, setIsDialogsOn })(Chat);
+export const ChatCont = connect(mstp, {
+  setIsChatOn,
+  setIsDialogsOn,
+  getChatRoomList,
+  updateRoomList,
+})(Chat);

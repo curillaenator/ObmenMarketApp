@@ -28,10 +28,7 @@ import {
 
 import { setFormMode, setIsModalOn } from "../../Redux/Reducers/home";
 
-import {
-  createNewChatRoom,
-  setChatFromLotFull,
-} from "../../Redux/Reducers/chat";
+import { chatRoom, setChatFromLotFull } from "../../Redux/Reducers/chat";
 
 import readytopay from "../../Assets/Icons/readytopay.svg";
 import deleteBtn from "../../Assets/Icons/delete_2.svg";
@@ -290,7 +287,7 @@ const OfferCard = ({
   acceptConfirmOffer,
   selectedOffer,
   setSelectedOffer,
-  createNewChatRoom,
+  chatRoom,
 }) => {
   const ref = useRef({});
 
@@ -351,7 +348,7 @@ const OfferCard = ({
 
     if (!lotMeta.acceptedOffer) {
       acceptConfirmOffer(lotMeta.postid, { acceptedOffer: offerMeta.offerID });
-      createNewChatRoom(lotMeta, offerMeta);
+      chatRoom(lotMeta, offerMeta);
       return null;
     }
   };
@@ -364,6 +361,7 @@ const OfferCard = ({
 
     if (!lotMeta.offerConfirmed) {
       acceptConfirmOffer(lotMeta.postid, { offerConfirmed: true });
+      // chatRoom(lotMeta, offerMeta);
       return null;
     }
   };
@@ -470,7 +468,7 @@ const Offers = ({
   onOfferCancel,
   acceptConfirmOffer,
   setOffersQty,
-  createNewChatRoom,
+  chatRoom,
 }) => {
   const [offers, setOffers] = useState(null);
   const [selectedOffer, setSelectedOffer] = useState(null);
@@ -540,7 +538,7 @@ const Offers = ({
               acceptConfirmOffer={acceptConfirmOffer}
               selectedOffer={selectedOffer}
               setSelectedOffer={setSelectedOffer}
-              createNewChatRoom={createNewChatRoom}
+              chatRoom={chatRoom}
             />
           ))}
         </div>
@@ -582,7 +580,7 @@ const LotFull = ({
   acceptConfirmOffer,
   setIsModalOn,
   add48hours,
-  createNewChatRoom,
+  chatRoom,
   setChatFromLotFull,
 }) => {
   const [isOfferForm, setIsOfferForm] = useState(false);
@@ -674,7 +672,7 @@ const LotFull = ({
                   acceptConfirmOffer={acceptConfirmOffer}
                   ownerID={ownerID}
                   setOffersQty={setOffersQty}
-                  createNewChatRoom={createNewChatRoom}
+                  chatRoom={chatRoom}
                 />
               )}
             </div>
@@ -733,7 +731,7 @@ export const LotFullCont = compose(
     acceptConfirmOffer,
     setIsModalOn,
     add48hours,
-    createNewChatRoom,
+    chatRoom,
     setChatFromLotFull,
   })
 )(LotFull);
