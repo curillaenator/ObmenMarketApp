@@ -53,8 +53,8 @@
       position: relative;
       width: 42px;
       height: 42px;
-      border-radius: 50%;
       cursor: pointer;
+      will-change: filter;
 
       .canvas {
         display: flex;
@@ -66,6 +66,7 @@
         background-color: $headerButton;
         filter: drop-shadow(0 12px 16px $primary2IdleShadow);
         transition: 0.08s linear;
+        will-change: filter;
 
         &_active {
           background-color: $primary;
