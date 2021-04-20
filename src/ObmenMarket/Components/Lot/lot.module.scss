@@ -86,9 +86,9 @@
       text-overflow: ellipsis;
       font-style: normal;
       font-weight: 800;
-      font-size: 24px;
+      font-size: 22px;
       line-height: 28px;
-      letter-spacing: -0.56px;
+      letter-spacing: -0.40px;
       color: $fontTitle;
       margin-bottom: 12px;
     }
@@ -96,8 +96,6 @@
     .description {
       overflow-y: hidden;
       min-height: 57px;
-      font-style: normal;
-      font-weight: normal;
       font-size: 14px;
       line-height: 20px;
       /* or 143% */

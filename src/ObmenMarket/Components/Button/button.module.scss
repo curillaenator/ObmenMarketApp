@@ -10,7 +10,7 @@
   background-color: transparent;
   cursor: pointer;
   transition: 0.06s linear;
-  will-change: filter;
+  will-change: filter, transform;
 
   .shape {
     position: absolute;
@@ -139,6 +139,7 @@
     font-size: 14px;
     font-weight: 700;
     transition: 0.08s linear;
+    -webkit-font-smoothing: subpixel-antialiased;
 
     .subtitle {
       font-weight: 500;
@@ -168,7 +169,7 @@
   // &:hover .shapeIdle,
   // &:hover .iconIdle,
   // &:hover .titleIdle {
-  //   transform: scale3d(1.04, 1.04, 1.04);
+  //   transform: scale3d(1.6, 1.04, 1.04);
   // }
 
   // &:active .shapeIdle,
