@@ -71,7 +71,7 @@ export const googleSignIn = () => async (dispatch) => {
     db.ref("users/" + user.uid)
       .set(newUser)
       .then(() => {
-        user.sendEmailVerification().then(() => console.log("sent"));
+        // user.sendEmailVerification().then(() => console.log("sent"));
         dispatch(setOwnerID(user.uid));
         dispatch(setAuthedUser(newUser));
         dispatch(setIsAuth(true));

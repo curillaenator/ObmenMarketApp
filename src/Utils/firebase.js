@@ -3,8 +3,8 @@ import "firebase/storage";
 import "firebase/auth";
 import "firebase/database";
 import "firebase/functions";
-// import "firebase/performance";
-// import "firebase/analytics";
+import "firebase/performance";
+import "firebase/analytics";
 
 // POSTS
 
@@ -39,9 +39,9 @@ export const fb = firebase;
 export const fa = firebase.auth();
 export const fn = firebase.functions();
 export const fst = firebase.storage();
-// export const an = firebase.analytics();
-// export const perf = firebase.performance();
+export const an = firebase.analytics();
+export const perf = firebase.performance();
 
 // using SendGrid's Node.js Library - https://github.com/sendgrid/sendgrid-nodejs
-export const sg = require("@sendgrid/mail");
-sg.setApiKey(process.env.SENDGRID_API_KEY);
+// export const sg = require("@sendgrid/mail");
+// sg.setApiKey(process.env.SENDGRID_API_KEY);
