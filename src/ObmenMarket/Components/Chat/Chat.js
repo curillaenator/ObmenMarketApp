@@ -20,9 +20,10 @@ import styles from "./chat.module.scss";
 
 const ContactCard = ({ room, messqty, roomCnt, curRoom, handleSelected }) => {
   const [photolinks, setPhotoLinks] = useState(null);
+  // console.log(room);
 
   const roomData = {
-    roomID: room.roomID,
+    roomID: room && room.roomID,
     roomCnt: roomCnt,
   };
 

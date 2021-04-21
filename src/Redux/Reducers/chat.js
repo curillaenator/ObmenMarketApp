@@ -88,7 +88,7 @@ export const chatRoom = (lotMeta, offerMeta) => async (dispatch) => {
 
   const roomData = {};
   roomData[`chats/${roomID}`] = room;
-  roomData[`messages/${roomID}`] = { roomID };
+  // roomData[`messages/${roomID}`] = { roomID };
 
   await db_chat.ref().update(roomData, onUpd);
   await db.ref().update(userData, onUpd);
