@@ -183,7 +183,9 @@
   flex-direction: column;
   width: 100%;
   height: calc(100% - 116px - 120px);
+  // height: auto;
   padding: 32px;
+  overflow-y: scroll;
 
   .message {
     display: flex;
@@ -191,9 +193,10 @@
     align-items: center;
     width: fit-content;
     max-width: 80%;
-    min-height: 56px;
+    height: auto;
+    // min-height: 56px;
     margin-bottom: 24px;
-    padding: 18px 24px;
+    padding: 21px 24px;
     border-radius: 16px;
 
     &_owner {
