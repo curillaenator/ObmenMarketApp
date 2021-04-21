@@ -82,8 +82,10 @@ const Contacts = ({
 }) => {
   const contactsOpen = isChatOn ? { width: "416px" } : { width: "0px" };
 
+  console.log(rooms);
+
   return (
-    rooms && (
+    rooms !== null && (
       <div className={styles.contacts} style={contactsOpen}>
         <div className={styles.contacts_header}>
           <div className={styles.title}>Мессенджер</div>
@@ -98,16 +100,17 @@ const Contacts = ({
         </div>
 
         <div className={styles.contacts_list}>
-          {rooms.map((room, roomCnt) => (
-            <ContactCard
-              key={roomCnt}
-              room={room}
-              messqty={2}
-              roomCnt={roomCnt}
-              curRoom={curRoom}
-              handleSelected={handleSelected}
-            />
-          ))}
+          {rooms.length > 0 &&
+            rooms.map((room, roomCnt) => (
+              <ContactCard
+                key={roomCnt}
+                room={room}
+                messqty={2}
+                roomCnt={roomCnt}
+                curRoom={curRoom}
+                handleSelected={handleSelected}
+              />
+            ))}
         </div>
       </div>
     )
