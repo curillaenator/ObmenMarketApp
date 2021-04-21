@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-
 import { Welcome } from "./Welcome/Welcome";
 import { Warning } from "./Warning/Warning";
 import { Cta } from "../Components/CTA/CTA";
