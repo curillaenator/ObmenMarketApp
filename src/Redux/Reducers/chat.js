@@ -1,17 +1,18 @@
-import { db, db_chat } from "../../Utils/firebase";
+import { db, db_chat, fst } from "../../Utils/firebase";
 import { setUserChatsIDs } from "./auth";
 
 const IS_CHAT_ON = "chat/IS_CHAT_ON";
 const IS_DIALOGS_ON = "chat/IS_DIALOGS_ON";
 const SET_ROOMS = "chat/SET_ROOMS";
-const SET_ROOMS_IDS = "chat/SET_ROOMS_CNT";
+const SET_ROOMS_IDS = "chat/SET_ROOMS_IDS";
+const SET_ROOMS_IMG = "chat/SET_ROOMS_IMG";
 
 const initialState = {
   isChatOn: false,
   isDialogsOn: false,
   isRoomIDs: false,
   rooms: null,
-  // roomsCnt: 0,
+  roomsImg: null,
 };
 
 export const chat = (state = initialState, action) => {
@@ -27,6 +28,9 @@ export const chat = (state = initialState, action) => {
 
     case SET_ROOMS_IDS:
       return { ...state, isRoomIDs: action.payload };
+
+    case SET_ROOMS_IMG:
+      return { ...state, roomsImg: action.payload };
 
     default:
       return state;
@@ -54,7 +58,7 @@ export const chatRoom = (lotMeta, offerMeta) => async (dispatch) => {
     lotAuthorID: lotMeta.uid,
     offerAuthorID: offerMeta.authorID,
     roomID: roomID,
-    photoPath: `${lotMeta.uid}/${lotMeta.postid}/photo0`,
+    photoPath: `posts/${lotMeta.uid}/${lotMeta.postid}`,
     lotDescription: lotMeta.description,
     offerDescription: offerMeta.description,
   };
@@ -88,6 +92,13 @@ export const getChatRoomList = (roomList) => (dispatch) => {
   Promise.all(chatPromises).then((rooms) =>
     dispatch(setRooms(rooms.map((r) => r.val())))
   );
+};
+
+export const getRoomPhoto = (path) => (dispatch) => {
+  fst
+    .ref(path)
+    .getDownloadURL()
+    .then((url) => console.log(url));
 };
 
 export const chatRoomSub = () => (dispatch) => {};

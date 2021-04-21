@@ -18,7 +18,14 @@ import { setIsModalOn } from "../Redux/Reducers/home";
 
 import styles from "./obmen.module.scss";
 
-function Obmen({ isInitialized, authCheck, isModalOn, history, setIsModalOn }) {
+function Obmen({
+  isInitialized,
+  isAuth,
+  authCheck,
+  isModalOn,
+  history,
+  setIsModalOn,
+}) {
   const [user, userLoading] = useAuthState(fa);
 
   useEffect(() => !userLoading && authCheck(user), [
@@ -34,7 +41,7 @@ function Obmen({ isInitialized, authCheck, isModalOn, history, setIsModalOn }) {
   return (
     <div className={styles.container} style={modalBlurStyle}>
       <HeaderCont />
-      {isInitialized && <ChatCont />}
+      {isInitialized && isAuth && <ChatCont />}
       <Switch>
         <Route exact path="/" render={() => <HomeCont />} />
         <Route path="/posts/:id" render={() => <LotFullCont />} />
@@ -46,6 +53,7 @@ function Obmen({ isInitialized, authCheck, isModalOn, history, setIsModalOn }) {
 }
 const mstp = (state) => ({
   isInitialized: state.auth.isInitialized,
+  isAuth: state.auth.isAuth,
   isModalOn: state.home.isModalOn,
 });
 

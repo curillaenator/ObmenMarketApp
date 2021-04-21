@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Form, Field } from "react-final-form";
-// import { db } from "../../../Utils/firebase";
+import { fb } from "../../../Utils/firebase";
 
 import { TextInput } from "../../Components/Inputs/Inputs";
 
@@ -16,43 +16,54 @@ import sendmess from "../../../Assets/Icons/message.svg";
 
 import styles from "./chat.module.scss";
 
-import ima from "../../../Assets/Images/2.jpg";
-
 const ContactCard = ({
-  image,
+  room,
   messqty,
-  title,
-  text,
-  contactID,
+  roomCnt,
   selectedID,
   handleSelected,
 }) => {
+  const [photolinks, setPhotoLinks] = useState(null);
+
+  useEffect(() => {
+    const storage = fb.storage().ref(room.photoPath);
+    const photoItems = storage
+      .listAll()
+      .then((res) => res.items.map((item) => item.getDownloadURL()));
+
+    Promise.resolve(photoItems).then((res) =>
+      Promise.all(res).then((r) => setPhotoLinks(r))
+    );
+  }, [room.photoPath]);
+
   const className = () => {
-    if (contactID === selectedID)
+    if (roomCnt === selectedID)
       return `${styles.contact} ${styles.contact_active}`;
-    if (selectedID > 0 && contactID === selectedID - 1)
+    if (selectedID > 0 && roomCnt === selectedID - 1)
       return `${styles.contact} ${styles.contact_before}`;
-    if (selectedID !== null && contactID === selectedID + 1)
+    if (selectedID !== null && roomCnt === selectedID + 1)
       return `${styles.contact} ${styles.contact_after}`;
     return styles.contact;
   };
 
   return (
-    <div className={className()} onClick={() => handleSelected(contactID)}>
-      <div className={styles.contact_image}>
-        <div className={styles.thumb}>
-          <img className={styles.image} src={image} alt="" />
+    photolinks && (
+      <div className={className()} onClick={() => handleSelected(roomCnt)}>
+        <div className={styles.contact_image}>
+          <div className={styles.thumb}>
+            <img className={styles.image} src={photolinks[0]} alt="" />
 
-          {messqty > 0 && <div className={styles.messqty}>{messqty}</div>}
+            {messqty > 0 && <div className={styles.messqty}>{messqty}</div>}
+          </div>
+        </div>
+
+        <div className={styles.contact_info}>
+          <div className={styles.infottl}>{room.title}</div>
+
+          <div className={styles.infotxt}>{room.lotDescription}</div>
         </div>
       </div>
-
-      <div className={styles.contact_info}>
-        <div className={styles.infottl}>{title}</div>
-
-        <div className={styles.infotxt}>{text}</div>
-      </div>
-    </div>
+    )
   );
 };
 
@@ -60,44 +71,41 @@ const Contacts = ({
   icons,
   rooms,
   isChatOn,
-  contacts,
   selectedID,
   handleSelected,
   closeChat,
 }) => {
   const contactsOpen = isChatOn ? { width: "416px" } : { width: "0px" };
 
-  console.log(rooms);
-
   return (
-    <div className={styles.contacts} style={contactsOpen}>
-      <div className={styles.contacts_header}>
-        <div className={styles.title}>Мессенджер</div>
+    rooms && (
+      <div className={styles.contacts} style={contactsOpen}>
+        <div className={styles.contacts_header}>
+          <div className={styles.title}>Мессенджер</div>
 
-        <div className={styles.close} onClick={closeChat}>
-          {icons.cancel}
+          <div className={styles.close} onClick={closeChat}>
+            {icons.cancel}
+          </div>
+        </div>
+
+        <div className={styles.contacts_search}>
+          <div className={styles.temp}></div>
+        </div>
+
+        <div className={styles.contacts_list}>
+          {rooms.map((room, roomCnt) => (
+            <ContactCard
+              key={room.roomID}
+              room={room}
+              messqty={2}
+              roomCnt={roomCnt}
+              selectedID={selectedID}
+              handleSelected={handleSelected}
+            />
+          ))}
         </div>
       </div>
-
-      <div className={styles.contacts_search}>
-        <div className={styles.temp}></div>
-      </div>
-
-      <div className={styles.contacts_list}>
-        {contacts.map((contact, contactID) => (
-          <ContactCard
-            key={contactID}
-            image={ima}
-            messqty={2}
-            title="Мускулькар на Самокат Xiaomi"
-            text="Фотоаппарат Zenith на Что-то, без чего вы жить не сможете никогда!"
-            contactID={contactID}
-            selectedID={selectedID}
-            handleSelected={handleSelected}
-          />
-        ))}
-      </div>
-    </div>
+    )
   );
 };
 
@@ -190,8 +198,6 @@ const Chat = ({
     selectedID === contactID ? deselect() : select();
   };
 
-  const contacts = [0, 5, 3, 12, 8, 0, 6, 0, 0, 13];
-
   return (
     <div className={styles.chat}>
       <Dialogs isDialogsOn={isDialogsOn} />
@@ -200,7 +206,6 @@ const Chat = ({
         icons={icons}
         isChatOn={isChatOn}
         rooms={rooms}
-        contacts={contacts}
         selectedID={selectedID}
         handleSelected={handleSelected}
         closeChat={closeChat}
