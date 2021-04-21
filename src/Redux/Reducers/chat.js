@@ -158,3 +158,5 @@ export const postMessage = (roomID, message) => (dispatch) => {
 
   db_chat.ref(`messages/${roomID}/${newMessID}`).set(message, onSet);
 };
+
+export const blabla = () => {};
