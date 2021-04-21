@@ -67,6 +67,12 @@ export const chatRoom = (lotMeta, offerMeta) => async (dispatch) => {
 
   const roomID = await db_chat.ref().push().key;
 
+  const user = { title: `${lotMeta.title} на ${offerMeta.name}` };
+
+  const userData = {};
+  userData[`users/${lotMeta.uid}/chats/${roomID}`] = user;
+  userData[`users/${offerMeta.authorID}/chats/${roomID}`] = user;
+
   const room = {
     title: `${lotMeta.title} на ${offerMeta.name}`,
     lotAuthorID: lotMeta.uid,
@@ -77,18 +83,8 @@ export const chatRoom = (lotMeta, offerMeta) => async (dispatch) => {
     offerDescription: offerMeta.description,
   };
 
-  const user = {
-    lotAuthorID: lotMeta.uid,
-    offerAuthorID: offerMeta.authorID,
-  };
-
-  const userData = {};
-  userData[`users/${lotMeta.uid}/chats/${roomID}`] = user;
-  userData[`users/${offerMeta.authorID}/chats/${roomID}`] = user;
-
   const roomData = {};
   roomData[`chats/${roomID}`] = room;
-  // roomData[`messages/${roomID}`] = { roomID };
 
   await db_chat.ref().update(roomData, onUpd);
   await db.ref().update(userData, onUpd);

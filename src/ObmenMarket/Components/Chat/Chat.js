@@ -20,7 +20,6 @@ import styles from "./chat.module.scss";
 
 const ContactCard = ({ room, messqty, roomCnt, curRoom, handleSelected }) => {
   const [photolinks, setPhotoLinks] = useState(null);
-  // console.log(room);
 
   const roomData = {
     roomID: room && room.roomID,
@@ -82,38 +81,33 @@ const Contacts = ({
 }) => {
   const contactsOpen = isChatOn ? { width: "416px" } : { width: "0px" };
 
-  console.log(rooms);
-
   return (
-    rooms !== null && (
-      <div className={styles.contacts} style={contactsOpen}>
-        <div className={styles.contacts_header}>
-          <div className={styles.title}>Мессенджер</div>
+    <div className={styles.contacts} style={contactsOpen}>
+      <div className={styles.contacts_header}>
+        <div className={styles.title}>Мессенджер</div>
 
-          <div className={styles.close} onClick={closeChat}>
-            {icons.cancel}
-          </div>
-        </div>
-
-        <div className={styles.contacts_search}>
-          <div className={styles.temp}></div>
-        </div>
-
-        <div className={styles.contacts_list}>
-          {rooms.length > 0 &&
-            rooms.map((room, roomCnt) => (
-              <ContactCard
-                key={roomCnt}
-                room={room}
-                messqty={2}
-                roomCnt={roomCnt}
-                curRoom={curRoom}
-                handleSelected={handleSelected}
-              />
-            ))}
+        <div className={styles.close} onClick={closeChat}>
+          {icons.cancel}
         </div>
       </div>
-    )
+
+      <div className={styles.contacts_search}>
+        <div className={styles.temp}></div>
+      </div>
+
+      <div className={styles.contacts_list}>
+        {rooms.map((room, roomCnt) => (
+          <ContactCard
+            key={roomCnt}
+            room={room}
+            messqty={2}
+            roomCnt={roomCnt}
+            curRoom={curRoom}
+            handleSelected={handleSelected}
+          />
+        ))}
+      </div>
+    </div>
   );
 };
 
@@ -130,6 +124,7 @@ const Dialogs = ({ isDialogsOn, curRoom, ownerID, messages, postMessage }) => {
   const currentDialog = messages[curRoom.roomID]
     ? messages[curRoom.roomID]
     : {};
+
   const dialog = Object.keys(currentDialog).map((mgs) => currentDialog[mgs]);
 
   const Message = ({ message }) => {
@@ -212,36 +207,38 @@ const Chat = ({
       : selectRoom(roomData);
   };
 
-  useEffect(() => ownerID && updateRoomList(ownerID), [
-    ownerID,
-    updateRoomList,
-  ]);
-
   useEffect(() => isRoomIDs && getChatRoomList(user.chats), [
     user.chats,
     isRoomIDs,
     getChatRoomList,
   ]);
 
-  return (
-    <div className={styles.chat}>
-      <Dialogs
-        isDialogsOn={isDialogsOn}
-        curRoom={curRoom}
-        ownerID={ownerID}
-        messages={messages}
-        postMessage={postMessage}
-      />
+  useEffect(() => ownerID && updateRoomList(ownerID), [
+    ownerID,
+    updateRoomList,
+  ]);
 
-      <Contacts
-        icons={icons}
-        isChatOn={isChatOn}
-        rooms={rooms}
-        curRoom={curRoom}
-        handleSelected={handleSelected}
-        closeChat={closeChat}
-      />
-    </div>
+  return (
+    rooms && (
+      <div className={styles.chat}>
+        <Dialogs
+          isDialogsOn={isDialogsOn}
+          curRoom={curRoom}
+          ownerID={ownerID}
+          messages={messages}
+          postMessage={postMessage}
+        />
+
+        <Contacts
+          icons={icons}
+          isChatOn={isChatOn}
+          rooms={rooms}
+          curRoom={curRoom}
+          handleSelected={handleSelected}
+          closeChat={closeChat}
+        />
+      </div>
+    )
   );
 };
 
