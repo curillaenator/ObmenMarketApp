@@ -99,7 +99,7 @@ const Contacts = ({
         <div className={styles.contacts_list}>
           {rooms.map((room, roomCnt) => (
             <ContactCard
-              key={room.roomID}
+              key={roomCnt}
               room={room}
               messqty={2}
               roomCnt={roomCnt}
