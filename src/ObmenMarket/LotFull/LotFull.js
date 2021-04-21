@@ -348,7 +348,7 @@ const OfferCard = ({
 
     if (!lotMeta.acceptedOffer) {
       acceptConfirmOffer(lotMeta.postid, { acceptedOffer: offerMeta.offerID });
-      chatRoom(lotMeta, offerMeta);
+      // chatRoom(lotMeta, offerMeta);
       return null;
     }
   };
@@ -361,7 +361,7 @@ const OfferCard = ({
 
     if (!lotMeta.offerConfirmed) {
       acceptConfirmOffer(lotMeta.postid, { offerConfirmed: true });
-      // chatRoom(lotMeta, offerMeta);
+      chatRoom(lotMeta, offerMeta);
       return null;
     }
   };

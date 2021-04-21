@@ -1,54 +1,58 @@
 import { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Form, Field } from "react-final-form";
-import { fb } from "../../../Utils/firebase";
+import { fb, fst } from "../../../Utils/firebase";
 
 import { TextInput } from "../../Components/Inputs/Inputs";
 
 import {
-  setIsChatOn,
-  setIsDialogsOn,
   getChatRoomList,
   updateRoomList,
+  selectRoom,
+  deselectRoom,
+  closeChat,
+  postMessage,
 } from "../../../Redux/Reducers/chat";
 
 import sendmess from "../../../Assets/Icons/message.svg";
 
 import styles from "./chat.module.scss";
 
-const ContactCard = ({
-  room,
-  messqty,
-  roomCnt,
-  selectedID,
-  handleSelected,
-}) => {
+const ContactCard = ({ room, messqty, roomCnt, curRoom, handleSelected }) => {
   const [photolinks, setPhotoLinks] = useState(null);
 
+  const roomData = {
+    roomID: room.roomID,
+    roomCnt: roomCnt,
+  };
+
   useEffect(() => {
-    const storage = fb.storage().ref(room.photoPath);
-    const photoItems = storage
+    const photoItems = fst
+      .ref(room.photoPath)
       .listAll()
       .then((res) => res.items.map((item) => item.getDownloadURL()));
 
-    Promise.resolve(photoItems).then((res) =>
-      Promise.all(res).then((r) => setPhotoLinks(r))
+    Promise.resolve(photoItems).then((links) =>
+      Promise.all(links).then((linksArr) => setPhotoLinks(linksArr))
     );
   }, [room.photoPath]);
 
-  const className = () => {
-    if (roomCnt === selectedID)
+  const contactsClassName = () => {
+    if (roomCnt === curRoom.roomCnt)
       return `${styles.contact} ${styles.contact_active}`;
-    if (selectedID > 0 && roomCnt === selectedID - 1)
+    if (curRoom.roomCnt > 0 && roomCnt === curRoom.roomCnt - 1)
       return `${styles.contact} ${styles.contact_before}`;
-    if (selectedID !== null && roomCnt === selectedID + 1)
+    if (curRoom.roomCnt !== null && roomCnt === curRoom.roomCnt + 1)
       return `${styles.contact} ${styles.contact_after}`;
     return styles.contact;
   };
 
   return (
     photolinks && (
-      <div className={className()} onClick={() => handleSelected(roomCnt)}>
+      <div
+        className={contactsClassName()}
+        onClick={() => handleSelected(roomData)}
+      >
         <div className={styles.contact_image}>
           <div className={styles.thumb}>
             <img className={styles.image} src={photolinks[0]} alt="" />
@@ -71,7 +75,7 @@ const Contacts = ({
   icons,
   rooms,
   isChatOn,
-  selectedID,
+  curRoom,
   handleSelected,
   closeChat,
 }) => {
@@ -99,7 +103,7 @@ const Contacts = ({
               room={room}
               messqty={2}
               roomCnt={roomCnt}
-              selectedID={selectedID}
+              curRoom={curRoom}
               handleSelected={handleSelected}
             />
           ))}
@@ -109,29 +113,33 @@ const Contacts = ({
   );
 };
 
-const NewMessage = ({ handleSubmit }) => {
-  return (
-    <form className={styles.dialogs_newmessage} onSubmit={handleSubmit}>
-      <div className={styles.write}>
-        <Field
-          name="message"
-          placeholder="Текст сообщения"
-          classN="message"
-          component={TextInput}
-        />
+const Dialogs = ({ isDialogsOn, curRoom, ownerID, messages, postMessage }) => {
+  const onSubmit = (messData) => {
+    const messMeta = {
+      authorID: ownerID,
+      postedAt: fb.database.ServerValue.TIMESTAMP,
+    };
 
-        <button className={styles.send}>
-          <img src={sendmess} alt="Send" />
-        </button>
-      </div>
-    </form>
-  );
-};
+    postMessage(curRoom.roomID, { ...messData, ...messMeta });
+  };
 
-const Dialogs = ({ isDialogsOn }) => {
-  const onSubmit = (messData) => console.log(messData);
+  const currentDialog = messages[curRoom.roomID]
+    ? messages[curRoom.roomID]
+    : {};
+  const dialog = Object.keys(currentDialog).map((mgs) => currentDialog[mgs]);
 
-  const dialogsOpen = isDialogsOn ? { width: "720px" } : { width: "0px" };
+  const Message = ({ message }) => {
+    const messageClassN =
+      message.authorID === ownerID
+        ? `${styles.message} ${styles.message_owner}`
+        : `${styles.message} ${styles.message_opponent}`;
+
+    return <div className={messageClassN}>{message.message}</div>;
+  };
+
+  const dialogsOpen = isDialogsOn
+    ? { width: "720px", opacity: 1 }
+    : { width: "0px", opacity: 0 };
 
   return (
     <div className={styles.dialogs} style={dialogsOpen}>
@@ -140,13 +148,38 @@ const Dialogs = ({ isDialogsOn }) => {
         <div className={styles.foldinout}></div>
       </div>
 
-      <div className={styles.dialogs_messages}></div>
+      <div className={styles.dialogs_messages}>
+        {dialog.map((mess) => (
+          <Message key={mess.postedAt} message={mess} />
+        ))}
+      </div>
 
       <Form
         onSubmit={onSubmit}
-        render={({ handleSubmit, form }) => (
-          <NewMessage handleSubmit={handleSubmit} form={form} />
-        )}
+        render={({ handleSubmit, form }) => {
+          const handleSendMessage = (e) => {
+            e.preventDefault();
+            form.submit();
+            form.reset();
+          };
+
+          return (
+            <form className={styles.dialogs_newmessage} onSubmit={handleSubmit}>
+              <div className={styles.write}>
+                <Field
+                  name="message"
+                  placeholder="Текст сообщения"
+                  classN="message"
+                  component={TextInput}
+                />
+
+                <button className={styles.send} onClick={handleSendMessage}>
+                  <img src={sendmess} alt="Send" />
+                </button>
+              </div>
+            </form>
+          );
+        }}
       />
     </div>
   );
@@ -159,13 +192,21 @@ const Chat = ({
   isChatOn,
   isDialogsOn,
   isRoomIDs,
+  curRoom,
   rooms,
-  setIsChatOn,
-  setIsDialogsOn,
+  messages,
   getChatRoomList,
   updateRoomList,
+  selectRoom,
+  deselectRoom,
+  closeChat,
+  postMessage,
 }) => {
-  const [selectedID, setSelectedID] = useState(null);
+  const handleSelected = (roomData) => {
+    curRoom.roomCnt === roomData.roomCnt
+      ? deselectRoom()
+      : selectRoom(roomData);
+  };
 
   useEffect(() => ownerID && updateRoomList(ownerID), [
     ownerID,
@@ -178,35 +219,21 @@ const Chat = ({
     getChatRoomList,
   ]);
 
-  const closeChat = () => {
-    setSelectedID(null);
-    setIsDialogsOn(false);
-    setIsChatOn(false);
-  };
-
-  const handleSelected = (contactID) => {
-    const select = () => {
-      setSelectedID(contactID);
-      setIsDialogsOn(true);
-    };
-
-    const deselect = () => {
-      setSelectedID(null);
-      setIsDialogsOn(false);
-    };
-
-    selectedID === contactID ? deselect() : select();
-  };
-
   return (
     <div className={styles.chat}>
-      <Dialogs isDialogsOn={isDialogsOn} />
+      <Dialogs
+        isDialogsOn={isDialogsOn}
+        curRoom={curRoom}
+        ownerID={ownerID}
+        messages={messages}
+        postMessage={postMessage}
+      />
 
       <Contacts
         icons={icons}
         isChatOn={isChatOn}
         rooms={rooms}
-        selectedID={selectedID}
+        curRoom={curRoom}
         handleSelected={handleSelected}
         closeChat={closeChat}
       />
@@ -220,13 +247,17 @@ const mstp = (state) => ({
   user: state.auth.user,
   isRoomIDs: state.chat.isRoomIDs,
   rooms: state.chat.rooms,
+  curRoom: state.chat.curRoom,
   isChatOn: state.chat.isChatOn,
   isDialogsOn: state.chat.isDialogsOn,
+  messages: state.chat.messages,
 });
 
 export const ChatCont = connect(mstp, {
-  setIsChatOn,
-  setIsDialogsOn,
   getChatRoomList,
   updateRoomList,
+  selectRoom,
+  deselectRoom,
+  closeChat,
+  postMessage,
 })(Chat);

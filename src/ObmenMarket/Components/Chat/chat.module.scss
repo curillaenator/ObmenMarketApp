@@ -179,8 +179,35 @@
 }
 
 .dialogs_messages {
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: calc(100% - 116px - 120px);
+  padding: 32px;
+
+  .message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    max-width: 80%;
+    min-height: 56px;
+    margin-bottom: 24px;
+    padding: 18px 24px;
+    border-radius: 16px;
+
+    &_owner {
+      align-self: flex-end;
+      background-color: $ownermessage;
+      color: $fontWhite;
+    }
+
+    &_opponent {
+      align-self: flex-start;
+      background-color: $opponentmessage;
+      color: $fontTitle;
+    }
+  }
 }
 
 .dialogs_newmessage {
