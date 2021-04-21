@@ -43,5 +43,5 @@ export const fst = firebase.storage();
 // export const perf = firebase.performance();
 
 // using SendGrid's Node.js Library - https://github.com/sendgrid/sendgrid-nodejs
-// export const sg = require("@sendgrid/mail")
-// sg.setApiKey(process.env.SENDGRID_API_KEY)
+export const sg = require("@sendgrid/mail");
+sg.setApiKey(process.env.SENDGRID_API_KEY);
