@@ -64,8 +64,6 @@
 .contacts_list {
   height: calc(100vh - 116px - 48px - 16px);
   background-color: $shape;
-  // padding-right: 8px;
-  // overflow-y: auto;
 
   .contact {
     display: flex;

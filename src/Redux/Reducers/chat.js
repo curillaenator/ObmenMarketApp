@@ -56,7 +56,7 @@ export const setRoomMessages = (data) => ({ type: SET_ROOM_MESSAGES, data });
 
 export const setChatFromLotFull = () => (dispatch) => {
   dispatch(setIsChatOn(true));
-  dispatch(setIsDialogsOn(true));
+  // dispatch(setIsDialogsOn(true));
 };
 
 // create/remove chatRoom & userChatData in DB
@@ -66,6 +66,10 @@ export const chatRoom = (lotMeta, offerMeta) => async (dispatch) => {
     error ? console.log(error) : console.log("success");
 
   const roomID = await db_chat.ref().push().key;
+
+  // console.log(roomID);
+
+  // dispatch(setCurRoomID(roomID));
 
   const toUser = { title: `${lotMeta.title} на ${offerMeta.name}` };
 
@@ -88,7 +92,6 @@ export const chatRoom = (lotMeta, offerMeta) => async (dispatch) => {
 
   await db_chat.ref().update(roomData, onUpd);
   await db.ref().update(userData, onUpd);
-  dispatch(setCurRoomID(roomID));
 };
 
 export const removeChatRoom = (roomID) => (dispatch) => {};
