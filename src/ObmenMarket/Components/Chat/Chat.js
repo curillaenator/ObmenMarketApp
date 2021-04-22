@@ -114,25 +114,12 @@ const Contacts = ({
 
 const Dialogs = ({ isDialogsOn, curRoom, ownerID, messages, postMessage }) => {
   const ref = useRef(null);
-  const heigth = ref.current && ref.current.getValues().scrollHeight;
-
   const [scroll, setScroll] = useState(null);
 
-  useEffect(() => {
-    setScroll(heigth);
-  }, [heigth]);
-
-  useEffect(() => {
-    ref.current.scrollToBottom();
-  }, [scroll]);
-
-  useEffect(() => ref.current.scrollToBottom(), [isDialogsOn]);
-
-  const currentDialog = messages[curRoom.roomID]
-    ? messages[curRoom.roomID]
-    : {};
-
-  const dialog = Object.keys(currentDialog).map((mgs) => currentDialog[mgs]);
+  useEffect(() => messages && setScroll(ref.current.getValues().scrollHeight), [
+    messages,
+  ]);
+  useEffect(() => ref.current.scrollToBottom(), [scroll, curRoom.roomID]);
 
   const Message = ({ message }) => {
     const messageClassN =
@@ -143,9 +130,10 @@ const Dialogs = ({ isDialogsOn, curRoom, ownerID, messages, postMessage }) => {
     return <div className={messageClassN}>{message.message}</div>;
   };
 
-  const dialogsOpen = isDialogsOn
-    ? { width: "720px", opacity: 1 }
-    : { width: "0px", opacity: 0 };
+  const dialogsOpen =
+    isDialogsOn && messages
+      ? { width: "720px", opacity: 1 }
+      : { width: "0px", opacity: 0 };
 
   const onSubmit = (messData) => {
     const messMeta = {
@@ -169,9 +157,12 @@ const Dialogs = ({ isDialogsOn, curRoom, ownerID, messages, postMessage }) => {
           autoHide
           classes={{ view: styles.dialogs_scroll }}
         >
-          {dialog.map((mess) => (
-            <Message key={mess.postedAt} message={mess} />
-          ))}
+          {messages &&
+            Object.keys(messages)
+              .map((id) => messages[id])
+              .map((message) => (
+                <Message key={message.postedAt} message={message} />
+              ))}
         </Scrollbars>
       </div>
 
@@ -223,9 +214,11 @@ const Chat = ({
   closeChat,
   postMessage,
 }) => {
+  console.log(messages);
+
   const handleSelected = (roomData) => {
     curRoom.roomCnt === roomData.roomCnt
-      ? deselectRoom()
+      ? deselectRoom(roomData)
       : selectRoom(roomData);
   };
 
@@ -247,7 +240,7 @@ const Chat = ({
           isDialogsOn={isDialogsOn}
           curRoom={curRoom}
           ownerID={ownerID}
-          messages={messages}
+          messages={messages[curRoom.roomID]}
           postMessage={postMessage}
         />
 

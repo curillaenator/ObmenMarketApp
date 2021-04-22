@@ -64,7 +64,11 @@ const setLotMeta = (payload) => ({ type: SET_CURRENT_LOTMETA, payload });
 const setLotPhotos = (payload) => ({ type: SET_CURRENT_LOTPHOTOS, payload });
 const setNewOfferMeta = (payload) => ({ type: SET_NEW_OFFERMETA, payload });
 
-// FIREBASE
+// THUNKS
+
+const onUpd = (error) => (error ? console.log(error) : console.log("success"));
+
+// full Meta reset
 
 export const resetMetaState = () => (dispatch) => {
   dispatch(setNewLotId(null));
@@ -76,11 +80,13 @@ export const resetMetaState = () => (dispatch) => {
   dispatch(setNewOfferMeta(null));
 };
 
+// lot create / cancel create / publish
+
 export const onLotCreateFromForm = () => async (dispatch, getState) => {
   const author = await fa.currentUser;
   const lotID = await db.ref().child("posts").push().key;
 
-  const newLotData = {
+  const lotData = {
     uid: author.uid,
     postid: lotID,
     username: getState().auth.user.username,
@@ -91,31 +97,30 @@ export const onLotCreateFromForm = () => async (dispatch, getState) => {
 
   dispatch(setNewLotId(lotID));
 
-  const updates = {};
-  updates["/posts/" + lotID] = newLotData;
-  db.ref().update(updates);
+  db.ref(`posts/${lotID}`).update(lotData, onUpd);
 };
 
 export const onLotCreateFormCancel = (lotID) => async (dispatch) => {
   const author = await fa.currentUser;
 
-  await db.ref("posts/" + lotID).remove();
+  await db.ref(`posts/${lotID}`).remove();
   dispatch(setIsLotMeta(false));
   dispatch(setNewLotId(null));
   dispatch(setLotMeta(null));
   dispatch(setLotPhotos(null));
 
-  const storage = fb.storage().ref();
-  storage
-    .child("posts/" + author.uid + "/" + lotID)
+  fb.storage()
+    .ref()
+    .child(`posts/${author.uid}/${lotID}`)
     .listAll()
     .then((res) => res.items.forEach((item) => item.delete()));
 };
 
-export const publishNewLotFromForm = (lotID, updData) => async (dispatch) => {
+export const publishNewLotFromForm = (lotID, updData) => (dispatch) => {
   const onUpdate = (error) => {
-    if (error) return console.log("ошибка записи");
-    db.ref("posts/" + lotID).once("value", (snap) => {
+    error ? console.log(error) : console.log("success");
+
+    db.ref(`posts/${lotID}`).once("value", (snap) => {
       dispatch(setLotMeta(snap.val()));
       dispatch(setIsLotMeta(true));
       dispatch(setFormMode(false));
@@ -123,20 +128,33 @@ export const publishNewLotFromForm = (lotID, updData) => async (dispatch) => {
     });
   };
 
-  await db.ref("posts/" + lotID).update(updData, onUpdate);
+  db.ref(`posts/${lotID}`).update(updData, onUpdate);
+};
+
+// lot open edit form & update from edit form
+
+export const setEditLotForm = (lotID, isFormModeOn) => (dispatch) => {
+  dispatch(setCurrentLotId(lotID));
+  dispatch(setFormMode(!isFormModeOn));
 };
 
 export const updateLotFromEditForm = (lotID, updData) => (dispatch) => {
+  dispatch(setIsLotMeta(false));
+
   const onUpdate = (error) => {
-    if (error) return console.log("ошибка записи");
-    db.ref("posts/" + lotID).once("value", (snap) => {
+    error ? console.log(error) : console.log("success");
+
+    db.ref(`posts/${lotID}`).once("value", (snap) => {
       dispatch(setLotMeta(snap.val()));
+      dispatch(setIsLotMeta(true));
       dispatch(setFormMode(false));
     });
   };
 
-  db.ref("posts/" + lotID).update(updData, onUpdate);
+  db.ref(`posts/${lotID}`).update(updData, onUpdate);
 };
+
+// get lotMeta & lotPhotos
 
 export const getLotMeta = (lotID) => (dispatch) => {
   const getLotPhotos = async (lotMeta) => {
@@ -175,10 +193,7 @@ export const getLotMeta = (lotID) => (dispatch) => {
   });
 };
 
-export const setEditLotForm = (lotID, isFormModeOn) => (dispatch) => {
-  dispatch(setCurrentLotId(lotID));
-  dispatch(setFormMode(!isFormModeOn));
-};
+// offer create / cancel create / publish
 
 export const onOfferCreate = (lotMeta) => (dispatch) => {
   const offerAuthor = fa.currentUser;
@@ -220,6 +235,8 @@ export const createOffer = (lotMeta, offerFormData) => async (dispatch) => {
   dispatch(setNewOfferMeta(null));
 };
 
+// offer prolong
+
 export const add48hours = (lotMeta) => (dispatch) => {
   const onUpdate = (error) => {
     if (error) return console.log("ошибка записи");
@@ -237,9 +254,9 @@ export const add48hours = (lotMeta) => (dispatch) => {
   db.ref("posts/" + lotMeta.postid).update({ expireDate: newExpiry }, onUpdate);
 };
 
-export const acceptConfirmOffer = (lotID, payload) => (
-  dispatch
-) => {
+// offer accept by lotAuthor & confirm by offerAuthor
+
+export const acceptConfirmOffer = (lotID, payload) => (dispatch) => {
   const onUpdate = (error) => {
     if (error) return console.log("ошибка записи");
 
@@ -251,5 +268,5 @@ export const acceptConfirmOffer = (lotID, payload) => (
     });
   };
 
-   db.ref("posts/" + lotID).update(payload, onUpdate);
+  db.ref("posts/" + lotID).update(payload, onUpdate);
 };

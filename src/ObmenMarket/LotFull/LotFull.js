@@ -4,6 +4,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter, Link } from "react-router-dom";
 import Lightbox from "react-image-lightbox";
+import ImageShadow from "react-image-shadow";
 
 import { Prolong } from "./Prolong/Prolong";
 import { StatusBar } from "../Components/StatusBar/StatusBar";
@@ -11,9 +12,6 @@ import { Button } from "../Components/Button/Button";
 import { Controls } from "../Components/Controls/Controls";
 import { FormFull } from "../Components/FormFull/FormFull";
 import { OfferForm } from "./OfferForm/OfferForm";
-
-import ImageShadow from 'react-image-shadow';
-
 
 import {
   setNewLotId,
@@ -38,7 +36,6 @@ import deleteBtn from "../../Assets/Icons/delete_2.svg";
 import openGallery from "../../Assets/Icons/openGallery.svg";
 import shrink from "../../Assets/Icons/shrink.svg";
 
-// import "react-image-lightbox/style.css";
 import "./lightbox.css";
 import "./imageshadow.scss";
 import styles from "./lotfull.module.scss";
@@ -95,25 +92,29 @@ const Track = ({ lotPhotos, selected }) => {
     left: `${-100 * selected}%`,
   };
 
-  const photoStyle = {
-    width: `calc(100% / ${count})`,
-  };
+  // const photoStyle = {
+  //   width: `calc(100% / ${count})`,
+  // };
 
   return (
     <div className={styles.phototrack} style={trackStyle}>
-    {lotPhotos.map((photo) => (
-      <ImageShadow src={photo} shadowRadius="16" shadowBlur="20" width="100%" />
+      {lotPhotos.map((photo) => (
+        <ImageShadow
+          src={photo}
+          shadowRadius="16"
+          shadowBlur="20"
+          width="100%"
+        />
       ))}
-    </div> 
+    </div>
   );
 };
 
-
-    // {/* <div className={styles.phototrack} style={trackStyle}>
-    //   {lotPhotos.map((photo) => (
-    //     <img src={photo} alt="" key={photo} style={photoStyle} />
-    //   ))}
-    // </div> */}
+// {/* <div className={styles.phototrack} style={trackStyle}>
+//   {lotPhotos.map((photo) => (
+//     <img src={photo} alt="" key={photo} style={photoStyle} />
+//   ))}
+// </div> */}
 
 const Gallery = ({ lotPhotos }) => {
   const [isOpen, setIsOpen] = useState(false);

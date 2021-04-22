@@ -7,7 +7,6 @@ const SET_ROOMS = "chat/SET_ROOMS";
 const SET_ROOMS_IDS = "chat/SET_ROOMS_IDS";
 const SET_CUR_ROOM = "chat/SET_CUR_ROOM";
 const SET_ROOM_MESSAGES = "chat/SET_ROOM_MESSAGES";
-const RESET_ROOM_MESSAGES = "chat/RESET_ROOM_MESSAGES";
 
 const initialState = {
   isChatOn: false,
@@ -36,13 +35,7 @@ export const chat = (state = initialState, action) => {
       return { ...state, curRoom: action.payload };
 
     case SET_ROOM_MESSAGES:
-      return {
-        ...state,
-        messages: { ...state.messages, [action.key]: action.messages },
-      };
-
-    case RESET_ROOM_MESSAGES:
-      return { ...state, messages: {} };
+      return { ...state, messages: action.data };
 
     default:
       return state;
@@ -56,12 +49,7 @@ export const setIsDialogsOn = (payload) => ({ type: IS_DIALOGS_ON, payload });
 export const setRooms = (payload) => ({ type: SET_ROOMS, payload });
 const setRoomIDs = (payload) => ({ type: SET_ROOMS_IDS, payload });
 const setCurRoom = (payload) => ({ type: SET_CUR_ROOM, payload });
-const setRoomMessages = (data) => ({
-  type: SET_ROOM_MESSAGES,
-  key: data.key,
-  messages: data.messages,
-});
-export const resetRoomMessages = () => ({ type: RESET_ROOM_MESSAGES });
+export const setRoomMessages = (data) => ({ type: SET_ROOM_MESSAGES, data });
 
 // THUNKS
 
@@ -70,19 +58,21 @@ export const setChatFromLotFull = () => (dispatch) => {
   // dispatch(setIsDialogsOn(true));
 };
 
+// create chatRoom & userChatData in DB
+
 export const chatRoom = (lotMeta, offerMeta) => async (dispatch) => {
   const onUpd = (error) =>
     error ? console.log(error) : console.log("success");
 
   const roomID = await db_chat.ref().push().key;
 
-  const user = { title: `${lotMeta.title} на ${offerMeta.name}` };
+  const toUser = { title: `${lotMeta.title} на ${offerMeta.name}` };
 
   const userData = {};
-  userData[`users/${lotMeta.uid}/chats/${roomID}`] = user;
-  userData[`users/${offerMeta.authorID}/chats/${roomID}`] = user;
+  userData[`users/${lotMeta.uid}/chats/${roomID}`] = toUser;
+  userData[`users/${offerMeta.authorID}/chats/${roomID}`] = toUser;
 
-  const room = {
+  const toRoom = {
     title: `${lotMeta.title} на ${offerMeta.name}`,
     lotAuthorID: lotMeta.uid,
     offerAuthorID: offerMeta.authorID,
@@ -93,11 +83,13 @@ export const chatRoom = (lotMeta, offerMeta) => async (dispatch) => {
   };
 
   const roomData = {};
-  roomData[`chats/${roomID}`] = room;
+  roomData[`chats/${roomID}`] = toRoom;
 
   await db_chat.ref().update(roomData, onUpd);
   await db.ref().update(userData, onUpd);
 };
+
+// get & update roomList
 
 export const getChatRoomList = (roomList) => (dispatch) => {
   const roomKeys = roomList ? roomList : {};
@@ -117,43 +109,53 @@ export const updateRoomList = (ownerID) => (dispatch) => {
   });
 };
 
-export const selectRoom = (roomData) => (dispatch, getState) => {
+// selectRoom & closeChat unsubscribe helper
+
+const handleUnsubscribe = async (dispatch, getState) => {
   const roomIDs = Object.keys(getState().chat.messages);
+  const curRoomInit = { roomID: null, roomCnt: null };
 
   dispatch(setIsDialogsOn(false));
 
-  const handleSubscribe = async () => {
-    dispatch(setCurRoom(roomData));
+  await roomIDs.forEach((roomID) => db_chat.ref(`messages/${roomID}`).off());
 
-    await db_chat.ref(`messages/${roomData.roomID}`).on("value", (snap) => {
-      if (snap.exists()) {
-        dispatch(
-          setRoomMessages({ key: roomData.roomID, messages: snap.val() })
-        );
-      }
-    });
-
-    dispatch(setIsDialogsOn(true));
-  };
-
-  const handleOpen = () => {
-    dispatch(setCurRoom(roomData));
-    dispatch(setIsDialogsOn(true));
-  };
-
-  roomIDs.includes(roomData.roomID) ? handleOpen() : handleSubscribe();
+  dispatch(setCurRoom(curRoomInit));
+  dispatch(setRoomMessages({}));
 };
 
-export const deselectRoom = () => (dispatch) => {
-  dispatch(setCurRoom({ roomID: null, roomCnt: null }));
+// selectRoom subscribe helper
+
+const handleSubscribe = async (roomData, dispatch) => {
+  dispatch(setCurRoom(roomData));
+
+  await db_chat.ref(`messages/${roomData.roomID}`).on("value", (snap) => {
+    dispatch(setRoomMessages({ [roomData.roomID]: snap.val() }));
+  });
+
+  dispatch(setIsDialogsOn(true));
+};
+
+// room select/deselect & closeChat
+
+export const selectRoom = (roomData) => async (dispatch, getState) => {
+  await handleUnsubscribe(dispatch, getState);
+  await handleSubscribe(roomData, dispatch);
+};
+
+export const deselectRoom = (roomData) => async (dispatch) => {
+  const curRoomInit = { roomID: null, roomCnt: null };
+  await db_chat.ref(`messages/${roomData.roomID}`).off();
+  dispatch(setCurRoom(curRoomInit));
   dispatch(setIsDialogsOn(false));
 };
 
-export const closeChat = () => (dispatch) => {
-  dispatch(setCurRoom({ roomID: null, roomCnt: null }));
+export const closeChat = () => async (dispatch, getState) => {
+  await handleUnsubscribe(dispatch, getState);
   dispatch(setIsDialogsOn(false));
   dispatch(setIsChatOn(false));
 };
+
+// post message
 
 export const postMessage = (roomID, message) => (dispatch) => {
   const newMessID = db_chat.ref(`messages/${roomID}`).push().key;
