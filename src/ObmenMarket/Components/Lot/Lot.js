@@ -4,6 +4,10 @@ import { Link } from "react-router-dom";
 
 import { StatusBar } from "../StatusBar/StatusBar";
 
+import ImageShadow from 'react-image-shadow';
+
+import './imageshadow.scss';
+
 import styles from "./lot.module.scss";
 
 const Owner = ({ avatar, username, uid }) => {
@@ -17,9 +21,10 @@ const Owner = ({ avatar, username, uid }) => {
 
 const LotImage = (props) => {
   return (
-    <div className={styles.photo}>
-      <img src={props.lotImage} alt={props.lotName} draggable="false" />
-    </div>
+    <>
+      <ImageShadow src={props.lotImage} className={styles.photo} shadowRadius="16" shadowBlur="20" width="100%" />
+      {/* <img src={props.lotImage} alt={props.lotName} draggable="false" /> */}
+    </>
   );
 };
 

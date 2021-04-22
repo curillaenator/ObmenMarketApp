@@ -65,7 +65,7 @@ export const Header = ({
   location,
   isChatOn,
   setFormMode,
-  setIsChatOn,
+  setIsChatOn
 }) => {
   const handleLoginButton = () => setFormMode(false);
 

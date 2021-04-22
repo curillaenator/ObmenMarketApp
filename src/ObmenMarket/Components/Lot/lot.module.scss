@@ -44,6 +44,7 @@
       object-fit: cover;
       border-radius: 16px;
       margin-right: 8px;
+      will-change: filter;
     }
 
     & > p {
@@ -66,6 +67,7 @@
       height: 0;
       padding-top: calc(100% * 0.563);
       margin-bottom: 24px;
+      will-change: filter;
 
       & > img {
         position: absolute;

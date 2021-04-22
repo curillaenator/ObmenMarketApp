@@ -12,6 +12,9 @@ import { Controls } from "../Components/Controls/Controls";
 import { FormFull } from "../Components/FormFull/FormFull";
 import { OfferForm } from "./OfferForm/OfferForm";
 
+import ImageShadow from 'react-image-shadow';
+
+
 import {
   setNewLotId,
   setIsLotCreated,
@@ -37,6 +40,7 @@ import shrink from "../../Assets/Icons/shrink.svg";
 
 // import "react-image-lightbox/style.css";
 import "./lightbox.css";
+import "./imageshadow.scss";
 import styles from "./lotfull.module.scss";
 
 // COMPONENTS
@@ -97,12 +101,19 @@ const Track = ({ lotPhotos, selected }) => {
 
   return (
     <div className={styles.phototrack} style={trackStyle}>
-      {lotPhotos.map((photo) => (
-        <img src={photo} alt="" key={photo} style={photoStyle} />
+    {lotPhotos.map((photo) => (
+      <ImageShadow src={photo} shadowRadius="16" shadowBlur="20" width="100%" />
       ))}
-    </div>
+    </div> 
   );
 };
+
+
+    // {/* <div className={styles.phototrack} style={trackStyle}>
+    //   {lotPhotos.map((photo) => (
+    //     <img src={photo} alt="" key={photo} style={photoStyle} />
+    //   ))}
+    // </div> */}
 
 const Gallery = ({ lotPhotos }) => {
   const [isOpen, setIsOpen] = useState(false);
