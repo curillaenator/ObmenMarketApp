@@ -67,7 +67,7 @@ export const chatRoom = (lotMeta, offerMeta) => async (dispatch) => {
 
   const roomID = await db_chat.ref().push().key;
 
-  // console.log(roomID);
+  console.log(roomID);
 
   // dispatch(setCurRoomID(roomID));
 
@@ -182,4 +182,22 @@ export const postMessage = (roomID, message) => (dispatch) => {
     error ? console.log(error) : console.log("success");
 
   db_chat.ref(`messages/${roomID}/${newMessID}`).set(message, onSet);
+};
+
+export const lastMessagesCnt = async (rooms) => {
+  // const onUpd = (error) =>
+  //   error ? console.log(error) : console.log("success");
+
+  const roomSnaps = rooms.map((room) =>
+    db_chat.ref(`messages/${room.roomID}`).once("value", (s) => s)
+  );
+
+  const counts = await Promise.all(roomSnaps).then((snaps) =>
+    snaps.map((sn) => ({
+      [sn.key]: sn.val() ? Object.keys(sn.val()).length : 0,
+    }))
+  );
+
+  console.log(counts);
+  return counts;
 };

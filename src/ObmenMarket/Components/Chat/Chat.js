@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { Form, Field } from "react-final-form";
 import { Scrollbars } from "rc-scrollbars";
-import { fb, fst } from "../../../Utils/firebase";
+import { fb, fst, db_chat, db } from "../../../Utils/firebase";
 
 import { TextInput } from "../../Components/Inputs/Inputs";
 
@@ -206,6 +206,22 @@ const Dialogs = ({
   );
 };
 
+const lastMessagesCnt = async (rooms) => {
+  const roomSnaps = rooms.map((room) =>
+    db_chat.ref(`messages/${room.roomID}`).once("value", (s) => s)
+  );
+
+  const counts = await Promise.all(roomSnaps).then((snaps) =>
+    snaps.map((sn) => ({
+      [sn.key]: sn.val() ? Object.keys(sn.val()).length : 0,
+    }))
+  );
+
+  console.log(counts);
+
+  return { lastMsgsCounts: counts };
+};
+
 const Chat = ({
   icons,
   user,
@@ -237,6 +253,12 @@ const Chat = ({
     ownerID,
     updateRoomList,
   ]);
+
+  useEffect(() => {
+    ownerID &&
+      rooms &&
+      db.ref(`users/${ownerID}`).onDisconnect().update(lastMessagesCnt(rooms));
+  }, [ownerID, rooms]);
 
   return (
     rooms && (
