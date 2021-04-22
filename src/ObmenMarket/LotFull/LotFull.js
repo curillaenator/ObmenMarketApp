@@ -101,6 +101,7 @@ const Track = ({ lotPhotos, selected }) => {
       {lotPhotos.map((photo) => (
         <ImageShadow
           src={photo}
+          key={photo}
           shadowRadius="16"
           shadowBlur="20"
           width="100%"
@@ -325,12 +326,11 @@ const OfferCard = ({
     setOpenHeigth(ref.current.scrollHeight);
   }, [offerMeta.offerID, setSelectedOffer]);
 
-  const unselect = () => setOpenHeigth(null);
+  const deselect = () => setOpenHeigth(null);
 
   useEffect(() => {
     if (lotMeta.acceptedOffer && photoLinks) select();
-
-    if (offerMeta.offerID !== selectedOffer) unselect();
+    if (offerMeta.offerID !== selectedOffer) deselect();
   }, [
     select,
     photoLinks,
@@ -340,7 +340,7 @@ const OfferCard = ({
     offerMeta.offerID,
   ]);
 
-  const handleSelectOffer = () => (openHeigth ? unselect() : select());
+  const handleSelectOffer = () => (openHeigth ? deselect() : select());
 
   const acceptConfirmReset = {
     acceptedOffer: null,
@@ -360,7 +360,6 @@ const OfferCard = ({
 
     if (!lotMeta.acceptedOffer) {
       acceptConfirmOffer(lotMeta.postid, { acceptedOffer: offerMeta.offerID });
-      // chatRoom(lotMeta, offerMeta);
       return null;
     }
   };

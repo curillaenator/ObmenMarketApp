@@ -66,8 +66,6 @@ const setNewOfferMeta = (payload) => ({ type: SET_NEW_OFFERMETA, payload });
 
 // THUNKS
 
-const onUpd = (error) => (error ? console.log(error) : console.log("success"));
-
 // full Meta reset
 
 export const resetMetaState = () => (dispatch) => {
@@ -83,6 +81,9 @@ export const resetMetaState = () => (dispatch) => {
 // lot create / cancel create / publish
 
 export const onLotCreateFromForm = () => async (dispatch, getState) => {
+  const onUpd = (error) =>
+    error ? console.log(error) : console.log("success");
+
   const author = await fa.currentUser;
   const lotID = await db.ref().child("posts").push().key;
 

@@ -19,13 +19,18 @@ import sendmess from "../../../Assets/Icons/message.svg";
 
 import styles from "./chat.module.scss";
 
-const ContactCard = ({ room, messqty, roomCnt, curRoom, handleSelected }) => {
+const ContactCard = ({
+  room,
+  rooms,
+  messqty,
+  curRoomID,
+  isDialogsOn,
+  handleSelected,
+}) => {
   const [photolinks, setPhotoLinks] = useState(null);
 
-  const roomData = {
-    roomID: room && room.roomID,
-    roomCnt: roomCnt,
-  };
+  const roomCnt = rooms.findIndex((id) => id === room.roomID);
+  const curRoomCnt = rooms.findIndex((id) => id === curRoomID);
 
   useEffect(() => {
     const photoItems = fst
@@ -39,11 +44,11 @@ const ContactCard = ({ room, messqty, roomCnt, curRoom, handleSelected }) => {
   }, [room.photoPath]);
 
   const contactsClassName = () => {
-    if (roomCnt === curRoom.roomCnt)
+    if (room.roomID === curRoomID)
       return `${styles.contact} ${styles.contact_active}`;
-    if (curRoom.roomCnt > 0 && roomCnt === curRoom.roomCnt - 1)
+    if (isDialogsOn && roomCnt === curRoomCnt - 1)
       return `${styles.contact} ${styles.contact_before}`;
-    if (curRoom.roomCnt !== null && roomCnt === curRoom.roomCnt + 1)
+    if (isDialogsOn && roomCnt === curRoomCnt + 1)
       return `${styles.contact} ${styles.contact_after}`;
     return styles.contact;
   };
@@ -52,7 +57,7 @@ const ContactCard = ({ room, messqty, roomCnt, curRoom, handleSelected }) => {
     photolinks && (
       <div
         className={contactsClassName()}
-        onClick={() => handleSelected(roomData)}
+        onClick={() => handleSelected(room.roomID)}
       >
         <div className={styles.contact_image}>
           <div className={styles.thumb}>
@@ -76,7 +81,8 @@ const Contacts = ({
   icons,
   rooms,
   isChatOn,
-  curRoom,
+  isDialogsOn,
+  curRoomID,
   handleSelected,
   closeChat,
 }) => {
@@ -96,30 +102,36 @@ const Contacts = ({
         <div className={styles.temp}></div>
       </div>
 
-      <div className={styles.contacts_list}>
-        {rooms.map((room, roomCnt) => (
+      <Scrollbars autoHide classes={{ view: styles.contacts_list }}>
+        {rooms.map((room) => (
           <ContactCard
-            key={roomCnt}
+            key={room.roomID}
             room={room}
+            rooms={rooms.map((room) => room.roomID)}
+            curRoomID={curRoomID}
             messqty={2}
-            roomCnt={roomCnt}
-            curRoom={curRoom}
+            isDialogsOn={isDialogsOn}
             handleSelected={handleSelected}
           />
         ))}
-      </div>
+      </Scrollbars>
     </div>
   );
 };
 
-const Dialogs = ({ isDialogsOn, curRoom, ownerID, messages, postMessage }) => {
+const Dialogs = ({
+  isDialogsOn,
+  curRoomID,
+  ownerID,
+  messages,
+  postMessage,
+}) => {
   const ref = useRef(null);
-  const [scroll, setScroll] = useState(null);
 
-  useEffect(() => messages && setScroll(ref.current.getValues().scrollHeight), [
+  useEffect(() => messages && ref.current.scrollToBottom(), [
     messages,
+    curRoomID,
   ]);
-  useEffect(() => ref.current.scrollToBottom(), [scroll, curRoom.roomID]);
 
   const Message = ({ message }) => {
     const messageClassN =
@@ -130,10 +142,7 @@ const Dialogs = ({ isDialogsOn, curRoom, ownerID, messages, postMessage }) => {
     return <div className={messageClassN}>{message.message}</div>;
   };
 
-  const dialogsOpen =
-    isDialogsOn && messages
-      ? { width: "720px", opacity: 1 }
-      : { width: "0px", opacity: 0 };
+  const dialogsOpen = isDialogsOn ? { width: "720px" } : { width: "0px" };
 
   const onSubmit = (messData) => {
     const messMeta = {
@@ -141,7 +150,7 @@ const Dialogs = ({ isDialogsOn, curRoom, ownerID, messages, postMessage }) => {
       postedAt: fb.database.ServerValue.TIMESTAMP,
     };
 
-    postMessage(curRoom.roomID, { ...messData, ...messMeta });
+    postMessage(curRoomID, { ...messData, ...messMeta });
   };
 
   return (
@@ -204,7 +213,7 @@ const Chat = ({
   isChatOn,
   isDialogsOn,
   isRoomIDs,
-  curRoom,
+  curRoomID,
   rooms,
   messages,
   getChatRoomList,
@@ -214,12 +223,8 @@ const Chat = ({
   closeChat,
   postMessage,
 }) => {
-  console.log(messages);
-
-  const handleSelected = (roomData) => {
-    curRoom.roomCnt === roomData.roomCnt
-      ? deselectRoom(roomData)
-      : selectRoom(roomData);
+  const handleSelected = (roomID) => {
+    curRoomID === roomID ? deselectRoom(roomID) : selectRoom(roomID);
   };
 
   useEffect(() => isRoomIDs && getChatRoomList(user.chats), [
@@ -238,17 +243,18 @@ const Chat = ({
       <div className={styles.chat}>
         <Dialogs
           isDialogsOn={isDialogsOn}
-          curRoom={curRoom}
+          curRoomID={curRoomID}
           ownerID={ownerID}
-          messages={messages[curRoom.roomID]}
+          messages={messages[curRoomID]}
           postMessage={postMessage}
         />
 
         <Contacts
           icons={icons}
+          isDialogsOn={isDialogsOn}
           isChatOn={isChatOn}
           rooms={rooms}
-          curRoom={curRoom}
+          curRoomID={curRoomID}
           handleSelected={handleSelected}
           closeChat={closeChat}
         />
@@ -263,7 +269,7 @@ const mstp = (state) => ({
   user: state.auth.user,
   isRoomIDs: state.chat.isRoomIDs,
   rooms: state.chat.rooms,
-  curRoom: state.chat.curRoom,
+  curRoomID: state.chat.curRoomID,
   isChatOn: state.chat.isChatOn,
   isDialogsOn: state.chat.isDialogsOn,
   messages: state.chat.messages,

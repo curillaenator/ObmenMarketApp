@@ -1,6 +1,7 @@
 import { fb, fa, db } from "../../Utils/firebase";
+import { batch } from "react-redux";
 
-import { setRooms, setRoomMessages } from "./chat";
+import { setRooms, setRoomMessages, setIsRoomIDs } from "./chat";
 
 const SET_INITIALIZED = "auth/SET_INITIALIZED";
 const SET_OWNER_ID = "auth/SET_OWNER_ID";
@@ -74,10 +75,12 @@ export const googleSignIn = () => async (dispatch) => {
       .set(newUser)
       .then(() => {
         // user.sendEmailVerification().then(() => console.log("sent"));
-        dispatch(setOwnerID(user.uid));
-        dispatch(setAuthedUser(newUser));
-        dispatch(setIsAuth(true));
-        dispatch(setInitialized(true));
+        batch(() => {
+          dispatch(setOwnerID(user.uid));
+          dispatch(setAuthedUser(newUser));
+          dispatch(setIsAuth(true));
+          dispatch(setInitialized(true));
+        });
       });
   };
 
@@ -94,10 +97,12 @@ export const googleSignIn = () => async (dispatch) => {
 export const authCheck = (curUser) => (dispatch) => {
   if (curUser) {
     db.ref("users/" + curUser.uid).once("value", (snapshot) => {
-      dispatch(setOwnerID(curUser.uid));
-      dispatch(setAuthedUser(snapshot.val()));
-      dispatch(setIsAuth(true));
-      dispatch(setInitialized(true));
+      batch(() => {
+        dispatch(setOwnerID(curUser.uid));
+        dispatch(setAuthedUser(snapshot.val()));
+        dispatch(setIsAuth(true));
+        dispatch(setInitialized(true));
+      });
     });
   }
 
@@ -107,12 +112,18 @@ export const authCheck = (curUser) => (dispatch) => {
 };
 
 export const logout = () => async (dispatch) => {
+  const messagesInit = {};
+
   await fa.signOut();
-  dispatch(setRoomMessages({}));
-  dispatch(setRooms(null));
-  dispatch(setOwnerID(null));
-  dispatch(setIsAuth(false));
-  dispatch(setAuthedUser(null));
+
+  batch(() => {
+    dispatch(setRoomMessages(messagesInit));
+    dispatch(setRooms(null));
+    dispatch(setIsRoomIDs(false));
+    dispatch(setOwnerID(null));
+    dispatch(setIsAuth(false));
+    dispatch(setAuthedUser(null));
+  });
 };
 
 export const updateUserProfile = (userUpdData) => (dispatch) => {
