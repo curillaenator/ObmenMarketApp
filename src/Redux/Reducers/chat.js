@@ -7,6 +7,7 @@ const SET_ROOMS = "chat/SET_ROOMS";
 const SET_ROOMS_IDS = "chat/SET_ROOMS_IDS";
 const SET_CUR_ROOM = "chat/SET_CUR_ROOM";
 const SET_ROOM_MESSAGES = "chat/SET_ROOM_MESSAGES";
+const RESET_ROOM_MESSAGES = "chat/RESET_ROOM_MESSAGES";
 
 const initialState = {
   isChatOn: false,
@@ -40,14 +41,19 @@ export const chat = (state = initialState, action) => {
         messages: { ...state.messages, [action.key]: action.messages },
       };
 
+    case RESET_ROOM_MESSAGES:
+      return { ...state, messages: {} };
+
     default:
       return state;
   }
 };
 
+// ACTIONS
+
 export const setIsChatOn = (payload) => ({ type: IS_CHAT_ON, payload });
 export const setIsDialogsOn = (payload) => ({ type: IS_DIALOGS_ON, payload });
-const setRooms = (payload) => ({ type: SET_ROOMS, payload });
+export const setRooms = (payload) => ({ type: SET_ROOMS, payload });
 const setRoomIDs = (payload) => ({ type: SET_ROOMS_IDS, payload });
 const setCurRoom = (payload) => ({ type: SET_CUR_ROOM, payload });
 const setRoomMessages = (data) => ({
@@ -55,10 +61,13 @@ const setRoomMessages = (data) => ({
   key: data.key,
   messages: data.messages,
 });
+export const resetRoomMessages = () => ({ type: RESET_ROOM_MESSAGES });
+
+// THUNKS
 
 export const setChatFromLotFull = () => (dispatch) => {
   dispatch(setIsChatOn(true));
-  dispatch(setIsDialogsOn(true));
+  // dispatch(setIsDialogsOn(true));
 };
 
 export const chatRoom = (lotMeta, offerMeta) => async (dispatch) => {

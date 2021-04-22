@@ -179,36 +179,36 @@
 }
 
 .dialogs_messages {
-  display: flex;
-  flex-direction: column;
   width: 100%;
-  height: calc(100% - 116px - 120px);
-  // height: auto;
-  padding: 32px;
-  overflow-y: scroll;
+  height: calc(100vh - 116px - 120px);
 
-  .message {
+  .dialogs_scroll {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    width: fit-content;
-    max-width: 80%;
-    height: auto;
-    // min-height: 56px;
-    margin-bottom: 24px;
-    padding: 21px 24px;
-    border-radius: 16px;
+    flex-direction: column;
+    padding: 32px;
 
-    &_owner {
-      align-self: flex-end;
-      background-color: $ownermessage;
-      color: $fontWhite;
-    }
+    .message {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: fit-content;
+      max-width: 80%;
+      height: auto;
+      margin-bottom: 24px;
+      padding: 21px 24px;
+      border-radius: 16px;
 
-    &_opponent {
-      align-self: flex-start;
-      background-color: $opponentmessage;
-      color: $fontTitle;
+      &_owner {
+        align-self: flex-end;
+        background-color: $ownermessage;
+        color: $fontWhite;
+      }
+
+      &_opponent {
+        align-self: flex-start;
+        background-color: $opponentmessage;
+        color: $fontTitle;
+      }
     }
   }
 }

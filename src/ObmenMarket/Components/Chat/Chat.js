@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { Form, Field } from "react-final-form";
+import { Scrollbars } from "rc-scrollbars";
 import { fb, fst } from "../../../Utils/firebase";
 
 import { TextInput } from "../../Components/Inputs/Inputs";
@@ -112,14 +113,20 @@ const Contacts = ({
 };
 
 const Dialogs = ({ isDialogsOn, curRoom, ownerID, messages, postMessage }) => {
-  const onSubmit = (messData) => {
-    const messMeta = {
-      authorID: ownerID,
-      postedAt: fb.database.ServerValue.TIMESTAMP,
-    };
+  const ref = useRef(null);
+  const heigth = ref.current && ref.current.getValues().scrollHeight;
 
-    postMessage(curRoom.roomID, { ...messData, ...messMeta });
-  };
+  const [scroll, setScroll] = useState(null);
+
+  useEffect(() => {
+    setScroll(heigth);
+  }, [heigth]);
+
+  useEffect(() => {
+    ref.current.scrollToBottom();
+  }, [scroll]);
+
+  useEffect(() => ref.current.scrollToBottom(), [isDialogsOn]);
 
   const currentDialog = messages[curRoom.roomID]
     ? messages[curRoom.roomID]
@@ -140,6 +147,15 @@ const Dialogs = ({ isDialogsOn, curRoom, ownerID, messages, postMessage }) => {
     ? { width: "720px", opacity: 1 }
     : { width: "0px", opacity: 0 };
 
+  const onSubmit = (messData) => {
+    const messMeta = {
+      authorID: ownerID,
+      postedAt: fb.database.ServerValue.TIMESTAMP,
+    };
+
+    postMessage(curRoom.roomID, { ...messData, ...messMeta });
+  };
+
   return (
     <div className={styles.dialogs} style={dialogsOpen}>
       <div className={styles.dialogs_header}>
@@ -148,9 +164,15 @@ const Dialogs = ({ isDialogsOn, curRoom, ownerID, messages, postMessage }) => {
       </div>
 
       <div className={styles.dialogs_messages}>
-        {dialog.map((mess) => (
-          <Message key={mess.postedAt} message={mess} />
-        ))}
+        <Scrollbars
+          ref={ref}
+          autoHide
+          classes={{ view: styles.dialogs_scroll }}
+        >
+          {dialog.map((mess) => (
+            <Message key={mess.postedAt} message={mess} />
+          ))}
+        </Scrollbars>
       </div>
 
       <Form

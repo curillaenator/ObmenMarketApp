@@ -1,5 +1,7 @@
 import { fb, fa, db } from "../../Utils/firebase";
 
+import { setRooms, resetRoomMessages } from "./chat";
+
 const SET_INITIALIZED = "auth/SET_INITIALIZED";
 const SET_OWNER_ID = "auth/SET_OWNER_ID";
 const SET_IS_AUTH = "auth/IS_AUTH";
@@ -106,6 +108,8 @@ export const authCheck = (curUser) => (dispatch) => {
 
 export const logout = () => async (dispatch) => {
   await fa.signOut();
+  dispatch(resetRoomMessages());
+  dispatch(setRooms(null));
   dispatch(setOwnerID(null));
   dispatch(setIsAuth(false));
   dispatch(setAuthedUser(null));
