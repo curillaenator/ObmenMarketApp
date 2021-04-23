@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { Form, Field } from "react-final-form";
 import { Scrollbars } from "rc-scrollbars";
-import { fb, fst } from "../../../Utils/firebase";
+import { db, fb, fst } from "../../../Utils/firebase";
 
 import { TextInput } from "../../Components/Inputs/Inputs";
 
@@ -11,7 +11,7 @@ import {
   deselectRoom,
   closeChat,
   postMessage,
-  subscribeAllRooms,
+  subscribeRoomsMsgs,
 } from "../../../Redux/Reducers/chat";
 
 import sendmess from "../../../Assets/Icons/message.svg";
@@ -19,6 +19,7 @@ import sendmess from "../../../Assets/Icons/message.svg";
 import styles from "./chat.module.scss";
 
 const ContactCard = ({
+  ownerID,
   room,
   rooms,
   messqty,
@@ -26,6 +27,8 @@ const ContactCard = ({
   isDialogsOn,
   handleSelected,
 }) => {
+  const [opened, setOpened] = useState(null);
+
   const [photolinks, setPhotoLinks] = useState(null);
 
   const roomCnt = rooms.findIndex((id) => id === room.roomID);
@@ -41,6 +44,22 @@ const ContactCard = ({
       Promise.all(links).then((linksArr) => setPhotoLinks(linksArr))
     );
   }, [room.photoPath]);
+
+  useEffect(() => {
+    const onUpd = (err) => (err ? console.log(err) : console.log("success"));
+
+    if (opened !== null && opened !== curRoomID) {
+      db.ref(`users/${ownerID}/chats/${opened}`)
+        .update({ [ownerID]: fb.database.ServerValue.TIMESTAMP }, onUpd)
+        .then(() => setOpened(null));
+      return null;
+    }
+
+    if (opened === null && room.roomID === curRoomID) {
+      setOpened(room.roomID);
+      return null;
+    }
+  }, [ownerID, opened, room.roomID, curRoomID]);
 
   const contactsClassName = () => {
     if (room.roomID === curRoomID)
@@ -62,7 +81,7 @@ const ContactCard = ({
           <div className={styles.thumb}>
             <img className={styles.image} src={photolinks[0]} alt="" />
 
-            {messqty > 0 && <div className={styles.messqty}>{messqty}</div>}
+            {messqty && <div className={styles.messqty}>{messqty}</div>}
           </div>
         </div>
 
@@ -78,7 +97,9 @@ const ContactCard = ({
 
 const Contacts = ({
   icons,
+  ownerID,
   rooms,
+  roomsNewMsgs,
   isChatOn,
   isDialogsOn,
   curRoomID,
@@ -105,10 +126,11 @@ const Contacts = ({
         {rooms.map((room) => (
           <ContactCard
             key={room.roomID}
+            ownerID={ownerID}
             room={room}
             rooms={rooms.map((room) => room.roomID)}
             curRoomID={curRoomID}
-            messqty={2}
+            messqty={roomsNewMsgs[room.roomID]}
             isDialogsOn={isDialogsOn}
             handleSelected={handleSelected}
           />
@@ -213,7 +235,9 @@ const Chat = ({
   curRoomID,
   rooms,
   roomsMsgs,
-  subscribeAllRooms,
+  roomsNewMsgs,
+  lastLogout,
+  subscribeRoomsMsgs,
   selectRoom,
   deselectRoom,
   closeChat,
@@ -223,10 +247,9 @@ const Chat = ({
     curRoomID === roomID ? deselectRoom() : selectRoom(roomID);
   };
 
-  useEffect(() => ownerID && subscribeAllRooms(ownerID), [
-    ownerID,
-    subscribeAllRooms,
-  ]);
+  useEffect(() => {
+    ownerID && subscribeRoomsMsgs(ownerID, lastLogout);
+  }, [ownerID, lastLogout, subscribeRoomsMsgs]);
 
   return (
     rooms && (
@@ -243,7 +266,9 @@ const Chat = ({
           icons={icons}
           isDialogsOn={isDialogsOn}
           isChatOn={isChatOn}
+          ownerID={ownerID}
           rooms={rooms}
+          roomsNewMsgs={roomsNewMsgs}
           curRoomID={curRoomID}
           handleSelected={handleSelected}
           closeChat={closeChat}
@@ -256,11 +281,13 @@ const Chat = ({
 const mstp = (state) => ({
   icons: state.ui.icons,
   ownerID: state.auth.ownerID,
+  lastLogout: state.auth.user.lastLogout,
   rooms: state.chat.rooms,
   curRoomID: state.chat.curRoomID,
   isChatOn: state.chat.isChatOn,
   isDialogsOn: state.chat.isDialogsOn,
   roomsMsgs: state.chat.roomsMsgs,
+  roomsNewMsgs: state.chat.roomsNewMsgs,
 });
 
 export const ChatCont = connect(mstp, {
@@ -268,5 +295,5 @@ export const ChatCont = connect(mstp, {
   deselectRoom,
   closeChat,
   postMessage,
-  subscribeAllRooms,
+  subscribeRoomsMsgs,
 })(Chat);

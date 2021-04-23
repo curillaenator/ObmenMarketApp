@@ -82,6 +82,7 @@ const Profile = ({
             {!isFormModeOn && (
               <>
                 <UserInfo
+                  ownerID={ownerID}
                   isOwner={isOwner}
                   profile={profile}
                   logout={logout}

@@ -1,7 +1,7 @@
 import { fb, fa, db } from "../../Utils/firebase";
 import { batch } from "react-redux";
 
-// import { setRooms } from "./chat";
+import { chatReset } from "./chat";
 
 const SET_INITIALIZED = "auth/SET_INITIALIZED";
 const SET_OWNER_ID = "auth/SET_OWNER_ID";
@@ -42,6 +42,8 @@ const setOwnerID = (payload) => ({ type: SET_OWNER_ID, payload });
 const setAuthedUser = (user) => ({ type: SET_USER, user });
 
 // THUNKs
+
+// authorization
 
 export const googleSignIn = () => async (dispatch) => {
   // // SendGrid
@@ -106,18 +108,7 @@ export const authCheck = (curUser) => (dispatch) => {
   }
 };
 
-export const logout = () => async (dispatch) => {
-  // const messagesInit = {};
-
-  await fa.signOut();
-
-  batch(() => {
-    // dispatch(setRooms(null));
-    dispatch(setOwnerID(null));
-    dispatch(setIsAuth(false));
-    dispatch(setAuthedUser(null));
-  });
-};
+// update profile from profile page
 
 export const updateUserProfile = (userUpdData) => (dispatch) => {
   const userID = fa.currentUser.uid;
@@ -131,4 +122,38 @@ export const updateUserProfile = (userUpdData) => (dispatch) => {
   };
 
   db.ref("users/" + userID).update(userUpdData, onUpdate);
+};
+
+// logout & set user lastLogout & isOnline on logout
+
+export const logout = (ownerID) => async (dispatch) => {
+  const lastLogout = {
+    isOnline: false,
+    lastLogout: fb.database.ServerValue.TIMESTAMP,
+  };
+
+  await db.ref(`users/${ownerID}`).update(lastLogout);
+
+  await fa.signOut();
+
+  batch(() => {
+    dispatch(chatReset());
+    dispatch(setOwnerID(null));
+    dispatch(setIsAuth(false));
+    dispatch(setAuthedUser(null));
+  });
+};
+
+// set user lastLogout & isOnline onConnect/Disconnect
+
+export const onConnectDisconnect = (ownerID) => (dispatch) => {
+  const lastLogout = {
+    isOnline: false,
+    lastLogout: fb.database.ServerValue.TIMESTAMP,
+  };
+
+  const userRef = db.ref(`users/${ownerID}`);
+
+  userRef.update({ isOnline: true });
+  userRef.onDisconnect().update(lastLogout);
 };

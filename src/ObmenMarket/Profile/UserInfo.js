@@ -7,7 +7,9 @@ import city from "../../Assets/Icons/city.svg";
 import mail from "../../Assets/Icons/mail.svg";
 import tel from "../../Assets/Icons/tel.svg";
 
-export const UserInfo = ({ isOwner, profile, logout, handleEdit }) => {
+export const UserInfo = ({ ownerID, isOwner, profile, logout, handleEdit }) => {
+  const handleLogout = () => logout(ownerID);
+
   return (
     <div className={styles.userInfo}>
       <div className={styles.shape}></div>
@@ -33,7 +35,7 @@ export const UserInfo = ({ isOwner, profile, logout, handleEdit }) => {
               width={95}
               height={40}
               title="Выйти"
-              handler={logout}
+              handler={handleLogout}
             />
           </div>
         )}

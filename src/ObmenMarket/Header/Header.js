@@ -32,7 +32,7 @@ const HeaderButton = ({ icon, iconpos = 0, notes, active, handler }) => {
   );
 };
 
-const Authorized = ({ user, isChatOn, setIsChatOn }) => {
+const Authorized = ({ user, totalNewMsgs, isChatOn, setIsChatOn }) => {
   return (
     <div className={styles.authorized}>
       <Link to="/profile" className={styles.user}>
@@ -42,7 +42,7 @@ const Authorized = ({ user, isChatOn, setIsChatOn }) => {
       <HeaderButton
         icon={chaticon}
         iconpos={2}
-        notes={11}
+        notes={totalNewMsgs}
         active={isChatOn}
         handler={() => setIsChatOn(true)}
       />
@@ -62,10 +62,11 @@ export const Header = ({
   user,
   isAuth,
   isInitialized,
+  totalNewMsgs,
   location,
   isChatOn,
   setFormMode,
-  setIsChatOn
+  setIsChatOn,
 }) => {
   const handleLoginButton = () => setFormMode(false);
 
@@ -84,6 +85,7 @@ export const Header = ({
         {isInitialized && isAuth && (
           <Authorized
             user={user}
+            totalNewMsgs={totalNewMsgs}
             setIsChatOn={setIsChatOn}
             isChatOn={isChatOn}
           />
@@ -111,6 +113,7 @@ const mstp = (state) => ({
   isInitialized: state.auth.isInitialized,
   isFormModeOn: state.home.isFormModeOn,
   isChatOn: state.chat.isChatOn,
+  totalNewMsgs: state.chat.totalNewMsgs,
 });
 
 export const HeaderCont = compose(

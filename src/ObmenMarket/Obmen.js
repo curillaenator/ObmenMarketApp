@@ -13,7 +13,11 @@ import { ProfileCont } from "./Profile/Profile";
 import { LotFullCont } from "./LotFull/LotFull";
 import { ChatCont } from "./Components/Chat/Chat";
 
-import { authCheck } from "../Redux/Reducers/auth";
+import {
+  authCheck,
+  // userIsOnline,
+  onConnectDisconnect,
+} from "../Redux/Reducers/auth";
 import { setIsModalOn } from "../Redux/Reducers/home";
 
 import styles from "./obmen.module.scss";
@@ -21,10 +25,12 @@ import styles from "./obmen.module.scss";
 function Obmen({
   isInitialized,
   isAuth,
-  authCheck,
+  ownerID,
   isModalOn,
   history,
   setIsModalOn,
+  authCheck,
+  onLoginLogout,
 }) {
   const [user, userLoading] = useAuthState(fa);
 
@@ -33,6 +39,10 @@ function Obmen({
     authCheck,
     userLoading,
   ]);
+
+  useEffect(() => {
+    onLoginLogout(ownerID);
+  }, [ownerID, onLoginLogout]);
 
   history.listen(() => isModalOn && setIsModalOn(false));
 
@@ -54,10 +64,11 @@ function Obmen({
 const mstp = (state) => ({
   isInitialized: state.auth.isInitialized,
   isAuth: state.auth.isAuth,
+  ownerID: state.auth.ownerID,
   isModalOn: state.home.isModalOn,
 });
 
 export const ObmenCont = compose(
   withRouter,
-  connect(mstp, { authCheck, setIsModalOn })
+  connect(mstp, { authCheck, setIsModalOn, onLoginLogout: onConnectDisconnect })
 )(Obmen);

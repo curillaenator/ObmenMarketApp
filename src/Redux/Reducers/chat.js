@@ -1,11 +1,15 @@
-import { db, db_chat } from "../../Utils/firebase";
+import { fb, db, db_chat } from "../../Utils/firebase";
 import { batch } from "react-redux";
 
 const IS_CHAT_ON = "chat/IS_CHAT_ON";
 const IS_DIALOGS_ON = "chat/IS_DIALOGS_ON";
-const SET_ROOMS = "chat/SET_ROOMS";
 const SET_CUR_ROOM_ID = "chat/SET_CUR_ROOM_ID";
+const SET_ROOMS = "chat/SET_ROOMS";
+const RESET_ROOMS = "chat/RESET_ROOMS";
 const SET_ROOMS_MSGS = "chat/SET_ROOMS_MSGS";
+const RESET_ROOMS_MSGS = "chat/RESET_ROOMS_MSGS";
+const SET_ROOMS_NEW_MSGS = "chat/SET_ROOMS_NEW_MSGS";
+const SET_TOTAL_NEW_MSGS = "chat/SET_TOTAL_NEW_MSGS";
 
 const initialState = {
   isChatOn: false,
@@ -13,6 +17,8 @@ const initialState = {
   rooms: null,
   curRoomID: null,
   roomsMsgs: {},
+  roomsNewMsgs: {},
+  totalNewMsgs: 0,
 };
 
 export const chat = (state = initialState, action) => {
@@ -23,11 +29,14 @@ export const chat = (state = initialState, action) => {
     case IS_DIALOGS_ON:
       return { ...state, isDialogsOn: action.payload };
 
+    case SET_CUR_ROOM_ID:
+      return { ...state, curRoomID: action.roomID };
+
     case SET_ROOMS:
       return { ...state, rooms: [...(state.rooms || []), action.room] };
 
-    case SET_CUR_ROOM_ID:
-      return { ...state, curRoomID: action.payload };
+    case RESET_ROOMS:
+      return { ...state, rooms: null };
 
     case SET_ROOMS_MSGS:
       return {
@@ -38,6 +47,21 @@ export const chat = (state = initialState, action) => {
         },
       };
 
+    case RESET_ROOMS_MSGS:
+      return { ...state, roomsMsgs: {} };
+
+    case SET_ROOMS_NEW_MSGS:
+      return {
+        ...state,
+        roomsNewMsgs: {
+          ...state.roomsNewMsgs,
+          [action.rID]: (state.roomsNewMsgs[action.rID] || 0) + 1,
+        },
+      };
+
+    case SET_TOTAL_NEW_MSGS:
+      return { ...state, totalNewMsgs: state.totalNewMsgs + 1 };
+
     default:
       return state;
   }
@@ -47,11 +71,14 @@ export const chat = (state = initialState, action) => {
 
 export const setIsChatOn = (payload) => ({ type: IS_CHAT_ON, payload });
 export const setIsDialogsOn = (payload) => ({ type: IS_DIALOGS_ON, payload });
-export const setRooms = (room) => ({ type: SET_ROOMS, room });
-const setCurRoomID = (payload) => ({ type: SET_CUR_ROOM_ID, payload });
-// const setRoomMessages = (data) => ({ type: SET_ROOM_MESSAGES, data });
+const setCurRoomID = (roomID) => ({ type: SET_CUR_ROOM_ID, roomID });
+const setRooms = (room) => ({ type: SET_ROOMS, room });
+const resetRooms = () => ({ type: RESET_ROOMS });
+const setRoomsMsgs = (rID, mess) => ({ type: SET_ROOMS_MSGS, rID, mess });
+const resetRoomsMsgs = () => ({ type: RESET_ROOMS_MSGS });
 
-const setAllRooms = (rID, mess) => ({ type: SET_ROOMS_MSGS, rID, mess });
+const setRoomsNewMsgs = (rID) => ({ type: SET_ROOMS_NEW_MSGS, rID });
+const setTotalNewMsgs = () => ({ type: SET_TOTAL_NEW_MSGS });
 
 // THUNKS
 
@@ -60,7 +87,19 @@ export const setChatFromLotFull = () => (dispatch) => {
   // dispatch(setIsDialogsOn(true));
 };
 
-// create/remove chatRoom & userChatData in DB
+//  chat full reset
+
+export const chatReset = () => (dispatch) => {
+  batch(() => {
+    dispatch(setCurRoomID(null));
+    dispatch(resetRoomsMsgs());
+    dispatch(resetRooms());
+    dispatch(setIsDialogsOn(false));
+    dispatch(setIsChatOn(false));
+  });
+};
+
+// create chatRoom & userChatData in DB (TODO: remove chatRoom)
 
 export const chatRoom = (lotMeta, offerMeta) => async (dispatch) => {
   const onUpd = (error) =>
@@ -68,15 +107,13 @@ export const chatRoom = (lotMeta, offerMeta) => async (dispatch) => {
 
   const roomID = await db_chat.ref().push().key;
 
-  console.log(roomID);
-
-  // dispatch(setCurRoomID(roomID));
-
-  const toUser = { title: `${lotMeta.title} на ${offerMeta.name}` };
-
   const userData = {};
-  userData[`users/${lotMeta.uid}/chats/${roomID}`] = toUser;
-  userData[`users/${offerMeta.authorID}/chats/${roomID}`] = toUser;
+  userData[`users/${lotMeta.uid}/chats/${roomID}`] = {
+    [lotMeta.uid]: fb.database.ServerValue.TIMESTAMP,
+  };
+  userData[`users/${offerMeta.authorID}/chats/${roomID}`] = {
+    [offerMeta.authorID]: fb.database.ServerValue.TIMESTAMP,
+  };
 
   const toRoom = {
     title: `${lotMeta.title} на ${offerMeta.name}`,
@@ -111,22 +148,38 @@ export const deselectRoom = () => (dispatch) => {
   });
 };
 
-export const closeChat = () => async (dispatch) => {
-  await deselectRoom();
-  dispatch(setIsChatOn(false));
+export const closeChat = () => (dispatch) => {
+  batch(() => {
+    dispatch(deselectRoom());
+    dispatch(setIsChatOn(false));
+  });
 };
 
-export const subscribeAllRooms = (ownerID) => (dispatch) => {
-  db.ref(`users/${ownerID}/chats`).on("child_added", (roomID) => {
+// rooms & messages subscribtion
+
+export const subscribeRoomsMsgs = (ownerID, lastLogout) => (dispatch) => {
+  db.ref(`users/${ownerID}/chats`).on("child_added", async (roomID) => {
     //
+    // console.log(roomID.val()[ownerID]);
     // set rooms' info for contact list
-    db_chat.ref(`chats/${roomID.key}`).once("value", (roomInfo) => {
+    await db_chat.ref(`chats/${roomID.key}`).once("value", (roomInfo) => {
       dispatch(setRooms(roomInfo.val()));
     });
 
+    // subscribe room last opened
+    db.ref(`users/${ownerID}/chats/${roomID.key}`).on(
+      "child_changed",
+      (changed) => {
+        console.log(changed.val());
+      }
+    );
+
     // subscribe all rooms to get messages
-    db_chat.ref(`messages/${roomID.key}`).on("child_added", (msgs) => {
-      dispatch(setAllRooms(roomID.key, { ...msgs.val(), id: msgs.key }));
+    db_chat.ref(`messages/${roomID.key}`).on("child_added", (msg) => {
+      dispatch(setRoomsMsgs(roomID.key, { ...msg.val(), id: msg.key }));
+      msg.val().postedAt > roomID.val()[ownerID] &&
+        dispatch(setRoomsNewMsgs(roomID.key));
+      msg.val().postedAt > roomID.val()[ownerID] && dispatch(setTotalNewMsgs());
     });
   });
 };
@@ -141,4 +194,3 @@ export const postMessage = (roomID, message) => (dispatch) => {
 
   db_chat.ref(`messages/${roomID}/${newMessID}`).set(message, onSet);
 };
-
