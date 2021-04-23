@@ -2,17 +2,16 @@ import { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { Form, Field } from "react-final-form";
 import { Scrollbars } from "rc-scrollbars";
-import { fb, fst, db_chat, db } from "../../../Utils/firebase";
+import { fb, fst } from "../../../Utils/firebase";
 
 import { TextInput } from "../../Components/Inputs/Inputs";
 
 import {
-  getChatRoomList,
-  updateRoomList,
   selectRoom,
   deselectRoom,
   closeChat,
   postMessage,
+  subscribeAllRooms,
 } from "../../../Redux/Reducers/chat";
 
 import sendmess from "../../../Assets/Icons/message.svg";
@@ -206,59 +205,28 @@ const Dialogs = ({
   );
 };
 
-const lastMessagesCnt = async (rooms) => {
-  const roomSnaps = rooms.map((room) =>
-    db_chat.ref(`messages/${room.roomID}`).once("value", (s) => s)
-  );
-
-  const counts = await Promise.all(roomSnaps).then((snaps) =>
-    snaps.map((sn) => ({
-      [sn.key]: sn.val() ? Object.keys(sn.val()).length : 0,
-    }))
-  );
-
-  console.log(counts);
-
-  return { lastMsgsCounts: counts };
-};
-
 const Chat = ({
   icons,
-  user,
   ownerID,
   isChatOn,
   isDialogsOn,
-  isRoomIDs,
   curRoomID,
   rooms,
-  messages,
-  getChatRoomList,
-  updateRoomList,
+  roomsMsgs,
+  subscribeAllRooms,
   selectRoom,
   deselectRoom,
   closeChat,
   postMessage,
 }) => {
   const handleSelected = (roomID) => {
-    curRoomID === roomID ? deselectRoom(roomID) : selectRoom(roomID);
+    curRoomID === roomID ? deselectRoom() : selectRoom(roomID);
   };
 
-  useEffect(() => isRoomIDs && getChatRoomList(user.chats), [
-    user.chats,
-    isRoomIDs,
-    getChatRoomList,
-  ]);
-
-  useEffect(() => ownerID && updateRoomList(ownerID), [
+  useEffect(() => ownerID && subscribeAllRooms(ownerID), [
     ownerID,
-    updateRoomList,
+    subscribeAllRooms,
   ]);
-
-  useEffect(() => {
-    ownerID &&
-      rooms &&
-      db.ref(`users/${ownerID}`).onDisconnect().update(lastMessagesCnt(rooms));
-  }, [ownerID, rooms]);
 
   return (
     rooms && (
@@ -267,7 +235,7 @@ const Chat = ({
           isDialogsOn={isDialogsOn}
           curRoomID={curRoomID}
           ownerID={ownerID}
-          messages={messages[curRoomID]}
+          messages={roomsMsgs[curRoomID]}
           postMessage={postMessage}
         />
 
@@ -288,20 +256,17 @@ const Chat = ({
 const mstp = (state) => ({
   icons: state.ui.icons,
   ownerID: state.auth.ownerID,
-  user: state.auth.user,
-  isRoomIDs: state.chat.isRoomIDs,
   rooms: state.chat.rooms,
   curRoomID: state.chat.curRoomID,
   isChatOn: state.chat.isChatOn,
   isDialogsOn: state.chat.isDialogsOn,
-  messages: state.chat.messages,
+  roomsMsgs: state.chat.roomsMsgs,
 });
 
 export const ChatCont = connect(mstp, {
-  getChatRoomList,
-  updateRoomList,
   selectRoom,
   deselectRoom,
   closeChat,
   postMessage,
+  subscribeAllRooms,
 })(Chat);

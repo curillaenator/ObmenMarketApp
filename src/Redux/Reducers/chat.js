@@ -1,21 +1,18 @@
 import { db, db_chat } from "../../Utils/firebase";
-import { setUserChatsIDs } from "./auth";
 import { batch } from "react-redux";
 
 const IS_CHAT_ON = "chat/IS_CHAT_ON";
 const IS_DIALOGS_ON = "chat/IS_DIALOGS_ON";
 const SET_ROOMS = "chat/SET_ROOMS";
-const SET_IS_ROOMS_IDS = "chat/SET_ROOMS_IDS";
 const SET_CUR_ROOM_ID = "chat/SET_CUR_ROOM_ID";
-const SET_ROOM_MESSAGES = "chat/SET_ROOM_MESSAGES";
+const SET_ROOMS_MSGS = "chat/SET_ROOMS_MSGS";
 
 const initialState = {
   isChatOn: false,
   isDialogsOn: false,
-  isRoomIDs: false,
   rooms: null,
   curRoomID: null,
-  messages: {},
+  roomsMsgs: {},
 };
 
 export const chat = (state = initialState, action) => {
@@ -27,16 +24,19 @@ export const chat = (state = initialState, action) => {
       return { ...state, isDialogsOn: action.payload };
 
     case SET_ROOMS:
-      return { ...state, rooms: action.payload };
-
-    case SET_IS_ROOMS_IDS:
-      return { ...state, isRoomIDs: action.payload };
+      return { ...state, rooms: [...(state.rooms || []), action.room] };
 
     case SET_CUR_ROOM_ID:
       return { ...state, curRoomID: action.payload };
 
-    case SET_ROOM_MESSAGES:
-      return { ...state, messages: action.data };
+    case SET_ROOMS_MSGS:
+      return {
+        ...state,
+        roomsMsgs: {
+          ...state.roomsMsgs,
+          [action.rID]: [...(state.roomsMsgs[action.rID] || []), action.mess],
+        },
+      };
 
     default:
       return state;
@@ -47,10 +47,11 @@ export const chat = (state = initialState, action) => {
 
 export const setIsChatOn = (payload) => ({ type: IS_CHAT_ON, payload });
 export const setIsDialogsOn = (payload) => ({ type: IS_DIALOGS_ON, payload });
-export const setRooms = (payload) => ({ type: SET_ROOMS, payload });
-export const setIsRoomIDs = (payload) => ({ type: SET_IS_ROOMS_IDS, payload });
+export const setRooms = (room) => ({ type: SET_ROOMS, room });
 const setCurRoomID = (payload) => ({ type: SET_CUR_ROOM_ID, payload });
-export const setRoomMessages = (data) => ({ type: SET_ROOM_MESSAGES, data });
+// const setRoomMessages = (data) => ({ type: SET_ROOM_MESSAGES, data });
+
+const setAllRooms = (rID, mess) => ({ type: SET_ROOMS_MSGS, rID, mess });
 
 // THUNKS
 
@@ -94,82 +95,39 @@ export const chatRoom = (lotMeta, offerMeta) => async (dispatch) => {
   await db.ref().update(userData, onUpd);
 };
 
-export const removeChatRoom = (roomID) => (dispatch) => {};
-
-// get & update roomList
-
-export const getChatRoomList = (roomList) => (dispatch) => {
-  const roomKeys = roomList ? roomList : {};
-  const chatPromises = Object.keys(roomKeys).map((id) =>
-    db_chat.ref(`chats/${id}`).once("value", (sn) => sn.val())
-  );
-
-  Promise.all(chatPromises).then((rooms) =>
-    dispatch(setRooms(rooms.map((room) => room.val())))
-  );
-};
-
-export const updateRoomList = (ownerID) => (dispatch) => {
-  db.ref(`users/${ownerID}/chats`).on("value", (snap) => {
-    dispatch(setUserChatsIDs(snap.val()));
-    dispatch(setIsRoomIDs(true));
-  });
-};
-
-// selectRoom & closeChat unsubscribe helper
-
-const handleUnsubscribe = async (dispatch, getState) => {
-  const roomIDs = Object.keys(getState().chat.messages);
-  const messagesInit = {};
-
-  dispatch(setIsDialogsOn(false));
-
-  await roomIDs.forEach((roomID) => db_chat.ref(`messages/${roomID}`).off());
-
-  batch(() => {
-    dispatch(setCurRoomID(null));
-    dispatch(setRoomMessages(messagesInit));
-  });
-};
-
-// selectRoom subscribe helper
-
-const handleSubscribe = async (roomID, dispatch) => {
-  dispatch(setCurRoomID(roomID));
-
-  await db_chat.ref(`messages/${roomID}`).on("value", (snap) => {
-    batch(() => {
-      dispatch(setRoomMessages({ [roomID]: snap.val() }));
-      dispatch(setIsDialogsOn(true));
-    });
-  });
-};
-
 // room select/deselect & closeChat
 
-export const selectRoom = (roomID) => async (dispatch, getState) => {
-  await handleUnsubscribe(dispatch, getState);
-  await handleSubscribe(roomID, dispatch);
+export const selectRoom = (roomID) => (dispatch) => {
+  batch(() => {
+    dispatch(setCurRoomID(roomID));
+    dispatch(setIsDialogsOn(true));
+  });
 };
 
-export const deselectRoom = (roomID) => async (dispatch) => {
-  const messagesInit = {};
-
-  await db_chat.ref(`messages/${roomID}`).off();
-
+export const deselectRoom = () => (dispatch) => {
   batch(() => {
     dispatch(setIsDialogsOn(false));
-    dispatch(setRoomMessages(messagesInit));
     dispatch(setCurRoomID(null));
   });
 };
 
-export const closeChat = () => async (dispatch, getState) => {
-  await handleUnsubscribe(dispatch, getState);
+export const closeChat = () => async (dispatch) => {
+  await deselectRoom();
+  dispatch(setIsChatOn(false));
+};
 
-  batch(() => {
-    dispatch(setIsDialogsOn(false));
-    dispatch(setIsChatOn(false));
+export const subscribeAllRooms = (ownerID) => (dispatch) => {
+  db.ref(`users/${ownerID}/chats`).on("child_added", (roomID) => {
+    //
+    // set rooms' info for contact list
+    db_chat.ref(`chats/${roomID.key}`).once("value", (roomInfo) => {
+      dispatch(setRooms(roomInfo.val()));
+    });
+
+    // subscribe all rooms to get messages
+    db_chat.ref(`messages/${roomID.key}`).on("child_added", (msgs) => {
+      dispatch(setAllRooms(roomID.key, { ...msgs.val(), id: msgs.key }));
+    });
   });
 };
 
@@ -184,20 +142,3 @@ export const postMessage = (roomID, message) => (dispatch) => {
   db_chat.ref(`messages/${roomID}/${newMessID}`).set(message, onSet);
 };
 
-export const lastMessagesCnt = async (rooms) => {
-  // const onUpd = (error) =>
-  //   error ? console.log(error) : console.log("success");
-
-  const roomSnaps = rooms.map((room) =>
-    db_chat.ref(`messages/${room.roomID}`).once("value", (s) => s)
-  );
-
-  const counts = await Promise.all(roomSnaps).then((snaps) =>
-    snaps.map((sn) => ({
-      [sn.key]: sn.val() ? Object.keys(sn.val()).length : 0,
-    }))
-  );
-
-  console.log(counts);
-  return counts;
-};
