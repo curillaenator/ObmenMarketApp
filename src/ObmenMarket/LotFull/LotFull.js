@@ -13,6 +13,10 @@ import { Controls } from "../Components/Controls/Controls";
 import { FormFull } from "../Components/FormFull/FormFull";
 import { OfferForm } from "./OfferForm/OfferForm";
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 import {
   setNewLotId,
   setIsLotCreated,
@@ -37,7 +41,6 @@ import openGallery from "../../Assets/Icons/openGallery.svg";
 import shrink from "../../Assets/Icons/shrink.svg";
 
 import "./lightbox.css";
-import "./imageshadow.scss";
 import styles from "./lotfull.module.scss";
 
 // COMPONENTS
@@ -85,7 +88,7 @@ const Thumb = ({ photo, label, selected, setSelected }) => {
 };
 
 const Track = ({ lotPhotos, selected }) => {
-  const count = lotPhotos.length;
+  var count = lotPhotos.length;
 
   const trackStyle = {
     width: `calc(100% * ${count})`,
@@ -98,6 +101,7 @@ const Track = ({ lotPhotos, selected }) => {
 
   return (
     <div className={styles.phototrack} style={trackStyle}>
+<<<<<<< Updated upstream
       {lotPhotos.map((photo) => (
         <ImageShadow
           src={photo}
@@ -108,6 +112,12 @@ const Track = ({ lotPhotos, selected }) => {
         />
       ))}
     </div>
+=======
+       {lotPhotos.map((photo) => (
+         <img src={photo} alt="" key={photo} style={photoStyle} />
+       ))}
+   </div>
+>>>>>>> Stashed changes
   );
 };
 
