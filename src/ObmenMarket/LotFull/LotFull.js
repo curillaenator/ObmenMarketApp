@@ -4,7 +4,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter, Link } from "react-router-dom";
 import Lightbox from "react-image-lightbox";
-import ImageShadow from "react-image-shadow";
+// import ImageShadow from "react-image-shadow";
 
 import { Prolong } from "./Prolong/Prolong";
 import { StatusBar } from "../Components/StatusBar/StatusBar";
@@ -13,10 +13,6 @@ import { Controls } from "../Components/Controls/Controls";
 import { FormFull } from "../Components/FormFull/FormFull";
 import { OfferForm } from "./OfferForm/OfferForm";
 
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 import {
   setNewLotId,
   setIsLotCreated,
@@ -88,44 +84,25 @@ const Thumb = ({ photo, label, selected, setSelected }) => {
 };
 
 const Track = ({ lotPhotos, selected }) => {
-  var count = lotPhotos.length;
+  const count = lotPhotos.length;
 
   const trackStyle = {
     width: `calc(100% * ${count})`,
     left: `${-100 * selected}%`,
   };
 
-  // const photoStyle = {
-  //   width: `calc(100% / ${count})`,
-  // };
+  const photoStyle = {
+    width: `calc(100% / ${count})`,
+  };
 
   return (
     <div className={styles.phototrack} style={trackStyle}>
-<<<<<<< Updated upstream
       {lotPhotos.map((photo) => (
-        <ImageShadow
-          src={photo}
-          key={photo}
-          shadowRadius="16"
-          shadowBlur="20"
-          width="100%"
-        />
+        <img src={photo} alt="" key={photo} style={photoStyle} />
       ))}
     </div>
-=======
-       {lotPhotos.map((photo) => (
-         <img src={photo} alt="" key={photo} style={photoStyle} />
-       ))}
-   </div>
->>>>>>> Stashed changes
   );
 };
-
-// {/* <div className={styles.phototrack} style={trackStyle}>
-//   {lotPhotos.map((photo) => (
-//     <img src={photo} alt="" key={photo} style={photoStyle} />
-//   ))}
-// </div> */}
 
 const Gallery = ({ lotPhotos }) => {
   const [isOpen, setIsOpen] = useState(false);
