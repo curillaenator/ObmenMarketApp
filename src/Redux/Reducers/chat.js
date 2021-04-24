@@ -9,6 +9,7 @@ const RESET_ROOMS = "chat/RESET_ROOMS";
 const SET_ROOMS_MSGS = "chat/SET_ROOMS_MSGS";
 const RESET_ROOMS_MSGS = "chat/RESET_ROOMS_MSGS";
 const SET_ROOMS_NEW_MSGS = "chat/SET_ROOMS_NEW_MSGS";
+const SET_OPPONENT = "chat/SET_OPPONENT";
 
 const initialState = {
   isChatOn: false,
@@ -17,6 +18,7 @@ const initialState = {
   curRoomID: null,
   roomsMsgs: {},
   roomsNewMsgs: {},
+  opponent: null,
 };
 
 export const chat = (state = initialState, action) => {
@@ -54,6 +56,9 @@ export const chat = (state = initialState, action) => {
         roomsNewMsgs: { ...state.roomsNewMsgs, ...action.newMsgs },
       };
 
+    case SET_OPPONENT:
+      return { ...state, opponent: action.opponent };
+
     default:
       return state;
   }
@@ -69,6 +74,7 @@ const resetRooms = () => ({ type: RESET_ROOMS });
 const setRoomsMsgs = (rID, mess) => ({ type: SET_ROOMS_MSGS, rID, mess });
 const resetRoomsMsgs = () => ({ type: RESET_ROOMS_MSGS });
 const setRoomsNewMsgs = (newMsgs) => ({ type: SET_ROOMS_NEW_MSGS, newMsgs });
+const setOpponent = (opponent) => ({ type: SET_OPPONENT, opponent });
 
 // THUNKS
 
@@ -86,6 +92,7 @@ export const chatReset = () => (dispatch) => {
     dispatch(resetRooms());
     dispatch(setIsDialogsOn(false));
     dispatch(setIsChatOn(false));
+    dispatch(setOpponent(null));
   });
 };
 
@@ -129,6 +136,7 @@ export const deselectRoom = () => (dispatch) => {
   batch(() => {
     dispatch(setIsDialogsOn(false));
     dispatch(setCurRoomID(null));
+    dispatch(setOpponent(null));
   });
 };
 
@@ -166,29 +174,35 @@ export const subscribeRoomsMsgs = (ownerID) => (dispatch) => {
 
 // post message
 
-export const postMessage = (roomID, message, ownerID, roomInfo) => async (
+export const postMessage = (roomID, message, opponentID) => async (
   dispatch
 ) => {
-  console.log(message);
-
   const onSet = (error) =>
     error ? console.log(error) : console.log("success");
-
-  const userID =
-    ownerID === roomInfo.lotAuthorID
-      ? roomInfo.offerAuthorID
-      : roomInfo.lotAuthorID;
 
   const newMessID = await db_chat.ref(`messages/${roomID}`).push().key;
 
   if (message.message) {
     await db_chat.ref(`messages/${roomID}/${newMessID}`).set(message, onSet);
 
-    const userRoomRef = await db.ref(`users/${userID}/chats/${roomID}`);
+    const userRoomRef = await db.ref(`users/${opponentID}/chats/${roomID}`);
     userRoomRef
       .once("value", (snap) => snap)
       .then((snap) => {
         userRoomRef.update({ newMessages: snap.val().newMessages + 1 }, onSet);
       });
   }
+};
+
+export const getDialogOpponent = (opponentID) => (dispatch) => {
+  opponentID &&
+    db.ref(`users/${opponentID}`).once("value", (opponent) => {
+      const opponentProps = {
+        opponentID: opponent.key,
+        avatar: opponent.val().avatar,
+        opponentName: opponent.val().username,
+      };
+
+      dispatch(setOpponent(opponentProps));
+    });
 };

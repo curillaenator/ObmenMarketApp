@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { connect } from "react-redux";
 import { Form, Field } from "react-final-form";
 import { Scrollbars } from "rc-scrollbars";
 import { db, fb, fst } from "../../../Utils/firebase";
 
 import { TextInput } from "../../Components/Inputs/Inputs";
+import { Author } from "../Author/Author";
 
 import {
   selectRoom,
@@ -12,6 +13,7 @@ import {
   closeChat,
   postMessage,
   subscribeRoomsMsgs,
+  getDialogOpponent,
 } from "../../../Redux/Reducers/chat";
 
 import sendmess from "../../../Assets/Icons/message.svg";
@@ -19,6 +21,14 @@ import sendmess from "../../../Assets/Icons/message.svg";
 import styles from "./chat.module.scss";
 
 const onUpd = (err) => (err ? console.log(err) : console.log("success"));
+
+const CloseBtn = ({ icon, handler }) => {
+  return (
+    <div className={styles.closeBtn} onClick={handler}>
+      {icon}
+    </div>
+  );
+};
 
 const ContactCard = ({
   ownerID,
@@ -104,22 +114,18 @@ const Contacts = ({
   rooms,
   roomsNewMsgs,
   roomsMsgs,
-  isChatOn,
+  contactsOpen,
   isDialogsOn,
   curRoomID,
   handleSelected,
   closeChat,
 }) => {
-  const contactsOpen = isChatOn ? { width: "416px" } : { width: "0px" };
-
   return (
     <div className={styles.contacts} style={contactsOpen}>
       <div className={styles.contacts_header}>
         <div className={styles.title}>Мессенджер</div>
 
-        <div className={styles.close} onClick={closeChat}>
-          {icons.cancel}
-        </div>
+        <CloseBtn icon={icons.cancel} handler={closeChat} />
       </div>
 
       <div className={styles.contacts_search}>
@@ -151,18 +157,35 @@ const Contacts = ({
 };
 
 const Dialogs = ({
+  icons,
   dialogsOpen,
   roomInfo,
   curRoomID,
   ownerID,
   messages,
+  opponent,
   postMessage,
+  getDialogOpponent,
+  deselectRoom,
 }) => {
   const ref = useRef(null);
+
+  const opponentID = useCallback(() => {
+    if (curRoomID)
+      return ownerID === roomInfo.lotAuthorID
+        ? roomInfo.offerAuthorID
+        : roomInfo.lotAuthorID;
+    return null;
+  }, [curRoomID, ownerID, roomInfo]);
 
   useEffect(() => messages && ref.current.scrollToBottom(), [
     messages,
     curRoomID,
+  ]);
+
+  useEffect(() => getDialogOpponent(opponentID()), [
+    getDialogOpponent,
+    opponentID,
   ]);
 
   const Message = ({ message }) => {
@@ -180,7 +203,7 @@ const Dialogs = ({
       postedAt: fb.database.ServerValue.TIMESTAMP,
     };
 
-    postMessage(curRoomID, { ...messData, ...messMeta }, ownerID, roomInfo);
+    postMessage(curRoomID, { ...messData, ...messMeta }, opponentID());
   };
 
   const resetNewMsgs = () => {
@@ -193,8 +216,13 @@ const Dialogs = ({
   return (
     <div className={styles.dialogs} style={dialogsOpen} onClick={resetNewMsgs}>
       <div className={styles.dialogs_header}>
-        <div className={styles.interlocutor}></div>
-        <div className={styles.foldinout}></div>
+        <Author
+          authorID={opponent && opponent.opponentID}
+          avatar={opponent && opponent.avatar}
+          name={opponent && opponent.opponentName}
+        />
+
+        <CloseBtn icon={icons.fold} handler={deselectRoom} />
       </div>
 
       <div className={styles.dialogs_messages}>
@@ -252,11 +280,13 @@ const Chat = ({
   rooms,
   roomsMsgs,
   roomsNewMsgs,
+  opponent,
   subscribeRoomsMsgs,
   selectRoom,
   deselectRoom,
   closeChat,
   postMessage,
+  getDialogOpponent,
 }) => {
   const handleSelected = (roomID) => {
     curRoomID === roomID ? deselectRoom() : selectRoom(roomID);
@@ -270,18 +300,22 @@ const Chat = ({
     rooms && (
       <div className={styles.chat}>
         <Dialogs
+          icons={icons}
           dialogsOpen={isDialogsOn ? { width: "720px" } : { width: "0px" }}
           roomInfo={rooms.find((room) => room.roomID === curRoomID)}
           curRoomID={curRoomID}
           ownerID={ownerID}
           messages={roomsMsgs[curRoomID]}
           postMessage={postMessage}
+          getDialogOpponent={getDialogOpponent}
+          opponent={opponent}
+          deselectRoom={deselectRoom}
         />
 
         <Contacts
           icons={icons}
           isDialogsOn={isDialogsOn}
-          isChatOn={isChatOn}
+          contactsOpen={isChatOn ? { width: "416px" } : { width: "0px" }}
           ownerID={ownerID}
           rooms={rooms}
           roomsNewMsgs={roomsNewMsgs}
@@ -304,6 +338,7 @@ const mstp = (state) => ({
   isDialogsOn: state.chat.isDialogsOn,
   roomsMsgs: state.chat.roomsMsgs,
   roomsNewMsgs: state.chat.roomsNewMsgs,
+  opponent: state.chat.opponent,
 });
 
 export const ChatCont = connect(mstp, {
@@ -312,4 +347,5 @@ export const ChatCont = connect(mstp, {
   closeChat,
   postMessage,
   subscribeRoomsMsgs,
+  getDialogOpponent,
 })(Chat);

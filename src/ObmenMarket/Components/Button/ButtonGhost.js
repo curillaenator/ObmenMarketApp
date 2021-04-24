@@ -18,6 +18,7 @@ const Icon = ({ icon, disabled, title, active }) => {
       </div>
     );
   }
+  return null;
 };
 
 const Title = ({ title, disabled, active, fontsize }) => {
@@ -44,8 +45,8 @@ const Shape = () => {
 };
 
 export const ButtonGhost = ({
-  width,
-  height,
+  // width,
+  // height,
   title,
   icon,
   handler,

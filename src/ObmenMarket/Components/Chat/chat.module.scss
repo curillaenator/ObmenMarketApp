@@ -9,6 +9,32 @@
   overflow: hidden;
 }
 
+.closeBtn {
+  cursor: pointer;
+
+  & > svg {
+    width: 26px;
+    height: 26px;
+  }
+
+  :global(.cta_path1) {
+    fill: $chatfont1;
+    transition: 0.08s linear;
+  }
+
+  :global(.cta_path2) {
+    fill: $fontWhite;
+  }
+
+  &:hover :global(.cta_path1) {
+    fill: $chatfont1hover;
+  }
+
+  &:active :global(.cta_path1) {
+    fill: $chatfont1;
+  }
+}
+
 .contacts_header {
   @include header;
   padding: 0 24px;
@@ -19,32 +45,6 @@
     font-size: 32px;
     letter-spacing: -0.32px;
     user-select: none;
-  }
-
-  .close {
-    cursor: pointer;
-
-    & > svg {
-      width: 26px;
-      height: 26px;
-    }
-
-    :global(.cta_path1) {
-      fill: $chatfont1;
-      transition: 0.08s linear;
-    }
-
-    :global(.cta_path2) {
-      fill: $fontWhite;
-    }
-
-    &:hover :global(.cta_path1) {
-      fill: $chatfont1hover;
-    }
-
-    &:active :global(.cta_path1) {
-      fill: $chatfont1;
-    }
   }
 }
 
@@ -173,9 +173,8 @@
 
 .dialogs_header {
   @include header;
-  // margin: 0 32px;
-  background-color: $fontWhite;
-  opacity: 0.4;
+  padding: 0 32px;
+  background-color: $chatoverlay;
 }
 
 .dialogs_messages {

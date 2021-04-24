@@ -2,10 +2,10 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { db_offers, fb, db } from "../../Utils/firebase";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { withRouter, Link } from "react-router-dom";
-import Lightbox from "react-image-lightbox";
-// import ImageShadow from "react-image-shadow";
+import { withRouter } from "react-router-dom";
 
+import { Author } from "../Components/Author/Author";
+import { Gallery } from "../Components/Gallery/Gallery";
 import { Prolong } from "./Prolong/Prolong";
 import { StatusBar } from "../Components/StatusBar/StatusBar";
 import { Button } from "../Components/Button/Button";
@@ -33,128 +33,9 @@ import { chatRoom, setChatFromLotFull } from "../../Redux/Reducers/chat";
 
 import readytopay from "../../Assets/Icons/readytopay.svg";
 import deleteBtn from "../../Assets/Icons/delete_2.svg";
-import openGallery from "../../Assets/Icons/openGallery.svg";
 import shrink from "../../Assets/Icons/shrink.svg";
 
-import "./lightbox.css";
 import styles from "./lotfull.module.scss";
-
-// COMPONENTS
-
-const Author = ({ authorID, avatar, name }) => {
-  return (
-    <Link to={`/profile/${authorID}`} className={styles.author}>
-      <img src={avatar} alt="Username" />
-      <p>{name}</p>
-    </Link>
-  );
-};
-
-// GALLERY
-
-const Tint = ({ title, icon, count }) => {
-  const iconMargin = title ? { marginRight: "18px" } : {};
-
-  return (
-    <div className={styles.tint}>
-      <div className={styles.table}>
-        {icon && <img src={icon} alt={title} style={iconMargin} />}
-        {title && (
-          <div className={styles.tabletitle}>
-            <h3>{title}</h3>
-            <p>{`${count} фото`}</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-const Thumb = ({ photo, label, selected, setSelected }) => {
-  const thumbClassName =
-    label === selected
-      ? `${styles.thumb} ${styles.thumb_active}`
-      : styles.thumb;
-
-  return (
-    <div className={thumbClassName} onClick={() => setSelected(label)}>
-      <img src={photo} alt="" />
-    </div>
-  );
-};
-
-const Track = ({ lotPhotos, selected }) => {
-  const count = lotPhotos.length;
-
-  const trackStyle = {
-    width: `calc(100% * ${count})`,
-    left: `${-100 * selected}%`,
-  };
-
-  const photoStyle = {
-    width: `calc(100% / ${count})`,
-  };
-
-  return (
-    <div className={styles.phototrack} style={trackStyle}>
-      {lotPhotos.map((photo) => (
-        <img src={photo} alt="" key={photo} style={photoStyle} />
-      ))}
-    </div>
-  );
-};
-
-const Gallery = ({ lotPhotos }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState(0);
-
-  return (
-    lotPhotos && (
-      <div className={styles.gallery}>
-        <div className={styles.mainphoto} onClick={() => setIsOpen(true)}>
-          <Track lotPhotos={lotPhotos} selected={selected} />
-
-          <Tint
-            title="Открыть галлерею"
-            icon={openGallery}
-            count={lotPhotos.length}
-          />
-        </div>
-
-        <div className={styles.thumbtrack}>
-          {lotPhotos.map((photo, i) => (
-            <Thumb
-              key={photo}
-              photo={photo}
-              label={i}
-              selected={selected}
-              setSelected={setSelected}
-            />
-          ))}
-        </div>
-
-        {isOpen && (
-          <Lightbox
-            mainSrc={lotPhotos[selected]}
-            nextSrc={lotPhotos[(selected + 1) % lotPhotos.length]}
-            prevSrc={
-              lotPhotos[(selected + lotPhotos.length - 1) % lotPhotos.length]
-            }
-            onCloseRequest={() => setIsOpen(false)}
-            onMovePrevRequest={() =>
-              setSelected((selected + lotPhotos.length - 1) % lotPhotos.length)
-            }
-            onMoveNextRequest={() =>
-              setSelected((selected + 1) % lotPhotos.length)
-            }
-          />
-        )}
-      </div>
-    )
-  );
-};
-
-// CTA_BUTTONS
 
 const Buttons = ({
   icons,
@@ -241,11 +122,13 @@ const Buttons = ({
 const Descrption = ({ lotMeta }) => {
   return (
     <div className={styles.description}>
-      <Author
-        authorID={lotMeta.uid}
-        avatar={lotMeta.avatar}
-        name={lotMeta.username}
-      />
+      <div className={styles.author}>
+        <Author
+          authorID={lotMeta.uid}
+          avatar={lotMeta.avatar}
+          name={lotMeta.username}
+        />
+      </div>
 
       <div className={styles.majortitle}>{lotMeta.title}</div>
 
