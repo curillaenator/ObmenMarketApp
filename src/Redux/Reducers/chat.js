@@ -1,4 +1,4 @@
-import { fb, db, db_chat } from "../../Utils/firebase";
+import { db, db_chat } from "../../Utils/firebase";
 import { batch } from "react-redux";
 
 const IS_CHAT_ON = "chat/IS_CHAT_ON";
@@ -9,7 +9,6 @@ const RESET_ROOMS = "chat/RESET_ROOMS";
 const SET_ROOMS_MSGS = "chat/SET_ROOMS_MSGS";
 const RESET_ROOMS_MSGS = "chat/RESET_ROOMS_MSGS";
 const SET_ROOMS_NEW_MSGS = "chat/SET_ROOMS_NEW_MSGS";
-const SET_TOTAL_NEW_MSGS = "chat/SET_TOTAL_NEW_MSGS";
 
 const initialState = {
   isChatOn: false,
@@ -18,7 +17,6 @@ const initialState = {
   curRoomID: null,
   roomsMsgs: {},
   roomsNewMsgs: {},
-  totalNewMsgs: 0,
 };
 
 export const chat = (state = initialState, action) => {
@@ -53,14 +51,8 @@ export const chat = (state = initialState, action) => {
     case SET_ROOMS_NEW_MSGS:
       return {
         ...state,
-        roomsNewMsgs: {
-          ...state.roomsNewMsgs,
-          [action.rID]: (state.roomsNewMsgs[action.rID] || 0) + 1,
-        },
+        roomsNewMsgs: { ...state.roomsNewMsgs, ...action.newMsgs },
       };
-
-    case SET_TOTAL_NEW_MSGS:
-      return { ...state, totalNewMsgs: state.totalNewMsgs + 1 };
 
     default:
       return state;
@@ -76,9 +68,7 @@ const setRooms = (room) => ({ type: SET_ROOMS, room });
 const resetRooms = () => ({ type: RESET_ROOMS });
 const setRoomsMsgs = (rID, mess) => ({ type: SET_ROOMS_MSGS, rID, mess });
 const resetRoomsMsgs = () => ({ type: RESET_ROOMS_MSGS });
-
-const setRoomsNewMsgs = (rID) => ({ type: SET_ROOMS_NEW_MSGS, rID });
-const setTotalNewMsgs = () => ({ type: SET_TOTAL_NEW_MSGS });
+const setRoomsNewMsgs = (newMsgs) => ({ type: SET_ROOMS_NEW_MSGS, newMsgs });
 
 // THUNKS
 
@@ -108,12 +98,8 @@ export const chatRoom = (lotMeta, offerMeta) => async (dispatch) => {
   const roomID = await db_chat.ref().push().key;
 
   const userData = {};
-  userData[`users/${lotMeta.uid}/chats/${roomID}`] = {
-    [lotMeta.uid]: fb.database.ServerValue.TIMESTAMP,
-  };
-  userData[`users/${offerMeta.authorID}/chats/${roomID}`] = {
-    [offerMeta.authorID]: fb.database.ServerValue.TIMESTAMP,
-  };
+  userData[`users/${lotMeta.uid}/chats/${roomID}`] = { newMessages: 0 };
+  userData[`users/${offerMeta.authorID}/chats/${roomID}`] = { newMessages: 0 };
 
   const toRoom = {
     title: `${lotMeta.title} на ${offerMeta.name}`,
@@ -121,8 +107,6 @@ export const chatRoom = (lotMeta, offerMeta) => async (dispatch) => {
     offerAuthorID: offerMeta.authorID,
     roomID: roomID,
     photoPath: `posts/${lotMeta.uid}/${lotMeta.postid}`,
-    lotDescription: lotMeta.description,
-    offerDescription: offerMeta.description,
   };
 
   const roomData = {};
@@ -157,40 +141,54 @@ export const closeChat = () => (dispatch) => {
 
 // rooms & messages subscribtion
 
-export const subscribeRoomsMsgs = (ownerID, lastLogout) => (dispatch) => {
+export const subscribeRoomsMsgs = (ownerID) => (dispatch) => {
   db.ref(`users/${ownerID}/chats`).on("child_added", async (roomID) => {
     //
-    // console.log(roomID.val()[ownerID]);
     // set rooms' info for contact list
     await db_chat.ref(`chats/${roomID.key}`).once("value", (roomInfo) => {
       dispatch(setRooms(roomInfo.val()));
     });
 
+    await dispatch(setRoomsNewMsgs({ [roomID.key]: roomID.val().newMessages }));
+
     // subscribe room last opened
     db.ref(`users/${ownerID}/chats/${roomID.key}`).on(
       "child_changed",
-      (changed) => {
-        console.log(changed.val());
-      }
+      (changed) => dispatch(setRoomsNewMsgs({ [roomID.key]: changed.val() }))
     );
 
     // subscribe all rooms to get messages
     db_chat.ref(`messages/${roomID.key}`).on("child_added", (msg) => {
       dispatch(setRoomsMsgs(roomID.key, { ...msg.val(), id: msg.key }));
-      msg.val().postedAt > roomID.val()[ownerID] &&
-        dispatch(setRoomsNewMsgs(roomID.key));
-      msg.val().postedAt > roomID.val()[ownerID] && dispatch(setTotalNewMsgs());
     });
   });
 };
 
 // post message
 
-export const postMessage = (roomID, message) => (dispatch) => {
-  const newMessID = db_chat.ref(`messages/${roomID}`).push().key;
+export const postMessage = (roomID, message, ownerID, roomInfo) => async (
+  dispatch
+) => {
+  console.log(message);
 
   const onSet = (error) =>
     error ? console.log(error) : console.log("success");
 
-  db_chat.ref(`messages/${roomID}/${newMessID}`).set(message, onSet);
+  const userID =
+    ownerID === roomInfo.lotAuthorID
+      ? roomInfo.offerAuthorID
+      : roomInfo.lotAuthorID;
+
+  const newMessID = await db_chat.ref(`messages/${roomID}`).push().key;
+
+  if (message.message) {
+    await db_chat.ref(`messages/${roomID}/${newMessID}`).set(message, onSet);
+
+    const userRoomRef = await db.ref(`users/${userID}/chats/${roomID}`);
+    userRoomRef
+      .once("value", (snap) => snap)
+      .then((snap) => {
+        userRoomRef.update({ newMessages: snap.val().newMessages + 1 }, onSet);
+      });
+  }
 };

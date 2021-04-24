@@ -32,7 +32,11 @@ const HeaderButton = ({ icon, iconpos = 0, notes, active, handler }) => {
   );
 };
 
-const Authorized = ({ user, totalNewMsgs, isChatOn, setIsChatOn }) => {
+const Authorized = ({ user, roomsNewMsgs, isChatOn, setIsChatOn }) => {
+  const notesCnt = Object.keys(roomsNewMsgs)
+    .map((id) => roomsNewMsgs[id])
+    .reduce((a, b) => a + b, 0);
+
   return (
     <div className={styles.authorized}>
       <Link to="/profile" className={styles.user}>
@@ -42,7 +46,7 @@ const Authorized = ({ user, totalNewMsgs, isChatOn, setIsChatOn }) => {
       <HeaderButton
         icon={chaticon}
         iconpos={2}
-        notes={totalNewMsgs}
+        notes={notesCnt}
         active={isChatOn}
         handler={() => setIsChatOn(true)}
       />
@@ -62,7 +66,7 @@ export const Header = ({
   user,
   isAuth,
   isInitialized,
-  totalNewMsgs,
+  roomsNewMsgs,
   location,
   isChatOn,
   setFormMode,
@@ -85,7 +89,7 @@ export const Header = ({
         {isInitialized && isAuth && (
           <Authorized
             user={user}
-            totalNewMsgs={totalNewMsgs}
+            roomsNewMsgs={roomsNewMsgs}
             setIsChatOn={setIsChatOn}
             isChatOn={isChatOn}
           />
@@ -113,7 +117,7 @@ const mstp = (state) => ({
   isInitialized: state.auth.isInitialized,
   isFormModeOn: state.home.isFormModeOn,
   isChatOn: state.chat.isChatOn,
-  totalNewMsgs: state.chat.totalNewMsgs,
+  roomsNewMsgs: state.chat.roomsNewMsgs,
 });
 
 export const HeaderCont = compose(
