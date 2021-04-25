@@ -3,7 +3,7 @@
       
       "users": {
         ".read": true,
-        ".write": "auth != null && !data.child(auth.uid).exists()",
+        ".write": "auth != null && !data.child(auth.uid).exists() || root.child('users').child(auth.uid).child('isAdmin').val() === true",
           
         "$uid": {
             ".read": true,
@@ -17,7 +17,7 @@
         ".indexOn": ["uid", "published"],
         "$postID": {
             ".read": true,
-            ".write": "auth != null && data.child('uid').val() === auth.uid"
+            ".write": "auth != null && data.child('uid').val() === auth.uid || root.child('users').child(auth.uid).child('isAdmin').val() == true"
             }
         },
     "$postID": {
@@ -25,7 +25,7 @@
         ".write": true,
         "$offerID": {
             ".read": true,
-            ".write": "auth != null && data.child('authorID').val() === auth.uid"
+            ".write": "auth != null && data.child('authorID').val() === auth.uid || root.child('users').child(auth.uid).child('isAdmin').val() == true"
             }
         }
     }
