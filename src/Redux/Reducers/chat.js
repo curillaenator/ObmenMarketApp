@@ -2,6 +2,7 @@ import { db, db_chat } from "../../Utils/firebase";
 import { batch } from "react-redux";
 
 const IS_CHAT_ON = "chat/IS_CHAT_ON";
+const IS_CHAT_TOUCHED = "chat/IS_CHAT_TOUCHED";
 const IS_DIALOGS_ON = "chat/IS_DIALOGS_ON";
 const SET_CUR_ROOM_ID = "chat/SET_CUR_ROOM_ID";
 const SET_ROOMS = "chat/SET_ROOMS";
@@ -13,6 +14,7 @@ const SET_OPPONENT = "chat/SET_OPPONENT";
 
 const initialState = {
   isChatOn: false,
+  isChatTouched: false,
   isDialogsOn: false,
   rooms: null,
   curRoomID: null,
@@ -25,6 +27,9 @@ export const chat = (state = initialState, action) => {
   switch (action.type) {
     case IS_CHAT_ON:
       return { ...state, isChatOn: action.payload };
+
+    case IS_CHAT_TOUCHED:
+      return { ...state, isChatTouched: true };
 
     case IS_DIALOGS_ON:
       return { ...state, isDialogsOn: action.payload };
@@ -67,6 +72,7 @@ export const chat = (state = initialState, action) => {
 // ACTIONS
 
 export const setIsChatOn = (payload) => ({ type: IS_CHAT_ON, payload });
+export const setIsChatTouched = () => ({ type: IS_CHAT_TOUCHED });
 export const setIsDialogsOn = (payload) => ({ type: IS_DIALOGS_ON, payload });
 const setCurRoomID = (roomID) => ({ type: SET_CUR_ROOM_ID, roomID });
 const setRooms = (room) => ({ type: SET_ROOMS, room });
@@ -78,8 +84,9 @@ const setOpponent = (opponent) => ({ type: SET_OPPONENT, opponent });
 
 // THUNKS
 
-export const setChatFromLotFull = () => (dispatch) => {
-  dispatch(setIsChatOn(true));
+export const setChatFromLotFull = () => async (dispatch) => {
+  await dispatch(setIsChatTouched());
+  await dispatch(setIsChatOn(true));
   // dispatch(setIsDialogsOn(true));
 };
 

@@ -341,7 +341,7 @@ const mstp = (state) => ({
   opponent: state.chat.opponent,
 });
 
-export const ChatCont = connect(mstp, {
+const ChatCont = connect(mstp, {
   selectRoom,
   deselectRoom,
   closeChat,
@@ -349,3 +349,5 @@ export const ChatCont = connect(mstp, {
   subscribeRoomsMsgs,
   getDialogOpponent,
 })(Chat);
+
+export default ChatCont;

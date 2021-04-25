@@ -4,7 +4,7 @@ import { ButtonOutline } from "../Components/Button/ButtonOutline";
 import { Link, withRouter } from "react-router-dom";
 
 import { setFormMode } from "../../Redux/Reducers/home";
-import { setIsChatOn } from "../../Redux/Reducers/chat";
+import { setIsChatOn, setIsChatTouched } from "../../Redux/Reducers/chat";
 
 import logo from "../../Assets/Icons/logo.svg";
 import chaticon from "../../Assets/Icons/chat.svg";
@@ -32,7 +32,18 @@ const HeaderButton = ({ icon, iconpos = 0, notes, active, handler }) => {
   );
 };
 
-const Authorized = ({ user, roomsNewMsgs, isChatOn, setIsChatOn }) => {
+const Authorized = ({
+  user,
+  roomsNewMsgs,
+  isChatOn,
+  setIsChatOn,
+  setIsChatTouched,
+}) => {
+  const handleChatButton = () => {
+    setIsChatTouched();
+    setIsChatOn(true);
+  };
+
   const notesCnt = Object.keys(roomsNewMsgs)
     .map((id) => roomsNewMsgs[id])
     .reduce((a, b) => a + b, 0);
@@ -48,7 +59,7 @@ const Authorized = ({ user, roomsNewMsgs, isChatOn, setIsChatOn }) => {
         iconpos={2}
         notes={notesCnt}
         active={isChatOn}
-        handler={() => setIsChatOn(true)}
+        handler={handleChatButton}
       />
 
       <HeaderButton
@@ -71,6 +82,7 @@ export const Header = ({
   isChatOn,
   setFormMode,
   setIsChatOn,
+  setIsChatTouched,
 }) => {
   const handleLoginButton = () => setFormMode(false);
 
@@ -92,6 +104,7 @@ export const Header = ({
             roomsNewMsgs={roomsNewMsgs}
             setIsChatOn={setIsChatOn}
             isChatOn={isChatOn}
+            setIsChatTouched={setIsChatTouched}
           />
         )}
 
@@ -122,5 +135,5 @@ const mstp = (state) => ({
 
 export const HeaderCont = compose(
   withRouter,
-  connect(mstp, { setFormMode, setIsChatOn })
+  connect(mstp, { setFormMode, setIsChatOn, setIsChatTouched })
 )(Header);

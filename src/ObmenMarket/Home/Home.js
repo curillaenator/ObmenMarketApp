@@ -21,6 +21,8 @@ import styles from "./home.module.scss";
 const Home = ({
   isAuth,
   icons,
+  user,
+  ownerID,
   formFullUI,
   isFormModeOn,
   createLotId,
@@ -60,6 +62,9 @@ const Home = ({
 
       {isAuth && isFormModeOn && (
         <FormFull
+          user={user}
+          ownerID={ownerID}
+          createLotId={createLotId}
           cloudtail={true}
           icons={icons}
           formFullUI={formFullUI}
@@ -75,6 +80,8 @@ const Home = ({
 const mstp = (state) => ({
   isAuth: state.auth.isAuth,
   icons: state.ui.icons,
+  user: state.auth.user,
+  ownerID: state.auth.ownerID,
   formFullUI: state.ui.formFull,
   isFormModeOn: state.home.isFormModeOn,
   isLotCreated: state.lots.isLotCreated,

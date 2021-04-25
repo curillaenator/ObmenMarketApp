@@ -434,14 +434,16 @@ const LotFull = ({
   icons,
   match,
   history,
-  location,
+  // location,
   isAuth,
   ownerID,
+  user,
   formFullUI,
   formOfferUI,
   isFormModeOn,
   setFormMode,
   currentLotId,
+  createOfferId,
   currentLotMeta,
   isLotMeta,
   isLotPhotos,
@@ -474,7 +476,7 @@ const LotFull = ({
 
     if (isOfferForm) {
       setIsOfferForm(false);
-      onOfferCancel(newOfferMeta, lotMeta);
+      onOfferCancel(createOfferId, lotMeta);
     }
 
     if (!isOfferForm) {
@@ -535,11 +537,13 @@ const LotFull = ({
 
               {isOfferForm && (
                 <OfferForm
+                  ownerID={ownerID}
+                  user={user}
                   icons={icons}
                   formOfferUI={formOfferUI}
                   lotMeta={lotMeta}
-                  newOfferMeta={newOfferMeta}
                   createOffer={createOffer}
+                  createOfferId={createOfferId}
                   setIsOfferForm={setIsOfferForm}
                 />
               )}
@@ -583,6 +587,7 @@ const mstp = (state) => ({
   icons: state.ui.icons,
   isAuth: state.auth.isAuth,
   ownerID: state.auth.ownerID,
+  user: state.auth.user,
   formFullUI: state.ui.formFull,
   formOfferUI: state.ui.formOffer,
   isFormModeOn: state.home.isFormModeOn,
@@ -593,6 +598,7 @@ const mstp = (state) => ({
   lotMeta: state.lots.currentLotMeta,
   lotPhotos: state.lots.currentLotPhotos,
   newOfferMeta: state.lots.newOfferMeta,
+  createOfferId: state.lots.createOfferId,
   isChatOn: state.chat.isChatOn,
 });
 

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { fa } from "../Utils/firebase";
 
@@ -11,26 +11,25 @@ import { LoginCont } from "./Login/Login";
 import { HomeCont } from "./Home/Home";
 import { ProfileCont } from "./Profile/Profile";
 import { LotFullCont } from "./LotFull/LotFull";
-import { ChatCont } from "./Components/Chat/Chat";
+// import { ChatCont } from "./Components/Chat/Chat";
 
-import {
-  authCheck,
-  // userIsOnline,
-  onConnectDisconnect,
-} from "../Redux/Reducers/auth";
+import { authCheck, onConnectDisconnect } from "../Redux/Reducers/auth";
 import { setIsModalOn } from "../Redux/Reducers/home";
 
 import styles from "./obmen.module.scss";
+
+const ChatLazy = lazy(() => import("./Components/Chat/Chat"));
 
 function Obmen({
   isInitialized,
   isAuth,
   ownerID,
   isModalOn,
+  isChatTouched,
   history,
-  setIsModalOn,
   authCheck,
-  onLoginLogout,
+  setIsModalOn,
+  onConnectDisconnect,
 }) {
   const [user, userLoading] = useAuthState(fa);
 
@@ -41,8 +40,8 @@ function Obmen({
   ]);
 
   useEffect(() => {
-    onLoginLogout(ownerID);
-  }, [ownerID, onLoginLogout]);
+    onConnectDisconnect(ownerID);
+  }, [ownerID, onConnectDisconnect]);
 
   history.listen(() => isModalOn && setIsModalOn(false));
 
@@ -51,7 +50,13 @@ function Obmen({
   return (
     <div className={styles.container} style={modalBlurStyle}>
       <HeaderCont />
-      {isInitialized && isAuth && <ChatCont />}
+      {isInitialized && isAuth && isChatTouched && (
+        <Suspense
+          fallback={<div className={styles.chatLoading}>Загружаем чат</div>}
+        >
+          <ChatLazy />
+        </Suspense>
+      )}
       <Switch>
         <Route exact path="/" render={() => <HomeCont />} />
         <Route path="/posts/:id" render={() => <LotFullCont />} />
@@ -64,11 +69,17 @@ function Obmen({
 const mstp = (state) => ({
   isInitialized: state.auth.isInitialized,
   isAuth: state.auth.isAuth,
+  isChatTouched: state.chat.isChatTouched,
   ownerID: state.auth.ownerID,
   isModalOn: state.home.isModalOn,
 });
 
 export const ObmenCont = compose(
   withRouter,
-  connect(mstp, { authCheck, setIsModalOn, onLoginLogout: onConnectDisconnect })
+  connect(mstp, {
+    authCheck,
+    setIsModalOn,
+    // setIsChatTouched,
+    onConnectDisconnect,
+  })
 )(Obmen);

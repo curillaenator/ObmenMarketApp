@@ -1,9 +1,18 @@
+@import "../palette.scss";
+
 .container {
   position: relative;
   margin: 0 auto;
   padding: 0 24px;
   min-width: 320px;
   max-width: 1024px;
+
+  .chatLoading {
+    position: fixed;
+    top: 50vh;
+    left: 50vw;
+    transform: translateY(-50%, -50%);
+  }
 }
 
 @media (min-width: 375px) {
@@ -16,4 +25,3 @@
     padding: 0 56px;
   }
 }
- 

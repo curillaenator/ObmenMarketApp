@@ -21,7 +21,7 @@ import styles from "./offerform.module.scss";
 const OfferFormFields = ({
   icons,
   formOfferUI,
-  newOfferMeta,
+  createOfferId,
   lotID,
   handleSubmit,
   form,
@@ -37,7 +37,7 @@ const OfferFormFields = ({
     };
 
     const uploadTask = storage
-      .child(`offers/${lotID}/${newOfferMeta.offerID}/offer${photos.length}`)
+      .child(`offers/${lotID}/${createOfferId}/offer${photos.length}`)
       .put(file, metadata);
 
     uploadTask.on(
@@ -111,15 +111,27 @@ const OfferFormFields = ({
 };
 
 export const OfferForm = ({
+  ownerID,
+  user,
   formOfferUI,
-  newOfferMeta,
   lotMeta,
   icons,
   createOffer,
+  createOfferId,
   setIsOfferForm,
 }) => {
+  console.log(ownerID, user, createOfferId);
+
   const onSubmit = (formData) => {
-    createOffer(lotMeta, { ...newOfferMeta, ...formData });
+    const offerInitial = {
+      avatar: user.avatar,
+      authorName: user.username,
+      offerID: createOfferId,
+      authorID: ownerID,
+      photospath: `/offers/${lotMeta.postid}/${createOfferId}`,
+    };
+
+    createOffer(lotMeta, { ...offerInitial, ...formData });
     setIsOfferForm(false);
   };
 
@@ -131,7 +143,7 @@ export const OfferForm = ({
           icons={icons}
           formOfferUI={formOfferUI}
           lotID={lotMeta.postid}
-          newOfferMeta={newOfferMeta}
+          createOfferId={createOfferId}
           handleSubmit={handleSubmit}
           form={form}
         />
