@@ -108,31 +108,21 @@
 
   .photofilesLabel {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 185px;
-    height: 40px;
-    border-radius: 16px;
-    background-color: $primary;
-    color: $fontWhite;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: -0.149333px;
-    transition: 0.12s linear;
+    background-image: url(../../../Assets/Icons/add_photo.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    transition: 0.08s linear;
     z-index: 10;
     user-select: none;
     cursor: pointer;
-    filter: drop-shadow(0 10px 14px $primary2IdleShadow);
 
     &:hover {
-      background-color: $primaryHover;
-      filter: drop-shadow(0 12px 16px $primary2HoverShadow);
+      background-image: url(../../../Assets/Icons/add_photoHover.svg);
     }
 
     &:active {
-      background-color: $primary;
-      color: $primaryFontClicked;
-      filter: none;
+      background-image: url(../../../Assets/Icons/add_photoActive.svg);
     }
   }
 

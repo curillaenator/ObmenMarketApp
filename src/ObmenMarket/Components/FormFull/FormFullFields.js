@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
-import { fb, fa } from "../../../Utils/firebase";
+import { useState, useEffect, useRef } from "react";
+import { fst, fa } from "../../../Utils/firebase";
 import { Field } from "react-final-form";
 
 import { Button } from "../Button/Button";
 import { ButtonOutline } from "../Button/ButtonOutline";
+import { FormPhoto } from "../FormPhoto/FormPhoto";
+import { FormPhotoLoading } from "../FormPhoto/FormPhoto";
 
 import {
   required,
@@ -19,19 +21,6 @@ import cloudtailpic from "../../../Assets/Icons/cloudtail.svg";
 import styles from "./formfull.module.scss";
 
 // Components
-const PhotosCont = ({ photos, icons }) => {
-  const deletePhoto = () => console.log("delete");
-  return (
-    <div className={styles.loaded}>
-      {photos.map((p, i) => (
-        <div className={styles.imgCont} onClick={deletePhoto} key={i}>
-          <img src={p} alt="" draggable={false} />
-          <div className={styles.delete}>{icons.delete}</div>
-        </div>
-      ))}
-    </div>
-  );
-};
 
 const Buttons = ({
   icons,
@@ -95,11 +84,25 @@ export const FormFullFields = ({
   lotPhotos,
   update,
   setFormMode,
+  form,
   ...props
 }) => {
-  // console.log(props.form);
+  const photoCont = useRef(null);
+  const [photoContW, setPhotoContW] = useState(null);
+  const handlePhotoContW = () => setPhotoContW(photoCont.current.clientWidth);
+
+  useEffect(() => {
+    photoCont.current && handlePhotoContW();
+
+    window.addEventListener("resize", handlePhotoContW);
+    return () => {
+      window.removeEventListener("resize", handlePhotoContW);
+    };
+  }, []);
 
   const uid = fa.currentUser.uid;
+
+  const [uploading, setUploading] = useState(false);
 
   const [photos, setPhotos] = useState([]);
   const photosHandler = (add) => setPhotos([...photos, add]);
@@ -108,24 +111,24 @@ export const FormFullFields = ({
 
   const formSubmit = (e) => {
     e.preventDefault();
-    props.form.change("photos", null);
-    props.form.change("draft", false);
-    props.form.change("published", true);
-    props.form.submit();
+    form.change("photos", null);
+    form.change("draft", false);
+    form.change("published", true);
+    form.submit();
   };
 
   const formSubmitDraft = (e) => {
     e.preventDefault();
-    props.form.change("photos", null);
-    props.form.change("draft", true);
-    props.form.change("published", false);
-    props.form.submit();
+    form.change("photos", null);
+    form.change("draft", true);
+    form.change("published", false);
+    form.submit();
   };
 
   const formSubmitUpdate = (e) => {
     e.preventDefault();
-    props.form.change("photos", null);
-    props.form.submit();
+    form.change("photos", null);
+    form.submit();
   };
 
   const formSubmitCancel = (e) => {
@@ -133,25 +136,38 @@ export const FormFullFields = ({
     setFormMode(false);
   };
 
-  const storage = fb.storage().ref();
+  const removeImg = (urlToRemove) => {
+    fst
+      .refFromURL(urlToRemove)
+      .delete()
+      .then(() => setPhotos(photos.filter((url) => url !== urlToRemove)))
+      .catch((error) => console.log(error));
+  };
 
   const uploadImg = (file) => {
     const metadata = {
       cacheControl: "public,max-age=3600",
     };
 
-    const uploadTask = storage
+    const uploadTask = fst
+      .ref()
       .child("posts/" + uid + "/" + props.lotID + "/photo" + photos.length)
       .put(file, metadata);
 
     uploadTask.on(
       "state_changed",
-      (snap) => {},
-      (error) => {},
-      () =>
+      (snap) => {
+        snap.bytesTransferred === 0 && setUploading(true);
+      },
+      (error) => {
+        console.log(error);
+      },
+      () => {
         uploadTask.snapshot.ref
           .getDownloadURL()
           .then((url) => photosHandler(url))
+          .then(() => setUploading(false));
+      }
     );
   };
 
@@ -191,18 +207,32 @@ export const FormFullFields = ({
             />
 
             <div className={styles.photos}>
-              <p className={styles.subtitle}>Фотографии:</p>
+              <p className={styles.photos_title}>Фотографии:</p>
 
-              {photos.length > 0 && (
-                <PhotosCont photos={photos} icons={props.icons} />
-              )}
+              <div className={styles.photos_loaded} ref={photoCont}>
+                {photos.length > 0 &&
+                  photos.map((p, i) => (
+                    <FormPhoto
+                      key={p}
+                      photo={p}
+                      icon={props.icons.delete}
+                      removeImg={removeImg}
+                    />
+                  ))}
 
-              <Field
-                name="photos"
-                title="Добавить фото"
-                uploadImg={uploadImg}
-                component={PhotoFiles}
-              />
+                {uploading && <FormPhotoLoading />}
+
+                {photos.length < 5 && !uploading && (
+                  <Field
+                    name="photos"
+                    title="Добавить фото"
+                    uploadImg={uploadImg}
+                    component={PhotoFiles}
+                    labelSize={photoContW / 5 - 3.2}
+                    photos={photos}
+                  />
+                )}
+              </div>
             </div>
           </div>
 
@@ -237,19 +267,9 @@ export const FormFullFields = ({
             />
 
             <div className={styles.hidenfields}>
-              <Field
-                name="draft"
-                component="input"
-                type="checkbox"
-                // initialValue="true"
-              />
+              <Field name="draft" component="input" type="checkbox" />
 
-              <Field
-                name="published"
-                component="input"
-                type="checkbox"
-                // initialValue="false"
-              />
+              <Field name="published" component="input" type="checkbox" />
             </div>
           </div>
         </div>

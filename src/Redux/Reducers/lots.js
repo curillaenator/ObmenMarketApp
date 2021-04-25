@@ -11,7 +11,6 @@ const SET_IS_LOTMETA = "lots/SET_IS_LOTMETA";
 const SET_IS_LOTPHOTOS = "lots/SET_IS_LOTPHOTOS";
 const SET_CURRENT_LOTMETA = "lots/SET_CURRENT_LOT";
 const SET_CURRENT_LOTPHOTOS = "lots/SET_CURRENT_LOTPHOTOS";
-const SET_NEW_OFFERMETA = "lots/SET_NEW_OFFER_ID";
 
 const initialState = {
   createLotId: null,

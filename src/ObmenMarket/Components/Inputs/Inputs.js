@@ -2,8 +2,6 @@ import { useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import Resizer from "react-image-file-resizer";
 
-// import addphoto from "../../../Assets/Icons/add_photo.svg";
-
 import styles from "./inputs.module.scss";
 
 // Validators
@@ -73,8 +71,16 @@ export const TextArea = ({ input, meta, classN = "textarea", ...props }) => {
 export const PhotoFiles = ({
   input: { value, onChange, ...input },
   meta,
+  labelSize,
+  photos,
   ...props
 }) => {
+  const labelStyle = {
+    width: labelSize,
+    height: labelSize,
+    marginLeft: photos.length > 0 ? "4px" : "0px",
+  };
+
   const resizedFile = (file) =>
     new Promise((resolve) =>
       Resizer.imageFileResizer(
@@ -100,9 +106,12 @@ export const PhotoFiles = ({
           resizedFile(target.files[0]);
         }}
       />
-      <label className={styles.photofilesLabel} htmlFor="choosePhotos">
-        {props.title}
-      </label>
+
+      <label
+        className={styles.photofilesLabel}
+        htmlFor="choosePhotos"
+        style={labelStyle}
+      ></label>
     </div>
   );
 };

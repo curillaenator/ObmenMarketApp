@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Form, Field } from "react-final-form";
-import { fb } from "../../../Utils/firebase";
+import { fst } from "../../../Utils/firebase";
 
 import { Button } from "../../Components/Button/Button";
+import { FormPhoto } from "../../Components/FormPhoto/FormPhoto";
+import { FormPhotoLoading } from "../../Components/FormPhoto/FormPhoto";
 
 import {
   required,
@@ -26,28 +28,56 @@ const OfferFormFields = ({
   handleSubmit,
   form,
 }) => {
+  const photoCont = useRef(null);
+  const [photoContW, setPhotoContW] = useState(null);
+  const handlePhotoContW = () => setPhotoContW(photoCont.current.clientWidth);
+
+  useEffect(() => {
+    photoCont.current && handlePhotoContW();
+
+    window.addEventListener("resize", handlePhotoContW);
+    return () => {
+      window.removeEventListener("resize", handlePhotoContW);
+    };
+  }, []);
+
+  const [uploading, setUploading] = useState(false);
+
   const [photos, setPhotos] = useState([]);
   const photosHandler = (add) => setPhotos([...photos, add]);
 
-  const storage = fb.storage().ref();
+  const removeImg = (urlToRemove) => {
+    fst
+      .refFromURL(urlToRemove)
+      .delete()
+      .then(() => setPhotos(photos.filter((url) => url !== urlToRemove)))
+      .catch((error) => console.log(error));
+  };
 
   const uploadImg = (file) => {
     const metadata = {
       cacheControl: "public,max-age=7200",
     };
 
-    const uploadTask = storage
+    const uploadTask = fst
+      .ref()
       .child(`offers/${lotID}/${createOfferId}/offer${photos.length}`)
       .put(file, metadata);
 
     uploadTask.on(
       "state_changed",
-      (snap) => {},
-      (error) => {},
-      () =>
+      (snap) => {
+        snap.bytesTransferred === 0 && setUploading(true);
+      },
+      (error) => {
+        console.log(error);
+      },
+      () => {
         uploadTask.snapshot.ref
           .getDownloadURL()
           .then((url) => photosHandler(url))
+          .then(() => setUploading(false));
+      }
     );
   };
 
@@ -81,31 +111,39 @@ const OfferFormFields = ({
           />
         </div>
 
-        <div
-          className={styles.photos}
-          style={photos.length !== 0 ? { marginBottom: "16px" } : {}}
-        >
-          {photos.map((photo, i) => (
-            <div className={styles.imgCont} key={i}>
-              <img src={photo} alt="" draggable={false} />
-              <div className={styles.delete}>{icons.delete}</div>
-            </div>
-          ))}
+        <div className={styles.photos} ref={photoCont}>
+          {photos.length > 0 &&
+            photos.map((photo) => (
+              <FormPhoto
+                key={photo}
+                photo={photo}
+                icon={icons.delete}
+                removeImg={removeImg}
+              />
+            ))}
+
+          {uploading && <FormPhotoLoading />}
+
+          {photos.length < 5 && !uploading && (
+            <Field
+              name="photos"
+              title="Добавить фото"
+              uploadImg={uploadImg}
+              component={PhotoFiles}
+              labelSize={photoContW / 5 - 3.2}
+              photos={photos}
+            />
+          )}
         </div>
 
-        <div className={styles.addphotos}>
-          <Field
-            name="photos"
-            title="Добавить фото"
-            uploadImg={uploadImg}
-            component={PhotoFiles}
-          />
+        <div className={styles.buttons}>
+          <Button width={217} height={56} title="Предложить обмен" />
         </div>
       </div>
 
-      <div className={styles.buttons}>
+      {/* <div className={styles.buttons}>
         <Button width={217} height={56} title="Предложить обмен" />
-      </div>
+      </div> */}
     </form>
   );
 };
@@ -120,8 +158,6 @@ export const OfferForm = ({
   createOfferId,
   setIsOfferForm,
 }) => {
-  console.log(ownerID, user, createOfferId);
-
   const onSubmit = (formData) => {
     const offerInitial = {
       avatar: user.avatar,
