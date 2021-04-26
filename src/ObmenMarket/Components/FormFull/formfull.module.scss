@@ -27,7 +27,7 @@
       .pad {
         display: block;
         width: 100%;
-        margin-bottom: 32px;
+        // margin-bottom: 32px;
 
         .title {
           font-weight: bold;
@@ -40,20 +40,7 @@
         }
 
         .photos {
-          width: 100%;
-          margin-top: 16px;
-
-          &_title {
-            margin-top: 16px;
-            margin-bottom: 16px;
-            font-weight: 600;
-          }
-
-          &_loaded {
-            display: flex;
-            width: 100%;
-            margin-bottom: 16px;
-          }
+          margin-bottom: 24px;
         }
 
         .hidenfields {

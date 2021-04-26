@@ -21,7 +21,6 @@ const initialState = {
   isLotPhotos: false,
   currentLotMeta: null,
   currentLotPhotos: null,
-  // newOfferMeta: null,
 };
 
 export const lots = (state = initialState, action) => {
@@ -50,9 +49,6 @@ export const lots = (state = initialState, action) => {
     case SET_IS_LOTPHOTOS:
       return { ...state, isLotPhotos: action.payload };
 
-    // case SET_NEW_OFFERMETA:
-    //   return { ...state, newOfferMeta: action.payload };
-
     default:
       return state;
   }
@@ -68,7 +64,6 @@ const setIsLotMeta = (payload) => ({ type: SET_IS_LOTMETA, payload });
 const setIsLotPhotos = (payload) => ({ type: SET_IS_LOTPHOTOS, payload });
 const setLotMeta = (payload) => ({ type: SET_CURRENT_LOTMETA, payload });
 const setLotPhotos = (payload) => ({ type: SET_CURRENT_LOTPHOTOS, payload });
-// const setNewOfferMeta = (payload) => ({ type: SET_NEW_OFFERMETA, payload });
 
 // THUNKS
 

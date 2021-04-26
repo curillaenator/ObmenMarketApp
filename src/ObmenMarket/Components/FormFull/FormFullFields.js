@@ -1,19 +1,19 @@
-import { useState, useEffect, useRef } from "react";
-import { fst, fa } from "../../../Utils/firebase";
+import { useState, useEffect } from "react";
+import { fst } from "../../../Utils/firebase";
 import { Field } from "react-final-form";
 
+import { FormDropzone } from "../FormDropzone/FormDropzone";
 import { Button } from "../Button/Button";
 import { ButtonOutline } from "../Button/ButtonOutline";
-import { FormPhoto } from "../FormPhoto/FormPhoto";
-import { FormPhotoLoading } from "../FormPhoto/FormPhoto";
 
 import {
   required,
+  fileRequired,
   minLength,
   combinedValidators,
   TextInput,
   TextArea,
-  PhotoFiles,
+  UploadCheck,
 } from "../Inputs/Inputs";
 
 import cloudtailpic from "../../../Assets/Icons/cloudtail.svg";
@@ -25,28 +25,34 @@ import styles from "./formfull.module.scss";
 const Buttons = ({
   icons,
   notation,
+  isUploading,
   update,
   formSubmit,
   formSubmitDraft,
   formSubmitUpdate,
   formSubmitCancel,
 }) => {
+  const commonProps = {
+    width: 220,
+    height: 56,
+    loader: isUploading,
+    disabled: isUploading,
+  };
+
   return (
     <div className={styles.buttons}>
       {!update && (
         <>
           <Button
-            width={220}
-            height={56}
-            title="Опубликовать"
+            {...commonProps}
+            title={isUploading ? "Загрузка..." : "Опубликовать"}
             icon={icons.success}
             handler={formSubmit}
           />
 
           <ButtonOutline
-            width={220}
-            height={56}
-            title="Сохранить черновик"
+            {...commonProps}
+            title={isUploading ? "Загрузка..." : "Сохранить черновик"}
             icon={icons.drafts}
             handler={formSubmitDraft}
           />
@@ -56,9 +62,8 @@ const Buttons = ({
       {update && (
         <>
           <Button
-            width={220}
-            height={56}
-            title="Сохранить"
+            {...commonProps}
+            title={isUploading ? "Загрузка..." : "Сохранить"}
             icon={icons.success}
             handler={formSubmitUpdate}
           />
@@ -81,94 +86,78 @@ const Buttons = ({
 // Main form
 export const FormFullFields = ({
   cloudtail,
+  lotID,
+  ownerID,
   lotPhotos,
   update,
   setFormMode,
   form,
   ...props
 }) => {
-  const photoCont = useRef(null);
-  const [photoContW, setPhotoContW] = useState(null);
-  const handlePhotoContW = () => setPhotoContW(photoCont.current.clientWidth);
+  const [uploads, setUploads] = useState([]);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
-    photoCont.current && handlePhotoContW();
+    form.change("uploaded", uploads.length);
+  }, [form, uploads]);
 
-    window.addEventListener("resize", handlePhotoContW);
-    return () => {
-      window.removeEventListener("resize", handlePhotoContW);
-    };
-  }, []);
+  const uploadImg = (file, num) => {
+    return new Promise((resolve) => {
+      const metadata = {
+        cacheControl: "public,max-age=7200",
+      };
 
-  const uid = fa.currentUser.uid;
+      const uploadTask = fst
+        .ref()
+        .child(`posts/${ownerID}/${lotID}/photo${num}`)
+        .put(file, metadata);
 
-  const [uploading, setUploading] = useState(false);
+      uploadTask.on(
+        "state_changed",
+        (snap) => {}, // progress
+        (error) => console.log(error), // error
+        () => resolve(true) // complete
+      );
+    });
+  };
 
-  const [photos, setPhotos] = useState([]);
-  const photosHandler = (add) => setPhotos([...photos, add]);
+  const submitBase = () => {
+    form.submit();
+    setUploads([]);
+    form.reset();
+  };
 
-  useEffect(() => lotPhotos && setPhotos(lotPhotos), [lotPhotos]);
-
-  const formSubmit = (e) => {
-    e.preventDefault();
-    form.change("photos", null);
+  const formSubmit = () => {
     form.change("draft", false);
     form.change("published", true);
-    form.submit();
+    submitBase();
   };
 
-  const formSubmitDraft = (e) => {
-    e.preventDefault();
-    form.change("photos", null);
+  const formSubmitDraft = () => {
     form.change("draft", true);
     form.change("published", false);
-    form.submit();
+    submitBase();
   };
 
-  const formSubmitUpdate = (e) => {
+  const formSubmitUpdate = () => submitBase();
+
+  const formSubmitCancel = () => setFormMode(false);
+
+  const onSubmitClick = (e, submitFunc) => {
     e.preventDefault();
-    form.change("photos", null);
-    form.submit();
-  };
 
-  const formSubmitCancel = (e) => {
-    e.preventDefault();
-    setFormMode(false);
-  };
+    const uploadHandler = () => {
+      setIsUploading(true);
 
-  const removeImg = (urlToRemove) => {
-    fst
-      .refFromURL(urlToRemove)
-      .delete()
-      .then(() => setPhotos(photos.filter((url) => url !== urlToRemove)))
-      .catch((error) => console.log(error));
-  };
+      const uplComlete = uploads.map((blob, num) => uploadImg(blob, num));
 
-  const uploadImg = (file) => {
-    const metadata = {
-      cacheControl: "public,max-age=3600",
+      Promise.all(uplComlete).then(() => {
+        setIsUploading(false);
+        submitFunc();
+      });
     };
 
-    const uploadTask = fst
-      .ref()
-      .child("posts/" + uid + "/" + props.lotID + "/photo" + photos.length)
-      .put(file, metadata);
-
-    uploadTask.on(
-      "state_changed",
-      (snap) => {
-        snap.bytesTransferred === 0 && setUploading(true);
-      },
-      (error) => {
-        console.log(error);
-      },
-      () => {
-        uploadTask.snapshot.ref
-          .getDownloadURL()
-          .then((url) => photosHandler(url))
-          .then(() => setUploading(false));
-      }
-    );
+    form.getState().valid ? uploadHandler() : form.submit();
   };
 
   const formUI = props.formFullUI;
@@ -207,32 +196,14 @@ export const FormFullFields = ({
             />
 
             <div className={styles.photos}>
-              <p className={styles.photos_title}>Фотографии:</p>
+              <FormDropzone uploads={uploads} setUploads={setUploads} />
 
-              <div className={styles.photos_loaded} ref={photoCont}>
-                {photos.length > 0 &&
-                  photos.map((p, i) => (
-                    <FormPhoto
-                      key={p}
-                      photo={p}
-                      icon={props.icons.delete}
-                      removeImg={removeImg}
-                    />
-                  ))}
-
-                {uploading && <FormPhotoLoading />}
-
-                {photos.length < 5 && !uploading && (
-                  <Field
-                    name="photos"
-                    title="Добавить фото"
-                    uploadImg={uploadImg}
-                    component={PhotoFiles}
-                    labelSize={photoContW / 5 - 3.2}
-                    photos={photos}
-                  />
-                )}
-              </div>
+              <Field
+                name="uploaded"
+                component={UploadCheck}
+                type="number"
+                validate={fileRequired}
+              />
             </div>
           </div>
 
@@ -278,9 +249,10 @@ export const FormFullFields = ({
       <Buttons
         icons={props.icons}
         notation={formUI.notation}
-        formSubmit={formSubmit}
-        formSubmitDraft={formSubmitDraft}
-        formSubmitUpdate={formSubmitUpdate}
+        isUploading={isUploading}
+        formSubmit={(e) => onSubmitClick(e, formSubmit)}
+        formSubmitDraft={(e) => onSubmitClick(e, formSubmitDraft)}
+        formSubmitUpdate={(e) => onSubmitClick(e, formSubmitUpdate)}
         formSubmitCancel={formSubmitCancel}
         update={update}
       />

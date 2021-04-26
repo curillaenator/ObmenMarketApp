@@ -48,6 +48,7 @@ export const FormFull = ({
           icons={icons}
           formFullUI={formFullUI}
           lotID={lotID}
+          ownerID={ownerID}
           update={update}
           setFormMode={setFormMode}
         />

@@ -11,7 +11,7 @@ import { StatusBar } from "../Components/StatusBar/StatusBar";
 import { Button } from "../Components/Button/Button";
 import { Controls } from "../Components/Controls/Controls";
 import { FormFull } from "../Components/FormFull/FormFull";
-import { OfferForm } from "./OfferForm/OfferForm";
+import { FormOffer } from "../Components/FormOffer/FormOffer";
 
 import {
   setNewLotId,
@@ -218,7 +218,7 @@ const OfferCard = ({
   };
 
   const handleRemoveOffer = () => {
-    onOfferCancel(offerMeta, lotMeta);
+    onOfferCancel(offerMeta.offerID, lotMeta);
     acceptConfirmOffer(lotMeta.postid, acceptConfirmReset);
   };
 
@@ -456,7 +456,6 @@ const LotFull = ({
   setEditLotForm,
   updateLotFromEditForm,
   onLotCreateFormCancel,
-  newOfferMeta,
   onOfferCreate,
   onOfferCancel,
   createOffer,
@@ -536,7 +535,7 @@ const LotFull = ({
               />
 
               {isOfferForm && (
-                <OfferForm
+                <FormOffer
                   ownerID={ownerID}
                   user={user}
                   icons={icons}
@@ -597,7 +596,6 @@ const mstp = (state) => ({
   isLotPhotos: state.lots.isLotPhotos,
   lotMeta: state.lots.currentLotMeta,
   lotPhotos: state.lots.currentLotPhotos,
-  newOfferMeta: state.lots.newOfferMeta,
   createOfferId: state.lots.createOfferId,
   isChatOn: state.chat.isChatOn,
 });

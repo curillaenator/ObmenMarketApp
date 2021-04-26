@@ -10,6 +10,9 @@ export const required = (value) => (value ? undefined : "*обязательно
 export const minLength = (min) => (value) =>
   value && value.length < min ? `*не меньше ${min} символов` : undefined;
 
+export const fileRequired = (value) =>
+  value !== 0 && value ? undefined : "*минимум 1 фото";
+
 export const combinedValidators = (...validators) => (value) =>
   validators.reduce((err, val) => err || val(value), undefined);
 
@@ -101,8 +104,11 @@ export const PhotoFiles = ({
         className={styles.photofiles}
         {...input}
         type="file"
+        multiple
+        accept="image"
         id="choosePhotos"
         onChange={({ target }) => {
+          // console.log(target.files);
           resizedFile(target.files[0]);
         }}
       />
@@ -132,6 +138,18 @@ export const Checkbox = ({ input, meta, ...props }) => {
           {labelText}
         </label>
       </div>
+    </div>
+  );
+};
+
+export const UploadCheck = ({ input, meta, ...props }) => {
+  const error = meta.touched && meta.error;
+
+  return (
+    <div className={styles.input}>
+      <input {...input} {...props} className={styles.uploadcheck} />
+
+      {error && <p className={`${styles.sub} ${styles.error}`}>{meta.error}</p>}
     </div>
   );
 };

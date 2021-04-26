@@ -1,3 +1,5 @@
+import loader from "../../../Assets/Images/loader.svg";
+
 import styles from "./button.module.scss";
 
 const Shape = ({ width, height, active, disabled }) => {
@@ -57,6 +59,14 @@ const Icon = ({ icon, disabled, title, active }) => {
   return null;
 };
 
+const Loader = () => {
+  return (
+    <div className={styles.loader}>
+      <img src={loader} alt="Загрузка" />
+    </div>
+  );
+};
+
 const Title = ({ title, subtitle, disabled, active, fontsize, titlewidth }) => {
   const titlePresent = active
     ? `${styles.title} ${styles.titleActive}`
@@ -87,6 +97,7 @@ export const Button = ({
   title,
   subtitle,
   icon,
+  loader = false,
   active,
   disabled,
   handler,
@@ -107,7 +118,11 @@ export const Button = ({
         disabled={disabled}
       />
 
-      <Icon icon={icon} disabled={disabled} title={title} active={active} />
+      {loader && <Loader />}
+
+      {!loader && (
+        <Icon icon={icon} disabled={disabled} title={title} active={active} />
+      )}
 
       <Title
         title={title}
