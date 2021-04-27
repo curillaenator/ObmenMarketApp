@@ -312,9 +312,12 @@ export const add48hours = (lotMeta) => (dispatch) => {
     });
   };
 
-  const newExpiry = new Date(
-    Date.parse(lotMeta.expireDate) + 2 * 24 * 60 * 60 * 1000
-  );
+  // const newExpiry = new Date(
+  //   Date.parse(lotMeta.expireDate) + 2 * 24 * 60 * 60 * 1000
+  // );
+
+  const curDate = new Date();
+  const newExpiry = new Date(curDate.setDate(curDate.getDate() + 7));
 
   db.ref("posts/" + lotMeta.postid).update({ expireDate: newExpiry }, onUpdate);
 };

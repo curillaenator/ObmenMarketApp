@@ -135,14 +135,14 @@ export const Prolong = ({ butCont, setIsModalOn, add48hours }) => {
         width={butCont}
         height={56}
         title={
-          daysLeft > 7
+          daysLeft >= 7
             ? "Вы достигли лимита продления срока"
-            : "Продлить объявление на 48 часов"
+            : "Продлить объявление"
         }
-        subtitle={daysLeft > 7 ? null : "за 30 рублей"}
+        subtitle={daysLeft >= 7 ? null : "за 30 рублей"}
         titlewidth="calc(100% - 64px)"
         icon={icons.prolong}
-        disabled={daysLeft > 7}
+        disabled={daysLeft >= 7}
       />
     </div>
   );
