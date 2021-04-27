@@ -26,6 +26,7 @@ const Buttons = ({
   icons,
   notation,
   isUploading,
+  loaderBtn,
   update,
   formSubmit,
   formSubmitDraft,
@@ -35,9 +36,11 @@ const Buttons = ({
   const commonProps = {
     width: 220,
     height: 56,
-    loader: isUploading,
     disabled: isUploading,
   };
+
+  const getTitle = (btn, title) =>
+    isUploading && loaderBtn === btn ? "Загрузка..." : title;
 
   return (
     <div className={styles.buttons}>
@@ -45,15 +48,17 @@ const Buttons = ({
         <>
           <Button
             {...commonProps}
-            title={isUploading ? "Загрузка..." : "Опубликовать"}
+            title={getTitle("publish", "Опубликовать")}
             icon={icons.success}
+            loader={loaderBtn === "publish" && isUploading}
             handler={formSubmit}
           />
 
           <ButtonOutline
             {...commonProps}
-            title={isUploading ? "Загрузка..." : "Сохранить черновик"}
+            title={getTitle("draft", "Сохранить черновик")}
             icon={icons.drafts}
+            loader={loaderBtn === "draft" && isUploading}
             handler={formSubmitDraft}
           />
         </>
@@ -63,8 +68,9 @@ const Buttons = ({
         <>
           <Button
             {...commonProps}
-            title={isUploading ? "Загрузка..." : "Сохранить"}
+            title={getTitle("update", "Сохранить")}
             icon={icons.success}
+            loader={loaderBtn === "update" && isUploading}
             handler={formSubmitUpdate}
           />
 
@@ -85,17 +91,21 @@ const Buttons = ({
 
 // Main form
 export const FormFullFields = ({
+  icons,
   cloudtail,
   lotID,
   ownerID,
-  lotPhotos,
+  lotPhotos, // for update
   update,
   setFormMode,
+  handleSubmit,
   form,
-  ...props
+  formUI,
+  values,
 }) => {
   const [uploads, setUploads] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [loaderBtn, setLoaderBtn] = useState(null);
 
   useEffect(() => {
     form.change("uploaded", uploads.length);
@@ -124,10 +134,12 @@ export const FormFullFields = ({
   const submitBase = () => {
     form.submit();
     setUploads([]);
+    setIsUploading(false);
+    setLoaderBtn(null);
     form.reset();
   };
 
-  const formSubmit = () => {
+  const formSubmitPublish = () => {
     form.change("draft", false);
     form.change("published", true);
     submitBase();
@@ -143,27 +155,23 @@ export const FormFullFields = ({
 
   const formSubmitCancel = () => setFormMode(false);
 
-  const onSubmitClick = (e, submitFunc) => {
+  const onSubmitClick = (e, submitFunc, submitBtn) => {
     e.preventDefault();
 
     const uploadHandler = () => {
       setIsUploading(true);
+      setLoaderBtn(submitBtn);
 
-      const uplComlete = uploads.map((blob, num) => uploadImg(blob, num));
-
-      Promise.all(uplComlete).then(() => {
-        setIsUploading(false);
-        submitFunc();
-      });
+      Promise.all(uploads.map((blob, num) => uploadImg(blob, num)))
+        .then(() => submitFunc())
+        .catch((err) => console.log(err));
     };
 
     form.getState().valid ? uploadHandler() : form.submit();
   };
 
-  const formUI = props.formFullUI;
-
   return (
-    <form onSubmit={props.handleSubmit} className={styles.formfull}>
+    <form onSubmit={handleSubmit} className={styles.formfull}>
       {cloudtail && (
         <img className={styles.cloudtail} src={cloudtailpic} alt="tail" />
       )}
@@ -247,12 +255,13 @@ export const FormFullFields = ({
       </div>
 
       <Buttons
-        icons={props.icons}
+        icons={icons}
         notation={formUI.notation}
+        loaderBtn={loaderBtn}
         isUploading={isUploading}
-        formSubmit={(e) => onSubmitClick(e, formSubmit)}
-        formSubmitDraft={(e) => onSubmitClick(e, formSubmitDraft)}
-        formSubmitUpdate={(e) => onSubmitClick(e, formSubmitUpdate)}
+        formSubmit={(e) => onSubmitClick(e, formSubmitPublish, "publish")}
+        formSubmitDraft={(e) => onSubmitClick(e, formSubmitDraft, "draft")}
+        formSubmitUpdate={(e) => onSubmitClick(e, formSubmitUpdate, "update")}
         formSubmitCancel={formSubmitCancel}
         update={update}
       />

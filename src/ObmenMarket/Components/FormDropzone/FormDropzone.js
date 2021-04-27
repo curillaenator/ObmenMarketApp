@@ -10,7 +10,7 @@ export const FormDropzone = ({ uploads, setUploads }) => {
 
   const [countValid, setCountValid] = useState(true);
 
-  const resizedFile = (file) => {
+  const resizeFile = (file) => {
     return new Promise((resolve) =>
       Resizer.imageFileResizer(
         file,
@@ -37,7 +37,7 @@ export const FormDropzone = ({ uploads, setUploads }) => {
     };
 
     const valid = () => {
-      const resized = files.map((file) => resizedFile(file));
+      const resized = files.map((file) => resizeFile(file));
 
       Promise.all(resized).then((resizedFiles) => {
         setCountValid(true);
@@ -59,14 +59,15 @@ export const FormDropzone = ({ uploads, setUploads }) => {
     accept: "image/jpeg, image/png",
   });
 
-  const previewsStyle = uploads.length < 5 ? { marginBottom: 16 } : {};
-
   return (
     <div className={styles.photos}>
       <p className={styles.photos_title}>Фотографии:</p>
 
       {uploads.length > 0 && (
-        <div className={styles.photos_previews} style={previewsStyle}>
+        <div
+          className={styles.photos_previews}
+          style={uploads.length < 5 ? { marginBottom: 16 } : {}}
+        >
           {uploads.map((photo, i) => (
             <div
               className={styles.photoCont}
@@ -76,7 +77,7 @@ export const FormDropzone = ({ uploads, setUploads }) => {
               <img
                 className={styles.photo}
                 src={URL.createObjectURL(photo)}
-                alt=""
+                alt={photo.name}
                 draggable={false}
               />
 
@@ -88,7 +89,7 @@ export const FormDropzone = ({ uploads, setUploads }) => {
 
       {uploads.length < 5 && (
         <div {...getRootProps({ className: styles.photos_dropzone })}>
-          <input {...getInputProps()} className={styles.files} />
+          <input {...getInputProps()} />
 
           {isDragActive && <p>Переместите фото сюда...</p>}
 
@@ -100,7 +101,8 @@ export const FormDropzone = ({ uploads, setUploads }) => {
 
           {!isDragActive && !countValid && (
             <p className={styles.droperror}>
-              Вы добавляете одинаковые фото или более 5 фото, попробуйте еще раз
+              Вы добавляете одинаковые файлы или более 5 фото, попробуйте еще
+              раз
             </p>
           )}
         </div>

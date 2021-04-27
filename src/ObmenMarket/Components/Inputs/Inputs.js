@@ -1,10 +1,10 @@
 import { useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
-import Resizer from "react-image-file-resizer";
 
 import styles from "./inputs.module.scss";
 
 // Validators
+
 export const required = (value) => (value ? undefined : "*обязательное поле");
 
 export const minLength = (min) => (value) =>
@@ -17,6 +17,7 @@ export const combinedValidators = (...validators) => (value) =>
   validators.reduce((err, val) => err || val(value), undefined);
 
 // Inputs
+
 export const TextInput = ({ input, meta, classN = "textinput", ...props }) => {
   const error = meta.touched && meta.error;
 
@@ -71,71 +72,15 @@ export const TextArea = ({ input, meta, classN = "textarea", ...props }) => {
   );
 };
 
-export const PhotoFiles = ({
-  input: { value, onChange, ...input },
-  meta,
-  labelSize,
-  photos,
-  ...props
-}) => {
-  const labelStyle = {
-    width: labelSize,
-    height: labelSize,
-    marginLeft: photos.length > 0 ? "4px" : "0px",
-  };
-
-  const resizedFile = (file) =>
-    new Promise((resolve) =>
-      Resizer.imageFileResizer(
-        file,
-        1440,
-        1440,
-        "JPEG",
-        60,
-        0,
-        (resized) => props.uploadImg(resized),
-        "file"
-      )
-    );
-
-  return (
-    <div className={styles.input}>
-      <input
-        className={styles.photofiles}
-        {...input}
-        type="file"
-        multiple
-        accept="image"
-        id="choosePhotos"
-        onChange={({ target }) => {
-          // console.log(target.files);
-          resizedFile(target.files[0]);
-        }}
-      />
-
-      <label
-        className={styles.photofilesLabel}
-        htmlFor="choosePhotos"
-        style={labelStyle}
-      ></label>
-    </div>
-  );
-};
-
 export const Checkbox = ({ input, meta, ...props }) => {
   const [label, setLabel] = useState(false);
-  const labelHandle = () => setLabel(!label);
-
-  const labelText = label
-    ? "Cогласен/согласна на доплату при обмене"
-    : "Согласны на доплату при обмене?";
 
   return (
     <div className={styles.input}>
       <div className={styles.checkbox}>
         <input type="checkbox" id="agreetooverpay" {...input} />
-        <label htmlFor="agreetooverpay" onClick={labelHandle}>
-          {labelText}
+        <label htmlFor="agreetooverpay" onClick={() => setLabel(!label)}>
+          {label ? "Готов(а) доплатить!" : "Готовы доплатить?"}
         </label>
       </div>
     </div>

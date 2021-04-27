@@ -1,3 +1,5 @@
+import loader from "../../../Assets/Images/loader.svg";
+
 import styles from "./buttonoutline.module.scss";
 
 const Shape = ({ width, height, active, disabled }) => {
@@ -35,6 +37,7 @@ const Shape = ({ width, height, active, disabled }) => {
     </svg>
   );
 };
+
 const Icon = ({ icon, disabled, title, active }) => {
   const iconStyle = title ? { marginRight: "8px" } : {};
 
@@ -55,6 +58,15 @@ const Icon = ({ icon, disabled, title, active }) => {
   }
   return null;
 };
+
+const Loader = () => {
+  return (
+    <div className={styles.loader}>
+      <img src={loader} alt="Загрузка" />
+    </div>
+  );
+};
+
 const Title = ({ title, disabled, active }) => {
   const titlePresent = active
     ? `${styles.title} ${styles.titleActive}`
@@ -75,6 +87,7 @@ export const ButtonOutline = ({
   height,
   title,
   icon,
+  loader = false,
   active,
   disabled,
   handler,
@@ -92,7 +105,13 @@ export const ButtonOutline = ({
         active={active}
         disabled={disabled}
       />
-      <Icon icon={icon} disabled={disabled} title={title} active={active} />
+
+      {loader && <Loader />}
+
+      {!loader && (
+        <Icon icon={icon} disabled={disabled} title={title} active={active} />
+      )}
+
       <Title title={title} disabled={disabled} active={active} />
     </button>
   );

@@ -1,6 +1,5 @@
 import { Form } from "react-final-form";
 import { FormFullFields } from "./FormFullFields";
-// import { fa } from "../../../Utils/firebase";
 
 export const FormFull = ({
   user,
@@ -46,7 +45,7 @@ export const FormFull = ({
           form={form}
           values={values}
           icons={icons}
-          formFullUI={formFullUI}
+          formUI={formFullUI}
           lotID={lotID}
           ownerID={ownerID}
           update={update}

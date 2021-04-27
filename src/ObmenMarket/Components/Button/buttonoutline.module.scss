@@ -10,6 +10,18 @@
   outline: none;
   background-color: transparent;
   cursor: pointer;
+
+  .loader {
+    width: 40px;
+    height: 40px;
+
+    & > img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
   .shape {
     position: absolute;
     top: 0;
@@ -23,10 +35,12 @@
     stroke: $outlineStroke;
     stroke-width: 2px;
   }
+
   &:hover .shapeIdle {
     fill: $outline;
     stroke: $outlineHover;
   }
+
   &:active .shapeIdle {
     fill: $outlineClick;
     stroke: $outlineClick;
@@ -49,12 +63,14 @@
     align-items: center;
     transition: 0.12s linear;
   }
+
   .iconIdle {
     & > svg {
       fill: $primary;
       transition: 0.12s linear;
     }
   }
+
   .iconActive {
     & > svg {
       fill: $fontTitle;
@@ -62,11 +78,13 @@
       transition: 0.12s linear;
     }
   }
+
   .iconDisabled {
     & > svg {
       fill: $primaryDisabled;
     }
   }
+
   &:active .iconIdle {
     & > svg {
       fill: $outlineFontClicked;
@@ -81,15 +99,19 @@
     letter-spacing: -0.149333px;
     transition: 0.12s linear;
   }
+
   .titleIdle {
     color: $primary;
   }
+
   .titleActive {
     color: $fontTitle;
   }
+
   .titleDisabled {
     color: $primaryDisabled;
   }
+
   &:active .titleIdle {
     color: $outlineFontClicked;
   }
