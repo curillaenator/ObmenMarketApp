@@ -86,40 +86,45 @@ const Pagination = ({
         />
       )}
 
-      {allLotsLoaded && <div className={styles.message}>Все лоты загружены!</div>}
+      {allLotsLoaded && (
+        <div className={styles.message}>Все лоты загружены!</div>
+      )}
     </div>
   );
 };
 
 const LotList = ({
+  myLots = false,
   lotList,
+  myLotList,
   allLotsLoaded,
   lotsPending,
   endBeforeID,
   getPaginationNextPage,
 }) => {
   return (
-    lotList.length > 0 && (
-      <div className={styles.lotlist}>
-        <div className={styles.lotlist_list}>
-          {lotList.map((lot) => (
-            <Lot data={lot} key={lot.postid} />
-          ))}
-        </div>
+    <div className={styles.lotlist}>
+      <div className={styles.lotlist_list}>
+        {myLots && myLotList.map((lot) => <Lot data={lot} key={lot.postid} />)}
 
+        {!myLots && lotList.map((lot) => <Lot data={lot} key={lot.postid} />)}
+      </div>
+
+      {!myLots && (
         <Pagination
           allLotsLoaded={allLotsLoaded}
           lotsPending={lotsPending}
           getPaginationNextPage={getPaginationNextPage}
           endBeforeID={endBeforeID}
         />
-      </div>
-    )
+      )}
+    </div>
   );
 };
 
 const mstp = (state) => ({
   lotList: state.lots.lotList,
+  myLotList: state.lots.myLotList,
   allLotsLoaded: state.lots.allLotsLoaded,
   endBeforeID: state.lots.endBeforeID,
   lotsPending: state.lots.lotsPending,

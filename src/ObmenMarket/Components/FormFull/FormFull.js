@@ -20,7 +20,7 @@ export const FormFull = ({
   const history = useHistory();
 
   const onSubmit = (formData) => {
-    delete formData.photos;
+    delete formData.uploaded;
 
     const curDate = new Date();
 

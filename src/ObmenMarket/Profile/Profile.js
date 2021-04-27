@@ -6,6 +6,7 @@ import { withRouter } from "react-router-dom";
 import { logout, updateUserProfile } from "../../Redux/Reducers/auth";
 import { setFormMode, getProfile } from "../../Redux/Reducers/home";
 import {
+  setAuthoredLotsPage,
   onLotCreateFromForm,
   onLotCreateFormCancel,
   publishNewLotFromForm,
@@ -37,12 +38,15 @@ const Profile = ({
   logout,
   updateUserProfile,
   setFormMode,
+  setAuthoredLotsPage,
   onLotCreateFromForm,
   onLotCreateFormCancel,
   publishNewLotFromForm,
 }) => {
   const [isEdit, setIsEdit] = useState(false);
   const handleEdit = () => setIsEdit(!isEdit);
+
+  useEffect(() => setAuthoredLotsPage(ownerID), [setAuthoredLotsPage, ownerID]);
 
   useEffect(() => {
     setFormMode(false);
@@ -137,6 +141,7 @@ export const ProfileCont = compose(
     getProfile,
     logout,
     updateUserProfile,
+    setAuthoredLotsPage,
     onLotCreateFromForm,
     onLotCreateFormCancel,
     publishNewLotFromForm,

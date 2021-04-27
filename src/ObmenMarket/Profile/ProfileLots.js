@@ -1,44 +1,42 @@
 import { useState } from "react";
-// import { fa } from "../../Utils/firebase";
 
-import { LotsContainer } from "../Components/LotsContainer/LotsContainer";
+import { LotListCont } from "../Components/LotList/LotList";
 
 import styles from "./profilelots.module.scss";
 
-const Title = ({ name, title, active, setSelected, isOwner }) => {
+const Title = ({ isOwner, name, title, active, setSelected }) => {
   const activeHandler = () => setSelected(name);
 
-  const titleClassName =
-    active === name ? `${styles.title} ${styles.title_active}` : styles.title;
-
-  const titlesStyle = isOwner ? { cursor: "pointer" } : {};
-
   return (
-    <div className={titleClassName} onClick={activeHandler} style={titlesStyle}>
+    <div
+      className={
+        active === name
+          ? `${styles.title} ${styles.title_active}`
+          : styles.title
+      }
+      onClick={activeHandler}
+      style={isOwner ? { cursor: "pointer" } : {}}
+    >
       {title}
     </div>
   );
 };
 
-export const ProfileLots = ({ ownerID, isOwner, matchedID }) => {
+export const ProfileLots = ({ isOwner }) => {
   const [selected, setSelected] = useState("published");
-
-  const userID = matchedID ? matchedID : ownerID;
-
-  const authored = isOwner ? "Мои лоты" : "Лоты автора";
 
   return (
     <>
       <div className={styles.titles}>
         <Title
           name="published"
-          title={authored}
+          title={isOwner ? "Мои лоты" : "Лоты автора"}
           active={selected}
           setSelected={setSelected}
           isOwner={isOwner}
         />
 
-        {isOwner && (
+        {/* {isOwner && (
           <Title
             name="drafts"
             title="Черновики"
@@ -46,14 +44,10 @@ export const ProfileLots = ({ ownerID, isOwner, matchedID }) => {
             setSelected={setSelected}
             isOwner={isOwner}
           />
-        )}
+        )} */}
       </div>
 
-      <LotsContainer
-        toRender="profile"
-        selected={selected}
-        matchedID={userID}
-      />
+      <LotListCont myLots={true} />
     </>
   );
 };

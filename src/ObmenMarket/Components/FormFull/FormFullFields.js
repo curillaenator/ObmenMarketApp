@@ -141,13 +141,11 @@ export const FormFullFields = ({
 
   const formSubmitPublish = () => {
     form.change("draft", false);
-    form.change("published", true);
     submitBase();
   };
 
   const formSubmitDraft = () => {
     form.change("draft", true);
-    form.change("published", false);
     submitBase();
   };
 
@@ -248,7 +246,7 @@ export const FormFullFields = ({
             <div className={styles.hidenfields}>
               <Field name="draft" component="input" type="checkbox" />
 
-              <Field name="published" component="input" type="checkbox" />
+              {/* <Field name="published" component="input" type="checkbox" /> */}
             </div>
           </div>
         </div>

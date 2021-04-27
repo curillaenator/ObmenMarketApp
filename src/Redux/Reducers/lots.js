@@ -4,6 +4,7 @@ import { batch } from "react-redux";
 import { setFormMode } from "./home";
 
 const SET_LOTLIST = "lots/SET_LOTLIST";
+const SET_MYLOTLIST = "lots/SET_MYLOTLIST";
 const SET_ENDBEFORE_ID = "lots/SET_ENDBEFORE_ID";
 const SET_LOTS_PENDING = "lots/SET_LOTS_PENDING";
 const SET_ALLLOTS_LOADED = "lots/SET_ALLLOTS_LOADED";
@@ -18,8 +19,9 @@ const SET_CURRENT_LOTPHOTOS = "lots/SET_CURRENT_LOTPHOTOS";
 
 const initialState = {
   lotList: [],
+  myLotList: [],
   lotsPending: false,
-  lotsPerPage: 6,
+  lotsPerPage: 12,
   endBeforeID: null,
   allLotsLoaded: false,
   // curPage: 1,
@@ -36,6 +38,9 @@ export const lots = (state = initialState, action) => {
   switch (action.type) {
     case SET_LOTLIST:
       return { ...state, lotList: [...state.lotList, ...action.lotList] };
+
+    case SET_MYLOTLIST:
+      return { ...state, myLotList: [...action.lotList] };
 
     case SET_LOTS_PENDING:
       return { ...state, lotsPending: action.payload };
@@ -75,6 +80,7 @@ export const lots = (state = initialState, action) => {
 // ACTIONS
 
 const setLotList = (lotList) => ({ type: SET_LOTLIST, lotList });
+const setMyLotList = (lotList) => ({ type: SET_MYLOTLIST, lotList });
 const setEndBeforeID = (id) => ({ type: SET_ENDBEFORE_ID, id });
 const setLotsPending = (payload) => ({ type: SET_LOTS_PENDING, payload });
 const setAllLotsLoaded = (payload) => ({ type: SET_ALLLOTS_LOADED, payload });
@@ -101,6 +107,27 @@ export const resetMetaState = () => (dispatch) => {
     dispatch(setLotPhotos(null));
     dispatch(setNewOfferId(null));
   });
+};
+
+// get authored lots for profile
+
+export const setAuthoredLotsPage = (userID) => (dispatch) => {
+  db.ref("posts")
+    .orderByChild("uid")
+    .equalTo(userID)
+    .once("value", (list) => {
+      if (list.exists()) {
+        const listArr = Object.keys(list.val()).map(
+          (lotID) => list.val()[lotID]
+        );
+
+        batch(() => {
+          // dispatch(setEndBeforeID(listArr[0].postid));
+          dispatch(setMyLotList([...listArr].reverse()));
+          // dispatch(setLotsPending(false));
+        });
+      }
+    });
 };
 
 // get lots first page
@@ -187,10 +214,13 @@ export const onLotCreateFormCancel = (lotID) => async (dispatch) => {
 export const publishNewLotFromForm = (lotID, updData, history) => (
   dispatch
 ) => {
-  const onUpdate = (error) => {
-    error ? console.log(error) : console.log("success");
+  const draftsPath = `drafts/${lotID}`;
+  const publishPath = `posts/${lotID}`;
 
-    db.ref(`posts/${lotID}`)
+  const setMeta = (err, path) => {
+    err ? console.log(err) : console.log("success");
+
+    db.ref(path)
       .once("value", (snap) => {
         batch(() => {
           dispatch(setLotMeta(snap.val()));
@@ -198,10 +228,21 @@ export const publishNewLotFromForm = (lotID, updData, history) => (
           dispatch(setFormMode(false));
         });
       })
-      .then(() => history.push(`/posts/${lotID}`));
+      .then(() => history.push(path));
   };
 
-  db.ref(`posts/${lotID}`).update(updData, onUpdate);
+  const onPublish = (err) => setMeta(err, publishPath);
+  const onDraft = (err) => setMeta(err, draftsPath);
+
+  if (updData.draft) {
+    delete updData.draft;
+    return db.ref(draftsPath).update(updData, onDraft);
+  }
+
+  if (!updData.draft) {
+    delete updData.draft;
+    return db.ref(publishPath).update(updData, onPublish);
+  }
 };
 
 // lot open edit form & update from edit form
