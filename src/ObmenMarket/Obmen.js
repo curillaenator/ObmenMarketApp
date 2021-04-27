@@ -6,15 +6,16 @@ import { Route, Switch, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 
-import { HeaderCont } from "./Header/Header";
+import { HeaderCont } from "./Components/Header/Header";
 import { LoginCont } from "./Login/Login";
 import { HomeCont } from "./Home/Home";
 import { ProfileCont } from "./Profile/Profile";
 import { LotFullCont } from "./LotFull/LotFull";
-// import { ChatCont } from "./Components/Chat/Chat";
+import { Footer } from "./Components/Footer/Footer";
 
 import { authCheck, onConnectDisconnect } from "../Redux/Reducers/auth";
 import { setIsModalOn } from "../Redux/Reducers/home";
+import { getPaginationFirstPage } from "../Redux/Reducers/lots";
 
 import styles from "./obmen.module.scss";
 
@@ -30,6 +31,7 @@ function Obmen({
   authCheck,
   setIsModalOn,
   onConnectDisconnect,
+  getPaginationFirstPage,
 }) {
   const [user, userLoading] = useAuthState(fa);
 
@@ -43,13 +45,17 @@ function Obmen({
     onConnectDisconnect(ownerID);
   }, [ownerID, onConnectDisconnect]);
 
+  useEffect(() => getPaginationFirstPage(), [getPaginationFirstPage]);
+
   history.listen(() => isModalOn && setIsModalOn(false));
 
-  const modalBlurStyle = isModalOn ? { filter: "blur(20px)" } : {};
-
   return (
-    <div className={styles.container} style={modalBlurStyle}>
+    <div
+      className={styles.container}
+      style={isModalOn ? { filter: "blur(20px)" } : {}}
+    >
       <HeaderCont />
+
       {isInitialized && isAuth && isChatTouched && (
         <Suspense
           fallback={<div className={styles.chatLoading}>Загружаем чат</div>}
@@ -57,12 +63,15 @@ function Obmen({
           <ChatLazy />
         </Suspense>
       )}
+
       <Switch>
         <Route exact path="/" render={() => <HomeCont />} />
         <Route path="/posts/:id" render={() => <LotFullCont />} />
         <Route path="/login" render={() => <LoginCont />} />
         <Route path="/profile/:id?" render={() => <ProfileCont />} />
       </Switch>
+
+      <Footer />
     </div>
   );
 }
@@ -79,7 +88,7 @@ export const ObmenCont = compose(
   connect(mstp, {
     authCheck,
     setIsModalOn,
-    // setIsChatTouched,
     onConnectDisconnect,
+    getPaginationFirstPage,
   })
 )(Obmen);

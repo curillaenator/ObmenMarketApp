@@ -1,11 +1,6 @@
 import { useEffect } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import { Welcome } from "./Welcome/Welcome";
-import { Warning } from "./Warning/Warning";
-import { Cta } from "../Components/CTA/CTA";
-import { LotsContainer } from "../Components/LotsContainer/LotsContainer";
-import { FormFull } from "../Components/FormFull/FormFull";
 
 import { setFormMode, setProfile } from "../../Redux/Reducers/home";
 
@@ -15,6 +10,11 @@ import {
   onLotCreateFormCancel,
   publishNewLotFromForm,
 } from "../../Redux/Reducers/lots";
+
+import { Warning } from "../Components/Warning/Warning";
+import { Cta } from "../Components/CTA/CTA";
+import { LotListCont } from "../Components/LotList/LotList";
+import { FormFull } from "../Components/FormFull/FormFull";
 
 import styles from "./home.module.scss";
 
@@ -44,7 +44,10 @@ const Home = ({
 
   return (
     <div className={styles.home}>
-      <Welcome />
+      <h1 className={styles.welcome}>
+        Обменяй ненужное <br />
+        на нужное!
+      </h1>
 
       <Cta
         icons={icons}
@@ -56,7 +59,7 @@ const Home = ({
         onLotCreateFormCancel={onLotCreateFormCancel}
       />
 
-      {!isFormModeOn && <LotsContainer toRender="all" />}
+      {!isFormModeOn && <LotListCont />}
 
       {!isAuth && isFormModeOn && <Warning />}
 

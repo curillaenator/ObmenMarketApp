@@ -1,14 +1,14 @@
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { ButtonOutline } from "../Components/Button/ButtonOutline";
+import { ButtonOutline } from "../Button/ButtonOutline";
 import { Link, withRouter } from "react-router-dom";
 
-import { setFormMode } from "../../Redux/Reducers/home";
-import { setIsChatOn, setIsChatTouched } from "../../Redux/Reducers/chat";
+import { setFormMode } from "../../../Redux/Reducers/home";
+import { setIsChatOn, setIsChatTouched } from "../../../Redux/Reducers/chat";
 
-import logo from "../../Assets/Icons/logo.svg";
-import chaticon from "../../Assets/Icons/chat.svg";
-import bellicon from "../../Assets/Icons/bell.svg";
+import logo from "../../../Assets/Icons/logo.svg";
+import chaticon from "../../../Assets/Icons/chat.svg";
+import bellicon from "../../../Assets/Icons/bell.svg";
 
 import styles from "./header.module.scss";
 

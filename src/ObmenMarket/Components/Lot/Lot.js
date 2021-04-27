@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 
 import { StatusBar } from "../StatusBar/StatusBar";
 
-import ImageShadow from 'react-image-shadow';
+import ImageShadow from "react-image-shadow";
 
-import './imageshadow.scss';
+import "./imageshadow.scss";
 
 import styles from "./lot.module.scss";
 
@@ -21,15 +21,17 @@ const Owner = ({ avatar, username, uid }) => {
 
 const LotImage = (props) => {
   return (
-    <>
-      <ImageShadow src={props.lotImage} className={styles.photo} shadowRadius="16" shadowBlur="20" width="100%" />
-      {/* <img src={props.lotImage} alt={props.lotName} draggable="false" /> */}
-    </>
+    <ImageShadow
+      src={props.lotImage}
+      className={styles.photo}
+      shadowRadius="16"
+      shadowBlur="20"
+      width="100%"
+    />
   );
 };
 
 export const Lot = ({ data }) => {
-  // console.log("draw");
   const initialState = {
     photo: null,
     offersQty: 0,

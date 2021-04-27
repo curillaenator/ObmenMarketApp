@@ -1,7 +1,12 @@
-import { fb, db, fa, db_offers } from "../../Utils/firebase";
+import { fst, db, fa, db_offers } from "../../Utils/firebase";
 import { batch } from "react-redux";
 
 import { setFormMode } from "./home";
+
+const SET_LOTLIST = "lot/SET_LOTLIST";
+const SET_ENDBEFORE_ID = "lot/SET_ENDBEFORE_ID";
+const SET_LOTS_PENDING = "lots/SET_LOTS_PENDING";
+const SET_ALLLOTS_LOADED = "lots/SET_ALLLOTS_LOADED";
 
 const SET_NEWLOT_ID = "lots/SET_NEWLOT_ID";
 const SET_NEWOFFER_ID = "lots/SET_NEWOFFER_ID";
@@ -13,6 +18,12 @@ const SET_CURRENT_LOTMETA = "lots/SET_CURRENT_LOT";
 const SET_CURRENT_LOTPHOTOS = "lots/SET_CURRENT_LOTPHOTOS";
 
 const initialState = {
+  lotList: [],
+  lotsPending: false,
+  lotsPerPage: 6,
+  endBeforeID: null,
+  allLotsLoaded: false,
+  // curPage: 1,
   createLotId: null,
   createOfferId: null,
   isLotCreated: false,
@@ -25,6 +36,18 @@ const initialState = {
 
 export const lots = (state = initialState, action) => {
   switch (action.type) {
+    case SET_LOTLIST:
+      return { ...state, lotList: [...state.lotList, ...action.lotList] };
+
+    case SET_LOTS_PENDING:
+      return { ...state, lotsPending: action.payload };
+
+    case SET_ALLLOTS_LOADED:
+      return { ...state, allLotsLoaded: action.payload };
+
+    case SET_ENDBEFORE_ID:
+      return { ...state, endBeforeID: action.id };
+
     case SET_NEWLOT_ID:
       return { ...state, createLotId: action.id };
 
@@ -56,6 +79,11 @@ export const lots = (state = initialState, action) => {
 
 // ACTIONS
 
+const setLotList = (lotList) => ({ type: SET_LOTLIST, lotList });
+const setEndBeforeID = (id) => ({ type: SET_ENDBEFORE_ID, id });
+const setLotsPending = (payload) => ({ type: SET_LOTS_PENDING, payload });
+const setAllLotsLoaded = (payload) => ({ type: SET_ALLLOTS_LOADED, payload });
+
 export const setNewLotId = (id) => ({ type: SET_NEWLOT_ID, id });
 const setNewOfferId = (id) => ({ type: SET_NEWOFFER_ID, id });
 export const setIsLotCreated = (bool) => ({ type: SET_IS_LOTCREATED, bool });
@@ -81,6 +109,60 @@ export const resetMetaState = () => (dispatch) => {
   });
 };
 
+// get lots first page
+
+export const getPaginationFirstPage = () => (dispatch, getState) => {
+  dispatch(setLotsPending(true));
+
+  db.ref("posts")
+    .limitToLast(getState().lots.lotsPerPage)
+    .once("value", (list) => {
+      if (list.exists()) {
+        const listArr = Object.keys(list.val()).map(
+          (lotID) => list.val()[lotID]
+        );
+
+        batch(() => {
+          dispatch(setEndBeforeID(listArr[0].postid));
+          dispatch(setLotList([...listArr].reverse()));
+          dispatch(setLotsPending(false));
+        });
+      }
+
+      if (!list.exists()) {
+        dispatch(setAllLotsLoaded(true));
+      }
+    });
+};
+
+// get get lots every next page
+
+export const getPaginationNextPage = (endBeforeID) => (dispatch, getState) => {
+  dispatch(setLotsPending(true));
+
+  db.ref("posts")
+    .orderByKey()
+    .endBefore(endBeforeID)
+    .limitToLast(getState().lots.lotsPerPage)
+    .once("value", (list) => {
+      if (list.exists()) {
+        const listArr = Object.keys(list.val()).map(
+          (lotID) => list.val()[lotID]
+        );
+
+        batch(() => {
+          dispatch(setEndBeforeID(listArr[0].postid));
+          dispatch(setLotList([...listArr].reverse()));
+          dispatch(setLotsPending(false));
+        });
+      }
+
+      if (!list.exists()) {
+        dispatch(setAllLotsLoaded(true));
+      }
+    });
+};
+
 // lot create / cancel create / publish
 
 export const onLotCreateFromForm = () => (dispatch, getState) => {
@@ -94,18 +176,18 @@ export const onLotCreateFormCancel = (lotID) => async (dispatch) => {
 
   await db.ref(`posts/${lotID}`).remove();
 
+  await fst
+    .ref()
+    .child(`posts/${author.uid}/${lotID}`)
+    .listAll()
+    .then((res) => res.items.forEach((item) => item.delete()));
+
   batch(() => {
     dispatch(setIsLotMeta(false));
     dispatch(setNewLotId(null));
     dispatch(setLotMeta(null));
     dispatch(setLotPhotos(null));
   });
-
-  fb.storage()
-    .ref()
-    .child(`posts/${author.uid}/${lotID}`)
-    .listAll()
-    .then((res) => res.items.forEach((item) => item.delete()));
 };
 
 export const publishNewLotFromForm = (lotID, updData) => (dispatch) => {
@@ -156,8 +238,7 @@ export const updateLotFromEditForm = (lotID, updData) => (dispatch) => {
 
 export const getLotMeta = (lotID) => (dispatch) => {
   const getLotPhotos = async (lotMeta) => {
-    const res = await fb
-      .storage()
+    const res = await fst
       .ref()
       .child("posts/" + lotMeta.uid + "/" + lotMeta.postid)
       .listAll();
@@ -203,7 +284,7 @@ export const onOfferCreate = (lotMeta) => (dispatch) => {
 export const onOfferCancel = (offerID, lotMeta) => (dispatch) => {
   db_offers.child(`${lotMeta.postid}/${offerID}`).remove();
 
-  fb.storage()
+  fst
     .ref()
     .child(`/offers/${lotMeta.postid}/${offerID}`)
     .listAll()

@@ -1,4 +1,4 @@
-@import "../../palette.scss";
+@import "../../../palette.scss";
 
 @mixin btnhover {
   filter: drop-shadow(0 12px 16px $primary2IdleShadow);
