@@ -11,7 +11,7 @@ import { LoginCont } from "./Login/Login";
 import { HomeCont } from "./Home/Home";
 import { ProfileCont } from "./Profile/Profile";
 import { LotFullCont } from "./LotFull/LotFull";
-import { Footer } from "./Components/Footer/Footer";
+// import { Footer } from "./Components/Footer/Footer";
 
 import { authCheck, onConnectDisconnect } from "../Redux/Reducers/auth";
 import { setIsModalOn } from "../Redux/Reducers/home";
@@ -71,7 +71,7 @@ function Obmen({
         <Route path="/profile/:id?" render={() => <ProfileCont />} />
       </Switch>
 
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

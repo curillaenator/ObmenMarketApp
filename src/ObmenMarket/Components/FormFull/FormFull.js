@@ -1,4 +1,6 @@
 import { Form } from "react-final-form";
+import { useHistory } from "react-router-dom";
+
 import { FormFullFields } from "./FormFullFields";
 
 export const FormFull = ({
@@ -15,6 +17,8 @@ export const FormFull = ({
   formHandler,
   setFormMode,
 }) => {
+  const history = useHistory();
+
   const onSubmit = (formData) => {
     delete formData.photos;
 
@@ -29,7 +33,7 @@ export const FormFull = ({
       expireDate: new Date(curDate.setDate(curDate.getDate() + 7)),
     };
 
-    if (!update) formHandler(lotID, { ...initData, ...formData });
+    if (!update) formHandler(lotID, { ...initData, ...formData }, history);
     if (update) formHandler(lotID, { ...lotMeta, ...formData });
   };
 

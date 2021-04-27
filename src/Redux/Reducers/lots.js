@@ -3,14 +3,13 @@ import { batch } from "react-redux";
 
 import { setFormMode } from "./home";
 
-const SET_LOTLIST = "lot/SET_LOTLIST";
-const SET_ENDBEFORE_ID = "lot/SET_ENDBEFORE_ID";
+const SET_LOTLIST = "lots/SET_LOTLIST";
+const SET_ENDBEFORE_ID = "lots/SET_ENDBEFORE_ID";
 const SET_LOTS_PENDING = "lots/SET_LOTS_PENDING";
 const SET_ALLLOTS_LOADED = "lots/SET_ALLLOTS_LOADED";
 
 const SET_NEWLOT_ID = "lots/SET_NEWLOT_ID";
 const SET_NEWOFFER_ID = "lots/SET_NEWOFFER_ID";
-const SET_IS_LOTCREATED = "lots/SET_IS_LOTCREATED";
 const SET_CURRENT_ID = "lots/SET_CURRENT_ID";
 const SET_IS_LOTMETA = "lots/SET_IS_LOTMETA";
 const SET_IS_LOTPHOTOS = "lots/SET_IS_LOTPHOTOS";
@@ -26,7 +25,6 @@ const initialState = {
   // curPage: 1,
   createLotId: null,
   createOfferId: null,
-  isLotCreated: false,
   currentLotId: null,
   isLotMeta: false,
   isLotPhotos: false,
@@ -53,9 +51,6 @@ export const lots = (state = initialState, action) => {
 
     case SET_NEWOFFER_ID:
       return { ...state, createOfferId: action.id };
-
-    case SET_IS_LOTCREATED:
-      return { ...state, isLotCreated: action.bool };
 
     case SET_CURRENT_ID:
       return { ...state, currentLotId: action.id };
@@ -86,7 +81,6 @@ const setAllLotsLoaded = (payload) => ({ type: SET_ALLLOTS_LOADED, payload });
 
 export const setNewLotId = (id) => ({ type: SET_NEWLOT_ID, id });
 const setNewOfferId = (id) => ({ type: SET_NEWOFFER_ID, id });
-export const setIsLotCreated = (bool) => ({ type: SET_IS_LOTCREATED, bool });
 const setCurrentLotId = (id) => ({ type: SET_CURRENT_ID, id });
 const setIsLotMeta = (payload) => ({ type: SET_IS_LOTMETA, payload });
 const setIsLotPhotos = (payload) => ({ type: SET_IS_LOTPHOTOS, payload });
@@ -165,7 +159,7 @@ export const getPaginationNextPage = (endBeforeID) => (dispatch, getState) => {
 
 // lot create / cancel create / publish
 
-export const onLotCreateFromForm = () => (dispatch, getState) => {
+export const onLotCreateFromForm = () => (dispatch) => {
   const lotID = db.ref().child("posts").push().key;
 
   dispatch(setNewLotId(lotID));
@@ -190,18 +184,21 @@ export const onLotCreateFormCancel = (lotID) => async (dispatch) => {
   });
 };
 
-export const publishNewLotFromForm = (lotID, updData) => (dispatch) => {
+export const publishNewLotFromForm = (lotID, updData, history) => (
+  dispatch
+) => {
   const onUpdate = (error) => {
     error ? console.log(error) : console.log("success");
 
-    db.ref(`posts/${lotID}`).once("value", (snap) => {
-      batch(() => {
-        dispatch(setLotMeta(snap.val()));
-        dispatch(setIsLotMeta(true));
-        dispatch(setFormMode(false));
-        dispatch(setIsLotCreated(true));
-      });
-    });
+    db.ref(`posts/${lotID}`)
+      .once("value", (snap) => {
+        batch(() => {
+          dispatch(setLotMeta(snap.val()));
+          dispatch(setIsLotMeta(true));
+          dispatch(setFormMode(false));
+        });
+      })
+      .then(() => history.push(`/posts/${lotID}`));
   };
 
   db.ref(`posts/${lotID}`).update(updData, onUpdate);

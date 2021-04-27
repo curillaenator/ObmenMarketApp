@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
 
 import { setFormMode, setProfile } from "../../Redux/Reducers/home";
 
@@ -26,7 +25,6 @@ const Home = ({
   formFullUI,
   isFormModeOn,
   createLotId,
-  isLotCreated,
   setFormMode,
   setProfile,
   onLotCreateFromForm,
@@ -39,8 +37,6 @@ const Home = ({
     resetMetaState();
     setProfile(null);
   }, [setFormMode, resetMetaState, setProfile]);
-
-  if (isLotCreated) return <Redirect to={`/posts/${createLotId}`} />;
 
   return (
     <div className={styles.home}>
@@ -87,7 +83,6 @@ const mstp = (state) => ({
   ownerID: state.auth.ownerID,
   formFullUI: state.ui.formFull,
   isFormModeOn: state.home.isFormModeOn,
-  isLotCreated: state.lots.isLotCreated,
   createLotId: state.lots.createLotId,
 });
 

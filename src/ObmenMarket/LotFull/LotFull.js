@@ -15,7 +15,6 @@ import { FormOffer } from "../Components/FormOffer/FormOffer";
 
 import {
   setNewLotId,
-  setIsLotCreated,
   getLotMeta,
   setEditLotForm,
   updateLotFromEditForm,
@@ -451,7 +450,7 @@ const LotFull = ({
   lotPhotos,
   isChatOn,
   setNewLotId,
-  setIsLotCreated,
+  // setIsLotCreated,
   getLotMeta,
   setEditLotForm,
   updateLotFromEditForm,
@@ -484,10 +483,7 @@ const LotFull = ({
     }
   };
 
-  useEffect(() => {
-    setNewLotId(null);
-    setIsLotCreated(false);
-  }, [setNewLotId, setIsLotCreated]);
+  useEffect(() => setNewLotId(null), [setNewLotId]);
 
   useEffect(() => {
     db.ref(`posts/${match.params.id}`).once("value", (snapshot) => {
@@ -605,7 +601,6 @@ export const LotFullCont = compose(
   connect(mstp, {
     setFormMode,
     setNewLotId,
-    setIsLotCreated,
     getLotMeta,
     setEditLotForm,
     updateLotFromEditForm,
