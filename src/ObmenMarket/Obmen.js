@@ -65,7 +65,7 @@ const ObmenMarket = ({
           baseBgColor="#ffffff"
           transitionDuration="0.3s"
           isLabelVisible={false}
-          height="4px"
+          height="2px"
         />
       </div>
 
