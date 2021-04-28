@@ -11,10 +11,11 @@
 }
 
 .header {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 72px;
+  padding-top: 72px;
   margin-bottom: 24px;
   transition: 0.06s linear;
 
@@ -117,7 +118,7 @@
 
 @media (min-width: 640px) {
   .header {
-    margin-top: 72px;
+    padding-top: 72px;
     margin-bottom: 32px;
     .pad {
       .user {
@@ -131,7 +132,7 @@
 
 @media (min-width: 1024px) {
   .header {
-    margin-top: 72px;
+    padding-top: 72px;
     margin-bottom: 64px;
   }
 }

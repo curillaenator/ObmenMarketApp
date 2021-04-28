@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Form, Field } from "react-final-form";
 import { fst } from "../../../Utils/firebase";
 
 import { Button } from "../../Components/Button/Button";
 import { FormDropzone } from "../../Components/FormDropzone/FormDropzone";
+import { setProgress } from "../../../Redux/Reducers/home";
 
 import {
   required,
@@ -27,6 +29,8 @@ const OfferFormFields = ({
   handleSubmit,
   form,
 }) => {
+  const dispatch = useDispatch();
+
   const [uploads, setUploads] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -62,6 +66,7 @@ const OfferFormFields = ({
 
   const onSubmitClick = (e) => {
     e.preventDefault();
+    dispatch(setProgress(1));
 
     const uploadHandler = () => {
       setIsUploading(true);
@@ -71,6 +76,7 @@ const OfferFormFields = ({
       Promise.all(uplComlete).then(() => {
         setIsUploading(false);
         afterUploadSubmit();
+        dispatch(setProgress(100));
       });
     };
 

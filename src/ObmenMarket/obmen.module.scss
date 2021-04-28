@@ -1,17 +1,34 @@
 @import "../palette.scss";
 
-.container {
+.app {
   position: relative;
-  margin: 0 auto;
-  padding: 0 24px;
-  min-width: 320px;
-  max-width: 1024px;
 
-  .chatLoading {
+  .progress {
     position: fixed;
-    top: 50vh;
-    left: 50vw;
-    transform: translateY(-50%, -50%);
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    transition: 0.08s linear;
+    z-index: 2000;
+
+    &_active {
+      opacity: 1;
+    }
+  }
+
+  .container {
+    margin: 0 auto;
+    padding: 0 24px;
+    min-width: 320px;
+    max-width: 1024px;
+
+    .chatLoading {
+      position: fixed;
+      top: 50vh;
+      left: 50vw;
+      transform: translateY(-50%, -50%);
+    }
   }
 }
 

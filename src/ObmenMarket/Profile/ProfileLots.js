@@ -15,7 +15,7 @@ const Title = ({ isOwner, name, title, active, setSelected }) => {
           : styles.title
       }
       onClick={activeHandler}
-      style={isOwner ? { cursor: "pointer" } : {}}
+      // style={isOwner ? { cursor: "pointer" } : {}}
     >
       {title}
     </div>

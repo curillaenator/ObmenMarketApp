@@ -1,10 +1,11 @@
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { ButtonOutline } from "../Button/ButtonOutline";
 import { Link, withRouter } from "react-router-dom";
 
 import { setFormMode } from "../../../Redux/Reducers/home";
 import { setIsChatOn, setIsChatTouched } from "../../../Redux/Reducers/chat";
+
+import { ButtonOutline } from "../Button/ButtonOutline";
 
 import logo from "../../../Assets/Icons/logo.svg";
 import chaticon from "../../../Assets/Icons/chat.svg";

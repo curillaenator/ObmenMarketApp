@@ -1,6 +1,8 @@
 import { db, db_chat } from "../../Utils/firebase";
 import { batch } from "react-redux";
 
+// import { setProgress } from "./home";
+
 const IS_CHAT_ON = "chat/IS_CHAT_ON";
 const IS_CHAT_TOUCHED = "chat/IS_CHAT_TOUCHED";
 const IS_DIALOGS_ON = "chat/IS_DIALOGS_ON";
@@ -157,6 +159,8 @@ export const closeChat = () => (dispatch) => {
 // rooms & messages subscribtion
 
 export const subscribeRoomsMsgs = (ownerID) => (dispatch) => {
+  // dispatch(setProgress(1));
+
   db.ref(`users/${ownerID}/chats`).on("child_added", async (roomID) => {
     //
     // set rooms' info for contact list
@@ -166,6 +170,8 @@ export const subscribeRoomsMsgs = (ownerID) => (dispatch) => {
 
     await dispatch(setRoomsNewMsgs({ [roomID.key]: roomID.val().newMessages }));
 
+    // await dispatch(setProgress(100));
+
     // subscribe room last opened
     db.ref(`users/${ownerID}/chats/${roomID.key}`).on(
       "child_changed",
@@ -173,9 +179,12 @@ export const subscribeRoomsMsgs = (ownerID) => (dispatch) => {
     );
 
     // subscribe all rooms to get messages
-    db_chat.ref(`messages/${roomID.key}`).on("child_added", (msg) => {
-      dispatch(setRoomsMsgs(roomID.key, { ...msg.val(), id: msg.key }));
-    });
+    db_chat
+      .ref(`messages/${roomID.key}`)
+      .limitToLast(10)
+      .on("child_added", (msg) => {
+        dispatch(setRoomsMsgs(roomID.key, { ...msg.val(), id: msg.key }));
+      });
   });
 };
 

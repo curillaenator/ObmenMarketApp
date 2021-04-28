@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { fb, db_offers } from "../../../Utils/firebase";
+import { fst, db_offers } from "../../../Utils/firebase";
 
-import { getPaginationNextPage } from "../../../Redux/Reducers/lots";
+import {
+  getPaginationFirstPage,
+  getPaginationNextPage,
+  setMyLotsPage,
+} from "../../../Redux/Reducers/lots";
 
 import { Button } from "../Button/Button";
 import { StatusBar } from "../StatusBar/StatusBar";
@@ -22,10 +26,9 @@ const Lot = ({ data }) => {
 
   useEffect(() => {
     const getNewState = async () => {
-      const url = await fb
-        .storage()
+      const url = await fst
         .ref()
-        .child("posts/" + data.uid + "/" + data.postid + "/photo0")
+        .child(`posts/${data.uid}/${data.postid}/photo0`)
         .getDownloadURL();
 
       const qtySnap = await db_offers.child(data.postid).once("value");
@@ -67,12 +70,7 @@ const Lot = ({ data }) => {
   );
 };
 
-const Pagination = ({
-  lotsPending,
-  allLotsLoaded,
-  endBeforeID,
-  getPaginationNextPage,
-}) => {
+const Pagination = ({ lotsPending, allLotsLoaded, handleNextPage }) => {
   return (
     <div className={styles.lotlist_pagination}>
       {!allLotsLoaded && (
@@ -82,7 +80,7 @@ const Pagination = ({
           height={56}
           loader={lotsPending}
           disabled={lotsPending}
-          handler={() => getPaginationNextPage(endBeforeID)}
+          handler={handleNextPage}
         />
       )}
 
@@ -94,14 +92,32 @@ const Pagination = ({
 };
 
 const LotList = ({
-  myLots = false,
+  myLots = false, // false for main page, true for profile page
+
+  // main page params (are used when myLots is false)
   lotList,
-  myLotList,
   allLotsLoaded,
   lotsPending,
   endBeforeID,
+  getPaginationFirstPage,
   getPaginationNextPage,
+
+  // profile page params (are used when myLots is true)
+  myLotList,
+  myLotsPending,
+  myLotsPage, // current num of lots loaded
+  myLotsPerPage, // num of lots to add on loadmore click
+  setMyLotsPage,
 }) => {
+  /* eslint-disable-next-line */
+  useEffect(() => lotList.length === 0 && getPaginationFirstPage(), [
+    getPaginationFirstPage,
+  ]);
+
+  const handleNextPage = myLots
+    ? () => setMyLotsPage(myLotsPage + myLotsPerPage)
+    : () => getPaginationNextPage(endBeforeID);
+
   return (
     <div className={styles.lotlist}>
       <div className={styles.lotlist_list}>
@@ -110,14 +126,11 @@ const LotList = ({
         {!myLots && lotList.map((lot) => <Lot data={lot} key={lot.postid} />)}
       </div>
 
-      {!myLots && (
-        <Pagination
-          allLotsLoaded={allLotsLoaded}
-          lotsPending={lotsPending}
-          getPaginationNextPage={getPaginationNextPage}
-          endBeforeID={endBeforeID}
-        />
-      )}
+      <Pagination
+        allLotsLoaded={myLots ? myLotList.length < myLotsPage : allLotsLoaded}
+        lotsPending={myLots ? myLotsPending : lotsPending}
+        handleNextPage={handleNextPage}
+      />
     </div>
   );
 };
@@ -127,7 +140,14 @@ const mstp = (state) => ({
   myLotList: state.lots.myLotList,
   allLotsLoaded: state.lots.allLotsLoaded,
   endBeforeID: state.lots.endBeforeID,
+  myLotsPage: state.lots.myLotsPage,
+  myLotsPerPage: state.lots.myLotsPerPage,
   lotsPending: state.lots.lotsPending,
+  myLotsPending: state.lots.myLotsPending,
 });
 
-export const LotListCont = connect(mstp, { getPaginationNextPage })(LotList);
+export const LotListCont = connect(mstp, {
+  getPaginationFirstPage,
+  getPaginationNextPage,
+  setMyLotsPage,
+})(LotList);

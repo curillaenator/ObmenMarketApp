@@ -21,8 +21,6 @@ const app = firebase.initializeApp({
 
 export const db = app.database();
 
-export const postsRef = db.ref("posts");
-
 /// OFFERS
 
 export const db_offers = app

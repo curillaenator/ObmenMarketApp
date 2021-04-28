@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { logout, updateUserProfile } from "../../Redux/Reducers/auth";
 import { setFormMode, getProfile } from "../../Redux/Reducers/home";
 import {
-  setAuthoredLotsPage,
+  setAuthoredLots,
   onLotCreateFromForm,
   onLotCreateFormCancel,
   publishNewLotFromForm,
@@ -34,19 +34,24 @@ const Profile = ({
   isOwner,
   ownerID,
   profile,
+  myLotsPage,
   getProfile,
   logout,
   updateUserProfile,
   setFormMode,
-  setAuthoredLotsPage,
+  setAuthoredLots,
   onLotCreateFromForm,
   onLotCreateFormCancel,
   publishNewLotFromForm,
 }) => {
   const [isEdit, setIsEdit] = useState(false);
-  const handleEdit = () => setIsEdit(!isEdit);
 
-  useEffect(() => setAuthoredLotsPage(ownerID), [setAuthoredLotsPage, ownerID]);
+  useEffect(() => setAuthoredLots(ownerID, match.params.id), [
+    setAuthoredLots,
+    ownerID,
+    match.params.id,
+    myLotsPage,
+  ]);
 
   useEffect(() => {
     setFormMode(false);
@@ -63,7 +68,7 @@ const Profile = ({
           <ProfileEdit
             icons={icons}
             user={user}
-            handleEdit={handleEdit}
+            handleEdit={() => setIsEdit(!isEdit)}
             updateUserProfile={updateUserProfile}
             formProfile={formProfile}
           />
@@ -90,7 +95,7 @@ const Profile = ({
                   isOwner={isOwner}
                   profile={profile}
                   logout={logout}
-                  handleEdit={handleEdit}
+                  handleEdit={() => setIsEdit(!isEdit)}
                 />
 
                 <ProfileLots
@@ -132,6 +137,7 @@ const mstp = (state) => ({
   ownerID: state.auth.ownerID,
   profile: state.home.profile,
   createLotId: state.lots.createLotId,
+  myLotsPage: state.lots.myLotsPage,
 });
 
 export const ProfileCont = compose(
@@ -141,7 +147,7 @@ export const ProfileCont = compose(
     getProfile,
     logout,
     updateUserProfile,
-    setAuthoredLotsPage,
+    setAuthoredLots,
     onLotCreateFromForm,
     onLotCreateFormCancel,
     publishNewLotFromForm,

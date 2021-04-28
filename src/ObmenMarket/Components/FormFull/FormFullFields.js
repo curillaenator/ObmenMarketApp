@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { fst } from "../../../Utils/firebase";
 import { Field } from "react-final-form";
 
 import { FormDropzone } from "../FormDropzone/FormDropzone";
 import { Button } from "../Button/Button";
 import { ButtonOutline } from "../Button/ButtonOutline";
+
+import { setProgress } from "../../../Redux/Reducers/home";
 
 import {
   required,
@@ -103,6 +106,8 @@ export const FormFullFields = ({
   formUI,
   values,
 }) => {
+  const dispatch = useDispatch();
+
   const [uploads, setUploads] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
   const [loaderBtn, setLoaderBtn] = useState(null);
@@ -155,13 +160,17 @@ export const FormFullFields = ({
 
   const onSubmitClick = (e, submitFunc, submitBtn) => {
     e.preventDefault();
+    dispatch(setProgress(1));
 
     const uploadHandler = () => {
       setIsUploading(true);
       setLoaderBtn(submitBtn);
 
       Promise.all(uploads.map((blob, num) => uploadImg(blob, num)))
-        .then(() => submitFunc())
+        .then(() => {
+          submitFunc();
+          dispatch(setProgress(100));
+        })
         .catch((err) => console.log(err));
     };
 

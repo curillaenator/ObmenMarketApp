@@ -1,14 +1,19 @@
 import { fst, db, fa, db_offers } from "../../Utils/firebase";
 import { batch } from "react-redux";
 
-import { setFormMode } from "./home";
+import { setFormMode, setProgress } from "./home";
 
 const SET_LOTLIST = "lots/SET_LOTLIST";
-const SET_MYLOTLIST = "lots/SET_MYLOTLIST";
 const SET_ENDBEFORE_ID = "lots/SET_ENDBEFORE_ID";
 const SET_LOTS_PENDING = "lots/SET_LOTS_PENDING";
 const SET_ALLLOTS_LOADED = "lots/SET_ALLLOTS_LOADED";
 
+const MY_LOTLIST = "lots/MY_LOTLIST";
+const MY_LOTS_PENDING = "lots/MY_LOTS_PENDING";
+const MY_LOTS_PAGE = "lots/MY_LOTS_PAGE";
+const SET_LAST_PROFILE = "lots/SET_LAST_PROFILE";
+
+const RESET_STATE = "lots/RESET_STATE";
 const SET_NEWLOT_ID = "lots/SET_NEWLOT_ID";
 const SET_NEWOFFER_ID = "lots/SET_NEWOFFER_ID";
 const SET_CURRENT_ID = "lots/SET_CURRENT_ID";
@@ -18,13 +23,19 @@ const SET_CURRENT_LOTMETA = "lots/SET_CURRENT_LOT";
 const SET_CURRENT_LOTPHOTOS = "lots/SET_CURRENT_LOTPHOTOS";
 
 const initialState = {
+  // main page params
   lotList: [],
-  myLotList: [],
   lotsPending: false,
-  lotsPerPage: 12,
+  lotsPerPage: 8,
   endBeforeID: null,
   allLotsLoaded: false,
-  // curPage: 1,
+  // profile page params
+  myLotList: [],
+  myLotsPending: false,
+  myLotsPage: 4,
+  myLotsPerPage: 4,
+  lastProfile: null,
+  // rest params
   createLotId: null,
   createOfferId: null,
   currentLotId: null,
@@ -36,11 +47,10 @@ const initialState = {
 
 export const lots = (state = initialState, action) => {
   switch (action.type) {
+    // main page state setters
+
     case SET_LOTLIST:
       return { ...state, lotList: [...state.lotList, ...action.lotList] };
-
-    case SET_MYLOTLIST:
-      return { ...state, myLotList: [...action.lotList] };
 
     case SET_LOTS_PENDING:
       return { ...state, lotsPending: action.payload };
@@ -50,6 +60,25 @@ export const lots = (state = initialState, action) => {
 
     case SET_ENDBEFORE_ID:
       return { ...state, endBeforeID: action.id };
+
+    // profile page state setters
+
+    case MY_LOTLIST:
+      return { ...state, myLotList: action.lotList };
+
+    case MY_LOTS_PENDING:
+      return { ...state, myLotsPending: action.payload };
+
+    case MY_LOTS_PAGE:
+      return { ...state, myLotsPage: action.payload };
+
+    case SET_LAST_PROFILE:
+      return { ...state, lastProfile: action.payload };
+
+    // rest setters
+
+    case RESET_STATE:
+      return { ...initialState };
 
     case SET_NEWLOT_ID:
       return { ...state, createLotId: action.id };
@@ -80,10 +109,14 @@ export const lots = (state = initialState, action) => {
 // ACTIONS
 
 const setLotList = (lotList) => ({ type: SET_LOTLIST, lotList });
-const setMyLotList = (lotList) => ({ type: SET_MYLOTLIST, lotList });
 const setEndBeforeID = (id) => ({ type: SET_ENDBEFORE_ID, id });
 const setLotsPending = (payload) => ({ type: SET_LOTS_PENDING, payload });
 const setAllLotsLoaded = (payload) => ({ type: SET_ALLLOTS_LOADED, payload });
+
+const myLotList = (lotList) => ({ type: MY_LOTLIST, lotList });
+const myLotsPending = (payload) => ({ type: MY_LOTS_PENDING, payload });
+const setLastProfile = (payload) => ({ type: SET_LAST_PROFILE, payload });
+export const setMyLotsPage = (payload) => ({ type: MY_LOTS_PAGE, payload });
 
 export const setNewLotId = (id) => ({ type: SET_NEWLOT_ID, id });
 const setNewOfferId = (id) => ({ type: SET_NEWOFFER_ID, id });
@@ -93,11 +126,13 @@ const setIsLotPhotos = (payload) => ({ type: SET_IS_LOTPHOTOS, payload });
 const setLotMeta = (payload) => ({ type: SET_CURRENT_LOTMETA, payload });
 const setLotPhotos = (payload) => ({ type: SET_CURRENT_LOTPHOTOS, payload });
 
+export const resetLotsState = () => ({ type: RESET_STATE });
+
 // THUNKS
 
-// full Meta reset
+// Meta reset
 
-export const resetMetaState = () => (dispatch) => {
+export const resetMetaState = () => (dispatch, getState) => {
   batch(() => {
     dispatch(setNewLotId(null));
     dispatch(setCurrentLotId(null));
@@ -106,15 +141,31 @@ export const resetMetaState = () => (dispatch) => {
     dispatch(setLotMeta(null));
     dispatch(setLotPhotos(null));
     dispatch(setNewOfferId(null));
+    // dispatch(resetLotsState());
+    dispatch(myLotList([]));
+    // dispatch(setEndBeforeID(null));
+    // dispatch(setLastProfile(null));
+    dispatch(setMyLotsPage(getState().lots.myLotsPerPage));
   });
 };
 
-// get authored lots for profile
+// get authored lots first page for profile
 
-export const setAuthoredLotsPage = (userID) => (dispatch) => {
+export const setAuthoredLots = (ownerID, paramsID) => async (
+  dispatch,
+  getState
+) => {
+  await batch(() => {
+    dispatch(myLotsPending(true));
+    dispatch(setProgress(1));
+    getState().lots.lastProfile !== (paramsID || ownerID) &&
+      dispatch(setMyLotsPage(getState().lots.myLotsPerPage));
+  });
+
   db.ref("posts")
     .orderByChild("uid")
-    .equalTo(userID)
+    .equalTo(paramsID || ownerID)
+    .limitToLast(getState().lots.myLotsPage)
     .once("value", (list) => {
       if (list.exists()) {
         const listArr = Object.keys(list.val()).map(
@@ -122,9 +173,10 @@ export const setAuthoredLotsPage = (userID) => (dispatch) => {
         );
 
         batch(() => {
-          // dispatch(setEndBeforeID(listArr[0].postid));
-          dispatch(setMyLotList([...listArr].reverse()));
-          // dispatch(setLotsPending(false));
+          dispatch(myLotList([...listArr].reverse()));
+          dispatch(setLastProfile(paramsID ? paramsID : ownerID));
+          dispatch(myLotsPending(false));
+          dispatch(setProgress(100));
         });
       }
     });
@@ -133,7 +185,10 @@ export const setAuthoredLotsPage = (userID) => (dispatch) => {
 // get lots first page
 
 export const getPaginationFirstPage = () => (dispatch, getState) => {
-  dispatch(setLotsPending(true));
+  batch(() => {
+    dispatch(setProgress(1));
+    dispatch(setLotsPending(true));
+  });
 
   db.ref("posts")
     .limitToLast(getState().lots.lotsPerPage)
@@ -147,11 +202,15 @@ export const getPaginationFirstPage = () => (dispatch, getState) => {
           dispatch(setEndBeforeID(listArr[0].postid));
           dispatch(setLotList([...listArr].reverse()));
           dispatch(setLotsPending(false));
+          dispatch(setProgress(100));
         });
       }
 
       if (!list.exists()) {
-        dispatch(setAllLotsLoaded(true));
+        batch(() => {
+          dispatch(setAllLotsLoaded(true));
+          dispatch(setProgress(100));
+        });
       }
     });
 };
@@ -159,7 +218,10 @@ export const getPaginationFirstPage = () => (dispatch, getState) => {
 // get get lots every next page
 
 export const getPaginationNextPage = (endBeforeID) => (dispatch, getState) => {
-  dispatch(setLotsPending(true));
+  batch(() => {
+    dispatch(setLotsPending(true));
+    dispatch(setProgress(1));
+  });
 
   db.ref("posts")
     .orderByKey()
@@ -175,11 +237,15 @@ export const getPaginationNextPage = (endBeforeID) => (dispatch, getState) => {
           dispatch(setEndBeforeID(listArr[0].postid));
           dispatch(setLotList([...listArr].reverse()));
           dispatch(setLotsPending(false));
+          dispatch(setProgress(100));
         });
       }
 
       if (!list.exists()) {
-        dispatch(setAllLotsLoaded(true));
+        batch(() => {
+          dispatch(setAllLotsLoaded(true));
+          dispatch(setProgress(100));
+        });
       }
     });
 };
@@ -302,8 +368,11 @@ export const getLotMeta = (lotID) => (dispatch) => {
       dispatch(setLotMeta(lotMeta));
       dispatch(setIsLotPhotos(true));
       dispatch(setIsLotMeta(true));
+      dispatch(setProgress(100));
     });
   };
+
+  dispatch(setProgress(1));
 
   db.ref("posts/" + lotID).once("value", (snap) => {
     const lotMeta = snap.val();
@@ -342,6 +411,7 @@ export const createOffer = (lotMeta, offerFormData) => (dispatch) => {
 // offer prolong
 
 export const add48hours = (lotMeta) => (dispatch) => {
+  dispatch(setProgress(1));
   const onUpdate = (error) => {
     if (error) return console.log("ошибка записи");
 
@@ -349,6 +419,7 @@ export const add48hours = (lotMeta) => (dispatch) => {
       batch(() => {
         dispatch(setLotMeta(snap.val()));
         dispatch(setIsLotMeta(true));
+        dispatch(setProgress(100));
       });
     });
   };
@@ -366,6 +437,7 @@ export const add48hours = (lotMeta) => (dispatch) => {
 // offer accept by lotAuthor & confirm by offerAuthor
 
 export const acceptConfirmOffer = (lotID, payload) => (dispatch) => {
+  dispatch(setProgress(1));
   const onUpdate = (error) => {
     if (error) return console.log("ошибка записи");
 
@@ -375,6 +447,7 @@ export const acceptConfirmOffer = (lotID, payload) => (dispatch) => {
         dispatch(setLotMeta(lotMeta));
         dispatch(setIsLotMeta(true));
         dispatch(setFormMode(false));
+        dispatch(setProgress(100));
       });
     });
   };

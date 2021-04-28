@@ -2,6 +2,7 @@ import { fb, fa, db } from "../../Utils/firebase";
 import { batch } from "react-redux";
 
 import { chatReset } from "./chat";
+import { resetLotsState } from "./lots";
 
 const SET_INITIALIZED = "auth/SET_INITIALIZED";
 const SET_OWNER_ID = "auth/SET_OWNER_ID";
@@ -81,6 +82,8 @@ export const googleSignIn = () => async (dispatch) => {
       });
   };
 
+  dispatch(resetLotsState());
+
   const provider = new fb.auth.GoogleAuthProvider();
   await fb.auth().signInWithPopup(provider);
 
@@ -138,6 +141,7 @@ export const logout = (ownerID) => async (dispatch) => {
 
   batch(() => {
     dispatch(chatReset());
+    dispatch(resetLotsState());
     dispatch(setOwnerID(null));
     dispatch(setIsAuth(false));
     dispatch(setAuthedUser(null));
