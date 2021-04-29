@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { fst, db_offers } from "../../../Utils/firebase";
 
 import {
   getPaginationFirstPage,
@@ -18,55 +17,29 @@ import "./imageshadow.scss";
 import styles from "./lotlist.module.scss";
 
 const Lot = ({ data }) => {
-  const initialState = {
-    photo: null,
-    offersQty: 0,
-  };
-  const [state, setState] = useState(initialState);
-
-  useEffect(() => {
-    const getNewState = async () => {
-      const url = await fst
-        .ref()
-        .child(`posts/${data.uid}/${data.postid}/photo0`)
-        .getDownloadURL();
-
-      const qtySnap = await db_offers.child(data.postid).once("value");
-
-      const qty = qtySnap.exists()
-        ? Object.keys(await qtySnap.val()).length
-        : 0;
-
-      setState({ photo: url, offersQty: qty });
-    };
-    getNewState();
-  }, [data]);
-
   return (
-    state.photo && (
-      <div className={styles.lot}>
-        <Link to={`/profile/${data.uid}`} className={styles.author}>
-          <img src={data.avatar} alt={data.username} draggable="false" />
-          <p>{data.username}</p>
-        </Link>
+    <div className={styles.lot}>
+      <Link to={`/profile/${data.uid}`} className={styles.author}>
+        <img src={data.avatar} alt={data.username} draggable="false" />
+        <p>{data.username}</p>
+      </Link>
 
-        <Link to={`/posts/${data.postid}`} className={styles.content}>
-          <ImageShadow
-            src={state.photo}
-            className={styles.photo}
-            shadowRadius="16"
-            shadowBlur="20"
-            width="100%"
-          />
+      <Link to={`/posts/${data.postid}`} className={styles.content}>
+        <ImageShadow
+          src={data.photoURL}
+          className={styles.photo}
+          shadowRadius="16"
+          shadowBlur="20"
+          width="100%"
+        />
 
-          <div className={styles.title}>{data.title}</div>
+        <div className={styles.title}>{data.title}</div>
 
-          <div className={styles.description}>{data.description}</div>
+        <div className={styles.description}>{data.description}</div>
 
-          <StatusBar offersQty={state.offersQty} expiryDate={data.expireDate} />
-        </Link>
-      </div>
-    )
+        <StatusBar offersQty={data.offersQty} expiryDate={data.expireDate} />
+      </Link>
+    </div>
   );
 };
 

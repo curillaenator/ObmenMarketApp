@@ -6,6 +6,7 @@ import { withRouter } from "react-router-dom";
 import { logout, updateUserProfile } from "../../Redux/Reducers/auth";
 import { setFormMode, getProfile } from "../../Redux/Reducers/home";
 import {
+  resetMetaState,
   setAuthoredLots,
   onLotCreateFromForm,
   onLotCreateFormCancel,
@@ -39,6 +40,7 @@ const Profile = ({
   logout,
   updateUserProfile,
   setFormMode,
+  resetMetaState,
   setAuthoredLots,
   onLotCreateFromForm,
   onLotCreateFormCancel,
@@ -55,6 +57,7 @@ const Profile = ({
 
   useEffect(() => {
     setFormMode(false);
+    resetMetaState();
     if (!isAuth && !match.params.id) return history.push("/login");
     if (!isAuth && match.params.id) return getProfile(null, match.params.id);
     if (isAuth && !match.params.id) return getProfile(ownerID, null);
@@ -143,6 +146,7 @@ const mstp = (state) => ({
 export const ProfileCont = compose(
   withRouter,
   connect(mstp, {
+    resetMetaState,
     setFormMode,
     getProfile,
     logout,

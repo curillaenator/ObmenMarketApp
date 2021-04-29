@@ -218,34 +218,26 @@ const OfferCard = ({
 
   const handleRemoveOffer = () => {
     onOfferCancel(offerMeta.offerID, lotMeta);
-    acceptConfirmOffer(lotMeta.postid, acceptConfirmReset);
+    acceptConfirmOffer(lotMeta, offerMeta, acceptConfirmReset);
   };
 
   const approveOfferByLotAuthor = () => {
-    if (lotMeta.acceptedOffer) {
-      acceptConfirmOffer(lotMeta.postid, acceptConfirmReset);
-      return null;
-    }
+    if (lotMeta.acceptedOffer)
+      return acceptConfirmOffer(lotMeta, offerMeta, acceptConfirmReset);
 
-    if (!lotMeta.acceptedOffer) {
-      acceptConfirmOffer(
-        lotMeta.postid,
-        { acceptedOffer: offerMeta.offerID },
-        lotMeta,
-        offerMeta
-      );
-      return null;
-    }
+    if (!lotMeta.acceptedOffer)
+      return acceptConfirmOffer(lotMeta, offerMeta, {
+        acceptedOffer: offerMeta.offerID,
+      });
   };
 
   const confirmOfferByOfferAuthor = () => {
     if (lotMeta.offerConfirmed) {
-      acceptConfirmOffer(lotMeta.postid, acceptConfirmReset);
-      return null;
+      return acceptConfirmOffer(lotMeta, offerMeta, acceptConfirmReset);
     }
 
     if (!lotMeta.offerConfirmed) {
-      acceptConfirmOffer(lotMeta.postid, { offerConfirmed: true });
+      acceptConfirmOffer(lotMeta, offerMeta, { offerConfirmed: true });
       chatRoom(lotMeta, offerMeta);
       return null;
     }
@@ -504,6 +496,7 @@ const LotFull = ({
         <Controls
           icons={icons}
           isAuth={isAuth}
+          user={user}
           isFormModeOn={isFormModeOn}
           lotMeta={lotMeta}
           history={history}

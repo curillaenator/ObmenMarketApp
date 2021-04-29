@@ -156,6 +156,25 @@ export const resetMetaState = () => (dispatch, getState) => {
   });
 };
 
+// fullfill each lotMeta with photoURL and offerQty
+
+const lotMetasPageLoader = (listArr) => {
+  return listArr.map(async (lot) => {
+    const photoURL = await fst
+      .ref()
+      .child(`posts/${lot.uid}/${lot.postid}/photo0`)
+      .getDownloadURL();
+
+    const offersQtySnap = await db_offers.child(lot.postid).once("value");
+
+    const offersQty = offersQtySnap.exists()
+      ? Object.keys(await offersQtySnap.val()).length
+      : 0;
+
+    return { ...lot, photoURL, offersQty };
+  });
+};
+
 // get authored lots first page for profile
 
 export const setAuthoredLots = (ownerID, paramsID) => async (
@@ -179,11 +198,13 @@ export const setAuthoredLots = (ownerID, paramsID) => async (
           (lotID) => list.val()[lotID]
         );
 
-        batch(() => {
-          dispatch(myLotList([...listArr].reverse()));
-          dispatch(setLastProfile(paramsID ? paramsID : ownerID));
-          dispatch(myLotsPending(false));
-          dispatch(setProgress(100));
+        Promise.all(lotMetasPageLoader(listArr)).then((lotsResolved) => {
+          batch(() => {
+            dispatch(myLotList([...lotsResolved].reverse()));
+            dispatch(setLastProfile(paramsID ? paramsID : ownerID));
+            dispatch(myLotsPending(false));
+            dispatch(setProgress(100));
+          });
         });
       }
     });
@@ -205,11 +226,13 @@ export const getPaginationFirstPage = () => (dispatch, getState) => {
           (lotID) => list.val()[lotID]
         );
 
-        batch(() => {
-          dispatch(setEndBeforeID(listArr[0].postid));
-          dispatch(setLotList([...listArr].reverse()));
-          dispatch(setLotsPending(false));
-          dispatch(setProgress(100));
+        Promise.all(lotMetasPageLoader(listArr)).then((lotsResolved) => {
+          batch(() => {
+            dispatch(setEndBeforeID(lotsResolved[0].postid));
+            dispatch(setLotList([...lotsResolved].reverse()));
+            dispatch(setLotsPending(false));
+            dispatch(setProgress(100));
+          });
         });
       }
 
@@ -240,11 +263,13 @@ export const getPaginationNextPage = (endBeforeID) => (dispatch, getState) => {
           (lotID) => list.val()[lotID]
         );
 
-        batch(() => {
-          dispatch(setEndBeforeID(listArr[0].postid));
-          dispatch(setLotList([...listArr].reverse()));
-          dispatch(setLotsPending(false));
-          dispatch(setProgress(100));
+        Promise.all(lotMetasPageLoader(listArr)).then((lotsResolved) => {
+          batch(() => {
+            dispatch(setEndBeforeID(lotsResolved[0].postid));
+            dispatch(setLotList([...lotsResolved].reverse()));
+            dispatch(setLotsPending(false));
+            dispatch(setProgress(100));
+          });
         });
       }
 
@@ -452,24 +477,19 @@ export const add48hours = (lotMeta) => (dispatch) => {
 
 // offer accept by lotAuthor & confirm by offerAuthor
 
-const acceptConfirmReset = {
-  acceptedOffer: null,
-  offerConfirmed: false,
-};
-
-export const acceptConfirmOffer = (lotID, payload, lotMeta, offerMeta) => (
+export const acceptConfirmOffer = (lotMeta, offerMeta, payload) => (
   dispatch
 ) => {
   dispatch(setProgress(1));
 
-  const onUpdate = (err) => {
-    err ? console.log(err) : onApproveByLotAuthor(lotMeta, offerMeta);
-    // if (error) return console.log("ошибка записи");
+  const onSuccess = () => {
+    db.ref(`posts/${lotMeta.postid}`).once("value", (snap) => {
+      if (payload.acceptedOffer || payload.offerConfirmed) {
+        onApproveByLotAuthor(lotMeta, offerMeta);
+      }
 
-    db.ref("posts/" + lotID).once("value", (snap) => {
-      const lotMeta = snap.val();
       batch(() => {
-        dispatch(setLotMeta(lotMeta));
+        dispatch(setLotMeta(snap.val()));
         dispatch(setIsLotMeta(true));
         dispatch(setFormMode(false));
         dispatch(setProgress(100));
@@ -477,5 +497,7 @@ export const acceptConfirmOffer = (lotID, payload, lotMeta, offerMeta) => (
     });
   };
 
-  db.ref("posts/" + lotID).update(payload, onUpdate);
+  db.ref(`posts/${lotMeta.postid}`).update(payload, (err) =>
+    err ? console.log(err) : onSuccess()
+  );
 };

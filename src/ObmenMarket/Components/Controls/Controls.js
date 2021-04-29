@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { fa } from "../../../Utils/firebase";
 
 import { ButtonGhost } from "../Button/ButtonGhost";
 
@@ -10,6 +9,7 @@ import styles from "./controls.module.scss";
 export const Controls = ({
   icons,
   isAuth,
+  user,
   isFormModeOn,
   lotMeta,
   history,
@@ -17,7 +17,6 @@ export const Controls = ({
   onLotCreateFormCancel,
 }) => {
   const [isTitles, setIsTitles] = useState(window.innerWidth >= 640);
-  const user = fa.currentUser;
 
   const handleDeletePost = () => {
     onLotCreateFormCancel(lotMeta.postid);

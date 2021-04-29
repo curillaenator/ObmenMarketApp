@@ -17,7 +17,12 @@
     margin-bottom: 16px;
 
     .message {
-      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 56px;
+      padding: 0 16px;
+      // text-align: center;
     }
   }
 }
