@@ -51,7 +51,7 @@ export const Controls = ({
             icon={icons.share}
           />
 
-          <div className={styles.editbtn}>
+          {/* <div className={styles.editbtn}> */}
             <ButtonGhost
               title={titler("Редактировать")}
               handler={handleEditLot}
@@ -60,10 +60,10 @@ export const Controls = ({
               shape={true}
             />
 
-            {isFormModeOn && (
+           {/* {isFormModeOn && (
               <img className={styles.cloudtail} src={cloudtailpic} alt="tail" />
             )}
-          </div>
+           </div> */}
 
           <ButtonGhost
             title={titler("Удалить")}
