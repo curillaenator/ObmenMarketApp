@@ -10,18 +10,6 @@
   height: 72px;
   border-top: 1px solid $spacer;
 
-  button {
-    &:first-child {
-      padding-left: 0px;
-    }
-    &:last-child {
-      padding-right: 0px;
-    }
-    &:last-child:hover div > div{
-      color: #FF2B2B !important;
-    }
-  }
-
   .options {
     display: flex;
     align-items: center;
@@ -31,19 +19,11 @@
       position: relative;
 
       .cloudtail {
-        display: block;
         position: absolute;
         left: 50%;
         bottom: -24px;
         transform: translateX(-50%);
       }
-    }
-    .cloudtail {
-      display: block;
-      position: relative;
-      left: -0%;
-      bottom: -0px;
-      transform: translateX(0%);
     }
   }
 }
