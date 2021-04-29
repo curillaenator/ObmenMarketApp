@@ -43,7 +43,7 @@ export const Controls = ({
         icon={icons.back}
       />
 
-      {isAuth && user && user.uid === lotMeta.uid && (
+      {isAuth && user && (user.uid === lotMeta.uid || user.isAdmin) && (
         <div className={styles.options}>
           <ButtonGhost
             title={titler("Поделиться")}

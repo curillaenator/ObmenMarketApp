@@ -3,13 +3,11 @@ import "firebase/firestore";
 import "firebase/storage";
 import "firebase/auth";
 import "firebase/database";
-import "firebase/functions";
+// import "firebase/functions";
 import "firebase/performance";
 import "firebase/analytics";
 
-// POSTS
-
-const app = firebase.initializeApp({
+const config = {
   apiKey: "AIzaSyBmYNXLxCwaIR_U2RYWUAzCeRIQjixMVv4",
   authDomain: "obmen.market",
   databaseURL: "https://obmenmarket.europe-west1.firebasedatabase.app/",
@@ -18,7 +16,11 @@ const app = firebase.initializeApp({
   messagingSenderId: "755387476175",
   appId: "1:755387476175:web:5b498b1b1c23fe5268afba",
   measurementId: "G-QBMC7DMV5G",
-});
+};
+
+const app = firebase.initializeApp(config);
+
+// POSTS
 
 export const db = app.database();
 
@@ -36,7 +38,8 @@ export const db_chat = app.database("https://obmenmarket-chat.firebaseio.com/");
 
 export const fb = firebase;
 export const fa = firebase.auth();
-export const fn = firebase.functions();
+export const fsdb = firebase.firestore();
+// export const fn = firebase.functions();
 export const fst = firebase.storage();
 export const an = firebase.analytics();
 export const perf = firebase.performance();

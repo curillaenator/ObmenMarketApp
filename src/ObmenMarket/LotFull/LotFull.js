@@ -228,7 +228,12 @@ const OfferCard = ({
     }
 
     if (!lotMeta.acceptedOffer) {
-      acceptConfirmOffer(lotMeta.postid, { acceptedOffer: offerMeta.offerID });
+      acceptConfirmOffer(
+        lotMeta.postid,
+        { acceptedOffer: offerMeta.offerID },
+        lotMeta,
+        offerMeta
+      );
       return null;
     }
   };

@@ -1,5 +1,12 @@
-import { fst, db, fa, db_offers } from "../../Utils/firebase";
 import { batch } from "react-redux";
+
+import { fst, db, fa, db_offers } from "../../Utils/firebase";
+
+import {
+  onLotCreateSendMail,
+  onOfferCreateSendMail,
+  onApproveByLotAuthor,
+} from "../../Utils/SendMails";
 
 import { setFormMode, setProgress } from "./home";
 
@@ -277,6 +284,8 @@ export const onLotCreateFormCancel = (lotID) => async (dispatch) => {
   });
 };
 
+// send note on new lot create
+
 export const publishNewLotFromForm = (lotID, updData, history) => (
   dispatch
 ) => {
@@ -284,15 +293,17 @@ export const publishNewLotFromForm = (lotID, updData, history) => (
   const publishPath = `posts/${lotID}`;
 
   const setMeta = (err, path) => {
-    err ? console.log(err) : console.log("success");
+    err ? console.log(err) : onLotCreateSendMail(updData); // if no error -> send mail to lot author
 
     db.ref(path)
       .once("value", (snap) => {
-        batch(() => {
-          dispatch(setLotMeta(snap.val()));
-          dispatch(setIsLotMeta(true));
-          dispatch(setFormMode(false));
-        });
+        if (snap.exists()) {
+          batch(() => {
+            dispatch(setLotMeta(snap.val()));
+            dispatch(setIsLotMeta(true));
+            dispatch(setFormMode(false));
+          });
+        }
       })
       .then(() => history.push(path));
   };
@@ -400,10 +411,15 @@ export const onOfferCancel = (offerID, lotMeta) => (dispatch) => {
   dispatch(setNewOfferId(null));
 };
 
-export const createOffer = (lotMeta, offerFormData) => (dispatch) => {
+export const createOffer = (lotMeta, offerData) => (dispatch) => {
+  const onCreate = (err) => {
+    err ? console.log(err) : onOfferCreateSendMail(lotMeta, offerData); // if no error -> send mail to offer author
+  };
+
   const offerUpdate = {};
-  offerUpdate[`${lotMeta.postid}/${offerFormData.offerID}`] = offerFormData;
-  db_offers.update(offerUpdate);
+  offerUpdate[`${lotMeta.postid}/${offerData.offerID}`] = offerData;
+
+  db_offers.update(offerUpdate, onCreate);
 
   dispatch(setNewOfferId(null));
 };
@@ -436,10 +452,19 @@ export const add48hours = (lotMeta) => (dispatch) => {
 
 // offer accept by lotAuthor & confirm by offerAuthor
 
-export const acceptConfirmOffer = (lotID, payload) => (dispatch) => {
+const acceptConfirmReset = {
+  acceptedOffer: null,
+  offerConfirmed: false,
+};
+
+export const acceptConfirmOffer = (lotID, payload, lotMeta, offerMeta) => (
+  dispatch
+) => {
   dispatch(setProgress(1));
-  const onUpdate = (error) => {
-    if (error) return console.log("ошибка записи");
+
+  const onUpdate = (err) => {
+    err ? console.log(err) : onApproveByLotAuthor(lotMeta, offerMeta);
+    // if (error) return console.log("ошибка записи");
 
     db.ref("posts/" + lotID).once("value", (snap) => {
       const lotMeta = snap.val();
