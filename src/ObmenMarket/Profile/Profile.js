@@ -62,7 +62,15 @@ const Profile = ({
     if (!isAuth && match.params.id) return getProfile(null, match.params.id);
     if (isAuth && !match.params.id) return getProfile(ownerID, null);
     return getProfile(ownerID, match.params.id);
-  }, [ownerID, match.params.id, getProfile, setFormMode, history, isAuth]);
+  }, [
+    ownerID,
+    match.params.id,
+    getProfile,
+    resetMetaState,
+    setFormMode,
+    history,
+    isAuth,
+  ]);
 
   return (
     profile && (

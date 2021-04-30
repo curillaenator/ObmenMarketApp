@@ -1,3 +1,4 @@
+import * as sgMail from "@sendgrid/mail";
 import { fsdb } from "./firebase";
 
 // SENDMAIL UTILS
@@ -7,18 +8,18 @@ const bucket = "obmen-market-666.appspot.com";
 const onSendRemover = (id) => {
   console.log("start" + id);
 
-  // const unsub = fsdb
-  //   .collection("mail")
-  //   .doc(id)
-  //   .onSnapshot((doc) => {
-  //     if (doc.data().delivery.state === "SUCCESS") {
-  //       console.log("finish");
+  const unsub = fsdb
+    .collection("mail")
+    .doc(id)
+    .onSnapshot((doc) => {
+      if (doc.data().delivery.state === "SUCCESS") {
+        console.log("finish");
 
-  //       fsdb.collection("mail").doc(id).delete();
+        fsdb.collection("mail").doc(id).delete();
 
-  //       unsub();
-  //     }
-  //   });
+        unsub();
+      }
+    });
 
   // const stateAdder = () => {
   //   console.log("stateChange");
@@ -35,13 +36,13 @@ const onSendRemover = (id) => {
 // FUNCTIONS
 
 export const onLotCreateSendMail = (lotData) => {
-  const lotMailBody = {
-    delivery: { state: "CREATED" },
-    toUids: [`${lotData.uid}`],
-    message: {
-      subject: "Вы добавили объявление на Obmen.market",
-      html: `<img src=${lotData.avatar}>${lotData.username} создал ${lotData.title} со ссылкой https://obmen.market/posts/${lotData.postid}`,
-    },
+  // const lotMailBody = {
+  //   delivery: { state: "CREATED" },
+  //   toUids: [`${lotData.uid}`],
+  //   message: {
+  //     subject: "Вы добавили объявление на Obmen.market",
+  //     html: `<img src=${lotData.avatar}>${lotData.username} создал ${lotData.title} со ссылкой https://obmen.market/posts/${lotData.postid}`,
+  //   },
     // template: {
     //   name: "new-post",
     //   data: {
@@ -51,12 +52,31 @@ export const onLotCreateSendMail = (lotData) => {
     //     lotLink: `https://obmen.market/posts/${lotData.postid}`,
     //   },
     // },
+  // };
+
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+  const msg = {
+    to: "info@obmen.market", // Change to your recipient
+    from: "noreply@obmen.market", // Change to your verified sender
+    subject: "ash ash ashs ahs  ahs s h",
+    text: "and easy to do anywhere, even with Node.js",
+    html: "<strong>and easy to do anywhere, even with Node.js</strong>",
   };
 
-  fsdb
-    .collection("mail")
-    .add(lotMailBody)
-    .then((doc) => onSendRemover(doc.id));
+  sgMail
+    .send(msg)
+    .then(() => {
+      console.log("Email sent");
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+  // fsdb
+  //   .collection("mail")
+  //   .add(lotMailBody)
+  //   .then((doc) => onSendRemover(doc.id));
 };
 
 export const onOfferCreateSendMail = (lotMeta, offerData) => {
@@ -137,3 +157,5 @@ export const onConfirmByOfferAuthor = (lotMeta, offerMeta) => {
     .add(approveMailBody)
     .then((doc) => onSendRemover(doc.id));
 };
+
+// const sgMail = require('@sendgrid/mail')
