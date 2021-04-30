@@ -10,9 +10,9 @@ export const FormFull = ({
   cloudtail,
   icons,
   formFullUI,
-  lotID,
-  lotMeta,
-  lotPhotos,
+  // lotID,
+  lotMeta = null,
+  lotPhotos = null,
   update,
   formHandler,
   setFormMode,
@@ -33,8 +33,8 @@ export const FormFull = ({
       expireDate: new Date(curDate.setDate(curDate.getDate() + 7)),
     };
 
-    if (!update) formHandler(lotID, { ...initData, ...formData }, history);
-    if (update) formHandler(lotID, { ...lotMeta, ...formData });
+    if (!update) formHandler({ ...initData, ...formData }, history);
+    if (update) formHandler({ ...lotMeta, ...formData });
   };
 
   return (
@@ -50,7 +50,7 @@ export const FormFull = ({
           values={values}
           icons={icons}
           formUI={formFullUI}
-          lotID={lotID}
+          lotID={lotMeta ? lotMeta.postid : createLotId}
           ownerID={ownerID}
           update={update}
           setFormMode={setFormMode}

@@ -1,4 +1,4 @@
-import { fsdb } from "./firebase";
+import { fsdb, fst } from "./firebase";
 import { newPostTpl } from "./mailTemplates";
 
 // SENDMAIL UTILS
@@ -35,7 +35,12 @@ const onSendRemover = (id) => {
 
 // FUNCTIONS
 
-export const onLotCreateSendMail = (lotData) => {
+export const onLotCreateSendMail = async (lotData) => {
+  const lotPhoto = await fst
+    .ref()
+    .child(`posts/${lotData.uid}/${lotData.postid}/photo0`)
+    .getDownloadURL();
+
   const lotMailBody = {
     delivery: { state: "CREATED" },
     toUids: [`${lotData.uid}`],
@@ -45,19 +50,13 @@ export const onLotCreateSendMail = (lotData) => {
         lotData.username,
         lotData.avatar,
         lotData.title,
-        `https://obmen.market/posts/${lotData.postid}`
+        `https://obmen.market/posts/${lotData.postid}`,
+        lotPhoto,
+        lotData.description
       ),
     },
-    // template: {
-    //   name: "new-post",
-    //   data: {
-    //     lotTitle: lotData.title,
-    //     username: lotData.username,
-    //     avatar: lotData.avatar,
-    //     lotLink: `https://obmen.market/posts/${lotData.postid}`,
-    //   },
-    // },
   };
+
   fsdb
     .collection("mail")
     .add(lotMailBody)

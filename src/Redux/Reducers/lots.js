@@ -33,14 +33,14 @@ const initialState = {
   // main page params
   lotList: [],
   lotsPending: false,
-  lotsPerPage: 8,
+  lotsPerPage: 20,
   endBeforeID: null,
   allLotsLoaded: false,
   // profile page params
   myLotList: [],
   myLotsPending: false,
-  myLotsPage: 4,
-  myLotsPerPage: 4,
+  myLotsPage: 8,
+  myLotsPerPage: 8,
   lastProfile: null,
   // rest params
   createLotId: null,
@@ -148,8 +148,6 @@ export const resetMetaState = () => (dispatch, getState) => {
     dispatch(setLotMeta(null));
     dispatch(setLotPhotos(null));
     dispatch(setNewOfferId(null));
-    // dispatch(myLotList([]));
-    // dispatch(setMyLotsPage(getState().lots.myLotsPerPage));
   });
 };
 
@@ -308,11 +306,9 @@ export const onLotCreateFormCancel = (lotID) => async (dispatch) => {
 
 // send note on new lot create
 
-export const publishNewLotFromForm = (lotID, updData, history) => (
-  dispatch
-) => {
-  const draftsPath = `drafts/${lotID}`;
-  const publishPath = `posts/${lotID}`;
+export const publishNewLotFromForm = (updData, history) => (dispatch) => {
+  const draftsPath = `drafts/${updData.postid}`;
+  const publishPath = `posts/${updData.postid}`;
 
   const setMeta = (err, path) => {
     err ? console.log(err) : onLotCreateSendMail(updData); // if no error -> send mail to lot author
@@ -353,13 +349,13 @@ export const setEditLotForm = (lotID, isFormModeOn) => (dispatch) => {
   });
 };
 
-export const updateLotFromEditForm = (lotID, updData) => (dispatch) => {
+export const updateLotFromEditForm = (updData) => (dispatch) => {
   dispatch(setIsLotMeta(false));
 
   const onUpdate = (error) => {
     error ? console.log(error) : console.log("success");
 
-    db.ref(`posts/${lotID}`).once("value", (snap) => {
+    db.ref(`posts/${updData.postid}`).once("value", (snap) => {
       batch = () => {
         dispatch(setLotMeta(snap.val()));
         dispatch(setIsLotMeta(true));
@@ -368,7 +364,7 @@ export const updateLotFromEditForm = (lotID, updData) => (dispatch) => {
     });
   };
 
-  db.ref(`posts/${lotID}`).update(updData, onUpdate);
+  db.ref(`posts/${updData.postid}`).update(updData, onUpdate);
 };
 
 // get lotMeta & lotPhotos

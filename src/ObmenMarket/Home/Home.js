@@ -67,7 +67,7 @@ const Home = ({
           cloudtail={true}
           icons={icons}
           formFullUI={formFullUI}
-          lotID={createLotId}
+          // lotID={createLotId}
           update={false}
           formHandler={publishNewLotFromForm}
         />
