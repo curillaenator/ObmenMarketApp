@@ -20,13 +20,6 @@
           "key": "Access-Control-Allow-Origin",
           "value": "*"
         } ]
-      },
-      {
-        "source": "http://localhost:3000/*",
-        "headers": [ {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        } ]
       }
     ],
     "rewrites": [

@@ -148,8 +148,8 @@ export const resetMetaState = () => (dispatch, getState) => {
     dispatch(setLotMeta(null));
     dispatch(setLotPhotos(null));
     dispatch(setNewOfferId(null));
-    dispatch(myLotList([]));
-    dispatch(setMyLotsPage(getState().lots.myLotsPerPage));
+    // dispatch(myLotList([]));
+    // dispatch(setMyLotsPage(getState().lots.myLotsPerPage));
   });
 };
 

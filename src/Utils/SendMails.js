@@ -1,4 +1,3 @@
-import * as sgMail from "@sendgrid/mail";
 import { fsdb } from "./firebase";
 
 // SENDMAIL UTILS
@@ -36,47 +35,27 @@ const onSendRemover = (id) => {
 // FUNCTIONS
 
 export const onLotCreateSendMail = (lotData) => {
-  // const lotMailBody = {
-  //   delivery: { state: "CREATED" },
-  //   toUids: [`${lotData.uid}`],
-  //   message: {
-  //     subject: "Вы добавили объявление на Obmen.market",
-  //     html: `<img src=${lotData.avatar}>${lotData.username} создал ${lotData.title} со ссылкой https://obmen.market/posts/${lotData.postid}`,
-  //   },
-  // template: {
-  //   name: "new-post",
-  //   data: {
-  //     lotTitle: lotData.title,
-  //     username: lotData.username,
-  //     avatar: lotData.avatar,
-  //     lotLink: `https://obmen.market/posts/${lotData.postid}`,
-  //   },
-  // },
-  // };
-
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-  const msg = {
-    to: "info@obmen.market", // Change to your recipient
-    from: "noreply@obmen.market", // Change to your verified sender
-    subject: "ash ash ashs ahs  ahs s h",
-    text: "and easy to do anywhere, even with Node.js",
-    html: "<strong>and easy to do anywhere, even with Node.js</strong>",
+  const lotMailBody = {
+    delivery: { state: "CREATED" },
+    toUids: [`${lotData.uid}`],
+    message: {
+      subject: "Вы добавили объявление на Obmen.market",
+      html: `<img src=${lotData.avatar}>${lotData.username} создал ${lotData.title} со ссылкой https://obmen.market/posts/${lotData.postid}`,
+    },
+    // template: {
+    //   name: "new-post",
+    //   data: {
+    //     lotTitle: lotData.title,
+    //     username: lotData.username,
+    //     avatar: lotData.avatar,
+    //     lotLink: `https://obmen.market/posts/${lotData.postid}`,
+    //   },
+    // },
   };
-
-  sgMail
-    .send(msg)
-    .then(() => {
-      console.log("Email sent");
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-
-  // fsdb
-  //   .collection("mail")
-  //   .add(lotMailBody)
-  //   .then((doc) => onSendRemover(doc.id));
+  fsdb
+    .collection("mail")
+    .add(lotMailBody)
+    .then((doc) => onSendRemover(doc.id));
 };
 
 export const onOfferCreateSendMail = (lotMeta, offerData) => {
