@@ -1,4 +1,5 @@
 import { fsdb } from "./firebase";
+import { newPostTpl } from "./mailTemplates";
 
 // SENDMAIL UTILS
 
@@ -40,7 +41,12 @@ export const onLotCreateSendMail = (lotData) => {
     toUids: [`${lotData.uid}`],
     message: {
       subject: "Вы добавили объявление на Obmen.market",
-      html: `<img src=${lotData.avatar}>${lotData.username} создал ${lotData.title} со ссылкой https://obmen.market/posts/${lotData.postid}`,
+      html: newPostTpl(
+        lotData.username,
+        lotData.avatar,
+        lotData.title,
+        `https://obmen.market/posts/${lotData.postid}`
+      ),
     },
     // template: {
     //   name: "new-post",
