@@ -8,18 +8,18 @@ const bucket = "obmen-market-666.appspot.com";
 const onSendRemover = (id) => {
   console.log("start" + id);
 
-  const unsub = fsdb
-    .collection("mail")
-    .doc(id)
-    .onSnapshot((doc) => {
-      if (doc.data().delivery.state === "SUCCESS") {
-        console.log("finish");
+  // const unsub = fsdb
+  //   .collection("mail")
+  //   .doc(id)
+  //   .onSnapshot((doc) => {
+  //     if (doc.data().delivery.state === "SUCCESS") {
+  //       console.log("finish");
 
-        fsdb.collection("mail").doc(id).delete();
+  //       fsdb.collection("mail").doc(id).delete();
 
-        unsub();
-      }
-    });
+  //       unsub();
+  //     }
+  //   });
 
   // const stateAdder = () => {
   //   console.log("stateChange");
@@ -43,15 +43,15 @@ export const onLotCreateSendMail = (lotData) => {
   //     subject: "Вы добавили объявление на Obmen.market",
   //     html: `<img src=${lotData.avatar}>${lotData.username} создал ${lotData.title} со ссылкой https://obmen.market/posts/${lotData.postid}`,
   //   },
-    // template: {
-    //   name: "new-post",
-    //   data: {
-    //     lotTitle: lotData.title,
-    //     username: lotData.username,
-    //     avatar: lotData.avatar,
-    //     lotLink: `https://obmen.market/posts/${lotData.postid}`,
-    //   },
-    // },
+  // template: {
+  //   name: "new-post",
+  //   data: {
+  //     lotTitle: lotData.title,
+  //     username: lotData.username,
+  //     avatar: lotData.avatar,
+  //     lotLink: `https://obmen.market/posts/${lotData.postid}`,
+  //   },
+  // },
   // };
 
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -157,5 +157,3 @@ export const onConfirmByOfferAuthor = (lotMeta, offerMeta) => {
     .add(approveMailBody)
     .then((doc) => onSendRemover(doc.id));
 };
-
-// const sgMail = require('@sendgrid/mail')
