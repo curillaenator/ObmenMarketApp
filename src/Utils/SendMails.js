@@ -5,31 +5,31 @@ import { fsdb } from "./firebase";
 const bucket = "obmen-market-666.appspot.com";
 
 const onSendRemover = (id) => {
-  console.log("start");
+  console.log("start" + id);
 
-  const unsub = fsdb
-    .collection("mail-test")
-    .doc(id)
-    .onSnapshot((doc) => {
-      if (doc.data().delivery.state === "SUCCESS") {
-        console.log("finish");
+  // const unsub = fsdb
+  //   .collection("mail")
+  //   .doc(id)
+  //   .onSnapshot((doc) => {
+  //     if (doc.data().delivery.state === "SUCCESS") {
+  //       console.log("finish");
 
-        fsdb.collection("mail-test").doc(id).delete();
+  //       fsdb.collection("mail").doc(id).delete();
 
-        unsub();
-      }
-    });
+  //       unsub();
+  //     }
+  //   });
 
-  const stateAdder = () => {
-    console.log("stateChange");
+  // const stateAdder = () => {
+  //   console.log("stateChange");
 
-    fsdb
-      .collection("mail-test")
-      .doc(id)
-      .update({ delivery: { state: "SUCCESS" } });
-  };
+  //   fsdb
+  //     .collection("mail-test")
+  //     .doc(id)
+  //     .update({ delivery: { state: "SUCCESS" } });
+  // };
 
-  setTimeout(stateAdder, 5000);
+  // setTimeout(stateAdder, 5000);
 };
 
 // FUNCTIONS
@@ -38,19 +38,23 @@ export const onLotCreateSendMail = (lotData) => {
   const lotMailBody = {
     delivery: { state: "CREATED" },
     toUids: [`${lotData.uid}`],
-    template: {
-      name: "new-post",
-      data: {
-        lotTitle: lotData.title,
-        username: lotData.username,
-        avatar: lotData.avatar,
-        lotLink: `https://obmen.market/posts/${lotData.postid}`,
-      },
+    message: {
+      subject: "Вы добавили объявление на Obmen.market",
+      html: `<img src=${lotData.avatar}>${lotData.username} создал ${lotData.title} со ссылкой https://obmen.market/posts/${lotData.postid}`,
     },
+    // template: {
+    //   name: "new-post",
+    //   data: {
+    //     lotTitle: lotData.title,
+    //     username: lotData.username,
+    //     avatar: lotData.avatar,
+    //     lotLink: `https://obmen.market/posts/${lotData.postid}`,
+    //   },
+    // },
   };
 
   fsdb
-    .collection("mail-test")
+    .collection("mail")
     .add(lotMailBody)
     .then((doc) => onSendRemover(doc.id));
 };
@@ -75,7 +79,7 @@ export const onOfferCreateSendMail = (lotMeta, offerData) => {
   };
 
   fsdb
-    .collection("mail-test")
+    .collection("mail")
     .add(offerMailBody)
     .then((doc) => onSendRemover(doc.id));
 };
@@ -102,7 +106,7 @@ export const onApproveByLotAuthor = (lotMeta, offerMeta) => {
   };
 
   fsdb
-    .collection("mail-test")
+    .collection("mail")
     .add(approveMailBody)
     .then((doc) => onSendRemover(doc.id));
 };
@@ -129,7 +133,7 @@ export const onConfirmByOfferAuthor = (lotMeta, offerMeta) => {
   };
 
   fsdb
-    .collection("mail-test")
+    .collection("mail")
     .add(approveMailBody)
     .then((doc) => onSendRemover(doc.id));
 };
