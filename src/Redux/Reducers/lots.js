@@ -155,15 +155,11 @@ export const resetMetaState = () => (dispatch, getState) => {
 
 const lotMetasPageLoader = (listArr) => {
   return listArr.map(async (lot) => {
-    const photoURL = await fst
-      .ref()
-      .child(`posts/${lot.uid}/${lot.postid}/photo0`)
-      .getDownloadURL();
+    const photoURL = `https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/posts%2F${lot.uid}%2F${lot.postid}%2Fphoto0?alt=media`;
 
     const offersQtySnap = await db_offers.child(lot.postid).once("value");
-
     const offersQty = offersQtySnap.exists()
-      ? Object.keys(await offersQtySnap.val()).length
+      ? Object.keys(offersQtySnap.val()).length
       : 0;
 
     return { ...lot, photoURL, offersQty };
