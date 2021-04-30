@@ -82,9 +82,9 @@ const LotList = ({
   myLotsPerPage, // num of lots to add on loadmore click
   setMyLotsPage,
 }) => {
-  /* eslint-disable-next-line */
   useEffect(() => lotList.length === 0 && getPaginationFirstPage(), [
     getPaginationFirstPage,
+    lotList.length,
   ]);
 
   const handleNextPage = myLots
