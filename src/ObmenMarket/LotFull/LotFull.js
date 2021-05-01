@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { db_offers, fb, db } from "../../Utils/firebase";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { withRouter, useLocation, useHistory } from "react-router-dom";
 
 import { Author } from "../Components/Author/Author";
 import { Gallery } from "../Components/Gallery/Gallery";
@@ -188,7 +188,7 @@ const OfferCard = ({
         );
         setPhotoLinks(links);
       });
-  }, [lotMeta, offerMeta]);
+  }, [lotMeta.postid, offerMeta.offerID, offerMeta.photospath]);
 
   const select = useCallback(() => {
     setSelectedOffer(offerMeta.offerID);
@@ -340,6 +340,8 @@ const OfferCard = ({
 };
 
 const Offers = ({
+  query,
+  querySelector,
   ownerID,
   lotMeta,
   onOfferCancel,
@@ -347,25 +349,33 @@ const Offers = ({
   setOffersQty,
   chatRoom,
 }) => {
+  const history = useHistory();
   const [offers, setOffers] = useState(null);
   const [selectedOffer, setSelectedOffer] = useState(null);
 
   useEffect(() => {
+    const load = (oArr) => {
+      setOffersQty(oArr.length);
+      setOffers(oArr);
+    };
+
+    const action = (oArr) => {
+      const offerMeta = oArr.find((o) => o.offerID === query.get("offerID"));
+
+      offerMeta
+        ? querySelector[query.get("action")](offerMeta)
+        : history.push(`/posts/${lotMeta.postid}`);
+    };
+
     db_offers.child(lotMeta.postid).on("value", (snap) => {
       if (snap.val()) {
-        setOffersQty(Object.keys(snap.val()).length);
-
-        setOffers(
-          Object.keys(snap.val()).map((offer) => ({
-            ...snap.val()[offer],
-            postID: offer,
-          }))
-        );
+        const oArr = Object.keys(snap.val()).map((offer) => snap.val()[offer]);
+        query.has("action") ? action(oArr) : load(oArr);
       }
     });
 
     return () => db_offers.child(lotMeta.postid).off();
-  }, [lotMeta, setOffersQty]);
+  }, [lotMeta.postid, setOffersQty, query, querySelector, history]);
 
   const handleOffersIfAccepted = () => {
     if (lotMeta.acceptedOffer)
@@ -408,6 +418,7 @@ const Offers = ({
           {filteredOffers.map((offer) => (
             <OfferCard
               key={offer.offerID}
+              query={query}
               ownerID={ownerID}
               offerMeta={offer}
               lotMeta={lotMeta}
@@ -429,8 +440,6 @@ const Offers = ({
 const LotFull = ({
   icons,
   match,
-  history,
-  // location,
   isAuth,
   ownerID,
   user,
@@ -447,7 +456,6 @@ const LotFull = ({
   lotPhotos,
   isChatOn,
   setNewLotId,
-  // setIsLotCreated,
   getLotMeta,
   setEditLotForm,
   updateLotFromEditForm,
@@ -461,6 +469,22 @@ const LotFull = ({
   chatRoom,
   setChatFromLotFull,
 }) => {
+  const history = useHistory();
+  const query = new URLSearchParams(useLocation().search);
+
+  const querySelector = {
+    approved: (offerMeta) => {
+      acceptConfirmOffer(lotMeta, offerMeta, {
+        acceptedOffer: query.get("offerID"),
+      });
+      history.push(`/posts/${lotMeta.postid}`);
+    },
+    confirmed: (offerMeta) => {
+      acceptConfirmOffer(lotMeta, offerMeta, { offerConfirmed: true });
+      history.push(`/posts/${lotMeta.postid}`);
+    },
+  };
+
   const [isOfferForm, setIsOfferForm] = useState(false);
   const handleEditLot = () => setEditLotForm(match.params.id, isFormModeOn);
 
@@ -545,6 +569,8 @@ const LotFull = ({
 
               {isAuth && (
                 <Offers
+                  query={query}
+                  querySelector={querySelector}
                   lotMeta={lotMeta}
                   onOfferCancel={onOfferCancel}
                   acceptConfirmOffer={acceptConfirmOffer}

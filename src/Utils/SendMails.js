@@ -3,7 +3,7 @@ import { newPostTpl } from "./mailTemplates";
 
 // SENDMAIL UTILS
 
-const bucket = "obmen-market-666.appspot.com";
+// const bucket = "obmen-market-666.appspot.com";
 
 const onSendRemover = (id) => {
   console.log("start" + id);
@@ -13,24 +13,10 @@ const onSendRemover = (id) => {
   //   .doc(id)
   //   .onSnapshot((doc) => {
   //     if (doc.data().delivery.state === "SUCCESS") {
-  //       console.log("finish");
-
   //       fsdb.collection("mail").doc(id).delete();
-
   //       unsub();
   //     }
   //   });
-
-  // const stateAdder = () => {
-  //   console.log("stateChange");
-
-  //   fsdb
-  //     .collection("mail-test")
-  //     .doc(id)
-  //     .update({ delivery: { state: "SUCCESS" } });
-  // };
-
-  // setTimeout(stateAdder, 5000);
 };
 
 // FUNCTIONS
@@ -63,22 +49,25 @@ export const onLotCreateSendMail = async (lotData) => {
     .then((doc) => onSendRemover(doc.id));
 };
 
-export const onOfferCreateSendMail = (lotMeta, offerData) => {
+export const onOfferCreateSendMail = async (lotMeta, offerData) => {
+  const lotPhoto = await fst
+    .ref()
+    .child(`offers/${lotMeta.postid}/${offerData.offerID}/photo0`)
+    .getDownloadURL();
+
   const offerMailBody = {
     delivery: { state: "CREATED" },
     toUids: [`${lotMeta.uid}`],
-    template: {
-      name: "new-offer",
-      data: {
-        offerTitle: offerData.name,
-        offerDescription: offerData.description,
-        offerOverprice: offerData.overprice,
-        offerAuthorName: offerData.authorName,
-        offerAuthorAvatar: offerData.avatar,
-        offerPhotoLink: `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/offers%2F${lotMeta.postid}%2F${offerData.offerID}%2Foffer0?alt=media`,
-        offerLink: `https://obmen.market/posts/${lotMeta.postid}`,
-        acceptOfferLink: `https://obmen.market/posts/${lotMeta.postid}`,
-      },
+    message: {
+      subject: "Вы добавили предложение к обмену на Obmen.market",
+      html: newPostTpl(
+        offerData.authorName,
+        offerData.avatar,
+        offerData.name,
+        `https://obmen.market/posts/${lotMeta.postid}`,
+        lotPhoto,
+        offerData.description
+      ),
     },
   };
 
@@ -89,55 +78,56 @@ export const onOfferCreateSendMail = (lotMeta, offerData) => {
 };
 
 export const onApproveByLotAuthor = (lotMeta, offerMeta) => {
-  const approveMailBody = {
-    delivery: { state: "CREATED" },
-    toUids: [`${offerMeta.authorID}`],
-    template: {
-      name: "your-offer-accepted",
-      data: {
-        lotTitle: lotMeta.title,
-        lotPhotoLink: `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/posts%2F${lotMeta.uid}%2F${lotMeta.postid}%2Fphoto0?alt=media`,
-        offerTitle: offerMeta.name,
-        offerDescription: offerMeta.description,
-        offerOverprice: offerMeta.overprice,
-        offerAuthorName: offerMeta.authorName,
-        offerAuthorAvatar: offerMeta.avatar,
-        offerPhotoLink: `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/offers%2F${lotMeta.postid}%2F${offerMeta.offerID}%2Foffer0?alt=media`,
-        offerLink: `https://obmen.market/posts/${lotMeta.postid}`,
-        confirmOfferLink: `https://obmen.market/posts/${lotMeta.postid}`,
-      },
-    },
-  };
+  console.log("approved");
+  // const approveMailBody = {
+  //   delivery: { state: "CREATED" },
+  //   toUids: [`${offerMeta.authorID}`],
+  //   template: {
+  //     name: "your-offer-accepted",
+  //     data: {
+  //       lotTitle: lotMeta.title,
+  //       lotPhotoLink: `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/posts%2F${lotMeta.uid}%2F${lotMeta.postid}%2Fphoto0?alt=media`,
+  //       offerTitle: offerMeta.name,
+  //       offerDescription: offerMeta.description,
+  //       offerOverprice: offerMeta.overprice,
+  //       offerAuthorName: offerMeta.authorName,
+  //       offerAuthorAvatar: offerMeta.avatar,
+  //       offerPhotoLink: `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/offers%2F${lotMeta.postid}%2F${offerMeta.offerID}%2Foffer0?alt=media`,
+  //       offerLink: `https://obmen.market/posts/${lotMeta.postid}`,
+  //       confirmOfferLink: `https://obmen.market/posts/${lotMeta.postid}`,
+  //     },
+  //   },
+  // };
 
-  fsdb
-    .collection("mail")
-    .add(approveMailBody)
-    .then((doc) => onSendRemover(doc.id));
+  // fsdb
+  //   .collection("mail")
+  //   .add(approveMailBody)
+  //   .then((doc) => onSendRemover(doc.id));
 };
 
 export const onConfirmByOfferAuthor = (lotMeta, offerMeta) => {
-  const approveMailBody = {
-    delivery: { state: "CREATED" },
-    toUids: [`${lotMeta.uid}`],
-    template: {
-      name: "start-chat",
-      data: {
-        lotTitle: lotMeta.title,
-        lotPhotoLink: `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/posts%2F${lotMeta.uid}%2F${lotMeta.postid}%2Fphoto0?alt=media`,
-        offerTitle: offerMeta.name,
-        offerDescription: offerMeta.description,
-        offerOverprice: offerMeta.overprice,
-        offerAuthorName: offerMeta.authorName,
-        offerAuthorAvatar: offerMeta.avatar,
-        offerPhotoLink: `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/offers%2F${lotMeta.postid}%2F${offerMeta.offerID}%2Foffer0?alt=media`,
-        offerLink: `https://obmen.market/posts/${lotMeta.postid}`,
-        confirmOfferLink: `https://obmen.market/posts/${lotMeta.postid}`,
-      },
-    },
-  };
-
-  fsdb
-    .collection("mail")
-    .add(approveMailBody)
-    .then((doc) => onSendRemover(doc.id));
+  console.log("confirmed");
+  // const approveMailBody = {
+  //   delivery: { state: "CREATED" },
+  //   toUids: [`${lotMeta.uid}`],
+  //   template: {
+  //     name: "start-chat",
+  //     data: {
+  //       lotTitle: lotMeta.title,
+  //       lotPhotoLink: `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/posts%2F${lotMeta.uid}%2F${lotMeta.postid}%2Fphoto0?alt=media`,
+  //       offerTitle: offerMeta.name,
+  //       offerDescription: offerMeta.description,
+  //       offerOverprice: offerMeta.overprice,
+  //       offerAuthorName: offerMeta.authorName,
+  //       offerAuthorAvatar: offerMeta.avatar,
+  //       offerPhotoLink: `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/offers%2F${lotMeta.postid}%2F${offerMeta.offerID}%2Foffer0?alt=media`,
+  //       offerLink: `https://obmen.market/posts/${lotMeta.postid}`,
+  //       confirmOfferLink: `https://obmen.market/posts/${lotMeta.postid}`,
+  //     },
+  //   },
+  // };
+  // fsdb
+  //   .collection("mail")
+  //   .add(approveMailBody)
+  //   .then((doc) => onSendRemover(doc.id));
 };
