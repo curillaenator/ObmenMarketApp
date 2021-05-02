@@ -41,8 +41,16 @@ export const onLotCreateSendMail = async (lotData) => {
         lotData.description
       ),
     },
+    // template: {
+    //   name: "new-post",
+    //   data: {
+    //     lotTitle: lotData.title,
+    //     username: lotData.username,
+    //     avatar: lotData.avatar,
+    //     lotLink: `https://obmen.market/posts/${lotData.postid}`,
+    //   },
+    // },
   };
-
   fsdb
     .collection("mail")
     .add(lotMailBody)
