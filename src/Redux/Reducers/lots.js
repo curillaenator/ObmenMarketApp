@@ -1,11 +1,12 @@
 import { batch } from "react-redux";
 
-import { fst, db, fa, db_offers } from "../../Utils/firebase";
+import { fst, db, fa, db_offers, db_offer } from "../../Utils/firebase";
 
 import {
   onLotCreateSendMail,
   onOfferCreateSendMail,
   onApproveByLotAuthor,
+  onConfirmByOfferAuthor,
 } from "../../Utils/SendMails";
 
 import { setFormMode, setProgress } from "./home";
@@ -23,11 +24,7 @@ const SET_LAST_PROFILE = "lots/SET_LAST_PROFILE";
 const RESET_STATE = "lots/RESET_STATE";
 const SET_NEWLOT_ID = "lots/SET_NEWLOT_ID";
 const SET_NEWOFFER_ID = "lots/SET_NEWOFFER_ID";
-const SET_CURRENT_ID = "lots/SET_CURRENT_ID";
-const SET_IS_LOTMETA = "lots/SET_IS_LOTMETA";
-const SET_IS_LOTPHOTOS = "lots/SET_IS_LOTPHOTOS";
 const SET_CURRENT_LOTMETA = "lots/SET_CURRENT_LOT";
-const SET_CURRENT_LOTPHOTOS = "lots/SET_CURRENT_LOTPHOTOS";
 
 const initialState = {
   // main page params
@@ -45,11 +42,7 @@ const initialState = {
   // rest params
   createLotId: null,
   createOfferId: null,
-  currentLotId: null,
-  isLotMeta: false,
-  isLotPhotos: false,
   currentLotMeta: null,
-  currentLotPhotos: null,
 };
 
 export const lots = (state = initialState, action) => {
@@ -93,20 +86,8 @@ export const lots = (state = initialState, action) => {
     case SET_NEWOFFER_ID:
       return { ...state, createOfferId: action.id };
 
-    case SET_CURRENT_ID:
-      return { ...state, currentLotId: action.id };
-
     case SET_CURRENT_LOTMETA:
       return { ...state, currentLotMeta: action.payload };
-
-    case SET_CURRENT_LOTPHOTOS:
-      return { ...state, currentLotPhotos: action.payload };
-
-    case SET_IS_LOTMETA:
-      return { ...state, isLotMeta: action.payload };
-
-    case SET_IS_LOTPHOTOS:
-      return { ...state, isLotPhotos: action.payload };
 
     default:
       return state;
@@ -127,11 +108,7 @@ export const setMyLotsPage = (payload) => ({ type: MY_LOTS_PAGE, payload });
 
 export const setNewLotId = (id) => ({ type: SET_NEWLOT_ID, id });
 const setNewOfferId = (id) => ({ type: SET_NEWOFFER_ID, id });
-const setCurrentLotId = (id) => ({ type: SET_CURRENT_ID, id });
-const setIsLotMeta = (payload) => ({ type: SET_IS_LOTMETA, payload });
-const setIsLotPhotos = (payload) => ({ type: SET_IS_LOTPHOTOS, payload });
 const setLotMeta = (payload) => ({ type: SET_CURRENT_LOTMETA, payload });
-const setLotPhotos = (payload) => ({ type: SET_CURRENT_LOTPHOTOS, payload });
 
 export const resetLotsState = () => ({ type: RESET_STATE });
 
@@ -139,14 +116,10 @@ export const resetLotsState = () => ({ type: RESET_STATE });
 
 // Meta reset
 
-export const resetMetaState = () => (dispatch, getState) => {
+export const resetMetaState = () => (dispatch) => {
   batch(() => {
     dispatch(setNewLotId(null));
-    dispatch(setCurrentLotId(null));
-    dispatch(setIsLotMeta(false));
-    dispatch(setIsLotPhotos(false));
     dispatch(setLotMeta(null));
-    dispatch(setLotPhotos(null));
     dispatch(setNewOfferId(null));
   });
 };
@@ -293,10 +266,9 @@ export const onLotCreateFormCancel = (lotID) => async (dispatch) => {
     .then((res) => res.items.forEach((item) => item.delete()));
 
   batch(() => {
-    dispatch(setIsLotMeta(false));
+    // dispatch(setIsLotMeta(false));
     dispatch(setNewLotId(null));
     dispatch(setLotMeta(null));
-    dispatch(setLotPhotos(null));
   });
 };
 
@@ -314,7 +286,7 @@ export const publishNewLotFromForm = (updData, history) => (dispatch) => {
         if (snap.exists()) {
           batch(() => {
             dispatch(setLotMeta(snap.val()));
-            dispatch(setIsLotMeta(true));
+            // dispatch(setIsLotMeta(true));
             dispatch(setFormMode(false));
           });
         }
@@ -336,25 +308,13 @@ export const publishNewLotFromForm = (updData, history) => (dispatch) => {
   }
 };
 
-// lot open edit form & update from edit form
-
-export const setEditLotForm = (lotID, isFormModeOn) => (dispatch) => {
-  batch(() => {
-    dispatch(setCurrentLotId(lotID));
-    dispatch(setFormMode(!isFormModeOn));
-  });
-};
-
 export const updateLotFromEditForm = (updData) => (dispatch) => {
-  dispatch(setIsLotMeta(false));
-
   const onUpdate = (error) => {
     error ? console.log(error) : console.log("success");
 
     db.ref(`posts/${updData.postid}`).once("value", (snap) => {
       batch = () => {
         dispatch(setLotMeta(snap.val()));
-        dispatch(setIsLotMeta(true));
         dispatch(setFormMode(false));
       };
     });
@@ -363,47 +323,134 @@ export const updateLotFromEditForm = (updData) => (dispatch) => {
   db.ref(`posts/${updData.postid}`).update(updData, onUpdate);
 };
 
-// get lotMeta & lotPhotos
+// compile lotMeta (get lotMeta, getLotPhotos, get lotOffers, get lotOffersPhotos)
 
-export const getLotMeta = (lotID) => (dispatch) => {
-  const getLotPhotos = async (lotMeta) => {
-    const res = await fst
+export const getLotMeta = (lotID, history) => (dispatch) => {
+  dispatch(setProgress(1));
+
+  const compileLotMeta = async (lotMeta) => {
+    const photoItems = await fst
       .ref()
-      .child("posts/" + lotMeta.uid + "/" + lotMeta.postid)
-      .listAll();
+      .child(`posts/${lotMeta.uid}/${lotMeta.postid}`)
+      .listAll()
+      .then((res) => res.items.map((item) => item.getDownloadURL()));
 
-    const photoList = [];
+    const pLinks = await Promise.all(photoItems);
 
-    await res.items.forEach((item) =>
-      photoList.push(
-        "https://firebasestorage.googleapis.com/v0/b/" +
-          item.bucket +
-          "/o/posts%2F" +
-          lotMeta.uid +
-          "%2F" +
-          lotMeta.postid +
-          "%2F" +
-          item.name +
-          "?alt=media"
-      )
-    );
+    const offersSnap = await db_offer.ref(lotMeta.postid).once("value");
 
-    batch(() => {
-      dispatch(setLotPhotos(photoList));
-      dispatch(setLotMeta(lotMeta));
-      dispatch(setIsLotPhotos(true));
-      dispatch(setIsLotMeta(true));
-      dispatch(setProgress(100));
+    if (offersSnap.exists()) {
+      const offersSnapArr = Object.keys(offersSnap.val()).map(
+        (id) => offersSnap.val()[id]
+      );
+
+      const offersPromises = offersSnapArr.map(async (offer) => {
+        const offerPhotoItems = await fst
+          .ref()
+          .child(offer.photospath)
+          .listAll()
+          .then((res) => res.items.map((item) => item.getDownloadURL()));
+
+        const offerPhotoLinks = await Promise.all(offerPhotoItems);
+
+        return { ...offer, photoURLs: offerPhotoLinks };
+      });
+
+      Promise.all(offersPromises).then((offers) => {
+        batch(() => {
+          dispatch(setLotMeta({ ...lotMeta, photoLinks: pLinks, offers }));
+          dispatch(setProgress(100));
+        });
+      });
+    }
+
+    if (!offersSnap.exists()) {
+      batch(() => {
+        dispatch(setLotMeta({ ...lotMeta, photoLinks: pLinks, offers: null }));
+        dispatch(setProgress(100));
+      });
+    }
+  };
+
+  db.ref(`posts/${lotID}`).once("value", (lotSnap) => {
+    if (lotSnap.exists()) {
+      dispatch(setFormMode(false));
+      compileLotMeta(lotSnap.val());
+    }
+
+    if (!lotSnap.exists()) {
+      history.push("/");
+    }
+  });
+};
+
+// offer prolong
+
+export const add48hours = (lotMeta) => (dispatch) => {
+  dispatch(setProgress(1));
+  const onUpdate = (error) => {
+    if (error) return console.log("ошибка записи");
+
+    db.ref("posts/" + lotMeta.postid).once("value", (snap) => {
+      batch(() => {
+        dispatch(setLotMeta(snap.val()));
+        // dispatch(setIsLotMeta(true));
+        dispatch(setProgress(100));
+      });
     });
   };
 
+  // const newExpiry = new Date(
+  //   Date.parse(lotMeta.expireDate) + 2 * 24 * 60 * 60 * 1000
+  // );
+
+  const curDate = new Date();
+  const newExpiry = new Date(curDate.setDate(curDate.getDate() + 7));
+
+  db.ref("posts/" + lotMeta.postid).update({ expireDate: newExpiry }, onUpdate);
+};
+
+// offer accept by lotAuthor & confirm by offerAuthor
+
+export const acceptConfirmOffer = (lotMeta, offerMeta, payload) => (
+  dispatch
+) => {
   dispatch(setProgress(1));
 
-  db.ref("posts/" + lotID).once("value", (snap) => {
-    const lotMeta = snap.val();
-    dispatch(setFormMode(false));
-    getLotPhotos(lotMeta);
-  });
+  const onSuccess = () => {
+    db.ref(`posts/${lotMeta.postid}`).once("value", (lot) => {
+      if (lot.val().acceptedOffer && !lot.val().offerConfirmed) {
+        batch(() => {
+          dispatch(
+            setLotMeta({ ...lotMeta, acceptedOffer: lot.val().acceptedOffer })
+          );
+          dispatch(setProgress(100));
+        });
+
+        return onApproveByLotAuthor(lotMeta, offerMeta);
+      }
+
+      if (lot.val().acceptedOffer && lot.val().offerConfirmed) {
+        batch(() => {
+          dispatch(
+            setLotMeta({ ...lotMeta, offerConfirmed: lot.val().offerConfirmed })
+          );
+          dispatch(setProgress(100));
+        });
+
+        return onConfirmByOfferAuthor(lotMeta, offerMeta);
+      }
+
+      return batch(() => {
+        dispatch(setLotMeta({ ...lotMeta, ...payload }));
+        dispatch(setProgress(100));
+      });
+    });
+  };
+
+  db.ref(`posts/${lotMeta.postid}`).update(payload, (err) =>
+    err ? console.log(err) : onSuccess()
+  );
 };
 
 // offer create / cancel create / publish
@@ -436,57 +483,4 @@ export const createOffer = (lotMeta, offerData) => (dispatch) => {
   db_offers.update(offerUpdate, onCreate);
 
   dispatch(setNewOfferId(null));
-};
-
-// offer prolong
-
-export const add48hours = (lotMeta) => (dispatch) => {
-  dispatch(setProgress(1));
-  const onUpdate = (error) => {
-    if (error) return console.log("ошибка записи");
-
-    db.ref("posts/" + lotMeta.postid).once("value", (snap) => {
-      batch(() => {
-        dispatch(setLotMeta(snap.val()));
-        dispatch(setIsLotMeta(true));
-        dispatch(setProgress(100));
-      });
-    });
-  };
-
-  // const newExpiry = new Date(
-  //   Date.parse(lotMeta.expireDate) + 2 * 24 * 60 * 60 * 1000
-  // );
-
-  const curDate = new Date();
-  const newExpiry = new Date(curDate.setDate(curDate.getDate() + 7));
-
-  db.ref("posts/" + lotMeta.postid).update({ expireDate: newExpiry }, onUpdate);
-};
-
-// offer accept by lotAuthor & confirm by offerAuthor
-
-export const acceptConfirmOffer = (lotMeta, offerMeta, payload) => (
-  dispatch
-) => {
-  dispatch(setProgress(1));
-
-  const onSuccess = () => {
-    db.ref(`posts/${lotMeta.postid}`).once("value", (snap) => {
-      if (payload.acceptedOffer || payload.offerConfirmed) {
-        onApproveByLotAuthor(lotMeta, offerMeta);
-      }
-
-      batch(() => {
-        dispatch(setLotMeta(snap.val()));
-        dispatch(setIsLotMeta(true));
-        dispatch(setFormMode(false));
-        dispatch(setProgress(100));
-      });
-    });
-  };
-
-  db.ref(`posts/${lotMeta.postid}`).update(payload, (err) =>
-    err ? console.log(err) : onSuccess()
-  );
 };

@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { db_offers, fb, db } from "../../Utils/firebase";
-import { compose } from "redux";
 import { connect } from "react-redux";
-import { withRouter, useLocation, useHistory } from "react-router-dom";
+import { useLocation, useHistory, useParams } from "react-router-dom";
 
 import { Author } from "../Components/Author/Author";
 import { Gallery } from "../Components/Gallery/Gallery";
@@ -16,7 +14,7 @@ import { FormOffer } from "../Components/FormOffer/FormOffer";
 import {
   setNewLotId,
   getLotMeta,
-  setEditLotForm,
+  // setEditLotForm,
   updateLotFromEditForm,
   onLotCreateFormCancel,
   onOfferCreate,
@@ -172,23 +170,7 @@ const OfferCard = ({
   chatRoom,
 }) => {
   const ref = useRef({});
-
   const [openHeigth, setOpenHeigth] = useState(null);
-  const [photoLinks, setPhotoLinks] = useState(null);
-
-  useEffect(() => {
-    fb.storage()
-      .ref()
-      .child(offerMeta.photospath)
-      .listAll()
-      .then((res) => {
-        const links = res.items.map(
-          (item, i) =>
-            `https://firebasestorage.googleapis.com/v0/b/${item.bucket}/o/offers%2F${lotMeta.postid}%2F${offerMeta.offerID}%2Foffer${i}?alt=media`
-        );
-        setPhotoLinks(links);
-      });
-  }, [lotMeta.postid, offerMeta.offerID, offerMeta.photospath]);
 
   const select = useCallback(() => {
     setSelectedOffer(offerMeta.offerID);
@@ -198,11 +180,10 @@ const OfferCard = ({
   const deselect = () => setOpenHeigth(null);
 
   useEffect(() => {
-    if (lotMeta.acceptedOffer && photoLinks) select();
+    if (lotMeta.acceptedOffer) select();
     if (offerMeta.offerID !== selectedOffer) deselect();
   }, [
     select,
-    photoLinks,
     selectedOffer,
     ref.current.scrollHeight,
     lotMeta.acceptedOffer,
@@ -213,7 +194,7 @@ const OfferCard = ({
 
   const acceptConfirmReset = {
     acceptedOffer: null,
-    offerConfirmed: false,
+    offerConfirmed: null,
   };
 
   const handleRemoveOffer = () => {
@@ -237,35 +218,34 @@ const OfferCard = ({
     }
 
     if (!lotMeta.offerConfirmed) {
-      acceptConfirmOffer(lotMeta, offerMeta, { offerConfirmed: true });
+      acceptConfirmOffer(lotMeta, offerMeta, {
+        offerConfirmed: offerMeta.offerID,
+      });
       chatRoom(lotMeta, offerMeta);
       return null;
     }
   };
 
-  const minimizedClasses = openHeigth
-    ? `${styles.minimized} ${styles.minimized_active}`
-    : styles.minimized;
-
-  const minimizedJustify = lotMeta.acceptedOffer
-    ? { justifyContent: "flex-end" }
-    : {};
-
   return (
     <div className={styles.offer}>
-      <div className={minimizedClasses} style={minimizedJustify}>
+      <div
+        className={
+          openHeigth
+            ? `${styles.minimized} ${styles.minimized_active}`
+            : styles.minimized
+        }
+        style={lotMeta.acceptedOffer ? { justifyContent: "flex-end" } : {}}
+      >
         {!lotMeta.acceptedOffer && (
           <div
             className={styles.minimized_detailes}
             onClick={handleSelectOffer}
           >
-            {photoLinks && (
-              <img
-                className={styles.minimized_detailes_img}
-                src={openHeigth ? shrink : photoLinks[0]}
-                alt={offerMeta.name}
-              />
-            )}
+            <img
+              className={styles.minimized_detailes_img}
+              src={openHeigth ? shrink : offerMeta.photoURLs[0]}
+              alt={offerMeta.name}
+            />
 
             <div className={styles.minimized_detailes_title}>
               {openHeigth ? "Свернуть" : offerMeta.name}
@@ -313,7 +293,7 @@ const OfferCard = ({
       >
         <div className={styles.maximized_title}>{offerMeta.name}</div>
 
-        <Gallery lotPhotos={photoLinks} />
+        <Gallery lotPhotos={offerMeta.photoURLs} />
 
         <div className={styles.maximized_author}>
           <Author
@@ -346,36 +326,26 @@ const Offers = ({
   lotMeta,
   onOfferCancel,
   acceptConfirmOffer,
-  setOffersQty,
   chatRoom,
 }) => {
+  const offers = lotMeta.offers;
+
   const history = useHistory();
-  const [offers, setOffers] = useState(null);
   const [selectedOffer, setSelectedOffer] = useState(null);
 
   useEffect(() => {
-    const load = (oArr) => {
-      setOffersQty(oArr.length);
-      setOffers(oArr);
-    };
-
-    const action = (oArr) => {
-      const offerMeta = oArr.find((o) => o.offerID === query.get("offerID"));
+    const action = (offersArr) => {
+      const offerMeta = offersArr.find(
+        (o) => o.offerID === query.get("offerID")
+      );
 
       offerMeta
         ? querySelector[query.get("action")](offerMeta)
         : history.push(`/posts/${lotMeta.postid}`);
     };
 
-    db_offers.child(lotMeta.postid).on("value", (snap) => {
-      if (snap.val()) {
-        const oArr = Object.keys(snap.val()).map((offer) => snap.val()[offer]);
-        query.has("action") ? action(oArr) : load(oArr);
-      }
-    });
-
-    return () => db_offers.child(lotMeta.postid).off();
-  }, [lotMeta.postid, setOffersQty, query, querySelector, history]);
+    query.has("action") && action(offers);
+  }, [offers, lotMeta.postid, query, querySelector, history]);
 
   const handleOffersIfAccepted = () => {
     if (lotMeta.acceptedOffer)
@@ -402,16 +372,15 @@ const Offers = ({
 
   const filteredOffers = offers ? handleFilteredOffers() : null;
 
-  const offersTitle =
-    ownerID === lotMeta.uid
-      ? "Вам предложили в обмен:"
-      : "Вы предложили к обмену:";
-
   return (
     filteredOffers && (
       <div className={styles.offers}>
         {filteredOffers.length > 0 && (
-          <div className={styles.offers_title}>{offersTitle}</div>
+          <div className={styles.offers_title}>
+            {ownerID === lotMeta.uid
+              ? "Вам предложили в обмен:"
+              : "Вы предложили к обмену:"}
+          </div>
         )}
 
         <div className={styles.offers_list}>
@@ -439,7 +408,6 @@ const Offers = ({
 
 const LotFull = ({
   icons,
-  match,
   isAuth,
   ownerID,
   user,
@@ -447,17 +415,11 @@ const LotFull = ({
   formOfferUI,
   isFormModeOn,
   setFormMode,
-  currentLotId,
   createOfferId,
-  currentLotMeta,
-  isLotMeta,
-  isLotPhotos,
   lotMeta,
-  lotPhotos,
   isChatOn,
   setNewLotId,
   getLotMeta,
-  setEditLotForm,
   updateLotFromEditForm,
   onLotCreateFormCancel,
   onOfferCreate,
@@ -470,6 +432,7 @@ const LotFull = ({
   setChatFromLotFull,
 }) => {
   const history = useHistory();
+  const { id } = useParams();
   const query = new URLSearchParams(useLocation().search);
 
   const querySelector = {
@@ -486,10 +449,6 @@ const LotFull = ({
   };
 
   const [isOfferForm, setIsOfferForm] = useState(false);
-  const handleEditLot = () => setEditLotForm(match.params.id, isFormModeOn);
-
-  const [offersQty, setOffersQty] = useState(0);
-
   const handleOfferForm = () => {
     if (!isAuth) return history.push("/login");
 
@@ -504,101 +463,95 @@ const LotFull = ({
     }
   };
 
-  useEffect(() => setNewLotId(null), [setNewLotId]);
-
   useEffect(() => {
-    db.ref(`posts/${match.params.id}`).once("value", (snapshot) => {
-      snapshot.exists() && getLotMeta(match.params.id);
-      !snapshot.exists() && history.push("/");
-    });
-  }, [match.params.id, getLotMeta, history]);
+    setNewLotId(null);
+    getLotMeta(id, history);
+  }, [id, setNewLotId, getLotMeta, history]);
+
+  // console.log(id);
+
+  if (!lotMeta) return <div>Загрузка...</div>;
 
   return (
-    isLotMeta &&
-    isLotPhotos && (
-      <div className={styles.lotwrapper}>
-        <Controls
-          icons={icons}
-          isAuth={isAuth}
-          user={user}
-          isFormModeOn={isFormModeOn}
-          lotMeta={lotMeta}
-          history={history}
-          handleEditLot={handleEditLot}
-          onLotCreateFormCancel={onLotCreateFormCancel}
-        />
+    <div className={styles.lotwrapper}>
+      <Controls
+        icons={icons}
+        isAuth={isAuth}
+        user={user}
+        isFormModeOn={isFormModeOn}
+        lotMeta={lotMeta}
+        history={history}
+        handleEditLot={() => setFormMode(!isFormModeOn)}
+        onLotCreateFormCancel={onLotCreateFormCancel}
+      />
 
-        {!isFormModeOn && (
-          <div className={styles.lot}>
-            <div className={styles.detailes}>
-              <Gallery lotMeta={lotMeta} lotPhotos={lotPhotos} />
+      {!isFormModeOn && (
+        <div className={styles.lot}>
+          <div className={styles.detailes}>
+            <Gallery lotPhotos={lotMeta.photoLinks} />
 
-              <div className={styles.status}>
-                <StatusBar
-                  offersQty={offersQty}
-                  expiryDate={lotMeta.expireDate}
-                />
-              </div>
-
-              <Buttons
-                icons={icons}
-                isOfferForm={isOfferForm}
-                isChatOn={isChatOn}
-                lotMeta={lotMeta}
-                ownerID={ownerID}
-                handleOfferForm={handleOfferForm}
-                setIsModalOn={setIsModalOn}
-                setChatFromLotFull={setChatFromLotFull}
-                add48hours={add48hours}
+            <div className={styles.status}>
+              <StatusBar
+                offersQty={lotMeta.offers ? lotMeta.offers.length : 0}
+                expiryDate={lotMeta.expireDate}
               />
-
-              {isOfferForm && (
-                <FormOffer
-                  ownerID={ownerID}
-                  user={user}
-                  icons={icons}
-                  formOfferUI={formOfferUI}
-                  lotMeta={lotMeta}
-                  createOffer={createOffer}
-                  createOfferId={createOfferId}
-                  setIsOfferForm={setIsOfferForm}
-                />
-              )}
-
-              <div className={styles.spacer}></div>
-
-              {isAuth && (
-                <Offers
-                  query={query}
-                  querySelector={querySelector}
-                  lotMeta={lotMeta}
-                  onOfferCancel={onOfferCancel}
-                  acceptConfirmOffer={acceptConfirmOffer}
-                  ownerID={ownerID}
-                  setOffersQty={setOffersQty}
-                  chatRoom={chatRoom}
-                />
-              )}
             </div>
 
-            <Descrption lotMeta={lotMeta} />
-          </div>
-        )}
+            <Buttons
+              icons={icons}
+              isOfferForm={isOfferForm}
+              isChatOn={isChatOn}
+              lotMeta={lotMeta}
+              ownerID={ownerID}
+              handleOfferForm={handleOfferForm}
+              setIsModalOn={setIsModalOn}
+              setChatFromLotFull={setChatFromLotFull}
+              add48hours={add48hours}
+            />
 
-        {isFormModeOn && (
-          <FormFull
-            setFormMode={setFormMode}
-            icons={icons}
-            formFullUI={formFullUI}
-            lotID={currentLotId}
-            lotMeta={currentLotMeta}
-            lotPhotos={lotPhotos}
-            update={true}
-            formHandler={updateLotFromEditForm}
-          />
-        )}
-      </div>
-    )
+            {isOfferForm && (
+              <FormOffer
+                ownerID={ownerID}
+                user={user}
+                icons={icons}
+                formOfferUI={formOfferUI}
+                lotMeta={lotMeta}
+                createOffer={createOffer}
+                createOfferId={createOfferId}
+                setIsOfferForm={setIsOfferForm}
+              />
+            )}
+
+            <div className={styles.spacer}></div>
+
+            {isAuth && (
+              <Offers
+                query={query}
+                querySelector={querySelector}
+                lotMeta={lotMeta}
+                onOfferCancel={onOfferCancel}
+                acceptConfirmOffer={acceptConfirmOffer}
+                ownerID={ownerID}
+                chatRoom={chatRoom}
+              />
+            )}
+          </div>
+
+          <Descrption lotMeta={lotMeta} />
+        </div>
+      )}
+
+      {isFormModeOn && (
+        <FormFull
+          icons={icons}
+          formFullUI={formFullUI}
+          lotMeta={lotMeta}
+          update={true}
+          setFormMode={setFormMode}
+          formHandler={updateLotFromEditForm}
+        />
+      )}
+    </div>
   );
 };
 
@@ -610,32 +563,23 @@ const mstp = (state) => ({
   formFullUI: state.ui.formFull,
   formOfferUI: state.ui.formOffer,
   isFormModeOn: state.home.isFormModeOn,
-  currentLotId: state.lots.currentLotId,
-  currentLotMeta: state.lots.currentLotMeta,
-  isLotMeta: state.lots.isLotMeta,
-  isLotPhotos: state.lots.isLotPhotos,
   lotMeta: state.lots.currentLotMeta,
-  lotPhotos: state.lots.currentLotPhotos,
   createOfferId: state.lots.createOfferId,
   isChatOn: state.chat.isChatOn,
 });
 
-export const LotFullCont = compose(
-  withRouter,
-  connect(mstp, {
-    setFormMode,
-    setNewLotId,
-    getLotMeta,
-    setEditLotForm,
-    updateLotFromEditForm,
-    onLotCreateFormCancel,
-    onOfferCreate,
-    onOfferCancel,
-    createOffer,
-    acceptConfirmOffer,
-    setIsModalOn,
-    add48hours,
-    chatRoom,
-    setChatFromLotFull,
-  })
-)(LotFull);
+export const LotFullCont = connect(mstp, {
+  setFormMode,
+  setNewLotId,
+  getLotMeta,
+  updateLotFromEditForm,
+  onLotCreateFormCancel,
+  onOfferCreate,
+  onOfferCancel,
+  createOffer,
+  acceptConfirmOffer,
+  setIsModalOn,
+  add48hours,
+  chatRoom,
+  setChatFromLotFull,
+})(LotFull);

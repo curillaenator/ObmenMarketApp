@@ -10,10 +10,8 @@ export const FormFull = ({
   cloudtail,
   icons,
   formFullUI,
-  // lotID,
   lotMeta = null,
-  lotPhotos = null,
-  update,
+  update = false,
   formHandler,
   setFormMode,
 }) => {
@@ -45,7 +43,7 @@ export const FormFull = ({
         <FormFullFields
           cloudtail={cloudtail}
           handleSubmit={handleSubmit}
-          lotPhotos={lotPhotos}
+          lotPhotos={lotMeta.photoLinks}
           form={form}
           values={values}
           icons={icons}

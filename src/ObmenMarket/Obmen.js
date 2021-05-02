@@ -80,7 +80,7 @@ const ObmenMarket = ({
         <Switch>
           <Route exact path="/" render={() => <HomeCont />} />
           <Route path="/posts/:id" render={() => <LotFullCont />} />
-          <Route path="/drafts/:id" render={() => <LotFullCont />} />
+          {/* <Route path="/drafts/:id" render={() => <LotFullCont />} /> */}
           <Route path="/login" render={() => <LoginCont />} />
           <Route path="/profile/:id?" render={() => <ProfileCont />} />
         </Switch>

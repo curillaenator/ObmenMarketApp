@@ -2,7 +2,6 @@ import { useState } from "react";
 import Lightbox from "react-image-lightbox";
 // import ImageShadow from "react-image-shadow";
 
-
 import openGallery from "../../../Assets/Icons/openGallery.svg";
 
 import "./lightbox.css";

@@ -30,6 +30,10 @@ export const db_offers = app
   .database("https://obmenmarket-offers.europe-west1.firebasedatabase.app/")
   .ref();
 
+export const db_offer = app.database(
+  "https://obmenmarket-offers.europe-west1.firebasedatabase.app/"
+);
+
 /// CHAT
 
 export const db_chat = app.database("https://obmenmarket-chat.firebaseio.com/");
