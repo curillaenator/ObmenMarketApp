@@ -26,10 +26,6 @@ export const db = app.database();
 
 /// OFFERS
 
-export const db_offers = app
-  .database("https://obmenmarket-offers.europe-west1.firebasedatabase.app/")
-  .ref();
-
 export const db_offer = app.database(
   "https://obmenmarket-offers.europe-west1.firebasedatabase.app/"
 );

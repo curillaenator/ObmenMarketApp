@@ -52,7 +52,7 @@ export const ButtonGhost = ({
   handler,
   active,
   disabled,
-  shape,
+  shape = false,
   fontsize,
 }) => {
   return (

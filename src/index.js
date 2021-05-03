@@ -14,10 +14,10 @@ const App = () => {
     <React.StrictMode>
       <Provider store={store}>
         <BrowserRouter>
-          <div>
+          <>
             <ScrollMemory />
             <ObmenMarketApp />
-          </div>
+          </>
         </BrowserRouter>
       </Provider>
     </React.StrictMode>

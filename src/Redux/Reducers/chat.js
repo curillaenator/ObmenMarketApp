@@ -1,13 +1,14 @@
 import { db, db_chat } from "../../Utils/firebase";
 import { batch } from "react-redux";
 
-// import { setProgress } from "./home";
+import { setProgress } from "./home";
 
 const IS_CHAT_ON = "chat/IS_CHAT_ON";
 const IS_CHAT_TOUCHED = "chat/IS_CHAT_TOUCHED";
 const IS_DIALOGS_ON = "chat/IS_DIALOGS_ON";
 const SET_CUR_ROOM_ID = "chat/SET_CUR_ROOM_ID";
 const SET_ROOMS = "chat/SET_ROOMS";
+const UNSET_ROOM = "chat/UNSET_ROOM";
 const RESET_ROOMS = "chat/RESET_ROOMS";
 const SET_ROOMS_MSGS = "chat/SET_ROOMS_MSGS";
 const RESET_ROOMS_MSGS = "chat/RESET_ROOMS_MSGS";
@@ -41,6 +42,9 @@ export const chat = (state = initialState, action) => {
 
     case SET_ROOMS:
       return { ...state, rooms: [...(state.rooms || []), action.room] };
+
+    case UNSET_ROOM:
+      return { ...state, rooms: action.rooms };
 
     case RESET_ROOMS:
       return { ...state, rooms: null };
@@ -78,6 +82,7 @@ export const setIsChatTouched = () => ({ type: IS_CHAT_TOUCHED });
 export const setIsDialogsOn = (payload) => ({ type: IS_DIALOGS_ON, payload });
 const setCurRoomID = (roomID) => ({ type: SET_CUR_ROOM_ID, roomID });
 const setRooms = (room) => ({ type: SET_ROOMS, room });
+const unsetRoom = (rooms) => ({ type: UNSET_ROOM, rooms });
 const resetRooms = () => ({ type: RESET_ROOMS });
 const setRoomsMsgs = (rID, mess) => ({ type: SET_ROOMS_MSGS, rID, mess });
 const resetRoomsMsgs = () => ({ type: RESET_ROOMS_MSGS });
@@ -132,6 +137,50 @@ export const chatRoom = (lotMeta, offerMeta) => async (dispatch) => {
   await db.ref().update(userData, onUpd);
 };
 
+export const removeChatRoom = (roomID) => (dispatch, getState) => {
+  batch(() => {
+    dispatch(setProgress(1));
+    dispatch(setIsDialogsOn(false));
+    dispatch(setCurRoomID(null));
+    dispatch(setOpponent(null));
+  });
+
+  const onDbClear = () => {
+    batch(() => {
+      dispatch(
+        unsetRoom(
+          getState().chat.rooms.filter((room) => room.roomID !== roomID)
+        )
+      );
+
+      dispatch(setProgress(100));
+    });
+  };
+
+  db_chat
+    .ref(`chats/${roomID}`)
+    .once("value", (room) => {
+      if (room.exists()) {
+        db.ref(`users/${room.val().lotAuthorID}/chats/${roomID}`).set(
+          null,
+          () => dispatch(setProgress(20))
+        );
+
+        db.ref(`users/${room.val().offerAuthorID}/chats/${roomID}`).set(
+          null,
+          () => dispatch(setProgress(40))
+        );
+      }
+    })
+    .then(() =>
+      db_chat
+        .ref(`messages/${roomID}`)
+        .set(null, () => dispatch(setProgress(60)))
+    )
+    .then(() => db_chat.ref(`chats/${roomID}`).set(null, onDbClear))
+    .catch((err) => console.log(err));
+};
+
 // room select/deselect & closeChat
 
 export const selectRoom = (roomID) => (dispatch) => {
@@ -159,9 +208,12 @@ export const closeChat = () => (dispatch) => {
 // rooms & messages subscribtion
 
 export const subscribeRoomsMsgs = (ownerID) => (dispatch) => {
-  // dispatch(setProgress(1));
+  // db.ref(`users/${ownerID}/chats`).once("value", (ownerRooms) => {
+  //   !ownerRooms.exists() && dispatch(setRooms([]));
+  // });
 
   db.ref(`users/${ownerID}/chats`).on("child_added", async (roomID) => {
+    // console.log(roomID.val());
     //
     // set rooms' info for contact list
     await db_chat.ref(`chats/${roomID.key}`).once("value", (roomInfo) => {

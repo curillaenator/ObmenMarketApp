@@ -5,6 +5,7 @@ const SET_FORM_MODE = "home/SET_FORM_MODE";
 const SET_IS_OWNER = "home/SET_IS_OWNER";
 const SET_PROFILE = "home/SET_PROFILE";
 const SET_IS_MODAL_ON = "home/SET_IS_MODAL_ON";
+// const SET_WINDOW_SCROLL = "home/SET_WINDOW_SCROLL";
 
 const initialState = {
   progress: null,
@@ -12,6 +13,7 @@ const initialState = {
   isOwner: false,
   profile: null,
   isModalOn: false,
+  // isScrollOff: false,
 };
 
 export const home = (state = initialState, action) => {
@@ -31,6 +33,9 @@ export const home = (state = initialState, action) => {
     case SET_IS_MODAL_ON:
       return { ...state, isModalOn: action.payload };
 
+    // case SET_WINDOW_SCROLL:
+    //   return { ...state, isScrollOff: action.payload };
+
     default:
       return state;
   }
@@ -43,6 +48,7 @@ export const setIsModalOn = (payload) => ({ type: SET_IS_MODAL_ON, payload });
 export const setFormMode = (mode) => ({ type: SET_FORM_MODE, mode });
 const setIsOwner = (payload) => ({ type: SET_IS_OWNER, payload });
 export const setProfile = (payload) => ({ type: SET_PROFILE, payload });
+// export const setScroll = (payload) => ({ type: SET_WINDOW_SCROLL, payload });
 
 // THUNKs
 

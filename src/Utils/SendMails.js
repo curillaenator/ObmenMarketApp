@@ -41,16 +41,8 @@ export const onLotCreateSendMail = async (lotData) => {
         lotData.description
       ),
     },
-    // template: {
-    //   name: "new-post",
-    //   data: {
-    //     lotTitle: lotData.title,
-    //     username: lotData.username,
-    //     avatar: lotData.avatar,
-    //     lotLink: `https://obmen.market/posts/${lotData.postid}`,
-    //   },
-    // },
   };
+  
   fsdb
     .collection("mail")
     .add(lotMailBody)
@@ -58,11 +50,6 @@ export const onLotCreateSendMail = async (lotData) => {
 };
 
 export const onOfferCreateSendMail = async (lotMeta, offerData) => {
-  const lotPhoto = await fst
-    .ref()
-    .child(`offers/${lotMeta.postid}/${offerData.offerID}/photo0`)
-    .getDownloadURL();
-
   const offerMailBody = {
     delivery: { state: "CREATED" },
     toUids: [`${lotMeta.uid}`],
@@ -73,7 +60,7 @@ export const onOfferCreateSendMail = async (lotMeta, offerData) => {
         offerData.avatar,
         offerData.name,
         `https://obmen.market/posts/${lotMeta.postid}`,
-        lotPhoto,
+        offerData.photoURLs[0],
         offerData.description
       ),
     },

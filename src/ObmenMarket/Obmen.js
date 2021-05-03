@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { Route, Switch, withRouter } from "react-router-dom";
+import { Route, Switch, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
-import { compose } from "redux";
 import ProgressBar from "@ramonak/react-progress-bar";
 import { fa } from "../Utils/firebase";
 
@@ -24,14 +23,13 @@ const ObmenMarket = ({
   isAuth,
   ownerID,
   isModalOn,
-  isChatTouched,
-  history,
   progress,
   setProgress,
   authCheck,
   setIsModalOn,
   onConnectDisconnect,
 }) => {
+  const history = useHistory();
   const [user, userLoading] = useAuthState(fa);
 
   useEffect(() => !userLoading && authCheck(user), [
@@ -79,7 +77,7 @@ const ObmenMarket = ({
 
         <Switch>
           <Route exact path="/" render={() => <HomeCont />} />
-          <Route path="/posts/:id" render={() => <LotFullCont />} />
+          <Route path="/posts/:lotid" render={() => <LotFullCont />} />
           {/* <Route path="/drafts/:id" render={() => <LotFullCont />} /> */}
           <Route path="/login" render={() => <LoginCont />} />
           <Route path="/profile/:id?" render={() => <ProfileCont />} />
@@ -94,17 +92,13 @@ const mstp = (state) => ({
   progress: state.home.progress,
   isInitialized: state.auth.isInitialized,
   isAuth: state.auth.isAuth,
-  isChatTouched: state.chat.isChatTouched,
   ownerID: state.auth.ownerID,
   isModalOn: state.home.isModalOn,
 });
 
-export const ObmenMarketApp = compose(
-  withRouter,
-  connect(mstp, {
-    setProgress,
-    authCheck,
-    setIsModalOn,
-    onConnectDisconnect,
-  })
-)(ObmenMarket);
+export const ObmenMarketApp = connect(mstp, {
+  setProgress,
+  authCheck,
+  setIsModalOn,
+  onConnectDisconnect,
+})(ObmenMarket);

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { connect } from "react-redux";
 import { useLocation, useHistory, useParams } from "react-router-dom";
 
+import { Loading } from "../Components/Loading/Loading";
 import { Author } from "../Components/Author/Author";
 import { Gallery } from "../Components/Gallery/Gallery";
 import { Prolong } from "./Prolong/Prolong";
@@ -14,11 +15,11 @@ import { FormOffer } from "../Components/FormOffer/FormOffer";
 import {
   setNewLotId,
   getLotMeta,
-  // setEditLotForm,
   updateLotFromEditForm,
   onLotCreateFormCancel,
   onOfferCreate,
   onOfferCancel,
+  removeOffer,
   createOffer,
   acceptConfirmOffer,
   add48hours,
@@ -63,12 +64,6 @@ const Buttons = ({
 
   const offerTitle = isOfferForm ? "Передумал" : "Предложить обмен";
   const ctaIcon = isOfferForm ? icons.cancel : icons.pencil;
-  // const followTitle = draw >= 1024 ? "Следить за лотом" : null;
-
-  // const buttonWidths =
-  //   draw >= 1024
-  //     ? { offer: 217, follow: butCont - 237 }
-  //     : { offer: butCont - 76, follow: 56 };
 
   return (
     <div className={styles.buttons} ref={ref}>
@@ -96,7 +91,6 @@ const Buttons = ({
             disabled={!lotMeta.offerConfirmed || isChatOn}
             // icon={icons.add}
             handler={setChatFromLotFull}
-            // active={isOfferForm}
           />
         </div>
       )}
@@ -163,10 +157,10 @@ const OfferCard = ({
   offerMeta,
   lotMeta,
   ownerID,
-  onOfferCancel,
   acceptConfirmOffer,
   selectedOffer,
   setSelectedOffer,
+  removeOffer,
   chatRoom,
 }) => {
   const ref = useRef({});
@@ -195,11 +189,6 @@ const OfferCard = ({
   const acceptConfirmReset = {
     acceptedOffer: null,
     offerConfirmed: null,
-  };
-
-  const handleRemoveOffer = () => {
-    onOfferCancel(offerMeta.offerID, lotMeta);
-    acceptConfirmOffer(lotMeta, offerMeta, acceptConfirmReset);
   };
 
   const approveOfferByLotAuthor = () => {
@@ -280,7 +269,10 @@ const OfferCard = ({
               />
             )}
 
-          <div className={styles.deleteoffer} onClick={handleRemoveOffer}>
+          <div
+            className={styles.deleteoffer}
+            onClick={() => removeOffer(offerMeta.offerID)}
+          >
             <img src={deleteBtn} alt="Отказаться" />
           </div>
         </div>
@@ -324,9 +316,9 @@ const Offers = ({
   querySelector,
   ownerID,
   lotMeta,
-  onOfferCancel,
   acceptConfirmOffer,
   chatRoom,
+  removeOffer,
 }) => {
   const offers = lotMeta.offers;
 
@@ -391,7 +383,7 @@ const Offers = ({
               ownerID={ownerID}
               offerMeta={offer}
               lotMeta={lotMeta}
-              onOfferCancel={onOfferCancel}
+              removeOffer={removeOffer}
               acceptConfirmOffer={acceptConfirmOffer}
               selectedOffer={selectedOffer}
               setSelectedOffer={setSelectedOffer}
@@ -424,6 +416,7 @@ const LotFull = ({
   onLotCreateFormCancel,
   onOfferCreate,
   onOfferCancel,
+  removeOffer,
   createOffer,
   acceptConfirmOffer,
   setIsModalOn,
@@ -432,7 +425,7 @@ const LotFull = ({
   setChatFromLotFull,
 }) => {
   const history = useHistory();
-  const { id } = useParams();
+  const { lotid } = useParams();
   const query = new URLSearchParams(useLocation().search);
 
   const querySelector = {
@@ -443,7 +436,9 @@ const LotFull = ({
       history.push(`/posts/${lotMeta.postid}`);
     },
     confirmed: (offerMeta) => {
-      acceptConfirmOffer(lotMeta, offerMeta, { offerConfirmed: true });
+      acceptConfirmOffer(lotMeta, offerMeta, {
+        offerConfirmed: query.get("offerID"),
+      });
       history.push(`/posts/${lotMeta.postid}`);
     },
   };
@@ -454,7 +449,7 @@ const LotFull = ({
 
     if (isOfferForm) {
       setIsOfferForm(false);
-      onOfferCancel(createOfferId, lotMeta);
+      onOfferCancel(createOfferId);
     }
 
     if (!isOfferForm) {
@@ -465,12 +460,12 @@ const LotFull = ({
 
   useEffect(() => {
     setNewLotId(null);
-    getLotMeta(id, history);
-  }, [id, setNewLotId, getLotMeta, history]);
+    getLotMeta(lotid, history);
+  }, [lotid, setNewLotId, getLotMeta, history]);
 
   // console.log(id);
 
-  if (!lotMeta) return <div>Загрузка...</div>;
+  if (!lotMeta) return <Loading />;
 
   return (
     <div className={styles.lotwrapper}>
@@ -529,9 +524,9 @@ const LotFull = ({
                 query={query}
                 querySelector={querySelector}
                 lotMeta={lotMeta}
-                onOfferCancel={onOfferCancel}
                 acceptConfirmOffer={acceptConfirmOffer}
                 ownerID={ownerID}
+                removeOffer={removeOffer}
                 chatRoom={chatRoom}
               />
             )}
@@ -576,6 +571,7 @@ export const LotFullCont = connect(mstp, {
   onLotCreateFormCancel,
   onOfferCreate,
   onOfferCancel,
+  removeOffer,
   createOffer,
   acceptConfirmOffer,
   setIsModalOn,

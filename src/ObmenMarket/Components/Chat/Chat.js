@@ -4,10 +4,12 @@ import { Form, Field } from "react-final-form";
 import { Scrollbars } from "rc-scrollbars";
 import { db, fb, fst } from "../../../Utils/firebase";
 
+import { DropMenu } from "../DropMenu/DropMenu";
 import { TextInput } from "../../Components/Inputs/Inputs";
 import { Author } from "../Author/Author";
 
 import {
+  removeChatRoom,
   selectRoom,
   deselectRoom,
   closeChat,
@@ -31,6 +33,7 @@ const CloseBtn = ({ icon, handler }) => {
 };
 
 const ContactCard = ({
+  icons,
   ownerID,
   room,
   rooms,
@@ -39,9 +42,9 @@ const ContactCard = ({
   curRoomID,
   isDialogsOn,
   handleSelected,
+  removeChatRoom,
 }) => {
   const [opened, setOpened] = useState(null);
-
   const [photolinks, setPhotoLinks] = useState(null);
 
   const roomCnt = rooms.findIndex((id) => id === room.roomID);
@@ -84,6 +87,29 @@ const ContactCard = ({
     return styles.contact;
   };
 
+  const dropMenuItems = [
+    {
+      title: "Удалить переписку навсегда",
+      icon: icons.delete,
+      handler: () => removeChatRoom(room.roomID),
+    },
+    {
+      title: "Тацевать с бубном",
+      icon: icons.edit,
+      handler: () => console.log("тытс-тытс-тытс-тытс..."),
+    },
+    {
+      title: "Заблокировать идиота",
+      icon: icons.edit,
+      handler: () => console.log("Пока не работаит, идиот не блокирован"),
+    },
+    {
+      title: "С треском провалиться сквозь землю",
+      icon: icons.edit,
+      handler: () => console.log("С треском провалился сквозь землю"),
+    },
+  ];
+
   return (
     photolinks && (
       <div
@@ -103,6 +129,8 @@ const ContactCard = ({
 
           <div className={styles.infotxt}>{lastMessage.message}</div>
         </div>
+
+        <DropMenu icon={icons.fold} items={dropMenuItems} />
       </div>
     )
   );
@@ -119,6 +147,7 @@ const Contacts = ({
   curRoomID,
   handleSelected,
   closeChat,
+  removeChatRoom,
 }) => {
   return (
     <div className={styles.contacts} style={contactsOpen}>
@@ -140,6 +169,7 @@ const Contacts = ({
           return (
             <ContactCard
               key={room.roomID}
+              icons={icons}
               ownerID={ownerID}
               room={room}
               rooms={rooms.map((room) => room.roomID)}
@@ -148,6 +178,7 @@ const Contacts = ({
               lastMessage={lastMessage}
               isDialogsOn={isDialogsOn}
               handleSelected={handleSelected}
+              removeChatRoom={removeChatRoom}
             />
           );
         })}
@@ -287,6 +318,7 @@ const Chat = ({
   closeChat,
   postMessage,
   getDialogOpponent,
+  removeChatRoom,
 }) => {
   const handleSelected = (roomID) => {
     curRoomID === roomID ? deselectRoom() : selectRoom(roomID);
@@ -323,6 +355,7 @@ const Chat = ({
           curRoomID={curRoomID}
           handleSelected={handleSelected}
           closeChat={closeChat}
+          removeChatRoom={removeChatRoom}
         />
       </div>
     )
@@ -342,6 +375,7 @@ const mstp = (state) => ({
 });
 
 const ChatCont = connect(mstp, {
+  removeChatRoom,
   selectRoom,
   deselectRoom,
   closeChat,
