@@ -208,12 +208,7 @@ export const closeChat = () => (dispatch) => {
 // rooms & messages subscribtion
 
 export const subscribeRoomsMsgs = (ownerID) => (dispatch) => {
-  // db.ref(`users/${ownerID}/chats`).once("value", (ownerRooms) => {
-  //   !ownerRooms.exists() && dispatch(setRooms([]));
-  // });
-
   db.ref(`users/${ownerID}/chats`).on("child_added", async (roomID) => {
-    // console.log(roomID.val());
     //
     // set rooms' info for contact list
     await db_chat.ref(`chats/${roomID.key}`).once("value", (roomInfo) => {
@@ -221,8 +216,6 @@ export const subscribeRoomsMsgs = (ownerID) => (dispatch) => {
     });
 
     await dispatch(setRoomsNewMsgs({ [roomID.key]: roomID.val().newMessages }));
-
-    // await dispatch(setProgress(100));
 
     // subscribe room last opened
     db.ref(`users/${ownerID}/chats/${roomID.key}`).on(

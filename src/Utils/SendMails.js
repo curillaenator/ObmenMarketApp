@@ -38,7 +38,8 @@ export const onLotCreateSendMail = async (lotData) => {
         lotData.title,
         `https://obmen.market/posts/${lotData.postid}`,
         lotPhoto,
-        lotData.description
+        lotData.description,
+        `https://obmen.market/posts/${lotData.postid}?action=extend`
       ),
     },
   };

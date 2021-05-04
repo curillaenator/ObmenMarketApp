@@ -43,7 +43,7 @@ export const FormFull = ({
         <FormFullFields
           cloudtail={cloudtail}
           handleSubmit={handleSubmit}
-          lotPhotos={lotMeta.photoLinks}
+          // lotPhotos={lotMeta ? lotMeta.photoLinks : []}
           form={form}
           values={values}
           icons={icons}

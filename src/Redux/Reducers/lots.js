@@ -394,28 +394,27 @@ export const getLotMeta = (lotID, history) => (dispatch) => {
 
 // offer prolong
 
-export const add48hours = (lotMeta) => (dispatch) => {
+export const prolongLotExpiry = (daysToAdd) => (dispatch, getState) => {
+  const lotMeta = getState().lots.currentLotMeta;
   dispatch(setProgress(1));
-  const onUpdate = (error) => {
-    if (error) return console.log("ошибка записи");
 
-    db.ref("posts/" + lotMeta.postid).once("value", (snap) => {
-      batch(() => {
-        dispatch(setLotMeta(snap.val()));
-        // dispatch(setIsLotMeta(true));
-        dispatch(setProgress(100));
-      });
-    });
+  const newExpiry = new Date(
+    Date.parse(lotMeta.expireDate) + daysToAdd * 24 * 60 * 60 * 1000
+  );
+
+  // const curDate = new Date();
+  // const newExpiry = new Date(curDate.setDate(curDate.getDate() + 7));
+
+  const onUpdate = (err) => {
+    err
+      ? console.log(err)
+      : batch(() => {
+          dispatch(setLotMeta({ ...lotMeta, expireDate: newExpiry }));
+          dispatch(setProgress(100));
+        });
   };
 
-  // const newExpiry = new Date(
-  //   Date.parse(lotMeta.expireDate) + 2 * 24 * 60 * 60 * 1000
-  // );
-
-  const curDate = new Date();
-  const newExpiry = new Date(curDate.setDate(curDate.getDate() + 7));
-
-  db.ref("posts/" + lotMeta.postid).update({ expireDate: newExpiry }, onUpdate);
+  db.ref(`posts/${lotMeta.postid}`).update({ expireDate: newExpiry }, onUpdate);
 };
 
 // offer accept by lotAuthor & confirm by offerAuthor

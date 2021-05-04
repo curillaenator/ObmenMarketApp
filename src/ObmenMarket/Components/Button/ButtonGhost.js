@@ -1,77 +1,97 @@
-import styles from "./buttonghost.module.scss";
+import styled from "styled-components";
 
-const Icon = ({ icon, disabled, title, active }) => {
-  const iconStyle = title ? { marginRight: "8px" } : {};
+import { colors } from "../../../Utils/palette";
 
-  const iconPresent = active
-    ? `${styles.icon} ${styles.iconActive}`
-    : `${styles.icon} ${styles.iconIdle}`;
+const ButtonWrap = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: fit-content;
+  height: 40px;
+  padding: 0 16px;
+  flex-shrink: 0;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  cursor: pointer;
+  will-change: filter;
+`;
 
-  const iconClassName = disabled
-    ? `${styles.icon} ${styles.iconDisabled}`
-    : iconPresent;
+const Shape = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  background-color: ${colors.shape};
+  z-index: -10;
+`;
 
-  if (icon) {
-    return (
-      <div className={iconClassName} style={iconStyle}>
-        {icon}
-      </div>
-    );
+const Icon = styled.div`
+  display: flex;
+  align-items: center;
+  margin-right: ${(props) => (props.title ? "8px" : "0px")};
+
+  & > svg {
+    width: 24px;
+    height: 24px;
   }
-  return null;
+`;
+
+const titleColor = ({ base, active, danger, disabled }) => {
+  if (disabled) return colors.fontDisabled;
+  if (danger) return colors.fontDanger;
+  if (active) return colors.fontTitle;
+  return base;
 };
 
-const Title = ({ title, disabled, active, fontsize }) => {
-  const titlePresent = active
-    ? `${styles.title} ${styles.titleActive}`
-    : `${styles.title} ${styles.titleIdle}`;
+const Title = styled.div`
+  width: fit-content;
+  color: ${(props) => titleColor({ ...props, base: colors.fontTitle })}
+  font-style: normal;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.149333px;
+  transition: 0.08s linear;
 
-  const titleClassname = disabled
-    ? `${styles.title} ${styles.titleDisabled}`
-    : titlePresent;
-
-  if (title) {
-    return (
-      <div className={titleClassname} style={{ fontSize: fontsize }}>
-        <div>{title}</div>
-      </div>
-    );
+  &:hover {
+    color: ${(props) => titleColor({ ...props, base: colors.primary })}
   }
-  return null;
-};
 
-const Shape = () => {
-  return <div className={styles.shape}></div>;
-};
+  &:active {
+    color: ${(props) => titleColor({ ...props, base: colors.fontActive })} 
+  }
+`;
 
 export const ButtonGhost = ({
-  // width,
-  // height,
   title,
   icon,
-  handler,
-  active,
-  disabled,
   shape = false,
+  active = false,
+  danger = false,
+  disabled = false,
+  handler = () => {},
   fontsize,
 }) => {
   return (
-    <button
-      className={styles.ghost}
-      //   style={{ width, height }}
-      onClick={handler}
-      disabled={disabled}
-    >
+    <ButtonWrap onClick={handler} disabled={disabled}>
       {shape && active && <Shape />}
 
-      <Icon icon={icon} disabled={disabled} title={title} active={active} />
+      <Icon disabled={disabled} title={title} active={active}>
+        {icon}
+      </Icon>
 
       <Title
-        title={title}
         disabled={disabled}
         active={active}
+        danger={danger}
         fontsize={fontsize}
-      />
-    </button>
+      >
+        {title}
+      </Title>
+    </ButtonWrap>
   );
 };

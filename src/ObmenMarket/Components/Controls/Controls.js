@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { ButtonGhost } from "../Button/ButtonGhost";
+// import { ButtonGhost2 } from "../Button/ButtonGhost2";
 
 import cloudtailpic from "../../../Assets/Icons/cloudtail.svg";
 
@@ -68,6 +69,7 @@ export const Controls = ({
             title={titler("Удалить")}
             handler={handleDeletePost}
             icon={icons.delete}
+            danger={true}
           />
         </div>
       )}

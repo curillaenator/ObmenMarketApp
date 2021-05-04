@@ -117,8 +117,6 @@ export const FormFullFields = ({
   }, [form, uploads]);
 
   const uploadImg = (file, num) => {
-    console.log(file);
-
     return new Promise((resolve) => {
       const metadata = {
         cacheControl: "public,max-age=7200",

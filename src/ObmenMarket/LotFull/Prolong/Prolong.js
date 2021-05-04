@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Popup from "reactjs-popup";
 import { Button } from "../../Components/Button/Button";
 import { ButtonOutline } from "../../Components/Button/ButtonOutline";
+
+import { prolongLotExpiry } from "../../../Redux/Reducers/lots";
 
 import bankcard from "../../../Assets/Icons/bankcard.svg";
 import googlepay from "../../../Assets/Icons/googlepay.svg";
@@ -38,12 +40,13 @@ const Option = ({ title, icon, option, payment, setPayment }) => {
   );
 };
 
-const Modal = ({ close, add48hours, lotMeta, addTimeModal }) => {
+const Modal = ({ close, addTimeModal }) => {
+  const dispatch = useDispatch();
   const [payment, setPayment] = useState("bankcard");
   const [modalPage, setModalPage] = useState(0);
 
-  const handleAdd48Hours = () => {
-    add48hours(lotMeta);
+  const handleProlong = () => {
+    dispatch(prolongLotExpiry(2));
     close();
   };
 
@@ -111,7 +114,7 @@ const Modal = ({ close, add48hours, lotMeta, addTimeModal }) => {
               width={163}
               height={56}
               title="Cупер"
-              handler={handleAdd48Hours}
+              handler={handleProlong}
             />
           </div>
         </div>
@@ -120,29 +123,28 @@ const Modal = ({ close, add48hours, lotMeta, addTimeModal }) => {
   );
 };
 
-export const Prolong = ({ butCont, setIsModalOn, add48hours }) => {
-  const AddTimeModalUI = useSelector((state) => state.ui);
-  const lotMeta = useSelector((state) => state.lots.currentLotMeta);
+export const Prolong = ({ butCont, setIsModalOn }) => {
+  const { icons, addTimeModal } = useSelector((state) => state.ui);
 
-  const { icons, addTimeModal } = AddTimeModalUI;
-
-  const daysLeft =
-    new Date(new Date(lotMeta.expireDate) - new Date()).getDate() - 1;
+  // const daysLeft =
+  //   new Date(new Date(lotMeta.expireDate) - new Date()).getDate() - 1;
 
   const Trigger = (open) => (
     <div className={styles.prolongButton}>
       <Button
         width={butCont}
         height={56}
-        title={
-          daysLeft >= 7
-            ? "Вы достигли лимита продления срока"
-            : "Продлить объявление"
-        }
-        subtitle={daysLeft >= 7 ? null : "за 30 рублей"}
+        // title={
+        //   daysLeft >= 7
+        //     ? "Вы достигли лимита продления срока"
+        //     : "Продлить объявление  на 48 часов"
+        // }
+        title={"Продлить объявление на 48 часов"}
+        // subtitle={daysLeft >= 7 ? null : "за 30 рублей"}
+        subtitle="за 30 рублей"
         titlewidth="calc(100% - 64px)"
         icon={icons.prolong}
-        disabled={daysLeft >= 7}
+        // disabled={daysLeft >= 7}
       />
     </div>
   );
@@ -156,16 +158,9 @@ export const Prolong = ({ butCont, setIsModalOn, add48hours }) => {
       closeOnDocumentClick={false}
       onOpen={() => setIsModalOn(true)}
       onClose={() => setIsModalOn(false)}
-      disabled={daysLeft > 7}
+      // disabled={daysLeft > 7}
     >
-      {(close) => (
-        <Modal
-          close={close}
-          add48hours={add48hours}
-          lotMeta={lotMeta}
-          addTimeModal={addTimeModal}
-        />
-      )}
+      {(close) => <Modal close={close} addTimeModal={addTimeModal} />}
     </Popup>
   );
 };

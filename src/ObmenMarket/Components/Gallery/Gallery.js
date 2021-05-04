@@ -63,48 +63,48 @@ export const Gallery = ({ lotPhotos }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(0);
 
+  if (!lotPhotos) return <div className={styles.layout}></div>;
+
   return (
-    lotPhotos && (
-      <div className={styles.gallery}>
-        <div className={styles.mainphoto} onClick={() => setIsOpen(true)}>
-          <Track lotPhotos={lotPhotos} selected={selected} />
+    <div className={styles.gallery}>
+      <div className={styles.mainphoto} onClick={() => setIsOpen(true)}>
+        <Track lotPhotos={lotPhotos} selected={selected} />
 
-          <Tint
-            title="Открыть галлерею"
-            icon={openGallery}
-            count={lotPhotos.length}
-          />
-        </div>
-
-        <div className={styles.thumbtrack}>
-          {lotPhotos.map((photo, i) => (
-            <Thumb
-              key={photo}
-              photo={photo}
-              label={i}
-              selected={selected}
-              setSelected={setSelected}
-            />
-          ))}
-        </div>
-
-        {isOpen && (
-          <Lightbox
-            mainSrc={lotPhotos[selected]}
-            nextSrc={lotPhotos[(selected + 1) % lotPhotos.length]}
-            prevSrc={
-              lotPhotos[(selected + lotPhotos.length - 1) % lotPhotos.length]
-            }
-            onCloseRequest={() => setIsOpen(false)}
-            onMovePrevRequest={() =>
-              setSelected((selected + lotPhotos.length - 1) % lotPhotos.length)
-            }
-            onMoveNextRequest={() =>
-              setSelected((selected + 1) % lotPhotos.length)
-            }
-          />
-        )}
+        <Tint
+          title="Открыть галлерею"
+          icon={openGallery}
+          count={lotPhotos.length}
+        />
       </div>
-    )
+
+      <div className={styles.thumbtrack}>
+        {lotPhotos.map((photo, i) => (
+          <Thumb
+            key={photo}
+            photo={photo}
+            label={i}
+            selected={selected}
+            setSelected={setSelected}
+          />
+        ))}
+      </div>
+
+      {isOpen && (
+        <Lightbox
+          mainSrc={lotPhotos[selected]}
+          nextSrc={lotPhotos[(selected + 1) % lotPhotos.length]}
+          prevSrc={
+            lotPhotos[(selected + lotPhotos.length - 1) % lotPhotos.length]
+          }
+          onCloseRequest={() => setIsOpen(false)}
+          onMovePrevRequest={() =>
+            setSelected((selected + lotPhotos.length - 1) % lotPhotos.length)
+          }
+          onMoveNextRequest={() =>
+            setSelected((selected + 1) % lotPhotos.length)
+          }
+        />
+      )}
+    </div>
   );
 };

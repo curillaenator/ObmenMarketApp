@@ -22,7 +22,6 @@ import {
   removeOffer,
   createOffer,
   acceptConfirmOffer,
-  add48hours,
 } from "../../Redux/Reducers/lots";
 
 import { setFormMode, setIsModalOn } from "../../Redux/Reducers/home";
@@ -43,7 +42,6 @@ const Buttons = ({
   ownerID,
   handleOfferForm,
   setIsModalOn,
-  add48hours,
   setChatFromLotFull,
 }) => {
   // eslint-disable-next-line
@@ -97,11 +95,7 @@ const Buttons = ({
 
       {butCont && !lotMeta.acceptedOffer && ownerID === lotMeta.uid && (
         <div className={styles.buttons_block}>
-          <Prolong
-            butCont={butCont}
-            setIsModalOn={setIsModalOn}
-            add48hours={add48hours}
-          />
+          <Prolong butCont={butCont} setIsModalOn={setIsModalOn} />
         </div>
       )}
     </div>
@@ -420,7 +414,6 @@ const LotFull = ({
   createOffer,
   acceptConfirmOffer,
   setIsModalOn,
-  add48hours,
   chatRoom,
   setChatFromLotFull,
 }) => {
@@ -463,8 +456,6 @@ const LotFull = ({
     getLotMeta(lotid, history);
   }, [lotid, setNewLotId, getLotMeta, history]);
 
-  // console.log(id);
-
   if (!lotMeta) return <Loading />;
 
   return (
@@ -501,7 +492,6 @@ const LotFull = ({
               handleOfferForm={handleOfferForm}
               setIsModalOn={setIsModalOn}
               setChatFromLotFull={setChatFromLotFull}
-              add48hours={add48hours}
             />
 
             {isOfferForm && (
@@ -575,7 +565,6 @@ export const LotFullCont = connect(mstp, {
   createOffer,
   acceptConfirmOffer,
   setIsModalOn,
-  add48hours,
   chatRoom,
   setChatFromLotFull,
 })(LotFull);

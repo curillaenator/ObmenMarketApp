@@ -94,11 +94,6 @@ const ContactCard = ({
       handler: () => removeChatRoom(room.roomID),
     },
     {
-      title: "Тацевать",
-      icon: icons.edit,
-      handler: () => console.log("тытс-тытс-тытс-тытс..."),
-    },
-    {
       title: "Блокировать",
       icon: icons.edit,
       handler: () => console.log("Пока не работаит, идиот не блокирован"),
