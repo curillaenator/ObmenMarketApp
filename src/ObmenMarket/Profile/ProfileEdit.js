@@ -53,7 +53,7 @@ export const ProfileEdit = ({
                 <div className={styles.photo}>
                   <img className={styles.avatar} src={user.avatar} alt="" />
 
-                  <div className={styles.username}>Кирилл АРТ</div>
+                  <div className={styles.username}>{user.username}</div>
 
                   <div className={styles.upload}>
                     <ButtonOutline

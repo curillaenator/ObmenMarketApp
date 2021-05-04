@@ -16,7 +16,7 @@ import {
   setNewLotId,
   getLotMeta,
   updateLotFromEditForm,
-  onLotCreateFormCancel,
+  // onLotCreateFormCancel,
   removeLot,
   onOfferCreate,
   onOfferCancel,
@@ -108,6 +108,7 @@ const Buttons = ({
 //DESCRIPTION
 
 const Descrption = ({ lotMeta }) => {
+  // console.log(lotMeta);
   return (
     <div className={styles.description}>
       <div className={styles.author}>
@@ -136,12 +137,21 @@ const Descrption = ({ lotMeta }) => {
         </div>
       )}
 
-      {lotMeta.categories && (
+      {/* {lotMeta.categories && (
         <div className={styles.addinfo}>
           <h3 className={styles.addinfo_title}>
             Приоритетные категории обмена
           </h3>
           <p className={styles.addinfo_value}>{lotMeta.categories}</p>
+        </div>
+      )} */}
+
+      {lotMeta.wishes && (
+        <div className={styles.addinfo}>
+          <h3 className={styles.addinfo_title}>
+            Приоритетные категории обмена
+          </h3>
+          <p className={styles.addinfo_value}>{lotMeta.wishes}</p>
         </div>
       )}
     </div>
@@ -410,7 +420,6 @@ const LotFull = ({
   isChatOn,
   setNewLotId,
   updateLotFromEditForm,
-  onLotCreateFormCancel,
   removeLot,
   onOfferCreate,
   onOfferCancel,
@@ -562,7 +571,7 @@ export const LotFullCont = connect(mstp, {
   setNewLotId,
   getLotMeta,
   updateLotFromEditForm,
-  onLotCreateFormCancel,
+  // onLotCreateFormCancel,
   removeLot,
   onOfferCreate,
   onOfferCancel,
