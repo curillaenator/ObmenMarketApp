@@ -4,7 +4,7 @@ import { Form, Field } from "react-final-form";
 import { Scrollbars } from "rc-scrollbars";
 import { db, fb, fst } from "../../../Utils/firebase";
 
-import { DropMenu } from "../DropMenu/DropMenu";
+import { Dropdown } from "../Dropdown/Dropdown";
 import { TextInput } from "../../Components/Inputs/Inputs";
 import { Author } from "../Author/Author";
 
@@ -89,48 +89,47 @@ const ContactCard = ({
 
   const dropMenuItems = [
     {
-      title: "Удалить переписку навсегда",
+      title: "Удалить",
       icon: icons.delete,
       handler: () => removeChatRoom(room.roomID),
     },
     {
-      title: "Тацевать с бубном",
+      title: "Тацевать",
       icon: icons.edit,
       handler: () => console.log("тытс-тытс-тытс-тытс..."),
     },
     {
-      title: "Заблокировать идиота",
+      title: "Блокировать",
       icon: icons.edit,
       handler: () => console.log("Пока не работаит, идиот не блокирован"),
-    },
-    {
-      title: "С треском провалиться сквозь землю",
-      icon: icons.edit,
-      handler: () => console.log("С треском провалился сквозь землю"),
     },
   ];
 
   return (
     photolinks && (
-      <div
-        className={contactsClassName()}
-        onClick={() => handleSelected(room.roomID)}
-      >
-        <div className={styles.contact_image}>
-          <div className={styles.thumb}>
-            <img className={styles.image} src={photolinks[0]} alt="" />
+      <div className={contactsClassName()}>
+        <div
+          className={styles.roominfo}
+          onClick={() => handleSelected(room.roomID)}
+        >
+          <div className={styles.roominfo_image}>
+            <div className={styles.thumb}>
+              <img className={styles.image} src={photolinks[0]} alt="" />
 
-            {messqty > 0 && <div className={styles.messqty}>{messqty}</div>}
+              {messqty > 0 && <div className={styles.messqty}>{messqty}</div>}
+            </div>
+          </div>
+
+          <div className={styles.roominfo_label}>
+            <div className={styles.labelttl}>{room.title}</div>
+
+            <div className={styles.labeltxt}>{lastMessage.message}</div>
           </div>
         </div>
 
-        <div className={styles.contact_info}>
-          <div className={styles.infottl}>{room.title}</div>
-
-          <div className={styles.infotxt}>{lastMessage.message}</div>
+        <div className={styles.dropmenu}>
+          <Dropdown icon={icons.fold} items={dropMenuItems} />
         </div>
-
-        <DropMenu icon={icons.fold} items={dropMenuItems} />
       </div>
     )
   );
@@ -238,10 +237,7 @@ const Dialogs = ({
   };
 
   const resetNewMsgs = () => {
-    db.ref(`users/${ownerID}/chats/${curRoomID}`).update(
-      { newMessages: 0 },
-      onUpd
-    );
+    db.ref(`users/${ownerID}/chats/${curRoomID}`).update({ newMessages: 0 });
   };
 
   return (
