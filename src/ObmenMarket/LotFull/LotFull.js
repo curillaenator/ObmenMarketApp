@@ -17,6 +17,7 @@ import {
   getLotMeta,
   updateLotFromEditForm,
   onLotCreateFormCancel,
+  removeLot,
   onOfferCreate,
   onOfferCancel,
   removeOffer,
@@ -405,11 +406,12 @@ const LotFull = ({
   setFormMode,
   createOfferId,
   lotMeta,
+  getLotMeta,
   isChatOn,
   setNewLotId,
-  getLotMeta,
   updateLotFromEditForm,
   onLotCreateFormCancel,
+  removeLot,
   onOfferCreate,
   onOfferCancel,
   removeOffer,
@@ -469,8 +471,8 @@ const LotFull = ({
         isFormModeOn={isFormModeOn}
         lotMeta={lotMeta}
         history={history}
-        handleEditLot={() => setFormMode(!isFormModeOn)}
-        onLotCreateFormCancel={onLotCreateFormCancel}
+        editLot={() => setFormMode(!isFormModeOn)}
+        removeLot={removeLot}
       />
 
       {!isFormModeOn && (
@@ -561,6 +563,7 @@ export const LotFullCont = connect(mstp, {
   getLotMeta,
   updateLotFromEditForm,
   onLotCreateFormCancel,
+  removeLot,
   onOfferCreate,
   onOfferCancel,
   removeOffer,

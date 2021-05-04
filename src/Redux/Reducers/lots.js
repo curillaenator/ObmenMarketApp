@@ -1,6 +1,6 @@
 import { batch } from "react-redux";
 
-import { fst, db, fa, db_offer } from "../../Utils/firebase";
+import { fst, db, fa, db_offer, db_chat } from "../../Utils/firebase";
 
 import {
   onLotCreateSendMail,
@@ -323,9 +323,32 @@ export const updateLotFromEditForm = (updData) => (dispatch) => {
   db.ref(`posts/${updData.postid}`).update(updData, onUpdate);
 };
 
-export const removeLotForever = () => (dispatch) => {
-  
-}
+export const removeLot = (lotID, history) => (dispatch, getState) => {
+  dispatch(setProgress(1));
+
+  const ownerID = getState().auth.ownerID;
+
+  db_offer
+    .ref(lotID)
+    .once("value", (offers) => {
+      if (offers.exists()) {
+        Object.keys(offers.val())
+          .map((offerID) => offers.val()[offerID].photospath)
+          .forEach((path) => {
+            fst
+              .ref()
+              .child(path)
+              .listAll()
+              .then((res) => res.items.forEach((item) => item.delete()));
+          });
+      }
+      if (!offers.exists()) {
+        console.log("no offers");
+      }
+      dispatch(setProgress(20));
+    })
+    .then(() => db_offer.ref(lotID).set(null, (err) => console.log(err)));
+};
 
 // compile lotMeta (get lotMeta, getLotPhotos, get lotOffers, get lotOffersPhotos)
 
