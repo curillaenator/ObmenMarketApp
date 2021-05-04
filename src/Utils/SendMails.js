@@ -27,6 +27,11 @@ export const onLotCreateSendMail = async (lotData) => {
     .child(`posts/${lotData.uid}/${lotData.postid}/photo0`)
     .getDownloadURL();
 
+  const lotDescription =
+    lotData.description.length > 50
+      ? `${lotData.description.slice(0, 50)}...`
+      : lotData.description;
+
   const lotMailBody = {
     delivery: { state: "CREATED" },
     toUids: [`${lotData.uid}`],
@@ -38,12 +43,12 @@ export const onLotCreateSendMail = async (lotData) => {
         lotData.title,
         `https://obmen.market/posts/${lotData.postid}`,
         lotPhoto,
-        lotData.description,
+        lotDescription,
         `https://obmen.market/posts/${lotData.postid}?action=extend`
       ),
     },
   };
-  
+
   fsdb
     .collection("mail")
     .add(lotMailBody)
