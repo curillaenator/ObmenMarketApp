@@ -254,7 +254,7 @@ export const getPaginationNextPage = (endBeforeID) => (dispatch, getState) => {
     });
 };
 
-// lot create / cancel create / publish
+// lot create / cancel lot create
 
 export const onLotCreateFromForm = () => (dispatch) => {
   const lotID = db.ref().child("posts").push().key;
@@ -274,31 +274,23 @@ export const onLotCreateFormCancel = (lotID) => async (dispatch) => {
     .then((res) => res.items.forEach((item) => item.delete()));
 
   batch(() => {
-    // dispatch(setIsLotMeta(false));
     dispatch(setNewLotId(null));
     dispatch(setLotMeta(null));
   });
 };
 
-// send note on new lot create
+// lot publish / lot update / lot remove
 
 export const publishNewLotFromForm = (updData, history) => (dispatch) => {
   const draftsPath = `drafts/${updData.postid}`;
   const publishPath = `posts/${updData.postid}`;
 
   const setMeta = (err, path) => {
-    err ? console.log(err) : onLotCreateSendMail(updData); // if no error -> send mail to lot author
+    if (err) return console.log(err);
 
-    db.ref(path)
-      .once("value", (snap) => {
-        if (snap.exists()) {
-          batch(() => {
-            dispatch(setLotMeta(snap.val()));
-            dispatch(setFormMode(false));
-          });
-        }
-      })
-      .then(() => history.push(path));
+    history.push(path);
+    dispatch(setFormMode(false));
+    onLotCreateSendMail(updData);
   };
 
   if (updData.draft) {
@@ -330,6 +322,10 @@ export const updateLotFromEditForm = (updData) => (dispatch) => {
 
   db.ref(`posts/${updData.postid}`).update(updData, onUpdate);
 };
+
+export const removeLotForever = () => (dispatch) => {
+  
+}
 
 // compile lotMeta (get lotMeta, getLotPhotos, get lotOffers, get lotOffersPhotos)
 

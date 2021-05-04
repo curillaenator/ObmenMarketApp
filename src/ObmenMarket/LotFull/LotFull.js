@@ -45,10 +45,9 @@ const Buttons = ({
   setChatFromLotFull,
 }) => {
   // eslint-disable-next-line
-  const [draw, callDraw] = useState(0);
+  const [draw, callDraw] = useState(null);
 
-  const ref = useRef(0);
-  const butCont = ref.current.clientWidth;
+  const btnContainer = useRef(0);
 
   const drawCaller = () => callDraw(window.innerWidth);
 
@@ -64,13 +63,13 @@ const Buttons = ({
   const ctaIcon = isOfferForm ? icons.cancel : icons.pencil;
 
   return (
-    <div className={styles.buttons} ref={ref}>
+    <div className={styles.buttons} ref={btnContainer}>
       <div className={styles.spacer}></div>
 
-      {butCont && !lotMeta.acceptedOffer && ownerID !== lotMeta.uid && (
+      {draw && !lotMeta.acceptedOffer && ownerID !== lotMeta.uid && (
         <div className={styles.buttons_block}>
           <Button
-            width={butCont}
+            width={btnContainer.current.clientWidth}
             height={56}
             title={offerTitle}
             icon={ctaIcon}
@@ -80,10 +79,10 @@ const Buttons = ({
         </div>
       )}
 
-      {butCont && lotMeta.acceptedOffer && (
+      {draw && lotMeta.acceptedOffer && (
         <div className={styles.buttons_block}>
           <Button
-            width={butCont}
+            width={btnContainer.current.clientWidth}
             height={56}
             title="Перейти в чат"
             disabled={!lotMeta.offerConfirmed || isChatOn}
@@ -93,9 +92,12 @@ const Buttons = ({
         </div>
       )}
 
-      {butCont && !lotMeta.acceptedOffer && ownerID === lotMeta.uid && (
+      {draw && !lotMeta.acceptedOffer && ownerID === lotMeta.uid && (
         <div className={styles.buttons_block}>
-          <Prolong butCont={butCont} setIsModalOn={setIsModalOn} />
+          <Prolong
+            butCont={btnContainer.current.clientWidth}
+            setIsModalOn={setIsModalOn}
+          />
         </div>
       )}
     </div>

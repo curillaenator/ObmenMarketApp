@@ -82,8 +82,6 @@ const LotList = ({
   myLotsPerPage, // num of lots to add on loadmore click
   setMyLotsPage,
 }) => {
-  // const loader = useRef(null);
-
   useEffect(() => lotList.length === 0 && getPaginationFirstPage(), [
     getPaginationFirstPage,
     lotList.length,
@@ -92,25 +90,6 @@ const LotList = ({
   const handleNextPage = myLots
     ? () => setMyLotsPage(myLotsPage + myLotsPerPage)
     : () => getPaginationNextPage(endBeforeID);
-
-  // const scrollHandler = (entities) => {
-  //   const target = entities[0];
-
-  //   if (target.isIntersecting && lotList.length > 0)
-  //     handleNextPage(myLots ? myLotsPage + myLotsPerPage : endBeforeID);
-  // };
-
-  // useEffect(() => {
-  //   const options = {
-  //     root: null,
-  //     rootMargin: "20px",
-  //     threshold: 0.5,
-  //   };
-
-  //   const observer = new IntersectionObserver(scrollHandler, options);
-
-  //   loader.current && observer.observe(loader.current);
-  // }, [scrollHandler]);
 
   return (
     <div className={styles.lotlist}>
@@ -125,10 +104,6 @@ const LotList = ({
         lotsPending={myLots ? myLotsPending : lotsPending}
         handleNextPage={handleNextPage}
       />
-
-      {/* <div className={styles.lotlist_loader} ref={loader}>
-        load more
-      </div> */}
     </div>
   );
 };

@@ -49,7 +49,7 @@ const titleColor = ({ base, active, danger, disabled }) => {
 
 const Title = styled.div`
   width: fit-content;
-  color: ${(props) => titleColor({ ...props, base: colors.fontTitle })}
+  color: ${(props) => titleColor({ ...props, base: colors.fontTitle })};
   font-style: normal;
   font-size: 14px;
   font-weight: 600;

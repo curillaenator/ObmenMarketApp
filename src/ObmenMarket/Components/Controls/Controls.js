@@ -49,6 +49,7 @@ export const Controls = ({
             title={titler("Поделиться")}
             handler={() => {}}
             icon={icons.share}
+            disabled={true}
           />
 
           <div className={styles.editbtn}>

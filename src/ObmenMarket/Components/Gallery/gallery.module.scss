@@ -112,7 +112,6 @@
       & > img {
         @include image;
         mask-image: url(../../../Assets/Masks/commonBtn.svg);
-        // transition: 0.12s linear;
       }
 
       &::after {
