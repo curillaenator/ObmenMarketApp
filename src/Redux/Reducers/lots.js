@@ -323,15 +323,35 @@ export const updateLotFromEditForm = (updData) => (dispatch) => {
   db.ref(`posts/${updData.postid}`).update(updData, onUpdate);
 };
 
-export const removeLot = (lotID, history) => (dispatch, getState) => {
+export const removeLot = (lotID, history) => async (dispatch, getState) => {
   dispatch(setProgress(1));
 
   const ownerID = getState().auth.ownerID;
 
-  db_offer
+  await db.ref(`posts/${lotID}/chats`).once("value", (chats) => {
+    console.log(chats.exists());
+
+    if (chats.exists()) {
+      Object.keys(chats.val()).forEach((roomID) => {
+        const offerAuthor = chats.val()[roomID].offerAuthorID;
+        const lotAuthor = chats.val()[roomID].lotAuthorID;
+
+        console.log(roomID);
+
+        db_chat.ref(`messages/${roomID}`).set(null);
+        db_chat.ref(`chats/${roomID}`).set(null);
+        db.ref(`users/${offerAuthor}/chats/${roomID}`).remove();
+        db.ref(`users/${lotAuthor}/chats/${roomID}`).remove();
+        dispatch(setProgress(20));
+      });
+    }
+  });
+
+  await db_offer
     .ref(lotID)
     .once("value", (offers) => {
       if (offers.exists()) {
+        console.log("offers del");
         Object.keys(offers.val())
           .map((offerID) => offers.val()[offerID].photospath)
           .forEach((path) => {
@@ -345,9 +365,26 @@ export const removeLot = (lotID, history) => (dispatch, getState) => {
       if (!offers.exists()) {
         console.log("no offers");
       }
-      dispatch(setProgress(20));
+      dispatch(setProgress(40));
     })
-    .then(() => db_offer.ref(lotID).set(null, (err) => console.log(err)));
+    .then(() => db_offer.ref(lotID).remove());
+
+  await fst
+    .ref()
+    .child(`posts/${ownerID}/${lotID}`)
+    .listAll()
+    .then((res) =>
+      res.items.forEach((item) => {
+        item.delete();
+        dispatch(setProgress(60));
+      })
+    );
+
+  await db.ref(`posts/${lotID}`).remove();
+
+  await dispatch(setProgress(100));
+
+  history.push("/");
 };
 
 // compile lotMeta (get lotMeta, getLotPhotos, get lotOffers, get lotOffersPhotos)
