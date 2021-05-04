@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
 import { ButtonGhost } from "../Button/ButtonGhost";
-// import { ButtonGhost2 } from "../Button/ButtonGhost2";
 
 import cloudtailpic from "../../../Assets/Icons/cloudtail.svg";
 
@@ -14,15 +13,10 @@ export const Controls = ({
   isFormModeOn,
   lotMeta,
   history,
-  handleEditLot,
-  onLotCreateFormCancel,
+  editLot,
+  removeLot,
 }) => {
   const [isTitles, setIsTitles] = useState(window.innerWidth >= 640);
-
-  const handleDeletePost = () => {
-    onLotCreateFormCancel(lotMeta.postid);
-    history.push("/");
-  };
 
   useEffect(() => {
     const listener = () => setIsTitles(window.innerWidth >= 640);
@@ -55,7 +49,7 @@ export const Controls = ({
           <div className={styles.editbtn}>
             <ButtonGhost
               title={titler("Редактировать")}
-              handler={handleEditLot}
+              handler={editLot}
               icon={icons.edit}
               active={isFormModeOn}
               shape={true}
@@ -68,7 +62,7 @@ export const Controls = ({
 
           <ButtonGhost
             title={titler("Удалить")}
-            handler={handleDeletePost}
+            handler={() => removeLot(lotMeta.postid, history)}
             icon={icons.delete}
             danger={true}
           />

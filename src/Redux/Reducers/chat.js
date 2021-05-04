@@ -118,9 +118,15 @@ export const chatRoom = (lotMeta, offerMeta) => async (dispatch) => {
 
   const roomID = await db_chat.ref().push().key;
 
-  const userData = {};
-  userData[`users/${lotMeta.uid}/chats/${roomID}`] = { newMessages: 0 };
-  userData[`users/${offerMeta.authorID}/chats/${roomID}`] = { newMessages: 0 };
+  const toPost = {
+    lotAuthorID: lotMeta.uid,
+    offerAuthorID: offerMeta.authorID,
+  };
+
+  const dbData = {};
+  dbData[`users/${lotMeta.uid}/chats/${roomID}`] = { newMessages: 0 };
+  dbData[`users/${offerMeta.authorID}/chats/${roomID}`] = { newMessages: 0 };
+  dbData[`posts/${lotMeta.postid}/chats/${roomID}`] = toPost;
 
   const toRoom = {
     title: `${lotMeta.title} на ${offerMeta.name}`,
@@ -134,7 +140,7 @@ export const chatRoom = (lotMeta, offerMeta) => async (dispatch) => {
   roomData[`chats/${roomID}`] = toRoom;
 
   await db_chat.ref().update(roomData, onUpd);
-  await db.ref().update(userData, onUpd);
+  db.ref().update(dbData, onUpd);
 };
 
 export const removeChatRoom = (roomID) => (dispatch, getState) => {
