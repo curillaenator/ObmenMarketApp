@@ -2,10 +2,10 @@ import { ButtonOutline } from "../Components/Button/ButtonOutline";
 
 import styles from "./userinfo.module.scss";
 
-import country from "../../Assets/Icons/country.svg";
-import city from "../../Assets/Icons/city.svg";
-import mail from "../../Assets/Icons/mail.svg";
-import tel from "../../Assets/Icons/tel.svg";
+import country from "../../Assets/Icons/profile/country.svg";
+import city from "../../Assets/Icons/profile/city.svg";
+import mail from "../../Assets/Icons/profile/mail.svg";
+import tel from "../../Assets/Icons/profile/tel.svg";
 
 export const UserInfo = ({ ownerID, isOwner, profile, logout, handleEdit }) => {
   const handleLogout = () => logout(ownerID);
