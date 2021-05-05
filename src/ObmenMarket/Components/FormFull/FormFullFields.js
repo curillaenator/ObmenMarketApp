@@ -52,7 +52,7 @@ const Buttons = ({
           <Button
             {...commonProps}
             title={getTitle("publish", "Опубликовать")}
-            icon={icons.success}
+            icon={icons.lotpublish}
             loader={loaderBtn === "publish" && isUploading}
             handler={formSubmit}
           />
@@ -60,7 +60,7 @@ const Buttons = ({
           <ButtonOutline
             {...commonProps}
             title={getTitle("draft", "Сохранить черновик")}
-            icon={icons.drafts}
+            icon={icons.lotdraft}
             loader={loaderBtn === "draft" && isUploading}
             handler={formSubmitDraft}
           />
@@ -72,7 +72,7 @@ const Buttons = ({
           <Button
             {...commonProps}
             title={getTitle("update", "Сохранить")}
-            icon={icons.success}
+            icon={icons.lotpublish}
             loader={loaderBtn === "update" && isUploading}
             handler={formSubmitUpdate}
           />
@@ -81,7 +81,7 @@ const Buttons = ({
             width={220}
             height={56}
             title="Отмена"
-            icon={icons.drafts}
+            // icon={icons.drafts}
             handler={formSubmitCancel}
           />
         </>

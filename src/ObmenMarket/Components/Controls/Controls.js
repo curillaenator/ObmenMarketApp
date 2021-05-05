@@ -9,7 +9,8 @@ import styles from "./controls.module.scss";
 export const Controls = ({
   icons,
   isAuth,
-  user,
+  isAdmin,
+  ownerID,
   isFormModeOn,
   lotMeta,
   history,
@@ -25,7 +26,7 @@ export const Controls = ({
     return () => {
       window.removeEventListener("resize", listener);
     };
-  });
+  }, []);
 
   const titler = (ttl) => (isTitles ? ttl : "");
 
@@ -37,37 +38,42 @@ export const Controls = ({
         icon={icons.back}
       />
 
-      {isAuth && user && (user.uid === lotMeta.uid || user.isAdmin) && (
-        <div className={styles.options}>
-          <ButtonGhost
-            title={titler("Поделиться")}
-            handler={() => {}}
-            icon={icons.share}
-            // disabled={true}
-          />
+      <div className={styles.options}>
+        <ButtonGhost
+          title={titler("Поделиться")}
+          handler={() => {}}
+          icon={icons.share}
+          // disabled={true}
+        />
+        {isAuth && (ownerID === lotMeta.uid || isAdmin) && (
+          <>
+            <div className={styles.editbtn}>
+              <ButtonGhost
+                title={titler("Редактировать")}
+                handler={editLot}
+                icon={icons.edit}
+                active={isFormModeOn}
+                shape={true}
+              />
 
-          <div className={styles.editbtn}>
+              {isFormModeOn && (
+                <img
+                  className={styles.cloudtail}
+                  src={cloudtailpic}
+                  alt="tail"
+                />
+              )}
+            </div>
+
             <ButtonGhost
-              title={titler("Редактировать")}
-              handler={editLot}
-              icon={icons.edit}
-              active={isFormModeOn}
-              shape={true}
+              title={titler("Удалить")}
+              handler={() => removeLot(lotMeta.postid, history)}
+              icon={icons.delete}
+              danger={true}
             />
-
-            {isFormModeOn && (
-              <img className={styles.cloudtail} src={cloudtailpic} alt="tail" />
-            )}
-          </div>
-
-          <ButtonGhost
-            title={titler("Удалить")}
-            handler={() => removeLot(lotMeta.postid, history)}
-            icon={icons.delete}
-            danger={true}
-          />
-        </div>
-      )}
+          </>
+        )}
+      </div>
     </div>
   );
 };

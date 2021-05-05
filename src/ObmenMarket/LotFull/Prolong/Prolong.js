@@ -143,7 +143,7 @@ export const Prolong = ({ butCont, setIsModalOn }) => {
         // subtitle={daysLeft >= 7 ? null : "за 30 рублей"}
         subtitle="за 30 рублей"
         titlewidth="calc(100% - 64px)"
-        icon={icons.prolong}
+        icon={icons.lotextend}
         // disabled={daysLeft >= 7}
       />
     </div>

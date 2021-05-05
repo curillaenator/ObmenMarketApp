@@ -19,21 +19,22 @@ export const Cta = ({
     setFormMode(!isFormModeOn);
   };
 
-  const ctaTitle = isFormModeOn ? "Передумал" : "Создать объявление";
-  const ctaIcon = isFormModeOn ? icons.cancel : icons.pencil;
-  const ctaMarginBottom = isFormModeOn ? { marginBottom: "13px" } : {};
   return (
-    <div className={styles.cta} style={ctaMarginBottom}>
+    <div
+      className={styles.cta}
+      style={isFormModeOn ? { marginBottom: "13px" } : {}}
+    >
       <div className={styles.button}>
         <Button
           width={226}
           height={56}
-          title={ctaTitle}
-          icon={ctaIcon}
+          title={isFormModeOn ? "Передумал" : "Создать объявление"}
+          icon={icons.cta}
           active={isFormModeOn}
           handler={isAuth ? formModeHandlerAuthed : formModeHandlerUnauthed}
         />
       </div>
+
       <Search icon={icons.search} />
     </div>
   );

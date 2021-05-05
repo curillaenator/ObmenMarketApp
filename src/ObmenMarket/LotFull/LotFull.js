@@ -123,6 +123,13 @@ const Descrption = ({ lotMeta }) => {
 
       <div className={styles.majortext}>{lotMeta.description}</div>
 
+      {lotMeta.categories && (
+        <div className={styles.addinfo}>
+          <h3 className={styles.addinfo_title}>Категория</h3>
+          <p className={styles.addinfo_value}>{lotMeta.categories}</p>
+        </div>
+      )}
+
       {lotMeta.price && (
         <div className={styles.addinfo}>
           <h3 className={styles.addinfo_title}>Примерная оценка стоимости</h3>
@@ -136,15 +143,6 @@ const Descrption = ({ lotMeta }) => {
           <p className={styles.addinfo_value}>Да</p>
         </div>
       )}
-
-      {/* {lotMeta.categories && (
-        <div className={styles.addinfo}>
-          <h3 className={styles.addinfo_title}>
-            Приоритетные категории обмена
-          </h3>
-          <p className={styles.addinfo_value}>{lotMeta.categories}</p>
-        </div>
-      )} */}
 
       {lotMeta.wishes && (
         <div className={styles.addinfo}>
@@ -476,7 +474,8 @@ const LotFull = ({
       <Controls
         icons={icons}
         isAuth={isAuth}
-        user={user}
+        isAdmin={user.isAdmin}
+        ownerID={ownerID}
         isFormModeOn={isFormModeOn}
         lotMeta={lotMeta}
         history={history}
