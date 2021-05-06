@@ -1,5 +1,4 @@
 import styled from "styled-components";
-
 import { colors } from "../../../Utils/palette";
 
 const titleColor = ({ base, active, danger, disabled }) => {

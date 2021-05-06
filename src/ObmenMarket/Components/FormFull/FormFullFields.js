@@ -20,6 +20,7 @@ import {
 } from "../Inputs/Inputs";
 
 import cloudtailpic from "../../../Assets/Icons/cloudtail.svg";
+import ruble from "../../../Assets/Icons/ruble.svg";
 
 import styles from "./formfull.module.scss";
 
@@ -42,8 +43,9 @@ const Buttons = ({
     disabled: isUploading,
   };
 
-  const getTitle = (btn, title) =>
-    isUploading && loaderBtn === btn ? "Загрузка..." : title;
+  const getTitle = (btn, title) => {
+    return isUploading && loaderBtn === btn ? "Загрузка..." : title;
+  };
 
   return (
     <div className={styles.buttons}>
@@ -113,8 +115,19 @@ export const FormFullFields = ({
   const [loaderBtn, setLoaderBtn] = useState(null);
 
   useEffect(() => {
+    const spaces = (num) => {
+      return num
+        ? num
+            .replace(/\D/g, "")
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+        : "";
+    };
+
     form.change("uploaded", uploads.length);
-  }, [form, uploads]);
+    form.change("price", spaces(values.price));
+    form.change("overprice", spaces(values.overprice));
+  }, [form, values.price, values.overprice, uploads]);
 
   const uploadImg = (file, num) => {
     return new Promise((resolve) => {
@@ -203,12 +216,17 @@ export const FormFullFields = ({
               sub={formUI.offer.categorySub}
             />
 
-            <Field
-              name="price"
-              component={TextInput}
-              placeholder={formUI.offer.price}
-              sub={formUI.offer.priceSub}
-            />
+            <div className={styles.price}>
+              <Field
+                name="price"
+                isNum={true}
+                component={TextInput}
+                placeholder={formUI.offer.price}
+                sub={formUI.offer.priceSub}
+              />
+
+              <img src={ruble} alt="руб." />
+            </div>
 
             <div className={styles.photos}>
               <FormDropzone uploads={uploads} setUploads={setUploads} />
@@ -245,12 +263,24 @@ export const FormFullFields = ({
               sub={formUI.wish.categorySub}
             />
 
-            <Field
+            {/* <Field
               name="overprice"
               component={TextInput}
               placeholder={formUI.wish.addPayment}
               sub={formUI.wish.addPaymentSub}
-            />
+            /> */}
+
+            <div className={styles.price}>
+              <Field
+                name="overprice"
+                isNum={true}
+                component={TextInput}
+                placeholder={formUI.wish.addPayment}
+                sub={formUI.wish.addPaymentSub}
+              />
+
+              <img src={ruble} alt="руб." />
+            </div>
 
             <div className={styles.hidenfields}>
               <Field name="draft" component="input" type="checkbox" />

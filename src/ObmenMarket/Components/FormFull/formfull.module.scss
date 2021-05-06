@@ -43,6 +43,20 @@
           user-select: none;
         }
 
+        .price {
+          position: relative;
+
+          & > img {
+            position: absolute;
+            top: 14px;
+            left: 0px;
+            width: 24px;
+            height: 24px;
+            object-fit: cover;
+            // transform: translateY(-50%);
+          }
+        }
+
         .photos {
           margin-bottom: 24px;
         }

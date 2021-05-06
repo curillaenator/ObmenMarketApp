@@ -18,12 +18,18 @@ export const combinedValidators = (...validators) => (value) =>
 
 // Inputs
 
-export const TextInput = ({ input, meta, classN = "textinput", ...props }) => {
+export const TextInput = ({
+  input,
+  meta,
+  isNum,
+  classN = "textinput",
+  ...props
+}) => {
   const error = meta.touched && meta.error;
 
-  const errorStyle = () => {
-    if (classN === "textinput") return { borderBottom: "1px solid #f2002c" };
-    if (classN === "message") return { border: "1px solid #f2002c" };
+  const style = {
+    borderBottom: error && classN === "textinput" ? "1px solid #f2002c" : "",
+    paddingLeft: isNum ? "32px" : "0px",
   };
 
   return (
@@ -35,12 +41,7 @@ export const TextInput = ({ input, meta, classN = "textinput", ...props }) => {
         </div>
       )}
 
-      <input
-        {...input}
-        {...props}
-        className={styles[classN]}
-        style={error ? errorStyle() : {}}
-      />
+      <input {...input} {...props} className={styles[classN]} style={style} />
 
       {!error && <div className={styles.sub}>{props.sub}</div>}
 

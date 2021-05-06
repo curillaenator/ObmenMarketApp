@@ -15,22 +15,15 @@
   & > svg {
     width: 26px;
     height: 26px;
-  }
-
-  :global(.cta_path1) {
     fill: $chatfont1;
     transition: 0.08s linear;
   }
 
-  :global(.cta_path2) {
-    fill: $fontWhite;
-  }
-
-  &:hover :global(.cta_path1) {
+  &:hover > svg {
     fill: $chatfont1hover;
   }
 
-  &:active :global(.cta_path1) {
+  &:active > svg {
     fill: $chatfont1;
   }
 }
