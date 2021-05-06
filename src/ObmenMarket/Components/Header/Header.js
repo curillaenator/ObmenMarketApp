@@ -7,10 +7,9 @@ import { setIsChatOn, setIsChatTouched } from "../../../Redux/Reducers/chat";
 
 import { ButtonOutline } from "../Button/ButtonOutline";
 
-// import logo from "../../../Assets/Icons/logo.svg";
-import logo1 from "../../../Assets/Icons/logo/logo1.svg";
-import logo2 from "../../../Assets/Icons/logo/logo2.svg";
-import logo3 from "../../../Assets/Icons/logo/logo3.svg";
+import logo1 from "../../../Assets/Icons/logo1.svg";
+import logo2 from "../../../Assets/Icons/logo2.svg";
+import logo3 from "../../../Assets/Icons/logo3.svg";
 import chaticon from "../../../Assets/Icons/chat.svg";
 import bellicon from "../../../Assets/Icons/bell.svg";
 

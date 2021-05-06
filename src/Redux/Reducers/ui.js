@@ -1,32 +1,32 @@
-import cta_idle from "../../Assets/Icons/cta/cta_idle.svg";
-import cta_hover from "../../Assets/Icons/cta/cta_hover.svg";
-import cta_clicked from "../../Assets/Icons/cta/cta_clicked.svg";
-import cta_active from "../../Assets/Icons/cta/cta_active.svg";
-import cta_disabled from "../../Assets/Icons/cta/cta_disabled.svg";
+import cta_idle from "../../Assets/Icons/cta_idle.svg";
+import cta_hover from "../../Assets/Icons/cta_hover.svg";
+import cta_clicked from "../../Assets/Icons/cta_clicked.svg";
+import cta_active from "../../Assets/Icons/cta_active.svg";
+import cta_disabled from "../../Assets/Icons/cta_disabled.svg";
 
-import lotdraft_idle from "../../Assets/Icons/lotdraft/draft_idle.svg";
-import lotdraft_hover from "../../Assets/Icons/lotdraft/draft_hover.svg";
-import lotdraft_clicked from "../../Assets/Icons/lotdraft/draft_clicked.svg";
-import lotdraft_active from "../../Assets/Icons/lotdraft/draft_active.svg";
-import lotdraft_disabled from "../../Assets/Icons/lotdraft/draft_disabled.svg";
+import lotdraft_idle from "../../Assets/Icons/draft_idle.svg";
+import lotdraft_hover from "../../Assets/Icons/draft_hover.svg";
+import lotdraft_clicked from "../../Assets/Icons/draft_clicked.svg";
+import lotdraft_active from "../../Assets/Icons/draft_active.svg";
+import lotdraft_disabled from "../../Assets/Icons/draft_disabled.svg";
 
-import lotextend_idle from "../../Assets/Icons/lotextend/extend_idle.svg";
-import lotextend_hover from "../../Assets/Icons/lotextend/extend_hover.svg";
-import lotextend_clicked from "../../Assets/Icons/lotextend/extend_clicked.svg";
-import lotextend_active from "../../Assets/Icons/lotextend/extend_active.svg";
-import lotextend_disabled from "../../Assets/Icons/lotextend/extend_disabled.svg";
+import lotextend_idle from "../../Assets/Icons/extend_idle.svg";
+import lotextend_hover from "../../Assets/Icons/extend_hover.svg";
+import lotextend_clicked from "../../Assets/Icons/extend_clicked.svg";
+import lotextend_active from "../../Assets/Icons/extend_active.svg";
+import lotextend_disabled from "../../Assets/Icons/extend_disabled.svg";
 
-import lotpublish_idle from "../../Assets/Icons/lotpublish/publish_idle.svg";
-import lotpublish_hover from "../../Assets/Icons/lotpublish/publish_hover.svg";
-import lotpublish_clicked from "../../Assets/Icons/lotpublish/publish_clicked.svg";
-import lotpublish_active from "../../Assets/Icons/lotpublish/publish_active.svg";
-import lotpublish_disabled from "../../Assets/Icons/lotpublish/publish_disabled.svg";
+import lotpublish_idle from "../../Assets/Icons/publish_idle.svg";
+import lotpublish_hover from "../../Assets/Icons/publish_hover.svg";
+import lotpublish_clicked from "../../Assets/Icons/publish_clicked.svg";
+import lotpublish_active from "../../Assets/Icons/publish_active.svg";
+import lotpublish_disabled from "../../Assets/Icons/publish_disabled.svg";
 
-import usericon from "../../Assets/Icons/profile/user.svg";
-import tel from "../../Assets/Icons/profile/tel.svg";
-import email from "../../Assets/Icons/profile/mail.svg";
-import country from "../../Assets/Icons/profile/country.svg";
-import city from "../../Assets/Icons/profile/city.svg";
+import usericon from "../../Assets/Icons/user.svg";
+import tel from "../../Assets/Icons/tel.svg";
+import email from "../../Assets/Icons/mail.svg";
+import country from "../../Assets/Icons/country.svg";
+import city from "../../Assets/Icons/city.svg";
 
 import time from "../../Assets/Icons/modal_time.svg";
 import rock from "../../Assets/Icons/rock.svg";
