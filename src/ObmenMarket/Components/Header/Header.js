@@ -16,13 +16,11 @@ import bellicon from "../../../Assets/Icons/bell.svg";
 
 import styles from "./header.module.scss";
 
-const Logo = () => {
+const ObmenMarketLogo = () => {
   return (
     <Link to="/" className={styles.logo}>
       <img className={styles.image} src={logo1} alt="" />
-
       <img className={styles.obmen} src={logo2} alt="" />
-
       <img className={styles.market} src={logo3} alt="" />
     </Link>
   );
@@ -107,7 +105,7 @@ export const Header = ({
 
   return (
     <div className={styles.header}>
-      <Logo />
+      <ObmenMarketLogo />
 
       <div className={styles.pad}>
         {isInitialized && isAuth && (
