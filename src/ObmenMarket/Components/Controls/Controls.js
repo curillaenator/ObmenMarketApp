@@ -41,7 +41,7 @@ export const Controls = ({
       <div className={styles.options}>
         <ButtonGhost
           title={titler("Поделиться")}
-          handler={() => {}}
+          handler={() => console.log("Поделиться")}
           icon={icons.share}
           // disabled={true}
         />
