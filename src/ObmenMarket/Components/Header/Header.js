@@ -7,26 +7,11 @@ import { setIsChatOn, setIsChatTouched } from "../../../Redux/Reducers/chat";
 
 import { ButtonOutline } from "../Button/ButtonOutline";
 
-// import logo from "../../../Assets/Icons/logo.svg";
-import logo1 from "../../../Assets/Icons/logo/logo1.svg";
-import logo2 from "../../../Assets/Icons/logo/logo2.svg";
-import logo3 from "../../../Assets/Icons/logo/logo3.svg";
+import logo from "../../../Assets/Icons/logo.svg";
 import chaticon from "../../../Assets/Icons/chat.svg";
 import bellicon from "../../../Assets/Icons/bell.svg";
 
 import styles from "./header.module.scss";
-
-const Logo = () => {
-  return (
-    <Link to="/" className={styles.logo}>
-      <img className={styles.image} src={logo1} alt="" />
-
-      <img className={styles.obmen} src={logo2} alt="" />
-
-      <img className={styles.market} src={logo3} alt="" />
-    </Link>
-  );
-};
 
 const HeaderButton = ({ icon, iconpos = 0, notes, active, handler }) => {
   const canvasClass = active
@@ -107,7 +92,11 @@ export const Header = ({
 
   return (
     <div className={styles.header}>
-      <Logo />
+      <div className={styles.pad}>
+        <Link to="/" className={styles.logo}>
+          <img src={logo} alt="Обмен.маркет" />
+        </Link>
+      </div>
 
       <div className={styles.pad}>
         {isInitialized && isAuth && (

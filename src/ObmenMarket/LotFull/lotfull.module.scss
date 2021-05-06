@@ -48,7 +48,7 @@
         justify-content: space-between;
         align-items: center;
         height: 72px;
-        padding: 0 0 0 8px;
+        padding: 0 12px 0 8px;
         border-radius: 16px;
         background-color: $primaryActive;
         transition: 0.08s linear;
@@ -96,6 +96,20 @@
           flex-shrink: 0;
           z-index: 50;
           transition: 0.08s linear;
+
+          .deleteoffer {
+            margin-left: 12px;
+            cursor: pointer;
+
+            & > img {
+              transition: 0.08s linear;
+              opacity: 0.8;
+
+              &:active {
+                opacity: 1;
+              }
+            }
+          }
         }
       }
 
