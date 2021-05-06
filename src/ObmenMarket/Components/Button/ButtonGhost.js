@@ -58,23 +58,23 @@ const Title = styled.div`
   transition: 0.08s linear;
 
   &:hover {
-    color: ${(props) => titleColor({ ...props, base: colors.primary })}
+    color: ${(props) => titleColor({ ...props, base: colors.primary })};
   }
 
   &:active {
-    color: ${(props) => titleColor({ ...props, base: colors.fontActive })} 
+    color: ${(props) => titleColor({ ...props, base: colors.fontActive })};
   }
 `;
 
 export const ButtonGhost = ({
-  title,
-  icon,
+  title = "",
+  icon = null,
   shape = false,
   active = false,
   danger = false,
   disabled = false,
   handler = () => {},
-  fontsize,
+  fontsize = null,
 }) => {
   return (
     <ButtonWrap onClick={handler} disabled={disabled}>

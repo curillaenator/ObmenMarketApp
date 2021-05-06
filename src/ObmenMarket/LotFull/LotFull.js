@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { useLocation, useHistory, useParams } from "react-router-dom";
 
 import { Loading } from "../Components/Loading/Loading";
@@ -8,6 +8,7 @@ import { Gallery } from "../Components/Gallery/Gallery";
 import { Prolong } from "./Prolong/Prolong";
 import { StatusBar } from "../Components/StatusBar/StatusBar";
 import { Button } from "../Components/Button/Button";
+import { ButtonGhost } from "../Components/Button/ButtonGhost";
 import { Controls } from "../Components/Controls/Controls";
 import { FormFull } from "../Components/FormFull/FormFull";
 import { FormOffer } from "../Components/FormOffer/FormOffer";
@@ -16,7 +17,6 @@ import {
   setNewLotId,
   getLotMeta,
   updateLotFromEditForm,
-  // onLotCreateFormCancel,
   removeLot,
   onOfferCreate,
   onOfferCancel,
@@ -30,7 +30,6 @@ import { setFormMode, setIsModalOn } from "../../Redux/Reducers/home";
 import { chatRoom, setChatFromLotFull } from "../../Redux/Reducers/chat";
 
 import readytopay from "../../Assets/Icons/readytopay.svg";
-import deleteBtn from "../../Assets/Icons/delete_2.svg";
 import shrink from "../../Assets/Icons/shrink.svg";
 
 import styles from "./lotfull.module.scss";
@@ -168,6 +167,7 @@ const OfferCard = ({
   removeOffer,
   chatRoom,
 }) => {
+  const icons = useSelector((state) => state.ui.icons);
   const ref = useRef({});
   const [openHeigth, setOpenHeigth] = useState(null);
 
@@ -274,12 +274,10 @@ const OfferCard = ({
               />
             )}
 
-          <div
-            className={styles.deleteoffer}
-            onClick={() => removeOffer(offerMeta.offerID)}
-          >
-            <img src={deleteBtn} alt="Отказаться" />
-          </div>
+          <ButtonGhost
+            icon={icons.delete}
+            handler={() => removeOffer(offerMeta.offerID)}
+          />
         </div>
       </div>
 

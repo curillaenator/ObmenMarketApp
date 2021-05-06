@@ -22,11 +22,11 @@ import lotpublish_clicked from "../../Assets/Icons/lotpublish/clicked.svg";
 import lotpublish_active from "../../Assets/Icons/lotpublish/active.svg";
 import lotpublish_disabled from "../../Assets/Icons/lotpublish/disabled.svg";
 
-import usericon from "../../Assets/Icons/user.svg";
-import tel from "../../Assets/Icons/tel.svg";
-import email from "../../Assets/Icons/mail.svg";
-import country from "../../Assets/Icons/country.svg";
-import city from "../../Assets/Icons/city.svg";
+import usericon from "../../Assets/Icons/profile/user.svg";
+import tel from "../../Assets/Icons/profile/tel.svg";
+import email from "../../Assets/Icons/profile/mail.svg";
+import country from "../../Assets/Icons/profile/country.svg";
+import city from "../../Assets/Icons/profile/city.svg";
 
 import time from "../../Assets/Icons/modal_time.svg";
 import rock from "../../Assets/Icons/rock.svg";
