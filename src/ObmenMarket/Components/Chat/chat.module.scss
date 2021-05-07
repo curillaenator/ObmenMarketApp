@@ -9,25 +9,6 @@
   overflow: hidden;
 }
 
-.closeBtn {
-  cursor: pointer;
-
-  & > svg {
-    width: 26px;
-    height: 26px;
-    fill: $chatfont1;
-    transition: 0.08s linear;
-  }
-
-  &:hover > svg {
-    fill: $chatfont1hover;
-  }
-
-  &:active > svg {
-    fill: $chatfont1;
-  }
-}
-
 .contacts_header {
   @include header;
   padding: 0 24px;

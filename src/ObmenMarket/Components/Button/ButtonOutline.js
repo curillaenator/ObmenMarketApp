@@ -32,6 +32,12 @@ const ButtonWrap = styled.button`
   background-color: transparent;
   cursor: pointer;
 
+  .loader {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+  }
+
   .shape {
     position: absolute;
     top: 0;
@@ -39,34 +45,8 @@ const ButtonWrap = styled.button`
     fill: ${(props) => shapeColor({ ...props, base: colors.outline })};
     stroke: ${(props) => shapeColor({ ...props, base: colors.outlineStroke })};
     stroke-width: 2px;
-    transition: 0.08s linear;
+    transition: ${(props) => props.transition}s linear;
     z-index: -1;
-  }
-
-  .loader {
-    width: 40px;
-    height: 40px;
-    object-fit: cover;
-  }
-
-  .icon {
-    height: 24px;
-    width: 24px;
-    margin-right: ${(props) => (props.title ? "8px" : "0px")};
-    background-image: url(${(props) => iconState({ ...props, state: "idle" })});
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
-    transition: 0.08s linear;
-  }
-
-  .title {
-    color: ${(props) => ttlColor({ ...props, base: colors.primary })};
-    font-weight: 700;
-    font-size: 14px;
-    line-height: 24px;
-    letter-spacing: -0.149333px;
-    transition: 0.08s linear;
   }
 
   &:hover .shape {
@@ -79,12 +59,33 @@ const ButtonWrap = styled.button`
     stroke: ${(props) => shapeColor({ ...props, base: colors.outlineClick })};
   }
 
+  .icon {
+    height: 24px;
+    width: 24px;
+    margin-right: ${(props) => (props.title ? "8px" : "0px")};
+    background-image: url(${(props) => iconState({ ...props, state: "idle" })});
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    transition: ${(props) => props.transition}s linear;
+  }
+
   &:hover .icon {
-    background-image: url(${(props) => iconState({ ...props, state: "hover" })});
+    background-image: url(${(props) =>
+      iconState({ ...props, state: "hover" })});
   }
 
   &:active .icon {
-    background-image: url(${(props) => iconState({ ...props, state: "clicked" })});
+    background-image: url(${(props) =>
+      iconState({ ...props, state: "clicked" })});
+  }
+
+  .title {
+    font-size: ${(props) => (props.fontsize ? props.fontsize : 14)}px;
+    font-weight: 700;
+    letter-spacing: -0.149333px;
+    color: ${(props) => ttlColor({ ...props, base: colors.primary })};
+    transition: ${(props) => props.transition}s linear;
   }
 
   &:hover .title {
@@ -100,28 +101,31 @@ const ButtonWrap = styled.button`
 export const ButtonOutline = ({
   width = 217,
   height = 56,
-  title = "Сохранить",
+  smooth = 98, // 98
+  radius = 21.33, // 23.33 - 2px border
+  title = "",
   icon = null,
-  loader = false,
   active = false,
   disabled = false,
-  handler = () => console.log("click"),
+  loader = false,
+  fontsize = null,
+  transition = 0.08,
+  handler = () => console.log("Outline"),
 }) => {
-  const smoothQ = 98;
-  const radius = 23.33; // 44
-
   const W = width - 2;
   const H = height - 2;
   const R = H / 2 < radius ? H / 2 : radius;
-  const S = (0.08 + R * 0.000012) * smoothQ - 4 / smoothQ - 3;
+  const S = (0.08 + R * 0.000012) * smooth - 4 / smooth - 3;
   return (
     <ButtonWrap
-      icon={icon}
       width={width}
       height={height}
+      icon={icon}
       title={title}
       active={active}
       disabled={disabled}
+      fontsize={fontsize}
+      transition={transition}
       onClick={handler}
     >
       <svg

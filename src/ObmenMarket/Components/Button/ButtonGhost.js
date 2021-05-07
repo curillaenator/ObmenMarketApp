@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import preloader from "../../../Assets/Images/loader.svg";
 import { colors } from "../../../Utils/palette";
 
 const titleColor = ({ base, active, danger, disabled }) => {
@@ -13,7 +14,6 @@ const ButtonWrap = styled.button`
   justify-content: center;
   align-items: center;
   position: relative;
-  width: fit-content;
   height: 40px;
   padding: 0 16px;
   flex-shrink: 0;
@@ -22,6 +22,12 @@ const ButtonWrap = styled.button`
   background-color: transparent;
   cursor: pointer;
   will-change: filter;
+
+  .loader {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+  }
 
   .shape {
     position: absolute;
@@ -46,14 +52,11 @@ const ButtonWrap = styled.button`
   }
 
   .title {
-    width: fit-content;
-    color: ${(props) => titleColor({ ...props, base: colors.fontTitle })};
-    font-style: normal;
-    font-size: 14px;
+    font-size: ${(props) => (props.fontsize ? props.fontsize : 14)}px;
     font-weight: 600;
-    line-height: 1.4;
     letter-spacing: -0.149333px;
-    transition: 0.08s linear;
+    color: ${(props) => titleColor({ ...props, base: colors.fontTitle })};
+    transition: ${(props) => props.transition}s linear;
   }
 
   &:hover .title {
@@ -72,7 +75,9 @@ export const ButtonGhost = ({
   active = false,
   danger = false,
   disabled = false,
+  loader = false,
   fontsize = null,
+  transition = 0.08,
   handler = () => console.log("ghostButton"),
 }) => {
   return (
@@ -82,11 +87,14 @@ export const ButtonGhost = ({
       danger={danger}
       disabled={disabled}
       fontsize={fontsize}
+      transition={transition}
       onClick={handler}
     >
       {shape && active && <div className="shape"></div>}
 
-      {icon && <div className="icon">{icon}</div>}
+      {loader && <img className="loader" src={preloader} alt="Загрузка" />}
+
+      {!loader && icon && <div className="icon">{icon}</div>}
 
       <div className="title">{title}</div>
     </ButtonWrap>

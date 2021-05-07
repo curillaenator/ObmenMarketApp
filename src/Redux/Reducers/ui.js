@@ -16,11 +16,11 @@ import lotextend_clicked from "../../Assets/Icons/extend_clicked.svg";
 import lotextend_active from "../../Assets/Icons/extend_active.svg";
 import lotextend_disabled from "../../Assets/Icons/extend_disabled.svg";
 
-import lotpublish_idle from "../../Assets/Icons/publish_idle.svg";
-import lotpublish_hover from "../../Assets/Icons/publish_hover.svg";
-import lotpublish_clicked from "../../Assets/Icons/publish_clicked.svg";
-import lotpublish_active from "../../Assets/Icons/publish_active.svg";
-import lotpublish_disabled from "../../Assets/Icons/publish_disabled.svg";
+import lotpublish_idle from "../../Assets/Icons/pub_idle.svg";
+import lotpublish_hover from "../../Assets/Icons/pub_hover.svg";
+import lotpublish_clicked from "../../Assets/Icons/pub_clicked.svg";
+import lotpublish_active from "../../Assets/Icons/pub_active.svg";
+import lotpublish_disabled from "../../Assets/Icons/pub_disabled.svg";
 
 import usericon from "../../Assets/Icons/user.svg";
 import tel from "../../Assets/Icons/tel.svg";
@@ -61,17 +61,6 @@ const initialState = {
       active: lotpublish_active,
       disabled: lotpublish_disabled,
     },
-    // add: (
-    //   <svg
-    //     width="24"
-    //     height="24"
-    //     viewBox="0 0 24 24"
-    //     fill="none"
-    //     xmlns="http://www.w3.org/2000/svg"
-    //   >
-    //     <path d="M12.0057 24C18.5861 24 24 18.5975 24 12.0057C24 5.41387 18.5861 0 11.9943 0C5.40255 0 0 5.41387 0 12.0057C0 18.5975 5.41387 24 12.0057 24ZM11.9943 17.6008C11.1902 17.6008 10.6465 17.0231 10.6465 16.2303V13.3648H7.61114C6.80698 13.3648 6.21803 12.8098 6.21803 12.017C6.21803 11.2128 6.79566 10.6692 7.61114 10.6692H10.6465V7.67909C10.6465 6.88627 11.1902 6.30864 11.9943 6.30864C12.7872 6.30864 13.3421 6.87494 13.3421 7.67909V10.6692H16.3889C17.2043 10.6692 17.7706 11.2128 17.7706 12.017C17.7706 12.8098 17.193 13.3648 16.3889 13.3648H13.3421V16.2303C13.3421 17.0345 12.7872 17.6008 11.9943 17.6008Z" />
-    //   </svg>
-    // ),
     check: (
       <svg
         width="24"
@@ -202,9 +191,7 @@ const initialState = {
         viewBox="0 0 27 27"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <path
-          d="M0 13.3333C0 5.96954 5.96954 0 13.3333 0C20.6971 0 26.6667 5.96954 26.6667 13.3333C26.6667 20.6971 20.6971 26.6667 13.3333 26.6667C5.96954 26.6667 0 20.6971 0 13.3333ZM10.2761 8.39052C9.75544 7.86983 8.91122 7.86983 8.39052 8.39052C7.86983 8.91122 7.86983 9.75544 8.39052 10.2761L11.4477 13.3333L8.39052 16.3905C7.86983 16.9112 7.86983 17.7554 8.39052 18.2761C8.91122 18.7968 9.75544 18.7968 10.2761 18.2761L13.3333 15.219L16.3905 18.2761C16.9112 18.7968 17.7554 18.7968 18.2761 18.2761C18.7968 17.7554 18.7968 16.9112 18.2761 16.3905L15.219 13.3333L18.2761 10.2761C18.7968 9.75544 18.7968 8.91122 18.2761 8.39052C17.7554 7.86983 16.9112 7.86983 16.3905 8.39052L13.3333 11.4477L10.2761 8.39052Z"
-        />
+        <path d="M0 13.3333C0 5.96954 5.96954 0 13.3333 0C20.6971 0 26.6667 5.96954 26.6667 13.3333C26.6667 20.6971 20.6971 26.6667 13.3333 26.6667C5.96954 26.6667 0 20.6971 0 13.3333ZM10.2761 8.39052C9.75544 7.86983 8.91122 7.86983 8.39052 8.39052C7.86983 8.91122 7.86983 9.75544 8.39052 10.2761L11.4477 13.3333L8.39052 16.3905C7.86983 16.9112 7.86983 17.7554 8.39052 18.2761C8.91122 18.7968 9.75544 18.7968 10.2761 18.2761L13.3333 15.219L16.3905 18.2761C16.9112 18.7968 17.7554 18.7968 18.2761 18.2761C18.7968 17.7554 18.7968 16.9112 18.2761 16.3905L15.219 13.3333L18.2761 10.2761C18.7968 9.75544 18.7968 8.91122 18.2761 8.39052C17.7554 7.86983 16.9112 7.86983 16.3905 8.39052L13.3333 11.4477L10.2761 8.39052Z" />
       </svg>
     ),
   },

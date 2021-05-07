@@ -4,6 +4,7 @@ import { Form, Field } from "react-final-form";
 import { Scrollbars } from "rc-scrollbars";
 import { db, fb, fst } from "../../../Utils/firebase";
 
+import { ButtonIcon } from "../../Components/Button/ButtonIcon";
 import { Dropdown } from "../Dropdown/Dropdown";
 import { TextInput } from "../../Components/Inputs/Inputs";
 import { Author } from "../Author/Author";
@@ -23,14 +24,6 @@ import sendmess from "../../../Assets/Icons/message.svg";
 import styles from "./chat.module.scss";
 
 const onUpd = (err) => (err ? console.log(err) : console.log("success"));
-
-const CloseBtn = ({ icon, handler }) => {
-  return (
-    <div className={styles.closeBtn} onClick={handler}>
-      {icon}
-    </div>
-  );
-};
 
 const ContactCard = ({
   icons,
@@ -148,7 +141,7 @@ const Contacts = ({
       <div className={styles.contacts_header}>
         <div className={styles.title}>Мессенджер</div>
 
-        <CloseBtn icon={icons.cancel} handler={closeChat} />
+        <ButtonIcon icon={icons.cancel} handler={closeChat} />
       </div>
 
       <div className={styles.contacts_search}>
@@ -244,7 +237,7 @@ const Dialogs = ({
           name={opponent && opponent.opponentName}
         />
 
-        <CloseBtn icon={icons.fold} handler={deselectRoom} />
+        <ButtonIcon icon={icons.fold} handler={deselectRoom} />
       </div>
 
       <div className={styles.dialogs_messages}>
