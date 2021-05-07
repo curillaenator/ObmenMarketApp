@@ -12,6 +12,7 @@ import {
 import { setFormMode, setProgress } from "./home";
 
 const SET_LOTLIST = "lots/SET_LOTLIST";
+const RESET_LOTLIST = "lots/RESET_LOTLIST";
 const SET_ENDBEFORE_ID = "lots/SET_ENDBEFORE_ID";
 const SET_LOTS_PENDING = "lots/SET_LOTS_PENDING";
 const SET_ALLLOTS_LOADED = "lots/SET_ALLLOTS_LOADED";
@@ -52,6 +53,9 @@ export const lots = (state = initialState, action) => {
 
     case SET_LOTLIST:
       return { ...state, lotList: [...state.lotList, ...action.lotList] };
+
+    case RESET_LOTLIST:
+      return { ...state, lotList: [] };
 
     case SET_LOTS_PENDING:
       return { ...state, lotsPending: action.payload };
@@ -104,6 +108,7 @@ export const lots = (state = initialState, action) => {
 // ACTIONS
 
 const setLotList = (lotList) => ({ type: SET_LOTLIST, lotList });
+const resetLotList = () => ({ type: RESET_LOTLIST });
 const setEndBeforeID = (id) => ({ type: SET_ENDBEFORE_ID, id });
 const setLotsPending = (payload) => ({ type: SET_LOTS_PENDING, payload });
 const setAllLotsLoaded = (payload) => ({ type: SET_ALLLOTS_LOADED, payload });
@@ -129,6 +134,13 @@ export const resetMetaState = () => (dispatch) => {
     dispatch(setNewLotId(null));
     dispatch(setLotMeta(null));
     dispatch(setNewOfferId(null));
+  });
+};
+
+export const onLogoClick = () => (dispatch) => {
+  batch(() => {
+    dispatch(setLotsPending(true));
+    dispatch(resetLotList());
   });
 };
 

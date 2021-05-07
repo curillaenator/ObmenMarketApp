@@ -45,33 +45,30 @@ export const Controls = ({
           icon={icons.share}
           // disabled={true}
         />
-        {isAuth && (ownerID === lotMeta.uid || isAdmin) && (
-          <>
-            <div className={styles.editbtn}>
-              <ButtonGhost
-                title={titler("Редактировать")}
-                handler={editLot}
-                icon={icons.edit}
-                active={isFormModeOn}
-                shape={true}
-              />
-
-              {isFormModeOn && (
-                <img
-                  className={styles.cloudtail}
-                  src={cloudtailpic}
-                  alt="tail"
-                />
-              )}
-            </div>
-
+        
+        {isAuth && ownerID === lotMeta.uid && (
+          <div className={styles.editbtn}>
             <ButtonGhost
-              title={titler("Удалить")}
-              handler={() => removeLot(lotMeta.postid, history)}
-              icon={icons.delete}
-              danger={true}
+              title={titler("Редактировать")}
+              handler={editLot}
+              icon={icons.edit}
+              active={isFormModeOn}
+              shape={true}
             />
-          </>
+
+            {isFormModeOn && (
+              <img className={styles.cloudtail} src={cloudtailpic} alt="tail" />
+            )}
+          </div>
+        )}
+
+        {isAuth && (ownerID === lotMeta.uid || isAdmin) && (
+          <ButtonGhost
+            title={titler("Удалить")}
+            handler={() => removeLot(lotMeta.postid, history)}
+            icon={icons.delete}
+            danger={true}
+          />
         )}
       </div>
     </div>

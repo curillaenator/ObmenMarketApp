@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   width: 100%;
-  margin-bottom: 64px;
+  margin-bottom: 24px;
   .button {
     position: fixed;
     bottom: 32px;
@@ -26,6 +26,7 @@
 
 @media (min-width: 640px) {
   .cta {
+    margin-bottom: 32px;
     .button {
       position: inherit;
       bottom: auto;
@@ -33,5 +34,11 @@
       margin-right: 40px;
       transform: none;
     }
+  }
+}
+
+@media (min-width: 1024px) {
+  .cta {
+    margin-bottom: 48px;
   }
 }

@@ -1,9 +1,9 @@
-import { compose } from "redux";
 import { connect } from "react-redux";
-import { Link, withRouter } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import { setFormMode } from "../../../Redux/Reducers/home";
 import { setIsChatOn, setIsChatTouched } from "../../../Redux/Reducers/chat";
+import { onLogoClick } from "../../../Redux/Reducers/lots";
 
 import { ButtonOutline } from "../Button/ButtonOutline";
 
@@ -15,9 +15,9 @@ import bellicon from "../../../Assets/Icons/bell.svg";
 
 import styles from "./header.module.scss";
 
-const ObmenMarketLogo = () => {
+const ObmenMarketLogo = ({ onLogoClick }) => {
   return (
-    <Link to="/" className={styles.logo}>
+    <Link to="/" className={styles.logo} onClick={() => onLogoClick()}>
       <img className={styles.image} src={logo1} alt="" />
       <img className={styles.obmen} src={logo2} alt="" />
       <img className={styles.market} src={logo3} alt="" />
@@ -91,12 +91,14 @@ export const Header = ({
   isAuth,
   isInitialized,
   roomsNewMsgs,
-  location,
   isChatOn,
   setFormMode,
   setIsChatOn,
   setIsChatTouched,
+  onLogoClick,
 }) => {
+  const location = useLocation();
+
   const handleLoginButton = () => setFormMode(false);
 
   const loginButtonClicked = location.pathname === "/login";
@@ -104,7 +106,7 @@ export const Header = ({
 
   return (
     <div className={styles.header}>
-      <ObmenMarketLogo />
+      <ObmenMarketLogo onLogoClick={onLogoClick} />
 
       <div className={styles.pad}>
         {isInitialized && isAuth && (
@@ -142,7 +144,9 @@ const mstp = (state) => ({
   roomsNewMsgs: state.chat.roomsNewMsgs,
 });
 
-export const HeaderCont = compose(
-  withRouter,
-  connect(mstp, { setFormMode, setIsChatOn, setIsChatTouched })
-)(Header);
+export const HeaderCont = connect(mstp, {
+  setFormMode,
+  setIsChatOn,
+  setIsChatTouched,
+  onLogoClick,
+})(Header);

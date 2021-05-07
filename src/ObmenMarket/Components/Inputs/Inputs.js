@@ -29,7 +29,7 @@ export const TextInput = ({
 
   const style = {
     borderBottom: error && classN === "textinput" ? "1px solid #f2002c" : "",
-    paddingLeft: isNum ? "32px" : "0px",
+    paddingLeft: isNum ? "32px" : classN === "message" ? "16px" : "0px",
   };
 
   return (
