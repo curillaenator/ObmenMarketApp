@@ -10,7 +10,7 @@ export const FormFull = ({
   cloudtail,
   icons,
   formFullUI,
-  lotMeta = null,
+  lotMeta,
   update = false,
   formHandler,
   setFormMode,
@@ -20,19 +20,24 @@ export const FormFull = ({
   const onSubmit = (formData) => {
     delete formData.uploaded;
 
-    const curDate = new Date();
+    if (!update) {
+      const curDate = new Date();
 
-    const initData = {
-      uid: ownerID,
-      postid: createLotId,
-      username: user.username,
-      avatar: user.avatar,
-      publishedAt: new Date(),
-      expireDate: new Date(curDate.setDate(curDate.getDate() + 7)),
-    };
+      const initData = {
+        uid: ownerID,
+        postid: createLotId,
+        username: user.username,
+        avatar: user.avatar,
+        publishedAt: new Date(),
+        expireDate: new Date(curDate.setDate(curDate.getDate() + 7)),
+      };
 
-    if (!update) formHandler({ ...initData, ...formData }, history);
-    if (update) formHandler({ ...lotMeta, ...formData });
+      return formHandler({ ...initData, ...formData }, history);
+    }
+
+    if (update) {
+      return formHandler({ ...lotMeta, ...formData }, history);
+    }
   };
 
   return (
@@ -43,7 +48,7 @@ export const FormFull = ({
         <FormFullFields
           cloudtail={cloudtail}
           handleSubmit={handleSubmit}
-          // lotPhotos={lotMeta ? lotMeta.photoLinks : []}
+          lotPhotos={lotMeta ? lotMeta.photoLinks : null}
           form={form}
           values={values}
           icons={icons}

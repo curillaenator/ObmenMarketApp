@@ -279,6 +279,67 @@ export const onLotCreateFormCancel = (lotID) => async (dispatch) => {
   });
 };
 
+// compile lotMeta (get lotMeta, getLotPhotos, get lotOffers, get lotOffersPhotos)
+
+export const getLotMeta = (lotID, history) => (dispatch) => {
+  dispatch(setProgress(1));
+
+  const compileLotMeta = async (lotMeta) => {
+    const photoItems = await fst
+      .ref()
+      .child(`posts/${lotMeta.uid}/${lotMeta.postid}`)
+      .listAll()
+      .then((res) => res.items.map((item) => item.getDownloadURL()));
+
+    const pLinks = await Promise.all(photoItems);
+
+    const offersSnap = await db_offer.ref(lotMeta.postid).once("value");
+
+    if (offersSnap.exists()) {
+      const offersSnapArr = Object.keys(offersSnap.val()).map(
+        (id) => offersSnap.val()[id]
+      );
+
+      const offersPromises = offersSnapArr.map(async (offer) => {
+        const offerPhotoItems = await fst
+          .ref()
+          .child(offer.photospath)
+          .listAll()
+          .then((res) => res.items.map((item) => item.getDownloadURL()));
+
+        const offerPhotoLinks = await Promise.all(offerPhotoItems);
+
+        return { ...offer, photoURLs: offerPhotoLinks };
+      });
+
+      Promise.all(offersPromises).then((offers) => {
+        batch(() => {
+          dispatch(setLotMeta({ ...lotMeta, photoLinks: pLinks, offers }));
+          dispatch(setProgress(100));
+        });
+      });
+    }
+
+    if (!offersSnap.exists()) {
+      batch(() => {
+        dispatch(setLotMeta({ ...lotMeta, photoLinks: pLinks, offers: null }));
+        dispatch(setProgress(100));
+      });
+    }
+  };
+
+  db.ref(`posts/${lotID}`).once("value", (lotSnap) => {
+    if (lotSnap.exists()) {
+      dispatch(setFormMode(false));
+      compileLotMeta(lotSnap.val());
+    }
+
+    if (!lotSnap.exists()) {
+      history.push("/");
+    }
+  });
+};
+
 // lot publish / lot update / lot remove
 
 export const publishNewLotFromForm = (updData, history) => (dispatch) => {
@@ -308,16 +369,15 @@ export const publishNewLotFromForm = (updData, history) => (dispatch) => {
   }
 };
 
-export const updateLotFromEditForm = (updData) => (dispatch) => {
-  const onUpdate = (error) => {
-    error ? console.log(error) : console.log("success");
-
-    db.ref(`posts/${updData.postid}`).once("value", (snap) => {
-      batch = () => {
-        dispatch(setLotMeta(snap.val()));
-        dispatch(setFormMode(false));
-      };
-    });
+export const updateLotFromEditForm = (updData, history) => (dispatch) => {
+  const onUpdate = (err) => {
+    err
+      ? console.log(err)
+      : batch(() => {
+          dispatch(setLotMeta(null));
+          dispatch(setFormMode(false));
+          dispatch(getLotMeta(updData.postid, history));
+        });
   };
 
   db.ref(`posts/${updData.postid}`).update(updData, onUpdate);
@@ -385,67 +445,6 @@ export const removeLot = (lotID, history) => async (dispatch, getState) => {
   await dispatch(setProgress(100));
 
   history.push("/");
-};
-
-// compile lotMeta (get lotMeta, getLotPhotos, get lotOffers, get lotOffersPhotos)
-
-export const getLotMeta = (lotID, history) => (dispatch) => {
-  dispatch(setProgress(1));
-
-  const compileLotMeta = async (lotMeta) => {
-    const photoItems = await fst
-      .ref()
-      .child(`posts/${lotMeta.uid}/${lotMeta.postid}`)
-      .listAll()
-      .then((res) => res.items.map((item) => item.getDownloadURL()));
-
-    const pLinks = await Promise.all(photoItems);
-
-    const offersSnap = await db_offer.ref(lotMeta.postid).once("value");
-
-    if (offersSnap.exists()) {
-      const offersSnapArr = Object.keys(offersSnap.val()).map(
-        (id) => offersSnap.val()[id]
-      );
-
-      const offersPromises = offersSnapArr.map(async (offer) => {
-        const offerPhotoItems = await fst
-          .ref()
-          .child(offer.photospath)
-          .listAll()
-          .then((res) => res.items.map((item) => item.getDownloadURL()));
-
-        const offerPhotoLinks = await Promise.all(offerPhotoItems);
-
-        return { ...offer, photoURLs: offerPhotoLinks };
-      });
-
-      Promise.all(offersPromises).then((offers) => {
-        batch(() => {
-          dispatch(setLotMeta({ ...lotMeta, photoLinks: pLinks, offers }));
-          dispatch(setProgress(100));
-        });
-      });
-    }
-
-    if (!offersSnap.exists()) {
-      batch(() => {
-        dispatch(setLotMeta({ ...lotMeta, photoLinks: pLinks, offers: null }));
-        dispatch(setProgress(100));
-      });
-    }
-  };
-
-  db.ref(`posts/${lotID}`).once("value", (lotSnap) => {
-    if (lotSnap.exists()) {
-      dispatch(setFormMode(false));
-      compileLotMeta(lotSnap.val());
-    }
-
-    if (!lotSnap.exists()) {
-      history.push("/");
-    }
-  });
 };
 
 // offer prolong

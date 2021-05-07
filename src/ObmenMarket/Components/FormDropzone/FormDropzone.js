@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useDropzone } from "react-dropzone";
 import Resizer from "react-image-file-resizer";
+import { fst } from "../../../Utils/firebase";
 
 import styles from "./formdropzone.module.scss";
 
@@ -51,7 +52,15 @@ export const FormDropzone = ({ uploads, setUploads }) => {
   };
 
   const onRemove = (file) => {
-    setUploads(uploads.filter((blob) => blob.name !== file.name));
+    if (typeof file === "string") {
+      setUploads(uploads.filter((f) => f !== file));
+
+      fst.refFromURL(file).delete();
+    }
+
+    if (typeof file === "object") {
+      setUploads(uploads.filter((blob) => blob.name !== file.name));
+    }
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -76,7 +85,9 @@ export const FormDropzone = ({ uploads, setUploads }) => {
             >
               <img
                 className={styles.photo}
-                src={URL.createObjectURL(photo)}
+                src={
+                  typeof photo === "string" ? photo : URL.createObjectURL(photo)
+                }
                 alt={photo.name}
                 draggable={false}
               />

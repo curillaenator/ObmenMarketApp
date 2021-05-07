@@ -114,6 +114,8 @@ export const FormFullFields = ({
   const [isUploading, setIsUploading] = useState(false);
   const [loaderBtn, setLoaderBtn] = useState(null);
 
+  useEffect(() => lotPhotos && setUploads(lotPhotos), [lotPhotos]);
+
   useEffect(() => {
     const spaces = (num) => {
       return num
@@ -130,6 +132,8 @@ export const FormFullFields = ({
   }, [form, values.price, values.overprice, uploads]);
 
   const uploadImg = (file, num) => {
+    if (typeof file === "string") return true;
+
     return new Promise((resolve) => {
       const metadata = {
         cacheControl: "public,max-age=7200",
@@ -169,8 +173,6 @@ export const FormFullFields = ({
 
   const formSubmitUpdate = () => submitBase();
 
-  const formSubmitCancel = () => setFormMode(false);
-
   const onSubmitClick = (e, submitFunc, submitBtn) => {
     e.preventDefault();
     dispatch(setProgress(1));
@@ -179,7 +181,11 @@ export const FormFullFields = ({
       setIsUploading(true);
       setLoaderBtn(submitBtn);
 
-      Promise.all(uploads.map((blob, num) => uploadImg(blob, num)))
+      // const uploadedImgs = uploads.filter((item) => typeof item === "string");
+
+      // fst.ref().child(`posts/${ownerID}/${lotID}`).listAll().then(res => res.items);
+
+      Promise.all(uploads.map((file, num) => uploadImg(file, num)))
         .then(() => {
           submitFunc();
           dispatch(setProgress(100));
@@ -263,13 +269,6 @@ export const FormFullFields = ({
               sub={formUI.wish.categorySub}
             />
 
-            {/* <Field
-              name="overprice"
-              component={TextInput}
-              placeholder={formUI.wish.addPayment}
-              sub={formUI.wish.addPaymentSub}
-            /> */}
-
             <div className={styles.price}>
               <Field
                 name="overprice"
@@ -299,7 +298,7 @@ export const FormFullFields = ({
         formSubmit={(e) => onSubmitClick(e, formSubmitPublish, "publish")}
         formSubmitDraft={(e) => onSubmitClick(e, formSubmitDraft, "draft")}
         formSubmitUpdate={(e) => onSubmitClick(e, formSubmitUpdate, "update")}
-        formSubmitCancel={formSubmitCancel}
+        formSubmitCancel={() => setFormMode(false)}
         update={update}
       />
     </form>

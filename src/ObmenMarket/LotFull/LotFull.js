@@ -539,6 +539,7 @@ const LotFull = ({
       {isFormModeOn && (
         <FormFull
           icons={icons}
+          ownerID={ownerID}
           formFullUI={formFullUI}
           lotMeta={lotMeta}
           update={true}
