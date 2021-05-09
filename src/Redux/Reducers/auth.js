@@ -47,20 +47,6 @@ const setAuthedUser = (user) => ({ type: SET_USER, user });
 // authorization
 
 export const googleSignIn = () => async (dispatch) => {
-  // // SendGrid
-  // const email = {
-  // to: 'info@obmen.market',
-  // from: 'noreply@obmen.market',
-  // subject: 'Sending with SendGrid is Fun',
-  // html: 'and easy to do anywhere, even with Node.js',
-  // }
-  // sg.send(email).then(() => {
-  //   console.log('Email sent')
-  // })
-  // .catch((error) => {
-  //   console.error(error)
-  // });
-  // // End of SendGrid
 
   const newUser = (user) => {
     const newUser = {
@@ -72,7 +58,6 @@ export const googleSignIn = () => async (dispatch) => {
     db.ref("users/" + user.uid)
       .set(newUser)
       .then(() => {
-        // user.sendEmailVerification().then(() => console.log("sent"));
         batch(() => {
           dispatch(setOwnerID(user.uid));
           dispatch(setAuthedUser(newUser));
