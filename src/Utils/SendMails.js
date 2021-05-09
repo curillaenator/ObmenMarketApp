@@ -53,19 +53,27 @@ export const onLotCreateSendMail = async (lotData) => {
 };
 
 export const onOfferCreateSendMail = async (lotMeta, offerData) => {
+
+  const lotPhoto = await fst
+  .ref()
+  .child(`posts/${lotMeta.uid}/${lotMeta.postid}/photo0`)
+  .getDownloadURL();
+
   const offerMailBody = {
     delivery: { state: "CREATED" },
     toUids: [`${lotMeta.uid}`],
     message: {
       subject: "Новое предложение на Обмен.маркете!",
       html: newOfferTpl(
-        offerData.authorName,
-        offerData.avatar,
         offerData.name,
-        `https://obmen.market/posts/${lotMeta.postid}?action=show&offer=`,
+        `https://obmen.market/posts/${lotMeta.postid}?action=view&offer=`,
         offerData.photoURLs[0],
         offerData.description,
-        `https://obmen.market/posts/${lotMeta.postid}?action=accept&offer=`
+        `https://obmen.market/posts/${lotMeta.postid}?action=accept&offer=`,
+        `https://obmen.market/posts/${lotMeta.postid}?action=decline&offer=`,
+        `https://obmen.market/posts/${lotMeta.postid}`,
+        lotMeta.title,
+        lotPhoto
       ),
     },
   };
