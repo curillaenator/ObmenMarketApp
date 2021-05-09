@@ -1,5 +1,5 @@
 import { fsdb, fst } from "./firebase";
-import { newPostTpl } from "./mailTemplates";
+import { newPostTpl, newOfferTpl } from "./mailTemplates";
 
 // SENDMAIL UTILS
 
@@ -36,14 +36,11 @@ export const onLotCreateSendMail = async (lotData) => {
     delivery: { state: "CREATED" },
     toUids: [`${lotData.uid}`],
     message: {
-      subject: "Вы добавили объявление на Obmen.market",
+      subject: "Новое объявление на Obmen.market",
       html: newPostTpl(
-        lotData.username,
-        lotData.avatar,
         lotData.title,
         `https://obmen.market/posts/${lotData.postid}`,
         lotPhoto,
-        lotDescription,
         `https://obmen.market/posts/${lotData.postid}?action=extend`
       ),
     },
@@ -60,14 +57,15 @@ export const onOfferCreateSendMail = async (lotMeta, offerData) => {
     delivery: { state: "CREATED" },
     toUids: [`${lotMeta.uid}`],
     message: {
-      subject: "Вы добавили предложение к обмену на Obmen.market",
-      html: newPostTpl(
+      subject: "Новое предложение на Обмен.маркете!",
+      html: newOfferTpl(
         offerData.authorName,
         offerData.avatar,
         offerData.name,
-        `https://obmen.market/posts/${lotMeta.postid}`,
+        `https://obmen.market/posts/${lotMeta.postid}?action=show&offer=`,
         offerData.photoURLs[0],
-        offerData.description
+        offerData.description,
+        `https://obmen.market/posts/${lotMeta.postid}?action=accept&offer=`
       ),
     },
   };
