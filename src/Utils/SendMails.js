@@ -27,10 +27,10 @@ export const onLotCreateSendMail = async (lotData) => {
     .child(`posts/${lotData.uid}/${lotData.postid}/photo0`)
     .getDownloadURL();
 
-  const lotDescription =
-    lotData.description.length > 50
-      ? `${lotData.description.slice(0, 50)}...`
-      : lotData.description;
+  // const lotDescription =
+  //   lotData.description.length > 50
+  //     ? `${lotData.description.slice(0, 50)}...`
+  //     : lotData.description;
 
   const lotMailBody = {
     delivery: { state: "CREATED" },
@@ -59,6 +59,16 @@ export const onOfferCreateSendMail = async (lotMeta, offerData) => {
   .child(`posts/${lotMeta.uid}/${lotMeta.postid}/photo0`)
   .getDownloadURL();
 
+  // Offer photo
+  const offerPhotoPath = offerData.photoURLs[0];
+  const newOfferPhotoPath = offerPhotoPath.replace("https://firebasestorage.googleapis.com", "https://ik.imagekit.io/wnq6ecptz6/firebase");
+  const finalOfferPhoto = newOfferPhotoPath + '&tr=fo-auto,w-700,h-360,obg-0C031880,oh-360,ow-700:r-24,or-24';
+
+  // Lot phtoto
+  const newLotPhotoPath = lotPhoto.replace("https://firebasestorage.googleapis.com", "https://ik.imagekit.io/wnq6ecptz6/firebase");
+  const finalLotPhoto = newLotPhotoPath + '&tr=w-88,h-88:r-24';
+
+
   const offerMailBody = {
     delivery: { state: "CREATED" },
     toUids: [`${lotMeta.uid}`],
@@ -67,13 +77,13 @@ export const onOfferCreateSendMail = async (lotMeta, offerData) => {
       html: newOfferTpl(
         offerData.name,
         `https://obmen.market/posts/${lotMeta.postid}?action=view&offer=`,
-        offerData.photoURLs[0],
+        finalOfferPhoto,
         offerData.description,
         `https://obmen.market/posts/${lotMeta.postid}?action=accept&offer=`,
         `https://obmen.market/posts/${lotMeta.postid}?action=decline&offer=`,
         `https://obmen.market/posts/${lotMeta.postid}`,
         lotMeta.title,
-        lotPhoto
+        finalLotPhoto
       ),
     },
   };
