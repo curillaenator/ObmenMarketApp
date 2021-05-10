@@ -61,12 +61,10 @@ export const onOfferCreateSendMail = async (lotMeta, offerData) => {
 
   // Offer photo
   const offerPhotoPath = offerData.photoURLs[0];
-  const newOfferPhotoPath = offerPhotoPath.replace("https://firebasestorage.googleapis.com", "https://ik.imagekit.io/wnq6ecptz6/firebase");
-  const finalOfferPhoto = newOfferPhotoPath + '&tr=fo-auto,w-700,h-360,obg-0C031880,oh-360,ow-700:r-24,or-24';
+  const finalOfferPhoto = offerPhotoPath.replace("https://firebasestorage.googleapis.com", "https://ik.imagekit.io/wnq6ecptz6/firebase/tr:n-mail_big_photo");
 
   // Lot phtoto
-  const newLotPhotoPath = lotPhoto.replace("https://firebasestorage.googleapis.com", "https://ik.imagekit.io/wnq6ecptz6/firebase");
-  const finalLotPhoto = newLotPhotoPath + '&tr=w-88,h-88:r-24';
+  const finalLotPhoto = lotPhoto.replace("https://firebasestorage.googleapis.com", "https://ik.imagekit.io/wnq6ecptz6/firebase/tr:n-mail_small_photo");
 
 
   const offerMailBody = {
