@@ -32,6 +32,9 @@ export const onLotCreateSendMail = async (lotData) => {
   //     ? `${lotData.description.slice(0, 50)}...`
   //     : lotData.description;
 
+  // Lot phtoto
+  const finalLotPhoto = lotPhoto.replace("https://firebasestorage.googleapis.com", "https://ik.imagekit.io/wnq6ecptz6/firebase/tr:n-mail_small_photo");
+
   const lotMailBody = {
     delivery: { state: "CREATED" },
     toUids: [`${lotData.uid}`],
@@ -40,7 +43,7 @@ export const onLotCreateSendMail = async (lotData) => {
       html: newPostTpl(
         lotData.title,
         `https://obmen.market/posts/${lotData.postid}`,
-        lotPhoto,
+        finalLotPhoto,
         `https://obmen.market/posts/${lotData.postid}?action=extend`
       ),
     },
