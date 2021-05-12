@@ -27,6 +27,7 @@ export const onLotCreateSendMail = async (lotData) => {
     .child(`posts/${lotData.uid}/${lotData.postid}/photo0`)
     .getDownloadURL();
 
+  
   // const lotDescription =
   //   lotData.description.length > 50
   //     ? `${lotData.description.slice(0, 50)}...`
@@ -44,7 +45,8 @@ export const onLotCreateSendMail = async (lotData) => {
         lotData.title,
         `https://obmen.market/posts/${lotData.postid}`,
         finalLotPhoto,
-        `https://obmen.market/posts/${lotData.postid}?action=extend`
+        `https://obmen.market/posts/${lotData.postid}?action=extend`,
+        `https://obmen.market?action=create`
       ),
     },
   };
@@ -77,11 +79,11 @@ export const onOfferCreateSendMail = async (lotMeta, offerData) => {
       subject: "Новое предложение на Обмен.маркете!",
       html: newOfferTpl(
         offerData.name,
-        `https://obmen.market/posts/${lotMeta.postid}?action=view&offer=`,
+        `https://obmen.market/posts/${lotMeta.postid}?action=view&offer=${offerData.offerID}`,
         finalOfferPhoto,
         offerData.description,
-        `https://obmen.market/posts/${lotMeta.postid}?action=accept&offer=`,
-        `https://obmen.market/posts/${lotMeta.postid}?action=decline&offer=`,
+        `https://obmen.market/posts/${lotMeta.postid}?action=accept&offer=${offerData.offerID}`,
+        `https://obmen.market/posts/${lotMeta.postid}?action=decline&offer=${offerData.offerID}`,
         `https://obmen.market/posts/${lotMeta.postid}`,
         lotMeta.title,
         finalLotPhoto
