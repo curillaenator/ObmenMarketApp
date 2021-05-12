@@ -1,8 +1,11 @@
-import { fb, fa, db } from "../../Utils/firebase";
+import { fb, fa, db, db_notes } from "../../Utils/firebase";
 import { batch } from "react-redux";
+import { growl } from "@crystallize/react-growl";
 
 import { chatReset } from "./chat";
 import { resetLotsState } from "./lots";
+
+import { growlsTexts } from "../../Utils/growlsTexts";
 
 const SET_INITIALIZED = "auth/SET_INITIALIZED";
 const SET_OWNER_ID = "auth/SET_OWNER_ID";
@@ -97,6 +100,20 @@ export const googleSignIn = () => async (dispatch) => {
 export const authCheck = (curUser) => (dispatch) => {
   if (curUser) {
     db.ref("users/" + curUser.uid).once("value", (snapshot) => {
+      db_notes.ref(curUser.uid).once("value", (oldNotes) => {
+        const instance = oldNotes.exists() ? Object.keys(oldNotes.val()) : [];
+
+        db_notes.ref(curUser.uid).on("child_added", (added) => {
+          if (!instance.includes(added.key)) {
+            added.val().type === "offerAdded" &&
+              growl({
+                title: growlsTexts.offerAdded.title,
+                message: growlsTexts.offerAdded.msg(added.val().growlMsg),
+              });
+          }
+        });
+      });
+
       batch(() => {
         dispatch(setOwnerID(curUser.uid));
         dispatch(setAuthedUser(snapshot.val()));

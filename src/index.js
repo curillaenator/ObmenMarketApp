@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { store } from "./Redux/store";
+import { GrowlScene } from "@crystallize/react-growl";
 import ScrollMemory from "react-router-scroll-memory";
 
 import { ObmenMarketApp } from "./ObmenMarket/Obmen";
@@ -14,10 +15,9 @@ const App = () => {
     <React.StrictMode>
       <Provider store={store}>
         <BrowserRouter>
-          <>
-            <ScrollMemory />
-            <ObmenMarketApp />
-          </>
+          <GrowlScene />
+          <ScrollMemory />
+          <ObmenMarketApp />
         </BrowserRouter>
       </Provider>
     </React.StrictMode>

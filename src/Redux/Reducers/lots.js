@@ -1,6 +1,7 @@
 import { batch } from "react-redux";
+import { growl } from "@crystallize/react-growl";
 
-import { fst, db, fa, db_offer, db_chat } from "../../Utils/firebase";
+import { fst, db, fa, db_offer, db_chat, db_notes } from "../../Utils/firebase";
 
 import {
   onLotCreateSendMail,
@@ -161,38 +162,36 @@ const lotMetasPageLoader = (listArr) => {
 
 // get authored lots first page for profile
 
-export const setAuthoredLots = (ownerID, paramsID) => async (
-  dispatch,
-  getState
-) => {
-  await batch(() => {
-    dispatch(myLotsPending(true));
-    dispatch(setProgress(1));
-    getState().lots.lastProfile !== (paramsID || ownerID) &&
-      dispatch(setMyLotsPage(getState().lots.myLotsPerPage));
-  });
-
-  db.ref("posts")
-    .orderByChild("uid")
-    .equalTo(paramsID || ownerID)
-    .limitToLast(getState().lots.myLotsPage)
-    .once("value", (list) => {
-      if (list.exists()) {
-        const listArr = Object.keys(list.val()).map(
-          (lotID) => list.val()[lotID]
-        );
-
-        Promise.all(lotMetasPageLoader(listArr)).then((lotsResolved) => {
-          batch(() => {
-            dispatch(myLotList([...lotsResolved].reverse()));
-            dispatch(setLastProfile(paramsID ? paramsID : ownerID));
-            dispatch(myLotsPending(false));
-            dispatch(setProgress(100));
-          });
-        });
-      }
+export const setAuthoredLots =
+  (ownerID, paramsID) => async (dispatch, getState) => {
+    await batch(() => {
+      dispatch(myLotsPending(true));
+      dispatch(setProgress(1));
+      getState().lots.lastProfile !== (paramsID || ownerID) &&
+        dispatch(setMyLotsPage(getState().lots.myLotsPerPage));
     });
-};
+
+    db.ref("posts")
+      .orderByChild("uid")
+      .equalTo(paramsID || ownerID)
+      .limitToLast(getState().lots.myLotsPage)
+      .once("value", (list) => {
+        if (list.exists()) {
+          const listArr = Object.keys(list.val()).map(
+            (lotID) => list.val()[lotID]
+          );
+
+          Promise.all(lotMetasPageLoader(listArr)).then((lotsResolved) => {
+            batch(() => {
+              dispatch(myLotList([...lotsResolved].reverse()));
+              dispatch(setLastProfile(paramsID ? paramsID : ownerID));
+              dispatch(myLotsPending(false));
+              dispatch(setProgress(100));
+            });
+          });
+        }
+      });
+  };
 
 // get lots first page
 
@@ -355,30 +354,30 @@ export const getLotMeta = (lotID, history) => (dispatch) => {
 // lot publish / lot update / lot remove
 
 export const publishNewLotFromForm = (updData, history) => (dispatch) => {
-  const draftsPath = `drafts/${updData.postid}`;
-  const publishPath = `posts/${updData.postid}`;
+  delete updData.draft;
 
-  const setMeta = (err, path) => {
-    if (err) return console.log(err);
+  const Success = async () => {
+    await growl({
+      title: "Готово!",
+      message: "Объявление добавлено",
+    });
 
-    history.push(path);
+    history.push(`posts/${updData.postid}`);
     dispatch(setFormMode(false));
     onLotCreateSendMail(updData);
   };
 
-  if (updData.draft) {
-    delete updData.draft;
-    return db
-      .ref(draftsPath)
-      .update(updData, (err) => setMeta(err, draftsPath));
-  }
+  const Failure = () => {
+    growl({
+      title: "Ошибка!",
+      message: "Объявление не создано, попробуйте заново",
+      type: "error",
+    });
+  };
 
-  if (!updData.draft) {
-    delete updData.draft;
-    return db
-      .ref(publishPath)
-      .update(updData, (err) => setMeta(err, publishPath));
-  }
+  db.ref(`posts/${updData.postid}`).update(updData, (err) =>
+    err ? Failure() : Success()
+  );
 };
 
 export const updateLotFromEditForm = (updData, history) => (dispatch) => {
@@ -486,46 +485,48 @@ export const prolongLotExpiry = (daysToAdd) => (dispatch, getState) => {
 
 // offer accept by lotAuthor & confirm by offerAuthor
 
-export const acceptConfirmOffer = (lotMeta, offerMeta, payload) => (
-  dispatch
-) => {
-  dispatch(setProgress(1));
+export const acceptConfirmOffer =
+  (lotMeta, offerMeta, payload) => (dispatch) => {
+    dispatch(setProgress(1));
 
-  const onSuccess = () => {
-    db.ref(`posts/${lotMeta.postid}`).once("value", (lot) => {
-      if (lot.val().acceptedOffer && !lot.val().offerConfirmed) {
-        batch(() => {
-          dispatch(
-            setLotMeta({ ...lotMeta, acceptedOffer: lot.val().acceptedOffer })
-          );
+    const onSuccess = () => {
+      db.ref(`posts/${lotMeta.postid}`).once("value", (lot) => {
+        if (lot.val().acceptedOffer && !lot.val().offerConfirmed) {
+          batch(() => {
+            dispatch(
+              setLotMeta({ ...lotMeta, acceptedOffer: lot.val().acceptedOffer })
+            );
+            dispatch(setProgress(100));
+          });
+
+          return onApproveByLotAuthor(lotMeta, offerMeta);
+        }
+
+        if (lot.val().acceptedOffer && lot.val().offerConfirmed) {
+          batch(() => {
+            dispatch(
+              setLotMeta({
+                ...lotMeta,
+                offerConfirmed: lot.val().offerConfirmed,
+              })
+            );
+            dispatch(setProgress(100));
+          });
+
+          return onConfirmByOfferAuthor(lotMeta, offerMeta);
+        }
+
+        return batch(() => {
+          dispatch(setLotMeta({ ...lotMeta, ...payload }));
           dispatch(setProgress(100));
         });
-
-        return onApproveByLotAuthor(lotMeta, offerMeta);
-      }
-
-      if (lot.val().acceptedOffer && lot.val().offerConfirmed) {
-        batch(() => {
-          dispatch(
-            setLotMeta({ ...lotMeta, offerConfirmed: lot.val().offerConfirmed })
-          );
-          dispatch(setProgress(100));
-        });
-
-        return onConfirmByOfferAuthor(lotMeta, offerMeta);
-      }
-
-      return batch(() => {
-        dispatch(setLotMeta({ ...lotMeta, ...payload }));
-        dispatch(setProgress(100));
       });
-    });
-  };
+    };
 
-  db.ref(`posts/${lotMeta.postid}`).update(payload, (err) =>
-    err ? console.log(err) : onSuccess()
-  );
-};
+    db.ref(`posts/${lotMeta.postid}`).update(payload, (err) =>
+      err ? console.log(err) : onSuccess()
+    );
+  };
 
 // offer create / remove / cancel create / publish
 
@@ -581,6 +582,11 @@ export const createOffer = (lotMeta, offerData) => (dispatch, getState) => {
   dispatch(setProgress(1));
 
   const Success = async () => {
+    await growl({
+      title: "Готово!",
+      message: "Предложение добавлено",
+    });
+
     const lotOffers = getState().lots.currentLotMeta.offers || [];
 
     const newOffer = await db_offer
@@ -602,9 +608,29 @@ export const createOffer = (lotMeta, offerData) => (dispatch, getState) => {
       dispatch(setLotOffers([...lotOffers, { ...newOffer.val(), photoURLs }]));
       dispatch(setProgress(100));
     });
+
+    const newEventID = db_notes.ref(lotMeta.uid).push().key;
+
+    db_notes.ref(`${lotMeta.uid}/`).update({
+      [newEventID]: {
+        type: "offerAdded",
+        growlLink: `https://obmen.market/posts/${lotMeta.postid}`,
+        growlMsg: lotMeta.title,
+      },
+    });
+  };
+
+  const Failure = (err) => {
+    console.log(err);
+
+    growl({
+      title: "Ошибка!",
+      message: "Предложение не создано, попробуйте заново",
+      type: "error",
+    });
   };
 
   db_offer
     .ref(`${lotMeta.postid}/${offerData.offerID}`)
-    .update(offerData, (err) => (err ? console.log(err) : Success()));
+    .update(offerData, (err) => (err ? Failure(err) : Success()));
 };
