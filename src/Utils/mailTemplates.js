@@ -1,354 +1,93 @@
 export const newPostTpl = (
-  username,
-  avatar,
   lotTitle,
   lotLink,
   lotPhoto,
-  lotDescription,
   prolongLot
 ) => `
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"
-    />
-    <!--[if !mso]><!-->
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <!--<![endif]-->
-    <!--[if (gte mso 9)|(IE)]>
-      <xml>
+<!doctype html><html lang="ru-RU" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office"><head><title>Новый пост</title><!--[if !mso]><!--><meta http-equiv="X-UA-Compatible" content="IE=edge"><!--<![endif]--><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style type="text/css">#outlook a { padding:0; }
+          body { margin:0;padding:0;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%; }
+          table, td { border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt; }
+          img { border:0;height:auto;line-height:100%; outline:none;text-decoration:none;-ms-interpolation-mode:bicubic; }
+          p { display:block;margin:13px 0; }</style><!--[if mso]>
+        <xml>
         <o:OfficeDocumentSettings>
-          <o:AllowPNG />
+          <o:AllowPNG/>
           <o:PixelsPerInch>96</o:PixelsPerInch>
         </o:OfficeDocumentSettings>
-      </xml>
-    <![endif]-->
-    <!--[if (gte mso 9)|(IE)]>
-      <style type="text/css">
-        body {
-          width: 700px;
-          margin: 0 auto;
-        }
-        table {
-          border-collapse: collapse;
-        }
-        table,
-        td {
-          mso-table-lspace: 0pt;
-          mso-table-rspace: 0pt;
-        }
-        img {
-          -ms-interpolation-mode: bicubic;
-        }
-      </style>
-    <![endif]-->
-    <style type="text/css">
-      body,
-      h1 {
-        padding: 0px;
-        margin: 0px;
-      }
-      body,
-      p,
-      div,
-      button {
-        font-family: -apple-system, BlinkMacSystemFont, Arial, Helvetica,
-          sans-serif;
-        font-size: 14px;
-        line-height: 22px;
-        color: #160242;
-      }
-      a {
-        color: #7000ff;
-        text-decoration: none;
-      }
-      .wrapper {
-        max-width: 668px;
-        min-width: 240px;
-        padding: 0 16px;
-        margin: 0 auto;
-        text-align: left;
-      }
-      .module {
-        padding: 0px;
-        margin: 0px;
-      }
-      .logo {
-        width: 238px;
-        height: 46px;
-        margin-top: 48px;
-        margin-bottom: 40px;
-      }
-      .subject {
-        font-size: 20px;
-        font-weight: 700;
-        line-height: 24px;
-        letter-spacing: -0.16px;
-      }
-      .thumbUp {
-        font-size: 28px;
-        line-height: 28px;
-      }
-      .subtitle {
-        display: block;
-        padding-top: 6px;
-        font-weight: 600;
-        letter-spacing: -0.08px;
-        color: #4e4c54;
-      }
-      .module.post {
-        margin: 40px 0;
-        min-height: 240px;
-        border-radius: 8px;
-        background-color: #edeff2;
-        background-image: url(${lotPhoto});
-        background-position: center center;
-        background-size: cover;
-      }
-      .user {
-        background-color: rgba(237, 239, 242, 0.8);
-        border-radius: 8px;
-        padding: 24px;
-        height: 192px;
-      }
-      .avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 20px;
-        background-color: #d4d2dd;
-      }
-      .username {
-        padding-left: 8px;
-        font-weight: 600;
-        letter-spacing: -0.08px;
-      }
-      .module.social {
-        text-align: center;
-        margin-top: 40px;
-      }
-      .socialicon {
-        padding: 0 12px;
-      }
-      .ctabutton {
-        display: inline-block;
-        background-color: #7000ff;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 600;
-        color: #ffffff;
-        padding: 20px 24px 20px 24px;
-        margin-bottom: 16px;
-      }
-      .teaser {
-        font-size: 13px;
-        line-height: 20px;
-        border-left: 3px solid #d5b5ff;
-        padding: 4px 0 4px 16px;
-      }
-      .postcontent {
-        display: block;
-        margin-top: 40px;
-      }
-      .postcontent a {
-        font-size: 24px;
-        font-weight: 800;
-      }
-    </style>
-  </head>
-  <body style="font-family: -apple-system, BlinkMacSystemFont, Arial, Helvetica, sans-serif; font-size: 14px;  line-height: 22px; color: #160242; padding: 0px; margin: 0px;">
-    <!-- Wrapper -->
+        </xml>
+        <![endif]--><!--[if lte mso 11]>
+        <style type="text/css">
+          .mj-outlook-group-fix { width:100% !important; }
+        </style>
+        <![endif]--><!--[if !mso]><!--><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" type="text/css"><style type="text/css">@import url(https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap);</style><!--<![endif]--><style type="text/css">@media only screen and (min-width:690px) {
+        .mj-column-per-100 { width:100% !important; max-width: 100%; }
+.mj-column-per-40 { width:40% !important; max-width: 40%; }
+      }</style><style type="text/css">@media only screen and (max-width:690px) {
+      table.mj-full-width-mobile { width: 100% !important; }
+      td.mj-full-width-mobile { width: auto !important; }
+    }</style><style type="text/css">.shadow {filter: drop-shadow( 0 10px 14px #1a1a1a3f );} .back {background-size: 100%; background-image:url("https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Fshadow-dark.png?alt=media"); background-repeat: no-repeat; background-position: center 160px;} @media (min-width:690px) { .logo { padding: 24px 24px 16px 0px; } .back {background-image:url("https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Fshadow-dark.png?alt=media"); background-repeat: no-repeat; background-position: center bottom; background-size: 800px;} .spacer { height: 40px; } .ghost-button { padding-top: 24px; } }</style></head><body style="word-spacing:normal;background-color:#ffffff;"><div style="background-color:#ffffff;"><!-- Logo --><!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:700px;" width="700" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]--><div style="margin:0px auto;max-width:700px;"><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;"><tbody><tr><td style="direction:ltr;font-size:0px;padding:0px;text-align:center;"><!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="logo-outlook" style="vertical-align:top;width:700px;" ><![endif]--><div class="mj-column-per-100 mj-outlook-group-fix logo" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td style="vertical-align:top;padding:0px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td align="center" style="font-size:0px;padding:0px;word-break:break-word;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;"><tbody><tr><td style="width:320px;"><a href="https://obmen.market" target="_blank"><img height="auto" src="https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Flogo.png?alt=media" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="320"></a></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--><!-- Post section --><table align="center" class="back" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;"><tbody><tr><td><!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="back-outlook" style="width:700px;" width="700" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]--><div style="margin:0px auto;max-width:700px;"><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;"><tbody><tr><td style="direction:ltr;font-size:0px;padding:0px;padding-left:16px;padding-right:16px;text-align:center;"><!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="shadow-outlook" width="700px" ><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:668px;" width="668" ><tr><td style="line-height:0;font-size:0;mso-line-height-rule:exactly;"><v:image style="border:0;mso-position-horizontal:center;position:absolute;top:0;width:668px;z-index:-3;" src="${lotPhoto}" xmlns:v="urn:schemas-microsoft-com:vml" /><![endif]--><div class="shadow" style="margin:0 auto;max-width:668px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;"><tr style="vertical-align:top;"><td style="width:0.01%;padding-bottom:NaN%;mso-padding-bottom-alt:0;"><td background="${lotPhoto}" style="background:#0C0318 url(${lotPhoto}) no-repeat center center / cover;background-position:center center;background-repeat:no-repeat;border-radius:24px;padding:0px;vertical-align:top;"><!--[if mso | IE]><table border="0" cellpadding="0" cellspacing="0" style="width:668px;" width="668" ><tr><td style=""><![endif]--><div class="mj-hero-content" style="margin:0px auto;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;margin:0px;"><tr><td><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;margin:0px;"><tr><td style="font-size:0px;padding:0px;word-break:break-word;"><div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:bottom;width:100%;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td style="background-color:rgba(12, 3, 24, 0.8);border-radius:24px;vertical-align:bottom;padding:0px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td align="center" vertical-align="middle" style="font-size:0px;padding:124px 24px 56px 24px;word-break:break-word;"><div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:14px;line-height:24px;text-align:center;color:#FFFFFF;"><p style="font-style: normal;
+              font-weight: 500;
+              font-size: 16px;
+              line-height: 24px;
+              /* identical to box height, or 150% */
+              text-align: center;
+              letter-spacing: -0.08px;
+              margin: 0px;">Вы создали новое объявление <span style="font-size: 24px;">🔥</span></p><h1 style="font-style: normal;
+              font-weight: 700;
+              font-size: 38px;
+              line-height: 50px;
+              /* identical to box height, or 119% */
+              text-align: center;
+              letter-spacing: -0.48px;
+              padding:0px;
+              margin-top: 8px;">${lotTitle}</h1></div></td></tr><tr><td align="center" style="font-size:0px;padding:0px;padding-bottom:24px;word-break:break-word;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;"><tbody><tr><td style="width:24px;"><a href="${lotLink}" target="_blank"><img height="auto" src="https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Flink.png?alt=media" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="24"></a></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></div></td></tr></table></td></tr></table></div><!--[if mso | IE]></td></tr></table><![endif]--></td><td style="width:0.01%;padding-bottom:NaN%;mso-padding-bottom-alt:0;"></tr></table></div><!--[if mso | IE]></td></tr></table></td></tr><![endif]--><!-- Buttons --><!--[if mso | IE]><tr><td class="" width="700px" ><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:668px;" width="668" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]--><div style="margin:0px auto;max-width:668px;"><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;"><tbody><tr><td style="direction:ltr;font-size:0px;padding:0px;padding-top:64px;text-align:center;"><!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:267.2px;" ><![endif]--><div class="mj-column-per-40 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td style="vertical-align:top;padding:0px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td align="center" vertical-align="middle" class="shadow" style="font-size:0px;padding:0px;word-break:break-word;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:separate;line-height:100%;"><tr><td align="center" bgcolor="#7000FF" role="presentation" style="border:none;border-radius:16px;cursor:auto;height:56px;mso-padding-alt:16px 32px;background:#7000FF;" valign="middle"><a href="${prolongLot}" style="display:inline-block;background:#7000FF;color:#ffffff;font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:14px;font-weight:700;line-height:120%;letter-spacing:-0.16px;margin:0;text-decoration:none;text-transform:none;padding:16px 32px;mso-padding-alt:0px;border-radius:16px;" target="_blank">Хочу больше предложений!</a></td></tr></table></td></tr></tbody></table></td></tr></tbody></table></div><!--[if mso | IE]></td><td class="" style="vertical-align:top;width:267.2px;" ><![endif]--><div class="mj-column-per-40 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td style="vertical-align:top;padding:0px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td align="center" vertical-align="middle" style="font-size:0px;padding:0px;word-break:break-word;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:separate;line-height:100%;"><tr><td align="center" bgcolor="transparent" role="presentation" style="border:none;border-radius:3px;cursor:auto;height:56px;mso-padding-alt:0px;background:transparent;" valign="middle"><a href="#" style="display:inline-block;background:transparent;color:#160242;font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:14px;font-weight:700;line-height:120%;letter-spacing:-0.16px;margin:0;text-decoration:none;text-transform:none;padding:0px;mso-padding-alt:0px;border-radius:3px;" target="_blank">Добавить ещё объявление</a></td></tr></table></td></tr></tbody></table></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table></td></tr></table><![endif]--></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></table><!-- Spacer 40px --><!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:700px;" width="700" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]--><div style="margin:0px auto;max-width:700px;"><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;"><tbody><tr><td style="direction:ltr;font-size:0px;padding:0px;text-align:center;"><!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:700px;" ><![endif]--><div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td style="vertical-align:top;padding:0px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td class="spacer" style="font-size:0px;padding:0px;word-break:break-word;"><div style="height:20px;line-height:20px;">&#8202;</div></td></tr></tbody></table></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--><!-- Marketing text --><!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:700px;" width="700" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]--><div style="margin:0px auto;max-width:700px;"><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;"><tbody><tr><td style="direction:ltr;font-size:0px;padding:0px;padding-left:16px;padding-right:16px;text-align:center;"><!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:668px;" ><![endif]--><div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td style="border-left:2px solid #7000FF;vertical-align:top;padding:0px;padding-top:8px;padding-bottom:8px;padding-left:24px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td align="left" style="font-size:0px;padding:0px;word-break:break-word;"><div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:14px;line-height:24px;text-align:left;color:#160242;">Если срок публикации объявления будет подходить к концу, а вы захотите получить больше предложений, вы можете продлить срок публикации на 48 часов. Впрочем, сделать это можно в любой момент, даже сейчас, тем более что стоит это всего 30 рублей</div></td></tr></tbody></table></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--><!-- Spacer 40px --><!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:700px;" width="700" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]--><div style="margin:0px auto;max-width:700px;"><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;"><tbody><tr><td style="direction:ltr;font-size:0px;padding:0px;text-align:center;"><!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:700px;" ><![endif]--><div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td style="vertical-align:top;padding:0px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td class="spacer" style="font-size:0px;padding:0px;word-break:break-word;"><div style="height:20px;line-height:20px;">&#8202;</div></td></tr></tbody></table></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--><!-- Social icons --><!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:700px;" width="700" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]--><div style="margin:0px auto;max-width:700px;"><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;"><tbody><tr><td style="direction:ltr;font-size:0px;padding:0px;text-align:center;"><!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:700px;" ><![endif]--><div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td style="vertical-align:top;padding:0px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td align="center" style="font-size:0px;padding:0px;word-break:break-word;"><!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" ><tr><td><![endif]--><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;"><tr class="shadow"><td style="padding:0 24px;vertical-align:middle;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:transparent;border-radius:3px;width:40px;"><tr><td style="font-size:0;height:40px;vertical-align:middle;width:40px;"><a href="https://instagram.com/obmen.market" target="_blank"><img height="40" src="http://cdn.mcauto-images-production.sendgrid.net/55d8758937b582f0/f55d0fc7-087e-41a4-9d94-2750bdb5a4e5/64x64.png" style="border-radius:3px;display:block;" width="40"></a></td></tr></table></td></tr></table><!--[if mso | IE]></td><td><![endif]--><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;"><tr class="shadow"><td style="padding:0 24px;vertical-align:middle;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:transparent;border-radius:3px;width:40px;"><tr><td style="font-size:0;height:40px;vertical-align:middle;width:40px;"><a href="https://fb.com/obmen.market" target="_blank"><img height="40" src="http://cdn.mcauto-images-production.sendgrid.net/55d8758937b582f0/7eacb2db-391d-43b6-8434-6edd772b155e/64x64.png" style="border-radius:3px;display:block;" width="40"></a></td></tr></table></td></tr></table><!--[if mso | IE]></td><td><![endif]--><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;"><tr class="shadow"><td style="padding:0 24px;vertical-align:middle;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:transparent;border-radius:3px;width:40px;"><tr><td style="font-size:0;height:40px;vertical-align:middle;width:40px;"><a href="https://vk.com/obmen.market" target="_blank"><img height="40" src="http://cdn.mcauto-images-production.sendgrid.net/55d8758937b582f0/da958188-3d0c-4243-adfc-431f3d72b173/64x64.png" style="border-radius:3px;display:block;" width="40"></a></td></tr></table></td></tr></table><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></table></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--><!-- Spacer 40px --><!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:700px;" width="700" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]--><div style="margin:0px auto;max-width:700px;"><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;"><tbody><tr><td style="direction:ltr;font-size:0px;padding:0px;text-align:center;"><!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:700px;" ><![endif]--><div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td style="vertical-align:top;padding:0px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td class="spacer" style="font-size:0px;padding:0px;word-break:break-word;"><div style="height:20px;line-height:20px;">&#8202;</div></td></tr></tbody></table></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--><!-- Footer links --></div></body></html>
+`;
 
-    <div class="wrapper" style="max-width: 668px; min-width: 240px; padding: 0 16px; margin: 0 auto; text-align: left;">
-      <!-- Logo -->
-
-      <div class="module">
-        <a href="https://obmen.market" title="Обмен.маркет" target="_blank">
-          <img
-            src="http://cdn.mcauto-images-production.sendgrid.net/55d8758937b582f0/add4158e-a841-4aff-8ce8-d1655059d2aa/476x92.png"
-            width="238px"
-            height="46px"
-            class="logo"
-            alt="Обмен.маркет"
-            style="width: 238px;
-            height: 46px;
-            margin-top: 48px;
-            margin-bottom: 40px;"
-          />
-        </a>
-      </div>
-
-      <!-- Subject -->
-
-      <div class="module">
-        <h1 class="subject" style="font-size: 20px;
-        font-weight: 700;
-        line-height: 24px;
-        letter-spacing: -0.16px;">
-          Вы создали новое объявление! <span class="thumbUp" style="font-size: 28px;
-          line-height: 28px;">🔥</span>
-        </h1>
-        <span class="subtitle" style="display: block;
-        padding-top: 6px;
-        font-weight: 600;
-        letter-spacing: -0.08px;
-        color: #4e4c54;">
-          Надеемся, вам предложат в обмен именно то, что вам нужно!
-        </span>
-      </div>
-
-      <!-- Post -->
-
-      <div class="module post" style="margin: 40px 0;
-      min-height: 240px;
-      border-radius: 8px;
-      background-color: #edeff2;
-      background-image: url(${lotPhoto});
-      background-position: center center;
-      background-size: cover;">
-        <div class="user" style="background-color: rgba(237, 239, 242, 0.8);
-        border-radius: 8px;
-        padding: 24px;
-        height: 192px;">
-          <img
-            src="${avatar}"
-            width="36px"
-            height="36px"
-            valign="middle"
-            class="avatar"
-            alt="${username}"
-            style="width: 36px;
-            height: 36px;
-            border-radius: 20px;
-            background-color: #d4d2dd;"
-          />
-          <span class="username" style="padding-left: 8px;
-          font-weight: 600;
-          letter-spacing: -0.08px;"> ${username} </span>
-          <span class="postcontent" style="display: block;
-          margin-top: 40px;">
-            <a href="${lotLink}" style="color: #7000ff; text-decoration: none;font-size: 24px;
-            font-weight: 800;"> ${lotTitle} </a>
-            <p style="font-family: -apple-system, BlinkMacSystemFont, Arial, Helvetica, sans-serif; font-size: 14px;  line-height: 22px; color: #160242; padding: 0px; margin: 0px;">${lotDescription}</p>
-          </span>
-        </div>
-      </div>
-
-      <!-- CTA Button -->
-
-      <div class="module">
-        <a
-          href="${prolongLot}"
-          class="ctabutton"
-          title="Продлить срок публикации"
-          style="display: inline-block;
-          background-color: #7000ff;
-          border-radius: 8px;
-          font-size: 14px;
-          font-weight: 600;
-          color: #ffffff;
-          padding: 20px 24px 20px 24px;
-          margin-bottom: 16px;"
-        >
-          Хочу больше предложений!
-        </a>
-      </div>
-
-      <!-- Teaser text -->
-
-      <div class="module teaser" style="font-size: 13px;
-      line-height: 20px;
-      border-left: 3px solid #d5b5ff;
-      padding: 4px 0 4px 16px;">
-        Если срок публикации объявления будет подходить к концу, а вы захотите
-        получить больше предложений, вы можете продлить срок публикации на 48
-        часов. Впрочем, сделать это можно в любой момент, даже сейчас, тем более
-        что стоит это всего 30 рублей
-      </div>
-
-      <!-- Social links -->
-
-      <div class="module social" style="text-align: center;
-      margin-top: 40px;">
-        <a
-          href="https://instagram.com/obmen.market"
-          class="socialicon"
-          title="Instagram"
-          style="padding: 0 12px;"
-        >
-          <img
-            src="http://cdn.mcauto-images-production.sendgrid.net/55d8758937b582f0/f55d0fc7-087e-41a4-9d94-2750bdb5a4e5/64x64.png"
-            width="32px"
-            height="32px"
-            alt="Instagram"
-          />
-        </a>
-
-        <a
-          href="https://fb.me/obmen.market"
-          class="socialicon"
-          title="Facebook"
-          style="padding: 0 12px;"
-        >
-          <img
-            src="http://cdn.mcauto-images-production.sendgrid.net/55d8758937b582f0/7eacb2db-391d-43b6-8434-6edd772b155e/64x64.png"
-            width="32px"
-            height="32px"
-            alt="Facebook"
-          />
-        </a>
-
-        <a href="https://vk.com/obmen.market" class="socialicon" title="VK" style="padding: 0 12px;">
-          <img
-            src="http://cdn.mcauto-images-production.sendgrid.net/55d8758937b582f0/da958188-3d0c-4243-adfc-431f3d72b173/64x64.png"
-            width="32px"
-            height="32px"
-            alt="VK"
-          />
-        </a>
-      </div>
-
-      <!-- End of Wrapper -->
-    </div>
-
-    <!-- Subscription management -->
-
-    <div
-      data-role="module-unsubscribe"
-      class="module"
-      role="module"
-      data-type="unsubscribe"
-      style="
-        color: #444444;
-        font-size: 12px;
-        line-height: 20px;
-        padding: 40px 16px 16px 16px;
-        text-align: Center;
-      "
-      data-muid="4e838cf3-9892-4a6d-94d6-170e474d21e5"
-    >
-      <p style="font-size: 12px; line-height: 20px">
-        <a
-          class="Unsubscribe--unsubscribeLink"
-          href="{{{unsubscribe}}}"
-          target="_blank"
-          style="font-family: sans-serif; text-decoration: none"
-        >
-          Отписаться
-        </a>
-        |
-        <a
-          href="{{{unsubscribe_preferences}}}"
-          target="_blank"
-          class="Unsubscribe--unsubscribePreferences"
-          style="font-family: sans-serif; text-decoration: none"
-        >
-          Настройки уведомлений
-        </a>
-      </p>
-    </div>
-  </body>
-</html>
-
+export const newOfferTpl = (
+  offerTitle,
+  offerViewLink,
+  finalOfferPhoto,
+  offerDescription,
+  offerAcceptLink,
+  offerDeclineLink,
+  lotLink,
+  lotTitle,
+  finalLotPhoto
+) => `
+<!doctype html><html lang="ru-RU" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office"><head><title>Новый пост</title><!--[if !mso]><!--><meta http-equiv="X-UA-Compatible" content="IE=edge"><!--<![endif]--><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style type="text/css">#outlook a { padding:0; }
+          body { margin:0;padding:0;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%; }
+          table, td { border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt; }
+          img { border:0;height:auto;line-height:100%; outline:none;text-decoration:none;-ms-interpolation-mode:bicubic; }
+          p { display:block;margin:13px 0; }</style><!--[if mso]>
+        <xml>
+        <o:OfficeDocumentSettings>
+          <o:AllowPNG/>
+          <o:PixelsPerInch>96</o:PixelsPerInch>
+        </o:OfficeDocumentSettings>
+        </xml>
+        <![endif]--><!--[if lte mso 11]>
+        <style type="text/css">
+          .mj-outlook-group-fix { width:100% !important; }
+        </style>
+        <![endif]--><!--[if !mso]><!--><link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" type="text/css"><style type="text/css">@import url(https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap);</style><!--<![endif]--><style type="text/css">@media only screen and (min-width:690px) {
+        .mj-column-per-100 { width:100% !important; max-width: 100%; }
+.mj-column-per-33 { width:33% !important; max-width: 33%; }
+.mj-column-per-20 { width:20% !important; max-width: 20%; }
+      }</style><style type="text/css">@media only screen and (max-width:690px) {
+      table.mj-full-width-mobile { width: 100% !important; }
+      td.mj-full-width-mobile { width: auto !important; }
+    }</style><style type="text/css">.social {padding-top: 24px!important;} .lotInfo {padding-left: 112px!important;} .shadow {filter: drop-shadow( 0 10px 14px #1a1a1a3f );} .lotPhoto { width: 88px!important;} .back {background-size: 100%; background-image:url('https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Fshadow-dark.png?alt=media'); background-repeat: no-repeat; background-position: center 156px;} @media (min-width:690px) { .logo { padding: 24px 24px 16px 0px; } .back {background-image:url("https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Fshadow-dark.png?alt=media"); background-repeat: no-repeat; background-position: center 120px; background-size: 800px;} .spacer { height: 40px; } .ghost-button { padding-top: 24px; } .lotInfo {padding-left: 112px;!important} .social {padding-top: 48px!important;} }</style></head><body style="word-spacing:normal;background-color:#ffffff;"><div style="background-color:#ffffff;"><!-- Logo --><!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:700px;" width="700" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]--><div style="margin:0px auto;max-width:700px;"><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;"><tbody><tr><td style="direction:ltr;font-size:0px;padding:0px;text-align:center;"><!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="logo-outlook" style="vertical-align:top;width:700px;" ><![endif]--><div class="mj-column-per-100 mj-outlook-group-fix logo" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td style="vertical-align:top;padding:0px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td align="center" style="font-size:0px;padding:0px;word-break:break-word;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;"><tbody><tr><td style="width:320px;"><a href="https://obmen.market" target="_blank"><img height="auto" src="https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Flogo.png?alt=media" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="320"></a></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--><!-- Post section --><table align="center" class="back" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;"><tbody><tr><td><!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="back-outlook" style="width:700px;" width="700" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]--><div style="margin:0px auto;max-width:700px;"><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;"><tbody><tr><td style="direction:ltr;font-size:0px;padding:0px;padding-left:16px;padding-right:16px;text-align:center;"><!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="shadow-outlook" width="700px" ><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:668px;" width="668" ><tr><td style="line-height:0;font-size:0;mso-line-height-rule:exactly;"><v:image style="border:0;mso-position-horizontal:center;position:absolute;top:0;width:668px;z-index:-3;" src="${finalOfferPhoto}" xmlns:v="urn:schemas-microsoft-com:vml" /><![endif]--><div class="shadow" style="margin:0 auto;max-width:668px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;"><tr style="vertical-align:top;"><td style="width:0.01%;padding-bottom:NaN%;mso-padding-bottom-alt:0;"><td background="${finalOfferPhoto}" style="background:#0C0318 url(${finalOfferPhoto}) no-repeat center center / cover;background-position:center center;background-repeat:no-repeat;border-radius:24px;padding:0px;vertical-align:top;"><!--[if mso | IE]><table border="0" cellpadding="0" cellspacing="0" style="width:668px;" width="668" ><tr><td style=""><![endif]--><div class="mj-hero-content" style="margin:0px auto;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;margin:0px;"><tr><td><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;margin:0px;"><tr><td align="center" style="font-size:0px;padding:124px 24px 64px 24px;word-break:break-word;"><div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:14px;line-height:24px;text-align:center;color:#FFFFFF;"><p style="font-style: normal;
+              font-weight: 500;
+              font-size: 16px;
+              line-height: 24px;
+              text-align: center;
+              letter-spacing: -0.08px;
+              margin: 0px;">У вас есть новое предложение! <span style="font-size: 24px;">🎉</span></p><h1 style="font-style: normal;
+              font-weight: 700;
+              font-size: 38px;
+              line-height: 42px;
+              text-align: center;
+              letter-spacing: -0.48px;
+              padding:0px;
+              margin-top: 16px;">${offerTitle}</h1></div></td></tr><tr><td align="center" style="font-size:0px;padding:0px;padding-bottom:24px;word-break:break-word;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;"><tbody><tr><td style="width:24px;"><a href="${offerViewLink}" target="_blank"><img height="auto" src="https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Flink.png?alt=media" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="24"></a></td></tr></tbody></table></td></tr></table></td></tr></table></div><!--[if mso | IE]></td></tr></table><![endif]--></td><td style="width:0.01%;padding-bottom:NaN%;mso-padding-bottom-alt:0;"></tr></table></div><!--[if mso | IE]></td></tr></table></td></tr><![endif]--><!-- lotInfo --><!--[if mso | IE]><tr><td class="" width="700px" ><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:668px;" width="668" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]--><div style="margin:0px auto;max-width:668px;"><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;"><tbody><tr><td style="direction:ltr;font-size:0px;padding:0px;padding-top:24px;text-align:center;"><!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:668px;" ><![endif]--><div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td style="vertical-align:top;padding:0px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td align="center" style="font-size:0px;padding:0px;padding-bottom:24px;word-break:break-word;"><div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:14px;font-weight:500;line-height:24px;text-align:center;color:rgba(22, 2, 66, 0.64);">Предлагают взамен вашего объявления</div></td></tr><tr><td align="left" style="font-size:0px;padding:0px;word-break:break-word;"><!--[if mso | IE]><table align="left" border="0" cellpadding="0" cellspacing="0" role="presentation" ><tr><td><![endif]--><table align="left" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;"><tr class="shadow"><td style="padding:0px 24px 0px 0px;vertical-align:middle;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:transparent;border-radius:24px;width:88px;"><tr><td style="font-size:0;height:88px;vertical-align:middle;width:88px;"><a href="${lotLink}" target="_blank"><img height="88" src="${finalLotPhoto}" style="border-radius:24px;display:block;" width="88"></a></td></tr></table></td><td style="vertical-align:middle;"><a href="${lotLink}" style="color:rgba(22, 2, 66, 1);font-size:24px;font-weight:800;font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';line-height:28px;text-decoration:none;" target="_blank"><mj-text letter-spacing="-0.24px">${lotTitle}</mj-text></a></td></tr></table><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></table></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table></td></tr></table><![endif]--></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></table><!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:700px;" width="700" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]--><div style="margin:0px auto;max-width:700px;"><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;"><tbody><tr><td style="direction:ltr;font-size:0px;padding:0px;padding-left:16px;padding-right:16px;padding-top:24px;text-align:center;"><!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:668px;" ><![endif]--><div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td style="vertical-align:top;padding:0px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td align="left" style="font-size:0px;padding:0px;padding-bottom:4px;word-break:break-word;"><div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:18px;font-weight:700;line-height:24px;text-align:left;color:#160242;">Описание предложения</div></td></tr><tr><td align="left" style="font-size:0px;padding:0px;word-break:break-word;"><div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:14px;line-height:24px;text-align:left;color:#160242;">${offerDescription}</div></td></tr></tbody></table></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:700px;" width="700" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]--><div style="margin:0px auto;max-width:700px;"><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;"><tbody><tr><td style="direction:ltr;font-size:0px;padding:0px;padding-top:40px;text-align:center;"><!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:231px;" ><![endif]--><div class="mj-column-per-33 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td style="vertical-align:top;padding:0px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td align="center" vertical-align="middle" class="shadow" style="font-size:0px;padding:0px;word-break:break-word;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:separate;line-height:100%;"><tr><td align="center" bgcolor="#7000FF" role="presentation" style="border:none;border-radius:16px;cursor:auto;height:56px;mso-padding-alt:16px 32px;background:#7000FF;" valign="middle"><a href="${offerAcceptLink}" style="display:inline-block;background:#7000FF;color:#ffffff;font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:14px;font-weight:700;line-height:120%;letter-spacing:-0.16px;margin:0;text-decoration:none;text-transform:none;padding:16px 32px;mso-padding-alt:0px;border-radius:16px;" target="_blank">Принять предложение</a></td></tr></table></td></tr></tbody></table></td></tr></tbody></table></div><!--[if mso | IE]></td><td class="" style="vertical-align:top;width:140px;" ><![endif]--><div class="mj-column-per-20 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td style="vertical-align:top;padding:0px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td align="center" vertical-align="middle" style="font-size:0px;padding:0px;word-break:break-word;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:separate;line-height:100%;"><tr><td align="center" bgcolor="transparent" role="presentation" style="border:none;border-radius:3px;cursor:auto;height:56px;mso-padding-alt:0px;background:transparent;" valign="middle"><a href="${offerDeclineLink}" style="display:inline-block;background:transparent;color:rgba(255, 43, 43, 1);font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:14px;font-weight:700;line-height:120%;letter-spacing:-0.16px;margin:0;text-decoration:none;text-transform:none;padding:0px;mso-padding-alt:0px;border-radius:3px;" target="_blank">Отклонить</a></td></tr></table></td></tr></tbody></table></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--><!-- Social icons --><!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:700px;" width="700" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]--><div style="margin:0px auto;max-width:700px;"><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;"><tbody><tr><td style="direction:ltr;font-size:0px;padding:0px;text-align:center;"><!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:700px;" ><![endif]--><div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td style="vertical-align:top;padding:0px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td align="center" class="social" style="font-size:0px;padding:0px;padding-top:48px;word-break:break-word;"><!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" ><tr><td><![endif]--><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;"><tr class="shadow"><td style="padding:0 24px;vertical-align:middle;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:transparent;border-radius:3px;width:40px;"><tr><td style="font-size:0;height:40px;vertical-align:middle;width:40px;"><a href="https://instagram.com/obmen.market" target="_blank"><img height="40" src="http://cdn.mcauto-images-production.sendgrid.net/55d8758937b582f0/f55d0fc7-087e-41a4-9d94-2750bdb5a4e5/64x64.png" style="border-radius:3px;display:block;" width="40"></a></td></tr></table></td></tr></table><!--[if mso | IE]></td><td><![endif]--><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;"><tr class="shadow"><td style="padding:0 24px;vertical-align:middle;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:transparent;border-radius:3px;width:40px;"><tr><td style="font-size:0;height:40px;vertical-align:middle;width:40px;"><a href="https://fb.com/obmen.market" target="_blank"><img height="40" src="http://cdn.mcauto-images-production.sendgrid.net/55d8758937b582f0/7eacb2db-391d-43b6-8434-6edd772b155e/64x64.png" style="border-radius:3px;display:block;" width="40"></a></td></tr></table></td></tr></table><!--[if mso | IE]></td><td><![endif]--><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;"><tr class="shadow"><td style="padding:0 24px;vertical-align:middle;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:transparent;border-radius:3px;width:40px;"><tr><td style="font-size:0;height:40px;vertical-align:middle;width:40px;"><a href="https://vk.com/obmen.market" target="_blank"><img height="40" src="http://cdn.mcauto-images-production.sendgrid.net/55d8758937b582f0/da958188-3d0c-4243-adfc-431f3d72b173/64x64.png" style="border-radius:3px;display:block;" width="40"></a></td></tr></table></td></tr></table><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></table></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--><!-- Spacer 40px --><!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:700px;" width="700" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]--><div style="margin:0px auto;max-width:700px;"><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;"><tbody><tr><td style="direction:ltr;font-size:0px;padding:0px;text-align:center;"><!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:700px;" ><![endif]--><div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td style="vertical-align:top;padding:0px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tbody><tr><td class="spacer" style="font-size:0px;padding:0px;word-break:break-word;"><div style="height:20px;line-height:20px;">&#8202;</div></td></tr></tbody></table></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--><!-- Footer links --></div></body></html>
 `;

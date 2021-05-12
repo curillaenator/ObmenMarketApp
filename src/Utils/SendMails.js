@@ -1,5 +1,5 @@
 import { fsdb, fst } from "./firebase";
-import { newPostTpl } from "./mailTemplates";
+import { newPostTpl, newOfferTpl } from "./mailTemplates";
 
 // SENDMAIL UTILS
 
@@ -27,23 +27,20 @@ export const onLotCreateSendMail = async (lotData) => {
     .child(`posts/${lotData.uid}/${lotData.postid}/photo0`)
     .getDownloadURL();
 
-  const lotDescription =
-    lotData.description.length > 50
-      ? `${lotData.description.slice(0, 50)}...`
-      : lotData.description;
+  // const lotDescription =
+  //   lotData.description.length > 50
+  //     ? `${lotData.description.slice(0, 50)}...`
+  //     : lotData.description;
 
   const lotMailBody = {
     delivery: { state: "CREATED" },
     toUids: [`${lotData.uid}`],
     message: {
-      subject: "Вы добавили объявление на Obmen.market",
+      subject: "Новое объявление на Obmen.market",
       html: newPostTpl(
-        lotData.username,
-        lotData.avatar,
         lotData.title,
         `https://obmen.market/posts/${lotData.postid}`,
         lotPhoto,
-        lotDescription,
         `https://obmen.market/posts/${lotData.postid}?action=extend`
       ),
     },
@@ -56,18 +53,35 @@ export const onLotCreateSendMail = async (lotData) => {
 };
 
 export const onOfferCreateSendMail = async (lotMeta, offerData) => {
+
+  const lotPhoto = await fst
+  .ref()
+  .child(`posts/${lotMeta.uid}/${lotMeta.postid}/photo0`)
+  .getDownloadURL();
+
+  // Offer photo
+  const offerPhotoPath = offerData.photoURLs[0];
+  const finalOfferPhoto = offerPhotoPath.replace("https://firebasestorage.googleapis.com", "https://ik.imagekit.io/wnq6ecptz6/firebase/tr:n-mail_big_photo");
+
+  // Lot phtoto
+  const finalLotPhoto = lotPhoto.replace("https://firebasestorage.googleapis.com", "https://ik.imagekit.io/wnq6ecptz6/firebase/tr:n-mail_small_photo");
+
+
   const offerMailBody = {
     delivery: { state: "CREATED" },
     toUids: [`${lotMeta.uid}`],
     message: {
-      subject: "Вы добавили предложение к обмену на Obmen.market",
-      html: newPostTpl(
-        offerData.authorName,
-        offerData.avatar,
+      subject: "Новое предложение на Обмен.маркете!",
+      html: newOfferTpl(
         offerData.name,
+        `https://obmen.market/posts/${lotMeta.postid}?action=view&offer=`,
+        finalOfferPhoto,
+        offerData.description,
+        `https://obmen.market/posts/${lotMeta.postid}?action=accept&offer=`,
+        `https://obmen.market/posts/${lotMeta.postid}?action=decline&offer=`,
         `https://obmen.market/posts/${lotMeta.postid}`,
-        offerData.photoURLs[0],
-        offerData.description
+        lotMeta.title,
+        finalLotPhoto
       ),
     },
   };
