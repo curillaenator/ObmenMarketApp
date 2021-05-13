@@ -1,11 +1,11 @@
 import { fb, fa, db, db_notes } from "../../Utils/firebase";
 import { batch } from "react-redux";
-import { growl } from "@crystallize/react-growl";
+// import { growl } from "@crystallize/react-growl";
 
 import { chatReset } from "./chat";
 import { resetLotsState } from "./lots";
 
-import { growlsTexts } from "../../Utils/growlsTexts";
+// import { growlsTexts } from "../../Utils/growlsTexts";
 
 const SET_INITIALIZED = "auth/SET_INITIALIZED";
 const SET_OWNER_ID = "auth/SET_OWNER_ID";
@@ -90,11 +90,11 @@ export const authCheck = (curUser) => (dispatch) => {
 
         db_notes.ref(curUser.uid).on("child_added", (added) => {
           if (!instance.includes(added.key)) {
-            added.val().type === "offerAdded" &&
-              growl({
-                title: growlsTexts.offerAdded.title,
-                message: growlsTexts.offerAdded.msg(added.val().growlMsg),
-              });
+            // added.val().type === "offerAdded" &&
+              // growl({
+              //   title: growlsTexts.offerAdded.title,
+              //   message: growlsTexts.offerAdded.msg(added.val().growlMsg),
+              // });
           }
         });
       });

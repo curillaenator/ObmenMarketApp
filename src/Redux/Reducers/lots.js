@@ -1,5 +1,6 @@
 import { batch } from "react-redux";
-import { growl } from "@crystallize/react-growl";
+import { toast, cssTransition } from "react-toastify";
+import { ToastComponent } from "../../ObmenMarket/Components/Toast/Toast";
 
 import { fst, db, fa, db_offer, db_chat, db_notes } from "../../Utils/firebase";
 
@@ -11,6 +12,11 @@ import {
 } from "../../Utils/SendMails";
 
 import { setFormMode, setProgress } from "./home";
+
+const slidein = cssTransition({
+  enter: "slide-in-blurred-bottom",
+  exit: "slide-out-blurred-top",
+});
 
 const SET_LOTLIST = "lots/SET_LOTLIST";
 const RESET_LOTLIST = "lots/RESET_LOTLIST";
@@ -357,10 +363,10 @@ export const publishNewLotFromForm = (updData, history) => (dispatch) => {
   delete updData.draft;
 
   const Success = async () => {
-    await growl({
-      title: "Готово!",
-      message: "Объявление добавлено",
-    });
+    // await growl({
+    //   title: "Готово!",
+    //   message: "Объявление добавлено",
+    // });
 
     history.push(`posts/${updData.postid}`);
     dispatch(setFormMode(false));
@@ -368,11 +374,11 @@ export const publishNewLotFromForm = (updData, history) => (dispatch) => {
   };
 
   const Failure = () => {
-    growl({
-      title: "Ошибка!",
-      message: "Объявление не создано, попробуйте заново",
-      type: "error",
-    });
+    // growl({
+    //   title: "Ошибка!",
+    //   message: "Объявление не создано, попробуйте заново",
+    //   type: "error",
+    // });
   };
 
   db.ref(`posts/${updData.postid}`).update(updData, (err) =>
@@ -485,48 +491,47 @@ export const prolongLotExpiry = (daysToAdd) => (dispatch, getState) => {
 
 // offer accept by lotAuthor & confirm by offerAuthor
 
-export const acceptConfirmOffer =
-  (lotMeta, offerMeta, payload) => (dispatch) => {
-    dispatch(setProgress(1));
+export const acceptConfirmOffer = (lotMeta, offerMeta, pl) => (dispatch) => {
+  dispatch(setProgress(1));
 
-    const onSuccess = () => {
-      db.ref(`posts/${lotMeta.postid}`).once("value", (lot) => {
-        if (lot.val().acceptedOffer && !lot.val().offerConfirmed) {
-          batch(() => {
-            dispatch(
-              setLotMeta({ ...lotMeta, acceptedOffer: lot.val().acceptedOffer })
-            );
-            dispatch(setProgress(100));
-          });
-
-          return onApproveByLotAuthor(lotMeta, offerMeta);
-        }
-
-        if (lot.val().acceptedOffer && lot.val().offerConfirmed) {
-          batch(() => {
-            dispatch(
-              setLotMeta({
-                ...lotMeta,
-                offerConfirmed: lot.val().offerConfirmed,
-              })
-            );
-            dispatch(setProgress(100));
-          });
-
-          return onConfirmByOfferAuthor(lotMeta, offerMeta);
-        }
-
-        return batch(() => {
-          dispatch(setLotMeta({ ...lotMeta, ...payload }));
+  const onSuccess = () => {
+    db.ref(`posts/${lotMeta.postid}`).once("value", (lot) => {
+      if (lot.val().acceptedOffer && !lot.val().offerConfirmed) {
+        batch(() => {
+          dispatch(
+            setLotMeta({ ...lotMeta, acceptedOffer: lot.val().acceptedOffer })
+          );
           dispatch(setProgress(100));
         });
-      });
-    };
 
-    db.ref(`posts/${lotMeta.postid}`).update(payload, (err) =>
-      err ? console.log(err) : onSuccess()
-    );
+        return onApproveByLotAuthor(lotMeta, offerMeta);
+      }
+
+      if (lot.val().acceptedOffer && lot.val().offerConfirmed) {
+        batch(() => {
+          dispatch(
+            setLotMeta({
+              ...lotMeta,
+              offerConfirmed: lot.val().offerConfirmed,
+            })
+          );
+          dispatch(setProgress(100));
+        });
+
+        return onConfirmByOfferAuthor(lotMeta, offerMeta);
+      }
+
+      return batch(() => {
+        dispatch(setLotMeta({ ...lotMeta, ...pl }));
+        dispatch(setProgress(100));
+      });
+    });
   };
+
+  db.ref(`posts/${lotMeta.postid}`).update(pl, (err) =>
+    err ? console.log(err) : onSuccess()
+  );
+};
 
 // offer create / remove / cancel create / publish
 
@@ -582,10 +587,19 @@ export const createOffer = (lotMeta, offerData) => (dispatch, getState) => {
   dispatch(setProgress(1));
 
   const Success = async () => {
-    await growl({
-      title: "Готово!",
-      message: "Предложение добавлено",
-    });
+    await toast(
+      ({ closeToast }) => (
+        <ToastComponent
+          icon={getState().ui.icons.toasts.warning}
+          type="warning"
+          close={closeToast}
+          button
+        />
+      ),
+      { transition: slidein }
+    );
+
+    // await toast("sjhvdjskvhdsjkdsbkjv");
 
     const lotOffers = getState().lots.currentLotMeta.offers || [];
 
@@ -623,11 +637,11 @@ export const createOffer = (lotMeta, offerData) => (dispatch, getState) => {
   const Failure = (err) => {
     console.log(err);
 
-    growl({
-      title: "Ошибка!",
-      message: "Предложение не создано, попробуйте заново",
-      type: "error",
-    });
+    // growl({
+    //   title: "Ошибка!",
+    //   message: "Предложение не создано, попробуйте заново",
+    //   type: "error",
+    // });
   };
 
   db_offer
