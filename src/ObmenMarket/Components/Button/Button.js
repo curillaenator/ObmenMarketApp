@@ -61,7 +61,7 @@ const ButtonWrap = styled.button`
     position: absolute;
     top: 0;
     left: 0;
-    fill: ${(props) => shapeColor({ ...props, base: colors.primary })};
+    fill: ${(props) => shapeColor({ ...props, base: props.shapeBg.idle })};
     filter: drop-shadow(
       ${(props) => shapeFilter({ ...props, params: "0 10px 14px #1a1a1a3f" })}
     );
@@ -70,14 +70,14 @@ const ButtonWrap = styled.button`
   }
 
   &:hover .shape {
-    fill: ${(props) => shapeColor({ ...props, base: colors.primaryHover })};
+    fill: ${(props) => shapeColor({ ...props, base: props.shapeBg.hover })};
     filter: drop-shadow(
       ${(props) => shapeFilter({ ...props, params: "0 12px 16px ##1a1a1a48" })}
     );
   }
 
   &:active .shape {
-    fill: ${(props) => shapeColor({ ...props, base: colors.primary })};
+    fill: ${(props) => shapeColor({ ...props, base: props.shapeBg.idle })};
     filter: none;
   }
 
@@ -124,19 +124,23 @@ const ButtonWrap = styled.button`
 export const Button = ({
   width = 217,
   height = 56,
+  smoothQ = 98,
+  radius = 23.33,
+  transition = 0.06,
   title = "",
   subtitle = "",
   icon = null,
   loader = false,
   active = false,
   disabled = false,
-  handler = () => console.log("click"),
+  handler = () => console.log("cta empty"),
   titlewidth = null,
   fontsize = null,
+  shapeColors = null,
 }) => {
-  const transition = 0.06;
-  const smoothQ = 98;
-  const radius = 23.33; // 44
+  const shapeBg = shapeColors
+    ? shapeColors
+    : { idle: colors.primary, hover: colors.primaryHover };
 
   const W = width;
   const H = height;
@@ -153,6 +157,7 @@ export const Button = ({
       titlewidth={titlewidth}
       fontsize={fontsize}
       transition={transition}
+      shapeBg={shapeBg}
       onClick={handler}
     >
       <svg
