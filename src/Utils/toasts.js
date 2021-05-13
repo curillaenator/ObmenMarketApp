@@ -12,10 +12,54 @@ export const toastsModel = {
   },
   offerAdded: {
     title: "Новое предложение!",
-    msg: (title) => `К объявлению ${title} предложили обмен`,
+    msg: (title) => `К объявлению "${title}" предложили обмен`,
   },
   offerRemoved: {
     title: "Готово!",
     msg: "Предложение удалено",
+  },
+  offerApproved: {
+    title: "Предложение принято!",
+    msg: (lotTitle, offerTitle) => (
+      <>
+        <span
+          style={{ fontWeight: 600, color: "#ffffff" }}
+        >{`"${offerTitle}" `}</span>
+        в обмен на
+        <span
+          style={{ fontWeight: 600, color: "#ffffff" }}
+        >{` "${lotTitle}"`}</span>
+      </>
+    ),
+  },
+  offerConfirmed: {
+    title: "Обмен подтвержден!",
+    msg: (lotTitle, offerTitle) => (
+      <>
+        <span
+          style={{ fontWeight: 600, color: "#ffffff" }}
+        >{`"${lotTitle}" `}</span>
+        в обмен на
+        <span
+          style={{ fontWeight: 600, color: "#ffffff" }}
+        >{` "${offerTitle}"`}</span>
+      </>
+    ),
+  },
+  lotAdded: {
+    title: "Готово!",
+    msg: "Объявление создано",
+  },
+  lotEdited: {
+    title: "Готово!",
+    msg: "Изменения сохранены",
+  },
+  lotDeleted: {
+    title: "Готово!",
+    msg: "Объявление удалено",
+  },
+  lotExpand: {
+    title: "Готово!",
+    msg: "Срок публикации объявления продлен",
   },
 };

@@ -89,7 +89,7 @@ export const ToastComponent = ({
     new: {
       bg: "#9C6DFF",
       ttl: "#ffffff",
-      txt: "#ffffff",
+      txt: "#efe3ff",
       cls: "#7840F0",
       btn: "#7000FF",
       btnhov: "#7622FF",

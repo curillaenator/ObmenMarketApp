@@ -90,22 +90,68 @@ export const authCheck = (curUser, history) => (dispatch, getState) => {
 
         db_notes.ref(curUser.uid).on("child_added", (added) => {
           if (!instance.includes(added.key)) {
-            toast(
-              ({ closeToast }) => (
-                <ToastComponent
-                  title={toastsModel.offerAdded.title}
-                  text={toastsModel.offerAdded.msg(added.val().toastMsg)}
-                  icon={getState().ui.icons.toasts.new}
-                  type="new"
-                  close={closeToast}
-                  button={() => {
-                    history.push(added.val().toastLink);
-                    closeToast();
-                  }}
-                />
-              ),
-              { transition: slidein }
-            );
+            if (added.val().type === "offerAdded") {
+              return toast(
+                ({ closeToast }) => (
+                  <ToastComponent
+                    title={toastsModel.offerAdded.title}
+                    text={toastsModel.offerAdded.msg(added.val().lotTitle)}
+                    icon={getState().ui.icons.toasts.new}
+                    type="new"
+                    close={closeToast}
+                    button={() => {
+                      history.push(added.val().toastLink);
+                      closeToast();
+                    }}
+                  />
+                ),
+                { transition: slidein }
+              );
+            }
+
+            if (added.val().type === "offerApproved") {
+              return toast(
+                ({ closeToast }) => (
+                  <ToastComponent
+                    title={toastsModel.offerApproved.title}
+                    text={toastsModel.offerApproved.msg(
+                      added.val().lotTitle,
+                      added.val().offerTitle
+                    )}
+                    icon={getState().ui.icons.toasts.new}
+                    type="new"
+                    close={closeToast}
+                    button={() => {
+                      history.push(added.val().toastLink);
+                      closeToast();
+                    }}
+                  />
+                ),
+                { transition: slidein }
+              );
+            }
+
+            if (added.val().type === "offerConfirmed") {
+              return toast(
+                ({ closeToast }) => (
+                  <ToastComponent
+                    title={toastsModel.offerConfirmed.title}
+                    text={toastsModel.offerConfirmed.msg(
+                      added.val().lotTitle,
+                      added.val().offerTitle
+                    )}
+                    icon={getState().ui.icons.toasts.new}
+                    type="new"
+                    close={closeToast}
+                    // button={() => {
+                    //   history.push(added.val().toastLink);
+                    //   closeToast();
+                    // }}
+                  />
+                ),
+                { transition: slidein }
+              );
+            }
           }
         });
       });
