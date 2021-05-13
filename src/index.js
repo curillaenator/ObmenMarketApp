@@ -21,11 +21,11 @@ const App = () => {
           <ObmenMarketApp />
           <ToastContainer
             hideProgressBar={true}
-            limit={3}
+            // limit={3}
             closeButton={false}
-            newestOnTop={true}
+            // newestOnTop={true}
             closeOnClick={false}
-            autoClose={false}
+            // autoClose={false}
             position="bottom-right"
           />
         </BrowserRouter>

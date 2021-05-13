@@ -1,8 +1,13 @@
 import { batch } from "react-redux";
-import { toast, cssTransition } from "react-toastify";
-import { ToastComponent } from "../../ObmenMarket/Components/Toast/Toast";
-
-import { fst, db, fa, db_offer, db_chat, db_notes } from "../../Utils/firebase";
+import {
+  fst,
+  db,
+  fa,
+  fb,
+  db_offer,
+  db_chat,
+  db_notes,
+} from "../../Utils/firebase";
 
 import {
   onLotCreateSendMail,
@@ -13,10 +18,9 @@ import {
 
 import { setFormMode, setProgress } from "./home";
 
-const slidein = cssTransition({
-  enter: "slide-in-blurred-bottom",
-  exit: "slide-out-blurred-top",
-});
+import { toast } from "react-toastify";
+import { ToastComponent } from "../../ObmenMarket/Components/Toast/Toast";
+import { toastsModel, slidein } from "../../Utils/toasts";
 
 const SET_LOTLIST = "lots/SET_LOTLIST";
 const RESET_LOTLIST = "lots/RESET_LOTLIST";
@@ -573,13 +577,35 @@ export const removeOffer = (offerID) => (dispatch, getState) => {
     dispatch(onOfferCancel(offerID));
   });
 
+  const Success = () => {
+    dispatch(setProgress(100));
+
+    toast(
+      ({ closeToast }) => (
+        <ToastComponent
+          title={toastsModel.offerRemoved.title}
+          text={toastsModel.offerRemoved.msg}
+          icon={getState().ui.icons.toasts.success}
+          type="success"
+          close={closeToast}
+          // button
+        />
+      ),
+      { transition: slidein }
+    );
+  };
+
+  const Failure = () => {
+    dispatch(setProgress(100));
+  };
+
   const acceptConfirmReset = {
     acceptedOffer: null,
     offerConfirmed: null,
   };
 
-  db.ref(`posts/${lotMeta.postid}`).update(acceptConfirmReset, () =>
-    dispatch(setProgress(100))
+  db.ref(`posts/${lotMeta.postid}`).update(acceptConfirmReset, (err) =>
+    err ? Failure() : Success()
   );
 };
 
@@ -590,10 +616,12 @@ export const createOffer = (lotMeta, offerData) => (dispatch, getState) => {
     await toast(
       ({ closeToast }) => (
         <ToastComponent
-          icon={getState().ui.icons.toasts.warning}
-          type="warning"
+          title={toastsModel.offerSuccess.title}
+          text={toastsModel.offerSuccess.msg}
+          icon={getState().ui.icons.toasts.success}
+          type="success"
           close={closeToast}
-          button
+          // button
         />
       ),
       { transition: slidein }
@@ -628,8 +656,10 @@ export const createOffer = (lotMeta, offerData) => (dispatch, getState) => {
     db_notes.ref(`${lotMeta.uid}/`).update({
       [newEventID]: {
         type: "offerAdded",
-        growlLink: `https://obmen.market/posts/${lotMeta.postid}`,
-        growlMsg: lotMeta.title,
+        toastLink: `posts/${lotMeta.postid}`,
+        toastMsg: lotMeta.title,
+        timestamp: fb.database.ServerValue.TIMESTAMP,
+        isRead: false,
       },
     });
   };

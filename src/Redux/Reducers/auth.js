@@ -1,11 +1,12 @@
 import { fb, fa, db, db_notes } from "../../Utils/firebase";
 import { batch } from "react-redux";
-// import { growl } from "@crystallize/react-growl";
 
 import { chatReset } from "./chat";
 import { resetLotsState } from "./lots";
 
-// import { growlsTexts } from "../../Utils/growlsTexts";
+import { toast } from "react-toastify";
+import { ToastComponent } from "../../ObmenMarket/Components/Toast/Toast";
+import { toastsModel, slidein } from "../../Utils/toasts";
 
 const SET_INITIALIZED = "auth/SET_INITIALIZED";
 const SET_OWNER_ID = "auth/SET_OWNER_ID";
@@ -50,7 +51,6 @@ const setAuthedUser = (user) => ({ type: SET_USER, user });
 // authorization
 
 export const googleSignIn = () => async (dispatch) => {
-
   const newUser = (user) => {
     const newUser = {
       username: user.displayName,
@@ -82,7 +82,7 @@ export const googleSignIn = () => async (dispatch) => {
   });
 };
 
-export const authCheck = (curUser) => (dispatch) => {
+export const authCheck = (curUser, history) => (dispatch, getState) => {
   if (curUser) {
     db.ref("users/" + curUser.uid).once("value", (snapshot) => {
       db_notes.ref(curUser.uid).once("value", (oldNotes) => {
@@ -90,11 +90,22 @@ export const authCheck = (curUser) => (dispatch) => {
 
         db_notes.ref(curUser.uid).on("child_added", (added) => {
           if (!instance.includes(added.key)) {
-            // added.val().type === "offerAdded" &&
-              // growl({
-              //   title: growlsTexts.offerAdded.title,
-              //   message: growlsTexts.offerAdded.msg(added.val().growlMsg),
-              // });
+            toast(
+              ({ closeToast }) => (
+                <ToastComponent
+                  title={toastsModel.offerAdded.title}
+                  text={toastsModel.offerAdded.msg(added.val().toastMsg)}
+                  icon={getState().ui.icons.toasts.new}
+                  type="new"
+                  close={closeToast}
+                  button={() => {
+                    history.push(added.val().toastLink);
+                    closeToast();
+                  }}
+                />
+              ),
+              { transition: slidein }
+            );
           }
         });
       });

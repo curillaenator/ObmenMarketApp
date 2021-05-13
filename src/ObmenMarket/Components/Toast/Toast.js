@@ -9,7 +9,8 @@ const ToastContainer = styled.div`
   padding: 24px 30px 24px 26px;
   border-radius: 24px;
   background-color: ${(props) => props.colors.bg};
-  filter: drop-shadow(0 12px 16px #1a1a1a3f);
+  filter: ${(props) =>
+    props.type === "new" ? "drop-shadow(0 12px 16px #1a1a1a3f)" : "none"};
 
   .close {
     position: absolute;
@@ -61,9 +62,9 @@ const ToastContainer = styled.div`
 `;
 
 export const ToastComponent = ({
-  title = "Готово!",
-  text = "К объявлению “iPhone7 256Gb Silver” предложили обмен и сидят такие смотрят чё будет",
-  button = false,
+  title = "пусто",
+  text = "пусто",
+  button = null,
   type,
   icon,
   close,
@@ -112,7 +113,7 @@ export const ToastComponent = ({
   };
 
   return (
-    <ToastContainer colors={colors[type]} button={button}>
+    <ToastContainer colors={colors[type]} button={button} type={type}>
       <div className="close" onClick={close}>
         <svg
           width="16"
@@ -131,11 +132,12 @@ export const ToastComponent = ({
 
         <p>{text}</p>
 
-        {button && (
+        {button !== null && (
           <Button
             width={111}
             title="Открыть"
             shapeColors={{ idle: colors[type].btn, hover: colors[type].btnhov }}
+            handler={button}
           />
         )}
       </div>

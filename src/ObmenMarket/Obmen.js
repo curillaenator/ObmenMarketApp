@@ -32,11 +32,10 @@ const ObmenMarket = ({
   const history = useHistory();
   const [user, userLoading] = useAuthState(fa);
 
-  useEffect(() => !userLoading && authCheck(user), [
-    user,
-    authCheck,
-    userLoading,
-  ]);
+  useEffect(
+    () => !userLoading && authCheck(user, history),
+    [user, authCheck, userLoading, history]
+  );
 
   useEffect(() => {
     onConnectDisconnect(ownerID);
