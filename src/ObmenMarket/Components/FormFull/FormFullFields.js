@@ -28,12 +28,12 @@ import styles from "./formfull.module.scss";
 
 const Buttons = ({
   icons,
-  notation,
+  // notation,
   isUploading,
   loaderBtn,
   update,
   formSubmit,
-  formSubmitDraft,
+  // formSubmitDraft,
   formSubmitUpdate,
   formSubmitCancel,
 }) => {
@@ -59,13 +59,13 @@ const Buttons = ({
             handler={formSubmit}
           />
 
-          <ButtonOutline
+          {/* <ButtonOutline
             {...commonProps}
             title={getTitle("draft", "Сохранить черновик")}
             icon={icons.lotdraft}
             loader={loaderBtn === "draft" && isUploading}
             handler={formSubmitDraft}
-          />
+          /> */}
         </>
       )}
 
@@ -89,7 +89,7 @@ const Buttons = ({
         </>
       )}
 
-      {!update && <p>{notation}</p>}
+      {/* {!update && <p>{notation}</p>} */}
     </div>
   );
 };
@@ -166,10 +166,10 @@ export const FormFullFields = ({
     submitBase();
   };
 
-  const formSubmitDraft = () => {
-    form.change("draft", true);
-    submitBase();
-  };
+  // const formSubmitDraft = () => {
+  //   form.change("draft", true);
+  //   submitBase();
+  // };
 
   const formSubmitUpdate = () => submitBase();
 
@@ -292,11 +292,11 @@ export const FormFullFields = ({
 
       <Buttons
         icons={icons}
-        notation={formUI.notation}
+        // notation={formUI.notation}
         loaderBtn={loaderBtn}
         isUploading={isUploading}
         formSubmit={(e) => onSubmitClick(e, formSubmitPublish, "publish")}
-        formSubmitDraft={(e) => onSubmitClick(e, formSubmitDraft, "draft")}
+        // formSubmitDraft={(e) => onSubmitClick(e, formSubmitDraft, "draft")}
         formSubmitUpdate={(e) => onSubmitClick(e, formSubmitUpdate, "update")}
         formSubmitCancel={() => setFormMode(false)}
         update={update}

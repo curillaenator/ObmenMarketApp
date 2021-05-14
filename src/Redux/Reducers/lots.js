@@ -387,16 +387,26 @@ export const publishNewLotFromForm =
       onLotCreateSendMail(updData);
     };
 
-    const Failure = () => {
-      // growl({
-      //   title: "Ошибка!",
-      //   message: "Объявление не создано, попробуйте заново",
-      //   type: "error",
-      // });
+    const Failure = (err) => {
+      toast(
+        ({ closeToast }) => (
+          <ToastComponent
+            title={toastsModel.commonError.title}
+            text={toastsModel.commonError.msg}
+            icon={getState().ui.icons.toasts.error}
+            type="error"
+            close={closeToast}
+            // button
+          />
+        ),
+        { transition: slidein }
+      );
+
+      console.log(err);
     };
 
     db.ref(`posts/${updData.postid}`).update(updData, (err) =>
-      err ? Failure() : Success()
+      err ? Failure(err) : Success()
     );
   };
 
@@ -521,9 +531,6 @@ export const prolongLotExpiry = (daysToAdd) => (dispatch, getState) => {
     Date.parse(lotMeta.expireDate) + daysToAdd * 24 * 60 * 60 * 1000
   );
 
-  // const curDate = new Date();
-  // const newExpiry = new Date(curDate.setDate(curDate.getDate() + 7));
-
   const Success = async () => {
     await toast(
       ({ closeToast }) => (
@@ -546,6 +553,20 @@ export const prolongLotExpiry = (daysToAdd) => (dispatch, getState) => {
   };
 
   const Failure = (err) => {
+    toast(
+      ({ closeToast }) => (
+        <ToastComponent
+          title={toastsModel.commonError.title}
+          text={toastsModel.commonError.msg}
+          icon={getState().ui.icons.toasts.error}
+          type="error"
+          close={closeToast}
+          // button
+        />
+      ),
+      { transition: slidein }
+    );
+
     console.log(err);
   };
 
@@ -556,69 +577,189 @@ export const prolongLotExpiry = (daysToAdd) => (dispatch, getState) => {
 
 // offer accept by lotAuthor & confirm by offerAuthor
 
-export const acceptConfirmOffer = (lotMeta, offerMeta, pl) => (dispatch) => {
-  dispatch(setProgress(1));
+export const acceptConfirmOffer =
+  (lotMeta, offerMeta, pl) => (dispatch, getState) => {
+    dispatch(setProgress(1));
 
-  const onSuccess = () => {
-    db.ref(`posts/${lotMeta.postid}`).once("value", (lot) => {
-      if (lot.val().acceptedOffer && !lot.val().offerConfirmed) {
-        const newEventID = db_notes.ref(offerMeta.authorID).push().key;
+    const Success = () => {
+      db.ref(`posts/${lotMeta.postid}`).once("value", (lot) => {
+        //
+        // ACCEPT OFFER BY LOT AUTHOR
+        //
+        if (lot.val().acceptedOffer && !lot.val().offerConfirmed) {
+          //
+          // create notification
+          //
+          const newEventID = db_notes.ref(offerMeta.authorID).push().key;
 
-        db_notes.ref(`${offerMeta.authorID}/${newEventID}`).update({
-          type: "offerApproved",
-          toastLink: `posts/${lotMeta.postid}`,
-          lotTitle: lotMeta.title,
-          offerTitle: offerMeta.name,
-          timestamp: fb.database.ServerValue.TIMESTAMP,
-          isRead: false,
-        });
+          const thenToast = (err) => {
+            if (!err) {
+              return toast(
+                ({ closeToast }) => (
+                  <ToastComponent
+                    title={toastsModel.offerApproved.title}
+                    text={toastsModel.offerApproved.msg(
+                      lotMeta.title,
+                      offerMeta.name
+                    )}
+                    icon={getState().ui.icons.toasts.success}
+                    type="success"
+                    close={closeToast}
+                    // button
+                  />
+                ),
+                { transition: slidein }
+              );
+            }
 
-        batch(() => {
-          dispatch(
-            setLotMeta({ ...lotMeta, acceptedOffer: lot.val().acceptedOffer })
+            if (err) {
+              return toast(
+                ({ closeToast }) => (
+                  <ToastComponent
+                    title={toastsModel.commonError.title}
+                    text={toastsModel.commonError.msg}
+                    icon={getState().ui.icons.toasts.error}
+                    type="error"
+                    close={closeToast}
+                    // button
+                  />
+                ),
+                { transition: slidein }
+              );
+            }
+          };
+
+          db_notes.ref(`${offerMeta.authorID}/${newEventID}`).update(
+            {
+              type: "offerApproved",
+              toastLink: `posts/${lotMeta.postid}`,
+              lotTitle: lotMeta.title,
+              offerTitle: offerMeta.name,
+              timestamp: fb.database.ServerValue.TIMESTAMP,
+              isRead: false,
+            },
+            thenToast
           );
+
+          // update state
+
+          batch(() => {
+            dispatch(
+              setLotMeta({ ...lotMeta, acceptedOffer: lot.val().acceptedOffer })
+            );
+            dispatch(setProgress(100));
+          });
+
+          // send mail
+
+          return onApproveByLotAuthor(lotMeta, offerMeta);
+        }
+        //
+        // CONFIRM OFFER BY OFFER AUTHOR
+        //
+        if (lot.val().acceptedOffer && lot.val().offerConfirmed) {
+          //
+          // create notification
+          //
+          const newEventID = db_notes.ref(lotMeta.uid).push().key;
+
+          const thenToast = (err) => {
+            if (!err) {
+              return toast(
+                ({ closeToast }) => (
+                  <ToastComponent
+                    title={toastsModel.offerConfirmed.title}
+                    text={toastsModel.offerConfirmed.msg(
+                      lotMeta.title,
+                      offerMeta.name
+                    )}
+                    icon={getState().ui.icons.toasts.success}
+                    type="success"
+                    close={closeToast}
+                    // button
+                  />
+                ),
+                { transition: slidein }
+              );
+            }
+
+            if (err) {
+              return toast(
+                ({ closeToast }) => (
+                  <ToastComponent
+                    title={toastsModel.commonError.title}
+                    text={toastsModel.commonError.msg}
+                    icon={getState().ui.icons.toasts.error}
+                    type="error"
+                    close={closeToast}
+                    // button
+                  />
+                ),
+                { transition: slidein }
+              );
+            }
+          };
+
+          db_notes.ref(`${lotMeta.uid}/${newEventID}`).update(
+            {
+              type: "offerConfirmed",
+              toastLink: `posts/${lotMeta.postid}`,
+              lotTitle: lotMeta.title,
+              offerTitle: offerMeta.name,
+              timestamp: fb.database.ServerValue.TIMESTAMP,
+              isRead: false,
+            },
+            thenToast
+          );
+
+          // update state
+
+          batch(() => {
+            dispatch(
+              setLotMeta({
+                ...lotMeta,
+                offerConfirmed: lot.val().offerConfirmed,
+              })
+            );
+            dispatch(setProgress(100));
+          });
+
+          // send mail
+
+          return onConfirmByOfferAuthor(lotMeta, offerMeta);
+        }
+        //
+        // DEFAULT (FOR CANCELING PURPOSE)
+        //
+        return batch(() => {
+          dispatch(setLotMeta({ ...lotMeta, ...pl }));
           dispatch(setProgress(100));
         });
-
-        return onApproveByLotAuthor(lotMeta, offerMeta);
-      }
-
-      if (lot.val().acceptedOffer && lot.val().offerConfirmed) {
-        const newEventID = db_notes.ref(lotMeta.uid).push().key;
-
-        db_notes.ref(`${lotMeta.uid}/${newEventID}`).update({
-          type: "offerConfirmed",
-          toastLink: `posts/${lotMeta.postid}`,
-          lotTitle: lotMeta.title,
-          offerTitle: offerMeta.name,
-          timestamp: fb.database.ServerValue.TIMESTAMP,
-          isRead: false,
-        });
-
-        batch(() => {
-          dispatch(
-            setLotMeta({
-              ...lotMeta,
-              offerConfirmed: lot.val().offerConfirmed,
-            })
-          );
-          dispatch(setProgress(100));
-        });
-
-        return onConfirmByOfferAuthor(lotMeta, offerMeta);
-      }
-
-      return batch(() => {
-        dispatch(setLotMeta({ ...lotMeta, ...pl }));
-        dispatch(setProgress(100));
       });
-    });
-  };
+    };
 
-  db.ref(`posts/${lotMeta.postid}`).update(pl, (err) =>
-    err ? console.log(err) : onSuccess()
-  );
-};
+    const Failure = (err) => {
+      toast(
+        ({ closeToast }) => (
+          <ToastComponent
+            title={toastsModel.commonError.title}
+            text={toastsModel.commonError.msg}
+            icon={getState().ui.icons.toasts.error}
+            type="error"
+            close={closeToast}
+            // button
+          />
+        ),
+        { transition: slidein }
+      );
+
+      console.log(err);
+    };
+
+    db.ref(`posts/${lotMeta.postid}`).update(pl, (err) =>
+      err ? Failure(err) : Success()
+    );
+  };
 
 // offer create / remove / cancel create / publish
 
