@@ -116,7 +116,7 @@ export const newPostTpl = (
       .back {
         background-image: url("https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Fshadow-dark.png?alt=media");
         background-repeat: no-repeat;
-        background-position: center 248px;
+        background-position: center 220px;
         background-size: 800px;
       }
 
@@ -210,7 +210,7 @@ export const newPostTpl = (
                                         </tr>
                                         <tr>
                                           <td align="center" style="font-size:0px;padding:0px;word-break:break-word;">
-                                            <div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:38px;font-weight:700;letter-spacing:-0.16px;line-height:40px;text-align:center;color:#FFFFFF;"><a href="${lotViewLink}" style="text-decoration:none; color:#ffffff;" class="shadow">${lotTitle}</a></div>
+                                            <div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:42px;font-weight:700;letter-spacing:-0.16px;line-height:40px;text-align:center;color:#FFFFFF;"><a href="${lotViewLink}" style="text-decoration:none; color:#ffffff;" class="shadow">${lotTitle}</a></div>
                                           </td>
                                         </tr>
                                         <tr>
@@ -652,7 +652,7 @@ export const newOfferTpl = (
   </style>
   <!--<![endif]-->
   <style type="text/css">
-    @media only screen and (min-width:690px) {
+    @media only screen and (min-width:680px) {
       .mj-column-per-100 {
         width: 100% !important;
         max-width: 100%;
@@ -670,7 +670,7 @@ export const newOfferTpl = (
     }
   </style>
   <style type="text/css">
-    @media only screen and (max-width:690px) {
+    @media only screen and (max-width:680px) {
       table.mj-full-width-mobile {
         width: 100% !important;
       }
@@ -705,7 +705,7 @@ export const newOfferTpl = (
       .back {
         background-image: url("https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Fshadow-dark.png?alt=media");
         background-repeat: no-repeat;
-        background-position: center 248px;
+        background-position: center 220px;
         background-size: 800px;
       }
 
@@ -799,7 +799,7 @@ export const newOfferTpl = (
                                         </tr>
                                         <tr>
                                           <td align="center" style="font-size:0px;padding:0px;word-break:break-word;">
-                                            <div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:38px;font-weight:700;letter-spacing:-0.16px;line-height:40px;text-align:center;color:#FFFFFF;"><a href="${offerViewLink}" style="text-decoration:none; color:#ffffff;" class="shadow">${offerTitle}</a></div>
+                                            <div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:42px;font-weight:700;letter-spacing:-0.16px;line-height:40px;text-align:center;color:#FFFFFF;"><a href="${offerViewLink}" style="text-decoration:none; color:#ffffff;" class="shadow">${offerTitle}</a></div>
                                           </td>
                                         </tr>
                                         <tr>
@@ -1284,7 +1284,7 @@ export const offerApprovedTpl = (
       .back {
         background-image: url("https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Fshadow-blue.png?alt=media");
         background-repeat: no-repeat;
-        background-position: center 242px;
+        background-position: center 210px;
         background-size: 800px;
       }
 
@@ -1391,7 +1391,7 @@ export const offerApprovedTpl = (
                                         </tr>
                                         <tr>
                                           <td align="center" style="font-size:0px;padding:0px;word-break:break-word;">
-                                            <div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:34px;font-weight:700;letter-spacing:-0.16px;line-height:40px;text-align:center;color:#FFFFFF;"><a href="${offerViewLink}" style="text-decoration:none; color:#ffffff;" class="shadow">${offerTitle}</a></div>
+                                            <div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:42px;font-weight:700;letter-spacing:-0.16px;line-height:40px;text-align:center;color:#FFFFFF;"><a href="${offerViewLink}" style="text-decoration:none; color:#ffffff;" class="shadow">${offerTitle}</a></div>
                                           </td>
                                         </tr>
                                         <tr>
@@ -1962,7 +1962,7 @@ export const offerConfirmedTpl = (
       .back {
         background-image: url("https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Fshadow-blue.png?alt=media");
         background-repeat: no-repeat;
-        background-position: center 242px;
+        background-position: center 210px;
         background-size: 800px;
       }
 
@@ -2069,7 +2069,7 @@ export const offerConfirmedTpl = (
                                         </tr>
                                         <tr>
                                           <td align="center" style="font-size:0px;padding:0px;word-break:break-word;">
-                                            <div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:34px;font-weight:700;letter-spacing:-0.16px;line-height:40px;text-align:center;color:#FFFFFF;"><a href="${offerViewLink}" style="text-decoration:none; color:#ffffff;" class="shadow">${offerTitle}</a></div>
+                                            <div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:42px;font-weight:700;letter-spacing:-0.16px;line-height:40px;text-align:center;color:#FFFFFF;"><a href="${offerViewLink}" style="text-decoration:none; color:#ffffff;" class="shadow">${offerTitle}</a></div>
                                           </td>
                                         </tr>
                                         <tr>
