@@ -116,7 +116,7 @@ export const newPostTpl = (
       .back {
         background-image: url("https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Fshadow-dark.png?alt=media");
         background-repeat: no-repeat;
-        background-position: center 300px;
+        background-position: center 248px;
         background-size: 800px;
       }
 
@@ -144,8 +144,8 @@ export const newPostTpl = (
         <tbody>
           <tr>
             <td style="direction:ltr;font-size:0px;padding:0px;text-align:center;">
-              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="logo-outlook" style="vertical-align:top;width:732px;" ><![endif]-->
-              <div class="mj-column-per-100 mj-outlook-group-fix logo" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="logo,-outlook shadow-outlook" style="vertical-align:top;width:732px;" ><![endif]-->
+              <div class="mj-column-per-100 mj-outlook-group-fix logo, shadow" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
                 <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
                   <tbody>
                     <tr>
@@ -157,9 +157,9 @@ export const newPostTpl = (
                                 <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;">
                                   <tbody>
                                     <tr>
-                                      <td style="width:320px;">
+                                      <td style="width:280px;">
                                         <a href="https://obmen.market" target="_blank">
-                                          <img height="auto" src="https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Flogo.png?alt=media" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="320" />
+                                          <img height="auto" src="https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Flogo.png?alt=media" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="280" />
                                         </a>
                                       </td>
                                     </tr>
@@ -210,11 +210,11 @@ export const newPostTpl = (
                                         </tr>
                                         <tr>
                                           <td align="center" style="font-size:0px;padding:0px;word-break:break-word;">
-                                            <div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:38px;font-weight:700;letter-spacing:-0.16px;line-height:40px;text-align:center;color:#FFFFFF;"><a href="${lotViewLink}" style="text-decoration:none; color:#ffffff;">${lotTitle}</a></div>
+                                            <div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:38px;font-weight:700;letter-spacing:-0.16px;line-height:40px;text-align:center;color:#FFFFFF;"><a href="${lotViewLink}" style="text-decoration:none; color:#ffffff;" class="shadow">${lotTitle}</a></div>
                                           </td>
                                         </tr>
                                         <tr>
-                                          <td align="center" style="font-size:0px;padding:0px;padding-top:32px;word-break:break-word;">
+                                          <td align="center" class="shadow" style="font-size:0px;padding:0px;padding-top:32px;word-break:break-word;">
                                             <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;">
                                               <tbody>
                                                 <tr>
@@ -286,7 +286,7 @@ export const newPostTpl = (
                                                   <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:separate;line-height:100%;">
                                                     <tr>
                                                       <td align="center" bgcolor="transparent" role="presentation" style="border:none;border-radius:3px;cursor:auto;height:56px;mso-padding-alt:0px;background:transparent;" valign="middle">
-                                                        <a href="${newPostLink}" style="display:inline-block;background:transparent;color:#160242;font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:14px;font-weight:700;line-height:120%;letter-spacing:-0.16px;margin:0;text-decoration:none;text-transform:none;padding:0px;mso-padding-alt:0px;border-radius:3px;" target="_blank"> Добавить ещё объявление </a>
+                                                        <a href="${newPostLink}" style="display:inline-block;background:transparent;color:#7000FF;font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:14px;font-weight:700;line-height:120%;letter-spacing:-0.16px;margin:0;text-decoration:none;text-transform:none;padding:0px;mso-padding-alt:0px;border-radius:3px;" target="_blank"> Добавить ещё объявление </a>
                                                       </td>
                                                     </tr>
                                                   </table>
@@ -367,7 +367,7 @@ export const newPostTpl = (
                           <tbody>
                             <tr>
                               <td align="left" style="font-size:0px;padding:0px;word-break:break-word;">
-                                <div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:14px;line-height:24px;text-align:left;color:#160242;">Если срок публикации объявления будет подходить к концу, а вы захотите получить больше предложений, вы можете продлить срок публикации на 48 часов. Впрочем, сделать это можно в любой момент, даже сейчас, тем более что стоит это всего 30 рублей</div>
+                                <div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:14px;line-height:24px;text-align:left;color:#5F507C;">Если срок публикации объявления будет подходить к концу, а вы захотите получить больше предложений, вы можете продлить срок публикации на 48 часов. Впрочем, сделать это можно в любой момент, даже сейчас, тем более что стоит это всего 30 рублей</div>
                               </td>
                             </tr>
                           </tbody>
@@ -593,7 +593,7 @@ export const newOfferTpl = (
 <html lang="ru-RU" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 
 <head>
-  <title> Новый пост </title>
+  <title> Новое предложение! </title>
   <!--[if !mso]><!-->
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <!--<![endif]-->
@@ -705,7 +705,7 @@ export const newOfferTpl = (
       .back {
         background-image: url("https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Fshadow-dark.png?alt=media");
         background-repeat: no-repeat;
-        background-position: center 300px;
+        background-position: center 248px;
         background-size: 800px;
       }
 
@@ -733,8 +733,8 @@ export const newOfferTpl = (
         <tbody>
           <tr>
             <td style="direction:ltr;font-size:0px;padding:0px;text-align:center;">
-              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="logo-outlook" style="vertical-align:top;width:732px;" ><![endif]-->
-              <div class="mj-column-per-100 mj-outlook-group-fix logo" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="logo,-outlook shadow-outlook" style="vertical-align:top;width:732px;" ><![endif]-->
+              <div class="mj-column-per-100 mj-outlook-group-fix logo, shadow" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
                 <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
                   <tbody>
                     <tr>
@@ -746,9 +746,9 @@ export const newOfferTpl = (
                                 <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;">
                                   <tbody>
                                     <tr>
-                                      <td style="width:320px;">
+                                      <td style="width:280px;">
                                         <a href="https://obmen.market" target="_blank">
-                                          <img height="auto" src="https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Flogo.png?alt=media" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="320" />
+                                          <img height="auto" src="https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Flogo.png?alt=media" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="280" />
                                         </a>
                                       </td>
                                     </tr>
@@ -799,11 +799,11 @@ export const newOfferTpl = (
                                         </tr>
                                         <tr>
                                           <td align="center" style="font-size:0px;padding:0px;word-break:break-word;">
-                                            <div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:38px;font-weight:700;letter-spacing:-0.16px;line-height:40px;text-align:center;color:#FFFFFF;"><a href="${offerViewLink}" style="text-decoration:none; color:#ffffff;">${offerTitle}</a></div>
+                                            <div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:38px;font-weight:700;letter-spacing:-0.16px;line-height:40px;text-align:center;color:#FFFFFF;"><a href="${offerViewLink}" style="text-decoration:none; color:#ffffff;" class="shadow">${offerTitle}</a></div>
                                           </td>
                                         </tr>
                                         <tr>
-                                          <td align="center" style="font-size:0px;padding:0px;padding-top:32px;word-break:break-word;">
+                                          <td align="center" class="shadow" style="font-size:0px;padding:0px;padding-top:32px;word-break:break-word;">
                                             <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;">
                                               <tbody>
                                                 <tr>
@@ -849,11 +849,11 @@ export const newOfferTpl = (
                                                   <table align="left" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
                                                     <tr class="shadow">
                                                       <td style="padding:0px 24px 0px 0px;vertical-align:middle;">
-                                                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:transparent;border-radius:24px;width:112px;">
+                                                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#7000ff;border-radius:24px;width:88px;">
                                                           <tr>
-                                                            <td style="font-size:0;height:112px;vertical-align:middle;width:112px;">
+                                                            <td style="font-size:0;height:88px;vertical-align:middle;width:88px;">
                                                               <a href="${lotLink}" target="_blank">
-                                                                <img height="112" src="${finalLotPhoto}" style="border-radius:24px;display:block;" width="112" />
+                                                                <img title="${lotTitle}" height="88" src="${finalLotPhoto}" style="border-radius:24px;display:block;" width="88" />
                                                               </a>
                                                             </td>
                                                           </tr>
@@ -861,8 +861,8 @@ export const newOfferTpl = (
                                                       </td>
                                                       <td style="vertical-align:middle;">
                                                         <a href="${lotLink}" style="color:#333333;font-size:16px;font-weight:500;font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';line-height:22px;text-decoration:none;" target="_blank">
-                                                          <span class="subheader" style="display: block; padding-bottom: 0px; line-height: 30px; letter-spacing: -0.16px;">В обмен на</span>
-                                                          <span class="lottitle" style="display: block; font-size: 24px; color: #160242; font-weight: 800; line-height: 28px; letter-spacing: -0.64px;">${lotTitle}</span>
+                                                          <span class="subheader" style="display: block; padding-bottom: 0px; line-height: 24px; color: #5F507C; letter-spacing: -0.16px;">В обмен на</span>
+                                                          <span class="lottitle" style="display: block; font-size: 24px; color: #160242; font-weight: 800; line-height: 32px; letter-spacing: -0.64px;">${lotTitle}</span>
                                                         </a>
                                                       </td>
                                                     </tr>
@@ -916,7 +916,7 @@ export const newOfferTpl = (
                             </tr>
                             <tr>
                               <td align="left" style="font-size:0px;padding:0px;word-break:break-word;">
-                                <div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:14px;line-height:24px;text-align:left;color:#160242;">${offerDescription}</div>
+                                <div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:14px;line-height:24px;text-align:left;color:#5F507C;">${offerDescription}</div>
                               </td>
                             </tr>
                           </tbody>
@@ -952,8 +952,8 @@ export const newOfferTpl = (
                               <td align="center" vertical-align="middle" class="shadow" style="font-size:0px;padding:0px;word-break:break-word;">
                                 <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:separate;line-height:100%;">
                                   <tr>
-                                    <td align="center" bgcolor="#28B446" role="presentation" style="border:none;border-radius:16px;cursor:auto;height:56px;mso-padding-alt:16px 32px;background:#28B446;" valign="middle">
-                                      <a href="${offerAcceptLink}" style="display:inline-block;background:#28B446;color:#ffffff;font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:14px;font-weight:700;line-height:120%;letter-spacing:-0.16px;margin:0;text-decoration:none;text-transform:none;padding:16px 32px;mso-padding-alt:0px;border-radius:16px;" target="_blank"> Принять предложение </a>
+                                    <td align="center" bgcolor="#7000FF" role="presentation" style="border:none;border-radius:16px;cursor:auto;height:56px;mso-padding-alt:16px 32px;background:#7000FF;" valign="middle">
+                                      <a href="${offerAcceptLink}" style="display:inline-block;background:#7000FF;color:#ffffff;font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:14px;font-weight:700;line-height:120%;letter-spacing:-0.16px;margin:0;text-decoration:none;text-transform:none;padding:16px 32px;mso-padding-alt:0px;border-radius:16px;" target="_blank"> Принять предложение </a>
                                     </td>
                                   </tr>
                                 </table>
@@ -1172,7 +1172,7 @@ export const offerApprovedTpl = (
 <html lang="ru-RU" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 
 <head>
-  <title> Новый пост </title>
+  <title> Предложение принято! </title>
   <!--[if !mso]><!-->
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <!--<![endif]-->
@@ -1284,7 +1284,7 @@ export const offerApprovedTpl = (
       .back {
         background-image: url("https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Fshadow-blue.png?alt=media");
         background-repeat: no-repeat;
-        background-position: center 300px;
+        background-position: center 242px;
         background-size: 800px;
       }
 
@@ -1312,8 +1312,8 @@ export const offerApprovedTpl = (
         <tbody>
           <tr>
             <td style="direction:ltr;font-size:0px;padding:0px;text-align:center;">
-              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="logo-outlook" style="vertical-align:top;width:732px;" ><![endif]-->
-              <div class="mj-column-per-100 mj-outlook-group-fix logo" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="logo,-outlook shadow-outlook" style="vertical-align:top;width:732px;" ><![endif]-->
+              <div class="mj-column-per-100 mj-outlook-group-fix logo, shadow" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
                 <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
                   <tbody>
                     <tr>
@@ -1325,9 +1325,9 @@ export const offerApprovedTpl = (
                                 <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;">
                                   <tbody>
                                     <tr>
-                                      <td style="width:320px;">
+                                      <td style="width:280px;">
                                         <a href="https://obmen.market" target="_blank">
-                                          <img height="auto" src="https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Flogo.png?alt=media" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="320" />
+                                          <img height="auto" src="https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Flogo.png?alt=media" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="280" />
                                         </a>
                                       </td>
                                     </tr>
@@ -1391,11 +1391,11 @@ export const offerApprovedTpl = (
                                         </tr>
                                         <tr>
                                           <td align="center" style="font-size:0px;padding:0px;word-break:break-word;">
-                                            <div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:38px;font-weight:700;letter-spacing:-0.16px;line-height:40px;text-align:center;color:#FFFFFF;"><a href="${offerViewLink}" style="text-decoration:none; color:#ffffff;">${offerTitle}</a></div>
+                                            <div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:34px;font-weight:700;letter-spacing:-0.16px;line-height:40px;text-align:center;color:#FFFFFF;"><a href="${offerViewLink}" style="text-decoration:none; color:#ffffff;" class="shadow">${offerTitle}</a></div>
                                           </td>
                                         </tr>
                                         <tr>
-                                          <td align="center" style="font-size:0px;padding:0px;padding-top:32px;word-break:break-word;">
+                                          <td align="center" class="shadow" style="font-size:0px;padding:0px;padding-top:32px;word-break:break-word;">
                                             <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;">
                                               <tbody>
                                                 <tr>
@@ -1441,11 +1441,11 @@ export const offerApprovedTpl = (
                                                   <table align="left" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
                                                     <tr class="shadow">
                                                       <td style="padding:0px 24px 0px 0px;vertical-align:middle;">
-                                                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:transparent;border-radius:24px;width:112px;">
+                                                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#7000ff;border-radius:24px;width:88px;">
                                                           <tr>
-                                                            <td style="font-size:0;height:112px;vertical-align:middle;width:112px;">
+                                                            <td style="font-size:0;height:88px;vertical-align:middle;width:88px;">
                                                               <a href="${lotLink}" target="_blank">
-                                                                <img height="112" src="${finalLotPhoto}" style="border-radius:24px;display:block;" width="112" />
+                                                                <img title="${lotTitle}" height="88" src="${finalLotPhoto}" style="border-radius:24px;display:block;" width="88" />
                                                               </a>
                                                             </td>
                                                           </tr>
@@ -1453,8 +1453,8 @@ export const offerApprovedTpl = (
                                                       </td>
                                                       <td style="vertical-align:middle;">
                                                         <a href="${lotLink}" style="color:#333333;font-size:16px;font-weight:500;font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';line-height:22px;text-decoration:none;" target="_blank">
-                                                          <span class="subheader" style="display: block; padding-bottom: 0px; line-height: 30px; letter-spacing: -0.16px;">В обмен на</span>
-                                                          <span class="lottitle" style="display: block; font-size: 24px; color: #160242; font-weight: 800; line-height: 28px; letter-spacing: -0.64px;">${lotTitle}</span>
+                                                          <span class="subheader" style="display: block; padding-bottom: 0px; line-height: 24px; color: #5F507C; letter-spacing: -0.16px;">В обмен на</span>
+                                                          <span class="lottitle" style="display: block; font-size: 24px; color: #160242; font-weight: 800; line-height: 32px; letter-spacing: -0.64px;">${lotTitle}</span>
                                                         </a>
                                                       </td>
                                                     </tr>
@@ -1505,8 +1505,8 @@ export const offerApprovedTpl = (
                               <td align="center" vertical-align="middle" class="shadow" style="font-size:0px;padding:0px;word-break:break-word;">
                                 <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:separate;line-height:100%;">
                                   <tr>
-                                    <td align="center" bgcolor="#28B446" role="presentation" style="border:none;border-radius:16px;cursor:auto;height:56px;mso-padding-alt:16px 32px;background:#28B446;" valign="middle">
-                                      <a href="${offerApproveLink}" style="display:inline-block;background:#28B446;color:#ffffff;font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:14px;font-weight:700;line-height:120%;letter-spacing:-0.16px;margin:0;text-decoration:none;text-transform:none;padding:16px 32px;mso-padding-alt:0px;border-radius:16px;" target="_blank"> Подтвердить обмен </a>
+                                    <td align="center" bgcolor="#7000FF" role="presentation" style="border:none;border-radius:16px;cursor:auto;height:56px;mso-padding-alt:16px 32px;background:#7000FF;" valign="middle">
+                                      <a href="${offerApproveLink}" style="display:inline-block;background:#7000FF;color:#ffffff;font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:14px;font-weight:700;line-height:120%;letter-spacing:-0.16px;margin:0;text-decoration:none;text-transform:none;padding:16px 32px;mso-padding-alt:0px;border-radius:16px;" target="_blank"> Подтвердить обмен </a>
                                     </td>
                                   </tr>
                                 </table>
@@ -1603,7 +1603,7 @@ export const offerApprovedTpl = (
                           <tbody>
                             <tr>
                               <td align="left" style="font-size:0px;padding:0px;word-break:break-word;">
-                                <div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:14px;line-height:24px;text-align:left;color:#160242;">После подтверждения обмена вам станет доступен чат с автором объявления, где вы сможете договориться о подробных условиях обмена и встрече</div>
+                                <div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:14px;line-height:24px;text-align:left;color:#5F507C;">После подтверждения обмена вам станет доступен чат с автором объявления, где вы сможете договориться о подробных условиях обмена и встрече</div>
                               </td>
                             </tr>
                           </tbody>
@@ -1860,7 +1860,7 @@ export const offerConfirmedTpl = (
 <html lang="ru-RU" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 
 <head>
-  <title> Новый пост </title>
+  <title> Обмен подтверждён! </title>
   <!--[if !mso]><!-->
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <!--<![endif]-->
@@ -1962,7 +1962,7 @@ export const offerConfirmedTpl = (
       .back {
         background-image: url("https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Fshadow-blue.png?alt=media");
         background-repeat: no-repeat;
-        background-position: center 300px;
+        background-position: center 242px;
         background-size: 800px;
       }
 
@@ -1990,8 +1990,8 @@ export const offerConfirmedTpl = (
         <tbody>
           <tr>
             <td style="direction:ltr;font-size:0px;padding:0px;text-align:center;">
-              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="logo-outlook" style="vertical-align:top;width:732px;" ><![endif]-->
-              <div class="mj-column-per-100 mj-outlook-group-fix logo" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="logo,-outlook shadow-outlook" style="vertical-align:top;width:732px;" ><![endif]-->
+              <div class="mj-column-per-100 mj-outlook-group-fix logo, shadow" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
                 <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
                   <tbody>
                     <tr>
@@ -2003,9 +2003,9 @@ export const offerConfirmedTpl = (
                                 <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;">
                                   <tbody>
                                     <tr>
-                                      <td style="width:320px;">
+                                      <td style="width:280px;">
                                         <a href="https://obmen.market" target="_blank">
-                                          <img height="auto" src="https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Flogo.png?alt=media" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="320" />
+                                          <img height="auto" src="https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Flogo.png?alt=media" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="280" />
                                         </a>
                                       </td>
                                     </tr>
@@ -2069,11 +2069,11 @@ export const offerConfirmedTpl = (
                                         </tr>
                                         <tr>
                                           <td align="center" style="font-size:0px;padding:0px;word-break:break-word;">
-                                            <div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:38px;font-weight:700;letter-spacing:-0.16px;line-height:40px;text-align:center;color:#FFFFFF;"><a href="${offerViewLink}" style="text-decoration:none; color:#ffffff;">${offerTitle}</a></div>
+                                            <div style="font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:34px;font-weight:700;letter-spacing:-0.16px;line-height:40px;text-align:center;color:#FFFFFF;"><a href="${offerViewLink}" style="text-decoration:none; color:#ffffff;" class="shadow">${offerTitle}</a></div>
                                           </td>
                                         </tr>
                                         <tr>
-                                          <td align="center" style="font-size:0px;padding:0px;padding-top:32px;word-break:break-word;">
+                                          <td align="center" class="shadow" style="font-size:0px;padding:0px;padding-top:32px;word-break:break-word;">
                                             <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;">
                                               <tbody>
                                                 <tr>
@@ -2119,11 +2119,11 @@ export const offerConfirmedTpl = (
                                                   <table align="left" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
                                                     <tr class="shadow">
                                                       <td style="padding:0px 24px 0px 0px;vertical-align:middle;">
-                                                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:transparent;border-radius:24px;width:112px;">
+                                                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#7000FF;border-radius:24px;width:88px;">
                                                           <tr>
-                                                            <td style="font-size:0;height:112px;vertical-align:middle;width:112px;">
+                                                            <td style="font-size:0;height:88px;vertical-align:middle;width:88px;">
                                                               <a href="${lotLink}" target="_blank">
-                                                                <img height="112" src="${finalLotPhoto}" style="border-radius:24px;display:block;" width="112" />
+                                                                <img title="${lotTitle}" height="88" src="${finalLotPhoto}" style="border-radius:24px;display:block;" width="88" />
                                                               </a>
                                                             </td>
                                                           </tr>
@@ -2131,8 +2131,8 @@ export const offerConfirmedTpl = (
                                                       </td>
                                                       <td style="vertical-align:middle;">
                                                         <a href="${lotLink}" style="color:#333333;font-size:16px;font-weight:500;font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';line-height:22px;text-decoration:none;" target="_blank">
-                                                          <span class="subheader" style="display: block; padding-bottom: 0px; line-height: 30px; letter-spacing: -0.16px;">В обмен на</span>
-                                                          <span class="lottitle" style="display: block; font-size: 24px; color: #160242; font-weight: 800; line-height: 28px; letter-spacing: -0.64px;">${lotTitle}</span>
+                                                          <span class="subheader" style="display: block; padding-bottom: 0px; line-height: 24px; color: #5F507C; letter-spacing: -0.16px;">В обмен на</span>
+                                                          <span class="lottitle" style="display: block; font-size: 24px; color: #160242; font-weight: 800; line-height: 32px; letter-spacing: -0.64px;">${lotTitle}</span>
                                                         </a>
                                                       </td>
                                                     </tr>
@@ -2220,41 +2220,7 @@ export const offerConfirmedTpl = (
                         <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="" width="100%">
                           <tbody>
                             <tr>
-                              <td class="spacer" style="font-size:0px;padding:0px;word-break:break-word;">
-                                <div style="height:20px;line-height:20px;">&#8202;</div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--[if mso | IE]></td></tr></table><![endif]-->
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <!--[if mso | IE]></td></tr></table><![endif]-->
-    <!-- Spacer 40px -->
-    <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:732px;" width="732" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-    <div style="margin:0px auto;max-width:732px;">
-      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;">
-        <tbody>
-          <tr>
-            <td style="direction:ltr;font-size:0px;padding:0px;text-align:center;">
-              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:732px;" ><![endif]-->
-              <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
-                <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
-                  <tbody>
-                    <tr>
-                      <td style="vertical-align:top;padding:0px;">
-                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="" width="100%">
-                          <tbody>
-                            <tr>
-                              <td class="spacer" style="font-size:0px;padding:0px;word-break:break-word;">
+                              <td class="spacer" style="font-size:0px;padding:0px;padding-top:34px;word-break:break-word;">
                                 <div style="height:20px;line-height:20px;">&#8202;</div>
                               </td>
                             </tr>
