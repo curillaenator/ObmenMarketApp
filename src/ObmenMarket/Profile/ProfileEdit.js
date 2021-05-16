@@ -55,14 +55,14 @@ export const ProfileEdit = ({
 
                   <div className={styles.username}>{user.username}</div>
 
-                  <div className={styles.upload}>
+                  {/* <div className={styles.upload}>
                     <ButtonOutline
                       width={145}
                       height={40}
                       title="Обновить фото"
                       handler={uploadPhoto}
                     />
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className={styles.fields}>

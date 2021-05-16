@@ -3,7 +3,9 @@ import { batch } from "react-redux";
 
 import { chatReset } from "./chat";
 import { resetLotsState } from "./lots";
-import { realtimeToasts } from "./home"; // setNewToast
+import { realtimeToasts, setNewToast } from "./home"; // setNewToast
+
+import { toastsModel } from "../../Utils/toasts";
 
 const SET_INITIALIZED = "auth/SET_INITIALIZED";
 const SET_OWNER_ID = "auth/SET_OWNER_ID";
@@ -63,6 +65,15 @@ export const googleSignIn = () => async (dispatch) => {
           dispatch(setAuthedUser(newUser));
           dispatch(setIsAuth(true));
           dispatch(setInitialized(true));
+
+          dispatch(
+            setNewToast(
+              "success",
+              toastsModel.newUser.title,
+              toastsModel.newUser.msg,
+              null
+            )
+          );
         });
       });
   };
@@ -81,67 +92,46 @@ export const googleSignIn = () => async (dispatch) => {
 
 export const authCheck = (curUser, history) => (dispatch) => {
   if (curUser) {
-    db.ref("users/" + curUser.uid).once("value", (snapshot) => {
+    db.ref("users/" + curUser.uid).once("value", (userMeta) => {
+      //
+      // Listener for new toasts when online
+      //
       db_notes.ref(curUser.uid).once("value", (oldNotes) => {
         const instance = oldNotes.exists() ? Object.keys(oldNotes.val()) : [];
 
         db_notes.ref(curUser.uid).on("child_added", (added) => {
           if (!instance.includes(added.key)) {
             dispatch(realtimeToasts(added.val(), history));
-            // if (added.val().type === "offerAdded") {
-            //   return dispatch(
-            //     setNewToast(
-            //       "new",
-            //       toastsModel.offerAdded.title,
-            //       toastsModel.offerAdded.msg(added.val().lotTitle),
-            //       () => history.push(added.val().toastLink)
-            //     )
-            //   );
-            // }
-
-            // if (added.val().type === "offerApproved") {
-            //   return dispatch(
-            //     setNewToast(
-            //       "new",
-            //       toastsModel.offerApproved.title,
-            //       toastsModel.offerApproved.msg(
-            //         added.val().lotTitle,
-            //         added.val().offerTitle
-            //       ),
-            //       () => history.push(added.val().toastLink)
-            //     )
-            //   );
-            // }
-
-            // if (added.val().type === "offerConfirmed") {
-            //   return dispatch(
-            //     setNewToast(
-            //       "new",
-            //       toastsModel.offerConfirmed.title,
-            //       toastsModel.offerConfirmed.msg(
-            //         added.val().lotTitle,
-            //         added.val().offerTitle
-            //       ),
-            //       null
-            //       // () => history.push(added.val().toastLink)
-            //     )
-            //   );
-            // }
           }
         });
       });
+      //
+      //
+      //
 
       batch(() => {
         dispatch(setOwnerID(curUser.uid));
-        dispatch(setAuthedUser(snapshot.val()));
+        dispatch(setAuthedUser(userMeta.val()));
         dispatch(setIsAuth(true));
         dispatch(setInitialized(true));
+
+        dispatch(
+          setNewToast(
+            "success",
+            toastsModel.login.title,
+            toastsModel.login.msg,
+            null
+          )
+        );
       });
     });
   }
 
   if (!curUser) {
-    dispatch(setInitialized(true));
+    batch(() => {
+      dispatch(setAuthedUser({ isAdmin: false }));
+      dispatch(setInitialized(true));
+    });
   }
 };
 
@@ -150,26 +140,57 @@ export const authCheck = (curUser, history) => (dispatch) => {
 export const updateUserProfile = (userUpdData) => (dispatch) => {
   const userID = fa.currentUser.uid;
 
-  const onUpdate = (error) => {
-    if (error) return console.log("ошибка записи");
+  const Success = () => {
+    db.ref(`users/${userID}`).once("value", (userMeta) => {
+      batch(() => {
+        dispatch(
+          setNewToast(
+            "success",
+            toastsModel.profileUpdated.title,
+            toastsModel.profileUpdated.msg,
+            null
+          )
+        );
 
-    db.ref("users/" + userID).once("value", (snapshot) => {
-      dispatch(setAuthedUser(snapshot.val()));
+        dispatch(setAuthedUser(userMeta.val()));
+      });
     });
   };
 
-  db.ref("users/" + userID).update(userUpdData, onUpdate);
+  const Failure = (err) => {
+    dispatch(
+      setNewToast(
+        "error",
+        toastsModel.commonError.title,
+        toastsModel.commonError.msg,
+        null
+      )
+    );
+
+    console.log(err);
+  };
+
+  db.ref(`users/${userID}`).update(userUpdData, (err) =>
+    err ? Failure(err) : Success()
+  );
 };
 
 // logout & set user lastLogout & isOnline on logout
 
 export const logout = (ownerID) => async (dispatch) => {
-  const lastLogout = {
+  await dispatch(
+    setNewToast(
+      "warning",
+      toastsModel.logout.title,
+      toastsModel.logout.msg,
+      null
+    )
+  );
+
+  await db.ref(`users/${ownerID}`).update({
     isOnline: false,
     lastLogout: fb.database.ServerValue.TIMESTAMP,
-  };
-
-  await db.ref(`users/${ownerID}`).update(lastLogout);
+  });
 
   await fa.signOut();
 
@@ -185,13 +206,11 @@ export const logout = (ownerID) => async (dispatch) => {
 // set user lastLogout & isOnline onConnect/Disconnect
 
 export const onConnectDisconnect = (ownerID) => (dispatch) => {
-  const lastLogout = {
-    isOnline: false,
-    lastLogout: fb.database.ServerValue.TIMESTAMP,
-  };
-
   const userRef = db.ref(`users/${ownerID}`);
 
   userRef.update({ isOnline: true });
-  userRef.onDisconnect().update(lastLogout);
+  userRef.onDisconnect().update({
+    isOnline: false,
+    lastLogout: fb.database.ServerValue.TIMESTAMP,
+  });
 };

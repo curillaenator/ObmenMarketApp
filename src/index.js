@@ -25,7 +25,7 @@ const App = () => {
             closeButton={false}
             // newestOnTop={true}
             closeOnClick={false}
-            autoClose={false}
+            // autoClose={false}
             position="bottom-right"
           />
         </BrowserRouter>

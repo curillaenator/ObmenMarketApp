@@ -51,8 +51,6 @@ const ObmenMarket = ({
   }, [progress, setProgress]);
 
   useEffect(() => {
-    console.log(isToast);
-
     isToast &&
       toast(
         ({ closeToast }) => (
@@ -108,9 +106,8 @@ const ObmenMarket = ({
         <Switch>
           <Route exact path="/" render={() => <HomeCont />} />
           <Route path="/posts/:lotid" render={() => <LotFullCont />} />
-          {/* <Route path="/drafts/:id" render={() => <LotFullCont />} /> */}
           <Route path="/login" render={() => <LoginCont />} />
-          <Route path="/profile/:id?" render={() => <ProfileCont />} />
+          <Route path="/profile/:userid?" render={() => <ProfileCont />} />
         </Switch>
 
         {/* <Footer /> */}

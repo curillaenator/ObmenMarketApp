@@ -1,3 +1,4 @@
+import { batch } from "react-redux";
 import { db, fa } from "../../Utils/firebase";
 import { toastsModel } from "../../Utils/toasts";
 
@@ -57,16 +58,32 @@ export const setNewToast = (type, title, message, button) => (dispatch) => {
   dispatch(setToast({ type, title, message, button }));
 };
 
-export const getProfile = (ownerID, matchedID) => (dispatch) => {
+export const getProfile = (ownerID, matchedID) => (dispatch, getState) => {
   const id = matchedID ? matchedID : ownerID;
   const auth = fa.currentUser;
 
-  db.ref("users/" + id).once("value", (snap) => {
-    dispatch(setProfile(snap.val()));
-    if (!auth) return dispatch(setIsOwner(false));
-    if (auth.uid === id) return dispatch(setIsOwner(true));
-    if (auth.uid !== id) return dispatch(setIsOwner(false));
-  });
+  if (!auth || auth.uid !== id) {
+    return db.ref(`users/${id}`).once("values", (userMeta) => {
+      batch(() => {
+        dispatch(setProfile(userMeta.val()));
+        dispatch(setIsOwner(false));
+      });
+    });
+  }
+
+  if (auth.uid === id) {
+    return batch(() => {
+      dispatch(setProfile(getState().auth.user));
+      dispatch(setIsOwner(true));
+    });
+  }
+
+  // db.ref("users/" + id).once("value", (snap) => {
+  //   dispatch(setProfile(snap.val()));
+  //   if (!auth) return dispatch(setIsOwner(false));
+  //   if (auth.uid === id) return dispatch(setIsOwner(true));
+  //   if (auth.uid !== id) return dispatch(setIsOwner(false));
+  // });
 };
 
 export const realtimeToasts = (tst, history) => (dispatch) => {

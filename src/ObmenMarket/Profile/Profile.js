@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { compose } from "redux";
-import { withRouter } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 
 import { logout, updateUserProfile } from "../../Redux/Reducers/auth";
 import { setFormMode, getProfile } from "../../Redux/Reducers/home";
@@ -27,9 +26,6 @@ const Profile = ({
   formFullUI,
   user,
   isAuth,
-  match,
-  history,
-  location,
   createLotId,
   isFormModeOn,
   isOwner,
@@ -46,25 +42,26 @@ const Profile = ({
   onLotCreateFormCancel,
   publishNewLotFromForm,
 }) => {
+  const history = useHistory();
+  const { userid } = useParams();
+
   const [isEdit, setIsEdit] = useState(false);
 
-  useEffect(() => setAuthoredLots(ownerID, match.params.id), [
-    setAuthoredLots,
-    ownerID,
-    match.params.id,
-    myLotsPage,
-  ]);
+  useEffect(
+    () => setAuthoredLots(ownerID, userid),
+    [setAuthoredLots, ownerID, userid, myLotsPage]
+  );
 
   useEffect(() => {
     setFormMode(false);
     resetMetaState();
-    if (!isAuth && !match.params.id) return history.push("/login");
-    if (!isAuth && match.params.id) return getProfile(null, match.params.id);
-    if (isAuth && !match.params.id) return getProfile(ownerID, null);
-    return getProfile(ownerID, match.params.id);
+    if (!isAuth && !userid) return history.push("/login");
+    if (!isAuth && userid) return getProfile(null, userid);
+    if (isAuth && !userid) return getProfile(ownerID, null);
+    return getProfile(ownerID, userid);
   }, [
     ownerID,
-    match.params.id,
+    userid,
     getProfile,
     resetMetaState,
     setFormMode,
@@ -104,7 +101,7 @@ const Profile = ({
                 <UserInfo
                   ownerID={ownerID}
                   isOwner={isOwner}
-                  profile={profile}
+                  profile={isOwner ? user : profile}
                   logout={logout}
                   handleEdit={() => setIsEdit(!isEdit)}
                 />
@@ -112,7 +109,7 @@ const Profile = ({
                 <ProfileLots
                   ownerID={ownerID}
                   isOwner={isOwner}
-                  matchedID={match.params.id}
+                  matchedID={userid}
                 />
               </>
             )}
@@ -151,17 +148,14 @@ const mstp = (state) => ({
   myLotsPage: state.lots.myLotsPage,
 });
 
-export const ProfileCont = compose(
-  withRouter,
-  connect(mstp, {
-    resetMetaState,
-    setFormMode,
-    getProfile,
-    logout,
-    updateUserProfile,
-    setAuthoredLots,
-    onLotCreateFromForm,
-    onLotCreateFormCancel,
-    publishNewLotFromForm,
-  })
-)(Profile);
+export const ProfileCont = connect(mstp, {
+  resetMetaState,
+  setFormMode,
+  getProfile,
+  logout,
+  updateUserProfile,
+  setAuthoredLots,
+  onLotCreateFromForm,
+  onLotCreateFormCancel,
+  publishNewLotFromForm,
+})(Profile);
