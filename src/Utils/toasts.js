@@ -9,8 +9,8 @@ export const slidein = cssTransition({
 
 // MESSAGES STYLES
 
-const white600 = { fontWeight: 600, color: "#ffffff" };
-// const default600 = { fontWeight: 600 };
+// const white600 = { fontWeight: 600, color: "#ffffff" };
+const white600 = { fontWeight: 600 };
 
 // MESSAGES
 
@@ -55,6 +55,10 @@ export const toastsModel = {
       </>
     ),
   },
+  offerCanceled: {
+    title: "Готово!",
+    msg: "Обмен отменен",
+  },
   lotAdded: {
     title: "Готово!",
     msg: "Объявление создано",
@@ -72,5 +76,3 @@ export const toastsModel = {
     msg: "Срок публикации объявления продлен",
   },
 };
-
-// COMMON TOASTS

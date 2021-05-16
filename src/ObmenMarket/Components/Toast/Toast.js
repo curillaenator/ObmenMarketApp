@@ -6,6 +6,7 @@ const ToastContainer = styled.div`
   position: relative;
   display: flex;
   justify-content: center;
+  width: fit-content;
   padding: 24px 30px 24px 26px;
   border-radius: 24px;
   background-color: ${(props) => props.colors.bg};

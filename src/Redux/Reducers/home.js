@@ -1,11 +1,12 @@
 import { db, fa } from "../../Utils/firebase";
+import { toastsModel } from "../../Utils/toasts";
 
 const SET_PROGRESS = "home/SET_PROGRESS";
 const SET_FORM_MODE = "home/SET_FORM_MODE";
 const SET_IS_OWNER = "home/SET_IS_OWNER";
 const SET_PROFILE = "home/SET_PROFILE";
 const SET_IS_MODAL_ON = "home/SET_IS_MODAL_ON";
-// const SET_WINDOW_SCROLL = "home/SET_WINDOW_SCROLL";
+const SET_TOAST = "home/SET_TOAST";
 
 const initialState = {
   progress: null,
@@ -13,7 +14,7 @@ const initialState = {
   isOwner: false,
   profile: null,
   isModalOn: false,
-  // isScrollOff: false,
+  isToast: null,
 };
 
 export const home = (state = initialState, action) => {
@@ -33,8 +34,8 @@ export const home = (state = initialState, action) => {
     case SET_IS_MODAL_ON:
       return { ...state, isModalOn: action.payload };
 
-    // case SET_WINDOW_SCROLL:
-    //   return { ...state, isScrollOff: action.payload };
+    case SET_TOAST:
+      return { ...state, isToast: action.payload };
 
     default:
       return state;
@@ -48,9 +49,13 @@ export const setIsModalOn = (payload) => ({ type: SET_IS_MODAL_ON, payload });
 export const setFormMode = (mode) => ({ type: SET_FORM_MODE, mode });
 const setIsOwner = (payload) => ({ type: SET_IS_OWNER, payload });
 export const setProfile = (payload) => ({ type: SET_PROFILE, payload });
-// export const setScroll = (payload) => ({ type: SET_WINDOW_SCROLL, payload });
+const setToast = (payload) => ({ type: SET_TOAST, payload });
 
 // THUNKs
+
+export const setNewToast = (type, title, message, button) => (dispatch) => {
+  dispatch(setToast({ type, title, message, button }));
+};
 
 export const getProfile = (ownerID, matchedID) => (dispatch) => {
   const id = matchedID ? matchedID : ownerID;
@@ -62,4 +67,40 @@ export const getProfile = (ownerID, matchedID) => (dispatch) => {
     if (auth.uid === id) return dispatch(setIsOwner(true));
     if (auth.uid !== id) return dispatch(setIsOwner(false));
   });
+};
+
+export const realtimeToasts = (tst, history) => (dispatch) => {
+  if (tst.type === "offerAdded") {
+    return dispatch(
+      setNewToast(
+        "new",
+        toastsModel.offerAdded.title,
+        toastsModel.offerAdded.msg(tst.lotTitle),
+        () => history.push(tst.toastLink)
+      )
+    );
+  }
+
+  if (tst.type === "offerApproved") {
+    return dispatch(
+      setNewToast(
+        "new",
+        toastsModel.offerApproved.title,
+        toastsModel.offerApproved.msg(tst.lotTitle, tst.offerTitle),
+        () => history.push(tst.toastLink)
+      )
+    );
+  }
+
+  if (tst.type === "offerConfirmed") {
+    return dispatch(
+      setNewToast(
+        "new",
+        toastsModel.offerConfirmed.title,
+        toastsModel.offerConfirmed.msg(tst.lotTitle, tst.offerTitle),
+        null
+        // () => history.push(tst.toastLink)
+      )
+    );
+  }
 };

@@ -91,10 +91,14 @@ const setOpponent = (opponent) => ({ type: SET_OPPONENT, opponent });
 
 // THUNKS
 
-export const setChatFromLotFull = () => async (dispatch) => {
-  await dispatch(setIsChatTouched());
-  await dispatch(setIsChatOn(true));
-  // dispatch(setIsDialogsOn(true));
+export const openChatByLink = () => (dispatch) => {};
+
+export const setChatFromLotFull = () => (dispatch) => {
+  batch(() => {
+    dispatch(setIsChatTouched());
+    dispatch(setIsChatOn(true));
+    // dispatch(setIsDialogsOn(true));
+  });
 };
 
 //  chat full reset
@@ -110,7 +114,7 @@ export const chatReset = () => (dispatch) => {
   });
 };
 
-// create chatRoom & userChatData in DB (TODO: remove chatRoom)
+// create chatRoom & userChatData in DB 
 
 export const chatRoom = (lotMeta, offerMeta) => async (dispatch) => {
   const onUpd = (error) =>
@@ -140,7 +144,9 @@ export const chatRoom = (lotMeta, offerMeta) => async (dispatch) => {
   roomData[`chats/${roomID}`] = toRoom;
 
   await db_chat.ref().update(roomData, onUpd);
-  db.ref().update(dbData, onUpd);
+  await db.ref().update(dbData, onUpd);
+
+  // dispatch(setCurRoomID(roomID));
 };
 
 export const removeChatRoom = (roomID) => (dispatch, getState) => {
@@ -241,25 +247,27 @@ export const subscribeRoomsMsgs = (ownerID) => (dispatch) => {
 
 // post message
 
-export const postMessage = (roomID, message, opponentID) => async (
-  dispatch
-) => {
-  const onSet = (error) =>
-    error ? console.log(error) : console.log("success");
+export const postMessage =
+  (roomID, message, opponentID) => async (dispatch) => {
+    const onSet = (error) =>
+      error ? console.log(error) : console.log("success");
 
-  const newMessID = await db_chat.ref(`messages/${roomID}`).push().key;
+    const newMessID = await db_chat.ref(`messages/${roomID}`).push().key;
 
-  if (message.message) {
-    await db_chat.ref(`messages/${roomID}/${newMessID}`).set(message, onSet);
+    if (message.message) {
+      await db_chat.ref(`messages/${roomID}/${newMessID}`).set(message, onSet);
 
-    const userRoomRef = await db.ref(`users/${opponentID}/chats/${roomID}`);
-    userRoomRef
-      .once("value", (snap) => snap)
-      .then((snap) => {
-        userRoomRef.update({ newMessages: snap.val().newMessages + 1 }, onSet);
-      });
-  }
-};
+      const userRoomRef = await db.ref(`users/${opponentID}/chats/${roomID}`);
+      userRoomRef
+        .once("value", (snap) => snap)
+        .then((snap) => {
+          userRoomRef.update(
+            { newMessages: snap.val().newMessages + 1 },
+            onSet
+          );
+        });
+    }
+  };
 
 export const getDialogOpponent = (opponentID) => (dispatch) => {
   opponentID &&

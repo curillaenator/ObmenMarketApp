@@ -27,7 +27,11 @@ import {
 
 import { setFormMode, setIsModalOn } from "../../Redux/Reducers/home";
 
-import { chatRoom, setChatFromLotFull } from "../../Redux/Reducers/chat";
+import {
+  chatRoom,
+  // setIsChatOn,
+  setChatFromLotFull,
+} from "../../Redux/Reducers/chat";
 
 import readytopay from "../../Assets/Icons/readytopay.svg";
 import shrink from "../../Assets/Icons/shrink.svg";
@@ -329,17 +333,21 @@ const Offers = ({
   const [selectedOffer, setSelectedOffer] = useState(null);
 
   useEffect(() => {
-    const action = (offersArr) => {
-      const offerMeta = offersArr.find(
-        (o) => o.offerID === query.get("offerID")
-      );
+    if (query.has("action") && query.get("action") in querySelector) {
+      console.log("ok");
 
-      offerMeta
+      const offerMeta = offers.find((o) => o.offerID === query.get("offerID"));
+
+      return offerMeta
         ? querySelector[query.get("action")](offerMeta)
         : history.push(`/posts/${lotMeta.postid}`);
-    };
+    }
 
-    query.has("action") && action(offers);
+    if (query.has("action") && !querySelector[query.get("action")]) {
+      console.log("push");
+
+      return history.push(`/posts/${lotMeta.postid}`);
+    }
   }, [offers, lotMeta.postid, query, querySelector, history]);
 
   const handleOffersIfAccepted = () => {
@@ -441,8 +449,12 @@ const LotFull = ({
       acceptConfirmOffer(lotMeta, offerMeta, {
         offerConfirmed: query.get("offerID"),
       });
+
+      chatRoom(lotMeta, offerMeta);
+
       history.push(`/posts/${lotMeta.postid}`);
     },
+    openchat: () => {},
   };
 
   const [isOfferForm, setIsOfferForm] = useState(false);

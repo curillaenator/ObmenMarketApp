@@ -201,10 +201,10 @@ const Dialogs = ({
     curRoomID,
   ]);
 
-  useEffect(() => getDialogOpponent(opponentID()), [
-    getDialogOpponent,
-    opponentID,
-  ]);
+  // useEffect(() => getDialogOpponent(opponentID()), [
+  //   getDialogOpponent,
+  //   opponentID,
+  // ]);
 
   const Message = ({ message }) => {
     const messageClassN =

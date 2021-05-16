@@ -3,9 +3,13 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { Route, Switch, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import ProgressBar from "@ramonak/react-progress-bar";
+import { toast } from "react-toastify";
+
 import { fa } from "../Utils/firebase";
+import { slidein } from "../Utils/toasts";
 
 import { HeaderCont } from "./Components/Header/Header";
+import { ToastComponent } from "./Components/Toast/Toast";
 import { LoginCont } from "./Login/Login";
 import { HomeCont } from "./Home/Home";
 import { ProfileCont } from "./Profile/Profile";
@@ -19,11 +23,13 @@ import { setIsModalOn, setProgress } from "../Redux/Reducers/home";
 import styles from "./obmen.module.scss";
 
 const ObmenMarket = ({
+  icons,
   isInitialized,
   isAuth,
   ownerID,
   isModalOn,
   progress,
+  isToast,
   setProgress,
   authCheck,
   setIsModalOn,
@@ -32,10 +38,9 @@ const ObmenMarket = ({
   const history = useHistory();
   const [user, userLoading] = useAuthState(fa);
 
-  useEffect(
-    () => !userLoading && authCheck(user, history),
-    [user, authCheck, userLoading, history]
-  );
+  useEffect(() => {
+    !userLoading && authCheck(user, history);
+  }, [user, authCheck, userLoading, history]);
 
   useEffect(() => {
     onConnectDisconnect(ownerID);
@@ -44,6 +49,32 @@ const ObmenMarket = ({
   useEffect(() => {
     progress === 100 && setTimeout(() => setProgress(null), 1000);
   }, [progress, setProgress]);
+
+  useEffect(() => {
+    console.log(isToast);
+
+    isToast &&
+      toast(
+        ({ closeToast }) => (
+          <ToastComponent
+            title={isToast.title}
+            text={isToast.message}
+            icon={icons.toasts[isToast.type]}
+            type={isToast.type}
+            close={closeToast}
+            button={
+              isToast.button
+                ? () => {
+                    isToast.button();
+                    closeToast();
+                  }
+                : null
+            }
+          />
+        ),
+        { transition: slidein }
+      );
+  }, [isToast, icons.toasts]);
 
   history.listen(() => isModalOn && setIsModalOn(false));
 
@@ -88,11 +119,13 @@ const ObmenMarket = ({
   );
 };
 const mstp = (state) => ({
+  icons: state.ui.icons,
   progress: state.home.progress,
   isInitialized: state.auth.isInitialized,
   isAuth: state.auth.isAuth,
   ownerID: state.auth.ownerID,
   isModalOn: state.home.isModalOn,
+  isToast: state.home.isToast,
 });
 
 export const ObmenMarketApp = connect(mstp, {

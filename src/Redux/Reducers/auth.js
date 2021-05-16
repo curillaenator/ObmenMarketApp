@@ -3,10 +3,7 @@ import { batch } from "react-redux";
 
 import { chatReset } from "./chat";
 import { resetLotsState } from "./lots";
-
-import { toast } from "react-toastify";
-import { ToastComponent } from "../../ObmenMarket/Components/Toast/Toast";
-import { toastsModel, slidein } from "../../Utils/toasts";
+import { realtimeToasts } from "./home"; // setNewToast
 
 const SET_INITIALIZED = "auth/SET_INITIALIZED";
 const SET_OWNER_ID = "auth/SET_OWNER_ID";
@@ -82,7 +79,7 @@ export const googleSignIn = () => async (dispatch) => {
   });
 };
 
-export const authCheck = (curUser, history) => (dispatch, getState) => {
+export const authCheck = (curUser, history) => (dispatch) => {
   if (curUser) {
     db.ref("users/" + curUser.uid).once("value", (snapshot) => {
       db_notes.ref(curUser.uid).once("value", (oldNotes) => {
@@ -90,68 +87,46 @@ export const authCheck = (curUser, history) => (dispatch, getState) => {
 
         db_notes.ref(curUser.uid).on("child_added", (added) => {
           if (!instance.includes(added.key)) {
-            if (added.val().type === "offerAdded") {
-              return toast(
-                ({ closeToast }) => (
-                  <ToastComponent
-                    title={toastsModel.offerAdded.title}
-                    text={toastsModel.offerAdded.msg(added.val().lotTitle)}
-                    icon={getState().ui.icons.toasts.new}
-                    type="new"
-                    close={closeToast}
-                    button={() => {
-                      history.push(added.val().toastLink);
-                      closeToast();
-                    }}
-                  />
-                ),
-                { transition: slidein }
-              );
-            }
+            dispatch(realtimeToasts(added.val(), history));
+            // if (added.val().type === "offerAdded") {
+            //   return dispatch(
+            //     setNewToast(
+            //       "new",
+            //       toastsModel.offerAdded.title,
+            //       toastsModel.offerAdded.msg(added.val().lotTitle),
+            //       () => history.push(added.val().toastLink)
+            //     )
+            //   );
+            // }
 
-            if (added.val().type === "offerApproved") {
-              return toast(
-                ({ closeToast }) => (
-                  <ToastComponent
-                    title={toastsModel.offerApproved.title}
-                    text={toastsModel.offerApproved.msg(
-                      added.val().lotTitle,
-                      added.val().offerTitle
-                    )}
-                    icon={getState().ui.icons.toasts.new}
-                    type="new"
-                    close={closeToast}
-                    button={() => {
-                      history.push(added.val().toastLink);
-                      closeToast();
-                    }}
-                  />
-                ),
-                { transition: slidein }
-              );
-            }
+            // if (added.val().type === "offerApproved") {
+            //   return dispatch(
+            //     setNewToast(
+            //       "new",
+            //       toastsModel.offerApproved.title,
+            //       toastsModel.offerApproved.msg(
+            //         added.val().lotTitle,
+            //         added.val().offerTitle
+            //       ),
+            //       () => history.push(added.val().toastLink)
+            //     )
+            //   );
+            // }
 
-            if (added.val().type === "offerConfirmed") {
-              return toast(
-                ({ closeToast }) => (
-                  <ToastComponent
-                    title={toastsModel.offerConfirmed.title}
-                    text={toastsModel.offerConfirmed.msg(
-                      added.val().lotTitle,
-                      added.val().offerTitle
-                    )}
-                    icon={getState().ui.icons.toasts.new}
-                    type="new"
-                    close={closeToast}
-                    // button={() => {
-                    //   history.push(added.val().toastLink);
-                    //   closeToast();
-                    // }}
-                  />
-                ),
-                { transition: slidein }
-              );
-            }
+            // if (added.val().type === "offerConfirmed") {
+            //   return dispatch(
+            //     setNewToast(
+            //       "new",
+            //       toastsModel.offerConfirmed.title,
+            //       toastsModel.offerConfirmed.msg(
+            //         added.val().lotTitle,
+            //         added.val().offerTitle
+            //       ),
+            //       null
+            //       // () => history.push(added.val().toastLink)
+            //     )
+            //   );
+            // }
           }
         });
       });
