@@ -40,9 +40,9 @@ export const ProfileEdit = ({
           handleEdit();
         };
 
-        const uploadPhoto = (e) => {
-          e.preventDefault();
-        };
+        // const uploadPhoto = (e) => {
+        //   e.preventDefault();
+        // };
 
         return (
           <form onSubmit={handleSubmit} className={styles.edit}>

@@ -63,7 +63,7 @@ export const getProfile = (ownerID, matchedID) => (dispatch, getState) => {
   const auth = fa.currentUser;
 
   if (!auth || auth.uid !== id) {
-    return db.ref(`users/${id}`).once("values", (userMeta) => {
+    return db.ref(`users/${id}`).once("value", (userMeta) => {
       batch(() => {
         dispatch(setProfile(userMeta.val()));
         dispatch(setIsOwner(false));
@@ -77,13 +77,6 @@ export const getProfile = (ownerID, matchedID) => (dispatch, getState) => {
       dispatch(setIsOwner(true));
     });
   }
-
-  // db.ref("users/" + id).once("value", (snap) => {
-  //   dispatch(setProfile(snap.val()));
-  //   if (!auth) return dispatch(setIsOwner(false));
-  //   if (auth.uid === id) return dispatch(setIsOwner(true));
-  //   if (auth.uid !== id) return dispatch(setIsOwner(false));
-  // });
 };
 
 export const realtimeToasts = (tst, history) => (dispatch) => {
