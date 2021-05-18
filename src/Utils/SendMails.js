@@ -40,7 +40,7 @@ export const onLotCreateSendMail = async (lotData) => {
     delivery: { state: "CREATED" },
     toUids: [`${lotData.uid}`],
     message: {
-      subject: "Новое объявление на Obmen.market",
+      subject: "Новое объявление",
       html: newPostTpl(
         lotData.title,
         `https://obmen.market/posts/${lotData.postid}`,
@@ -76,7 +76,7 @@ export const onOfferCreateSendMail = async (lotMeta, offerData) => {
     delivery: { state: "CREATED" },
     toUids: [`${lotMeta.uid}`],
     message: {
-      subject: "Новое предложение на Обмен.маркете!",
+      subject: "Новое предложение!",
       html: newOfferTpl(
         offerData.name,
         `https://obmen.market/posts/${lotMeta.postid}?action=view&offer=${offerData.offerID}`,

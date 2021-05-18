@@ -136,6 +136,8 @@ export const newPostTpl = (
 </head>
 
 <body style="word-spacing:normal;background-color:#ffffff;">
+  <div style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;"> 🔥 Вы создали новое объявление: ${lotTitle}! Надеемся, вам предложат много полезного и интересного взамен ☺️ Всегда помните, что вы можете увеличить срок публикации!<br>
+  </div>
   <div class="back" style="background-color:#ffffff;">
     <!-- Logo -->
     <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:732px;" width="732" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
@@ -159,7 +161,7 @@ export const newPostTpl = (
                                     <tr>
                                       <td style="width:280px;">
                                         <a href="https://obmen.market" target="_blank">
-                                          <img height="auto" src="https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Flogo.png?alt=media" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="280" />
+                                          <img height="auto" src="http://cdn.mcauto-images-production.sendgrid.net/55d8758937b582f0/8b0fd9e2-76da-4c7a-9f8a-afb0136baf0f/592x240.png" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="280" />
                                         </a>
                                       </td>
                                     </tr>
@@ -286,7 +288,7 @@ export const newPostTpl = (
                                                   <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:separate;line-height:100%;">
                                                     <tr>
                                                       <td align="center" bgcolor="transparent" role="presentation" style="border:none;border-radius:3px;cursor:auto;height:56px;mso-padding-alt:0px;background:transparent;" valign="middle">
-                                                        <a href="${newPostLink}" style="display:inline-block;background:transparent;color:#7000FF;font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:14px;font-weight:700;line-height:120%;letter-spacing:-0.16px;margin:0;text-decoration:none;text-transform:none;padding:0px;mso-padding-alt:0px;border-radius:3px;" target="_blank"> Добавить ещё объявление </a>
+                                                        <a href="${newPostLink}" style="display:inline-block;background:transparent;color:#160242;font-family:-apple-system, BlinkMacSystemFont, sans-serif, 'Inter', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-size:14px;font-weight:700;line-height:120%;letter-spacing:-0.16px;margin:0;text-decoration:none;text-transform:none;padding:0px;mso-padding-alt:0px;border-radius:3px;" target="_blank"> Добавить ещё объявление </a>
                                                       </td>
                                                     </tr>
                                                   </table>
@@ -725,6 +727,8 @@ export const newOfferTpl = (
 </head>
 
 <body style="word-spacing:normal;background-color:#ffffff;">
+  <div style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;"> 🎉 Новое предложение обмена: ${offerTitle} обменять на ${lotTitle}. Если оно вам не подходит, дождитесь другого и всегда помните, что вы можете увеличить срок публикации!<br>
+  </div>
   <div class="back" style="background-color:#ffffff;">
     <!-- Logo -->
     <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:732px;" width="732" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
@@ -748,7 +752,7 @@ export const newOfferTpl = (
                                     <tr>
                                       <td style="width:280px;">
                                         <a href="https://obmen.market" target="_blank">
-                                          <img height="auto" src="https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Flogo.png?alt=media" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="280" />
+                                          <img height="auto" src="http://cdn.mcauto-images-production.sendgrid.net/55d8758937b582f0/8b0fd9e2-76da-4c7a-9f8a-afb0136baf0f/592x240.png" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="280" />
                                         </a>
                                       </td>
                                     </tr>
@@ -849,7 +853,7 @@ export const newOfferTpl = (
                                                   <table align="left" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
                                                     <tr class="shadow">
                                                       <td style="padding:0px 24px 0px 0px;vertical-align:middle;">
-                                                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#7000ff;border-radius:24px;width:88px;">
+                                                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#FAF9FB;border-radius:24px;width:88px;">
                                                           <tr>
                                                             <td style="font-size:0;height:88px;vertical-align:middle;width:88px;">
                                                               <a href="${lotLink}" target="_blank">
@@ -1304,6 +1308,8 @@ export const offerApprovedTpl = (
 </head>
 
 <body style="word-spacing:normal;background-color:#ffffff;">
+  <div style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;"> 🕺 Предложение принято: ${offerTitle} обменять на ${lotTitle}. Подтвердите обмен, если до сих пор готовы обменяться и вас всё устраивает.<br>
+  </div>
   <div class="back" style="background-color:#ffffff;">
     <!-- Logo -->
     <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:732px;" width="732" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
@@ -1327,7 +1333,7 @@ export const offerApprovedTpl = (
                                     <tr>
                                       <td style="width:280px;">
                                         <a href="https://obmen.market" target="_blank">
-                                          <img height="auto" src="https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Flogo.png?alt=media" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="280" />
+                                          <img height="auto" src="http://cdn.mcauto-images-production.sendgrid.net/55d8758937b582f0/8b0fd9e2-76da-4c7a-9f8a-afb0136baf0f/592x240.png" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="280" />
                                         </a>
                                       </td>
                                     </tr>
@@ -1441,7 +1447,7 @@ export const offerApprovedTpl = (
                                                   <table align="left" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
                                                     <tr class="shadow">
                                                       <td style="padding:0px 24px 0px 0px;vertical-align:middle;">
-                                                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#7000ff;border-radius:24px;width:88px;">
+                                                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#FAF9FB;border-radius:24px;width:88px;">
                                                           <tr>
                                                             <td style="font-size:0;height:88px;vertical-align:middle;width:88px;">
                                                               <a href="${lotLink}" target="_blank">
@@ -1982,6 +1988,8 @@ export const offerConfirmedTpl = (
 </head>
 
 <body style="word-spacing:normal;background-color:#ffffff;">
+  <div style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;"> 🕺 Обмен подтверждён: ${offerTitle} обменять на ${lotTitle}. Можете начать чат и договориться о встрече, надеемся что все получат то что хотят ☺️<br>
+  </div>
   <div class="back" style="background-color:#ffffff;">
     <!-- Logo -->
     <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:732px;" width="732" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
@@ -2005,7 +2013,7 @@ export const offerConfirmedTpl = (
                                     <tr>
                                       <td style="width:280px;">
                                         <a href="https://obmen.market" target="_blank">
-                                          <img height="auto" src="https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/logos%2Flogo.png?alt=media" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="280" />
+                                          <img height="auto" src="http://cdn.mcauto-images-production.sendgrid.net/55d8758937b582f0/8b0fd9e2-76da-4c7a-9f8a-afb0136baf0f/592x240.png" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="280" />
                                         </a>
                                       </td>
                                     </tr>
@@ -2119,7 +2127,7 @@ export const offerConfirmedTpl = (
                                                   <table align="left" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
                                                     <tr class="shadow">
                                                       <td style="padding:0px 24px 0px 0px;vertical-align:middle;">
-                                                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#7000FF;border-radius:24px;width:88px;">
+                                                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#FAF9FB;border-radius:24px;width:88px;">
                                                           <tr>
                                                             <td style="font-size:0;height:88px;vertical-align:middle;width:88px;">
                                                               <a href="${lotLink}" target="_blank">

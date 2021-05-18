@@ -1,14 +1,13 @@
 import { connect } from "react-redux";
 import { Button } from "../Components/Button/Button";
 import { Redirect } from "react-router-dom";
-
 import { googleSignIn } from "../../Redux/Reducers/auth";
 
 import styles from "./login.module.scss";
 
 const Login = ({ icons, isAuth, googleSignIn }) => {
   const handleLogin = () => googleSignIn(null);
-
+   
   if (isAuth) return <Redirect to="/" />;
 
   return (
