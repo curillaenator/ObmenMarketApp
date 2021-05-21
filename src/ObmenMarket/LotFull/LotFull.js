@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { connect, useSelector } from "react-redux";
 import { useLocation, useHistory, useParams } from "react-router-dom";
 
@@ -333,7 +333,10 @@ const Offers = ({
   const [selectedOffer, setSelectedOffer] = useState(null);
 
   useEffect(() => {
-    if (query.has("action") && query.get("action") in querySelector) {
+    if (
+      query.get("action") === "approved" &&
+      query.get("action") in querySelector
+    ) {
       console.log("ok");
 
       const offerMeta = offers.find((o) => o.offerID === query.get("offerID"));
@@ -436,26 +439,37 @@ const LotFull = ({
 }) => {
   const history = useHistory();
   const { lotid } = useParams();
-  const query = new URLSearchParams(useLocation().search);
+  const locationSeacrh = useLocation().search;
+  const query = useMemo(
+    () => new URLSearchParams(locationSeacrh),
+    [locationSeacrh]
+  );
 
-  const querySelector = {
-    approved: (offerMeta) => {
-      acceptConfirmOffer(lotMeta, offerMeta, {
-        acceptedOffer: query.get("offerID"),
-      });
-      history.push(`/posts/${lotMeta.postid}`);
-    },
-    confirmed: (offerMeta) => {
-      acceptConfirmOffer(lotMeta, offerMeta, {
-        offerConfirmed: query.get("offerID"),
-      });
+  const querySelector = useMemo(
+    () => ({
+      approved: (offerMeta) => {
+        acceptConfirmOffer(lotMeta, offerMeta, {
+          acceptedOffer: query.get("offerID"),
+        });
+        history.push(`/posts/${lotMeta.postid}`);
+      },
+      confirmed: (offerMeta) => {
+        acceptConfirmOffer(lotMeta, offerMeta, {
+          offerConfirmed: query.get("offerID"),
+        });
 
-      chatRoom(lotMeta, offerMeta);
+        chatRoom(lotMeta, offerMeta);
 
-      history.push(`/posts/${lotMeta.postid}`);
-    },
-    openchat: () => {},
-  };
+        history.push(`/posts/${lotMeta.postid}`);
+      },
+      openchat: () => {},
+      extend: () => {
+        setIsModalOn(true);
+        history.push(`/posts/${lotid}`);
+      },
+    }),
+    [acceptConfirmOffer, chatRoom, history, lotMeta, query, setIsModalOn]
+  );
 
   const [isOfferForm, setIsOfferForm] = useState(false);
   const handleOfferForm = () => {
@@ -476,6 +490,15 @@ const LotFull = ({
     setNewLotId(null);
     getLotMeta(lotid, history);
   }, [lotid, setNewLotId, getLotMeta, history]);
+
+  useEffect(() => {
+    if (
+      query.get("action") === "extend" &&
+      query.get("action") in querySelector
+    ) {
+      querySelector[query.get("action")]();
+    }
+  }, [query, querySelector]);
 
   if (!lotMeta) return <Loading />;
 

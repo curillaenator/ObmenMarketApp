@@ -38,6 +38,11 @@ const ObmenMarket = ({
   const history = useHistory();
   const [user, userLoading] = useAuthState(fa);
 
+  // console.log(window.location);
+  // if (window.location.hostname === "localhost") {
+  //   fb.database().useEmulator("localhost", 9000);
+  // }
+
   useEffect(() => {
     !userLoading && authCheck(user, history);
   }, [user, authCheck, userLoading, history]);

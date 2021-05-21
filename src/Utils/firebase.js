@@ -22,7 +22,7 @@ const app = firebase.initializeApp(config);
 
 // POSTS
 
-export const db = app.database();
+export const db = app.database();  
 
 /// OFFERS
 
