@@ -461,13 +461,12 @@ const LotFull = ({
 
         history.push(`/posts/${lotMeta.postid}`);
       },
-      // openchat: () => {},
       extend: () => {
         setIsModalOn(true);
         history.push(`/posts/${lotid}`);
       },
     }),
-    [acceptConfirmOffer, chatRoom, history, lotMeta, query, setIsModalOn]
+    [lotid, acceptConfirmOffer, chatRoom, history, lotMeta, query, setIsModalOn]
   );
 
   const [isOfferForm, setIsOfferForm] = useState(false);

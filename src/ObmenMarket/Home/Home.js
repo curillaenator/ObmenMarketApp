@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
+import { useHistory, useLocation } from "react-router-dom";
 import { connect } from "react-redux";
 
 import { setFormMode, setProfile } from "../../Redux/Reducers/home";
@@ -32,11 +33,37 @@ const Home = ({
   publishNewLotFromForm,
   resetMetaState,
 }) => {
+  const history = useHistory();
+  const locationSeacrh = useLocation().search;
+  const query = useMemo(
+    () => new URLSearchParams(locationSeacrh),
+    [locationSeacrh]
+  );
+
+  const querySelector = useMemo(
+    () => ({
+      createpost: () => setFormMode(true),
+    }),
+    [setFormMode]
+  );
+
   useEffect(() => {
-    setFormMode(false);
+    console.log(query.get("action") in querySelector);
+
+    if (
+      query.get("action") === "createpost" &&
+      query.get("action") in querySelector
+    ) {
+      setFormMode(true);
+      history.push("/");
+    }
+  }, [setFormMode, query, querySelector]);
+
+  useEffect(() => {
+    // setFormMode(false);
     resetMetaState();
     setProfile(null);
-  }, [setFormMode, resetMetaState, setProfile]);
+  }, [resetMetaState, setProfile]); // setFormMode
 
   return (
     <div className={styles.home}>
