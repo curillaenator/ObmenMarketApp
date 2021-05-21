@@ -41,11 +41,6 @@ const ObmenMarket = ({
 
   window.pushlink = history;
 
-  // console.log(window.location);
-  // if (window.location.hostname === "localhost") {
-  //   fb.database().useEmulator("localhost", 9000);
-  // }
-
   useEffect(() => {
     !userLoading && authCheck(user, history);
   }, [user, authCheck, userLoading, history]);

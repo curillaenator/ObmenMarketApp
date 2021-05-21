@@ -104,11 +104,11 @@ export const onApproveByLotAuthor = async (lotMeta, offerData) => {
   .getDownloadURL();
 
   // Lot phtoto
-  const finalLotPhoto = lotPhoto.replace("https://firebasestorage.googleapis.com", "https://ik.imagekit.io/wnq6ecptz6/firebase/tr:n-mail_small_photo");
+  const finalLotPhoto = await lotPhoto.replace("https://firebasestorage.googleapis.com", "https://ik.imagekit.io/wnq6ecptz6/firebase/tr:n-mail_small_photo");
 
   const approveMailBody = {
     delivery: { state: "CREATED" },
-    toUids: [`${offerData.uid}`],
+    toUids: [`${offerData.authorID}`],
     message: {
       subject: "🥂 Предложение принято!",
       html: offerApprovedTpl(
