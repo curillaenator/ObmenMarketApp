@@ -334,11 +334,10 @@ const Offers = ({
 
   useEffect(() => {
     if (
-      query.get("action") === "approved" &&
+      (query.get("action") === "approved" ||
+        query.get("action") === "confirmed") &&
       query.get("action") in querySelector
     ) {
-      console.log("ok");
-
       const offerMeta = offers.find((o) => o.offerID === query.get("offerID"));
 
       return offerMeta
@@ -346,11 +345,11 @@ const Offers = ({
         : history.push(`/posts/${lotMeta.postid}`);
     }
 
-    if (query.has("action") && !querySelector[query.get("action")]) {
-      console.log("push");
+    // if (query.has("action") && !querySelector[query.get("action")]) {
+    //   console.log("push");
 
-      return history.push(`/posts/${lotMeta.postid}`);
-    }
+    //   return history.push(`/posts/${lotMeta.postid}`);
+    // }
   }, [offers, lotMeta.postid, query, querySelector, history]);
 
   const handleOffersIfAccepted = () => {
@@ -462,7 +461,7 @@ const LotFull = ({
 
         history.push(`/posts/${lotMeta.postid}`);
       },
-      openchat: () => {},
+      // openchat: () => {},
       extend: () => {
         setIsModalOn(true);
         history.push(`/posts/${lotid}`);

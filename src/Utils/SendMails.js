@@ -81,8 +81,8 @@ export const onOfferCreateSendMail = async (lotMeta, offerData) => {
         `https://obmen.market/posts/${lotMeta.postid}?action=view&offer=${offerData.offerID}`,
         finalOfferPhoto,
         offerData.description,
-        `https://obmen.market/posts/${lotMeta.postid}?action=accept&offer=${offerData.offerID}`,
-        `https://obmen.market/posts/${lotMeta.postid}?action=decline&offer=${offerData.offerID}`,
+        `https://obmen.market/posts/${lotMeta.postid}?action=approved&offerID=${offerData.offerID}`,
+        `https://obmen.market/posts/${lotMeta.postid}?action=decline&offerID=${offerData.offerID}`,
         `https://obmen.market/posts/${lotMeta.postid}`,
         lotMeta.title,
         finalLotPhoto
