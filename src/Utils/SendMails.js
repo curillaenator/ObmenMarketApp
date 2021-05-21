@@ -40,7 +40,7 @@ export const onLotCreateSendMail = async (lotData) => {
     delivery: { state: "CREATED" },
     toUids: [`${lotData.uid}`],
     message: {
-      subject: "Новое объявление",
+      subject: "✏️ Объявление опубликовано!",
       html: newPostTpl(
         lotData.title,
         `https://obmen.market/posts/${lotData.postid}`,
@@ -50,7 +50,6 @@ export const onLotCreateSendMail = async (lotData) => {
       ),
     },
   };
-
   fsdb
     .collection("mail")
     .add(lotMailBody)
@@ -76,7 +75,7 @@ export const onOfferCreateSendMail = async (lotMeta, offerData) => {
     delivery: { state: "CREATED" },
     toUids: [`${lotMeta.uid}`],
     message: {
-      subject: "Новое предложение!",
+      subject: "🎉 Новое предложение!",
       html: newOfferTpl(
         offerData.name,
         `https://obmen.market/posts/${lotMeta.postid}?action=view&offer=${offerData.offerID}`,
@@ -111,7 +110,7 @@ export const onApproveByLotAuthor = async (lotMeta, offerData) => {
     delivery: { state: "CREATED" },
     toUids: [`${offerData.uid}`],
     message: {
-      subject: "Предложение принято!",
+      subject: "🥂 Предложение принято!",
       html: offerApprovedTpl(
         lotMeta.title,
         finalLotPhoto,

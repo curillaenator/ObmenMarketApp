@@ -136,7 +136,7 @@ export const newPostTpl = (
 </head>
 
 <body style="word-spacing:normal;background-color:#ffffff;">
-  <div style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;"> 🔥 Вы создали новое объявление: ${lotTitle}! Надеемся, вам предложат много полезного и интересного взамен ☺️ Всегда помните, что вы можете увеличить срок публикации!<br>
+  <div style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;"><b>"${lotTitle}" уже может получать предложения, не забудьте поделииться ссылкой на объявление в соцсетях.</b> Надеемся, вам предложат много полезного и интересного взамен ☺️ Всегда помните, что вы можете увеличить срок публикации!<br>
   </div>
   <div class="back" style="background-color:#ffffff;">
     <!-- Logo -->
