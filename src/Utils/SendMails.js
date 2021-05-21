@@ -78,7 +78,7 @@ export const onOfferCreateSendMail = async (lotMeta, offerData) => {
       subject: "🎉 Новое предложение!",
       html: newOfferTpl(
         offerData.name,
-        `https://obmen.market/posts/${lotMeta.postid}?action=view&offer=${offerData.offerID}`,
+        `https://obmen.market/posts/${lotMeta.postid}?action=view&offerID=${offerData.offerID}`,
         finalOfferPhoto,
         offerData.description,
         `https://obmen.market/posts/${lotMeta.postid}?action=approved&offerID=${offerData.offerID}`,
@@ -115,10 +115,10 @@ export const onApproveByLotAuthor = async (lotMeta, offerData) => {
         lotMeta.title,
         finalLotPhoto,
         offerData.name,
-        `https://obmen.market/posts/${lotMeta.postid}?action=view&offer=${offerData.offerID}`,
+        `https://obmen.market/posts/${lotMeta.postid}?action=view&offerID=${offerData.offerID}`,
         `https://obmen.market/posts/${lotMeta.postid}`,
-        `https://obmen.market/posts/${lotMeta.postid}?action=approve&offer=${offerData.offerID}`,
-        `https://obmen.market/posts/${lotMeta.postid}?action=decline&offer=${offerData.offerID}`
+        `https://obmen.market/posts/${lotMeta.postid}?action=approved&offerID=${offerData.offerID}`,
+        `https://obmen.market/posts/${lotMeta.postid}?action=decline&offerID=${offerData.offerID}`
       ),
     },
   };
@@ -148,9 +148,9 @@ export const onConfirmByOfferAuthor = async (lotMeta, offerData) => {
         lotMeta.title,
         finalLotPhoto,
         offerData.name,
-        `https://obmen.market/posts/${lotMeta.postid}?action=view&offer=${offerData.offerID}`,
+        `https://obmen.market/posts/${lotMeta.postid}?action=view&offerID=${offerData.offerID}`,
         `https://obmen.market/posts/${lotMeta.postid}`,
-        `https://obmen.market/posts/${lotMeta.postid}?action=chat&offer=${offerData.offerID}`
+        `https://obmen.market/posts/${lotMeta.postid}?action=chat&chatroomID=${offerData.offerID}`
       ),
     },
   };
