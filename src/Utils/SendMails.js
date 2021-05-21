@@ -117,7 +117,7 @@ export const onApproveByLotAuthor = async (lotMeta, offerData) => {
         offerData.name,
         `https://obmen.market/posts/${lotMeta.postid}?action=view&offerID=${offerData.offerID}`,
         `https://obmen.market/posts/${lotMeta.postid}`,
-        `https://obmen.market/posts/${lotMeta.postid}?action=approved&offerID=${offerData.offerID}`,
+        `https://obmen.market/posts/${lotMeta.postid}?action=confirmed&offerID=${offerData.offerID}`,
         `https://obmen.market/posts/${lotMeta.postid}?action=decline&offerID=${offerData.offerID}`
       ),
     },

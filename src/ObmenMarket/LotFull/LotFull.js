@@ -332,10 +332,20 @@ const Offers = ({
   const history = useHistory();
   const [selectedOffer, setSelectedOffer] = useState(null);
 
+  console.log(selectedOffer);
+
   useEffect(() => {
     if (query.has("action") && !querySelector[query.get("action")]) {
       console.log("bad link query");
       return history.push(`/posts/${lotMeta.postid}`);
+    }
+
+    if (query.get("action") === "view") {
+      querySelector[query.get("action")](
+        query.get("offerID"),
+        setSelectedOffer
+      );
+      // setSelectedOffer(query.get("offerID"));
     }
 
     if (
@@ -447,6 +457,7 @@ const LotFull = ({
         acceptConfirmOffer(lotMeta, offerMeta, {
           acceptedOffer: query.get("offerID"),
         });
+
         history.push(`/posts/${lotMeta.postid}`);
       },
       confirmed: (offerMeta) => {
@@ -462,6 +473,10 @@ const LotFull = ({
         removeOffer(offerMeta.offerID);
 
         history.push(`/posts/${lotMeta.postid}`);
+      },
+      view: (offerID, idSet) => {
+        idSet(offerID);
+        // history.push(`/posts/${lotMeta.postid}`);
       },
       extend: () => {
         setIsModalOn(true);
