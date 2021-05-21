@@ -125,6 +125,7 @@ const Modal = ({ close, addTimeModal }) => {
 
 export const Prolong = ({ butCont, setIsModalOn }) => {
   const { icons, addTimeModal } = useSelector((state) => state.ui);
+  const { isModalOn } = useSelector((state) => state.home);
 
   // const daysLeft =
   //   new Date(new Date(lotMeta.expireDate) - new Date()).getDate() - 1;
@@ -158,6 +159,7 @@ export const Prolong = ({ butCont, setIsModalOn }) => {
       closeOnDocumentClick={false}
       onOpen={() => setIsModalOn(true)}
       onClose={() => setIsModalOn(false)}
+      open={isModalOn}
       // disabled={daysLeft > 7}
     >
       {(close) => <Modal close={close} addTimeModal={addTimeModal} />}
