@@ -86,7 +86,10 @@ export const realtimeToasts = (tst, history) => (dispatch) => {
         "new",
         toastsModel.offerAdded.title,
         toastsModel.offerAdded.msg(tst.lotTitle),
-        () => history.push(tst.toastLink)
+        () => {
+          if (history.location.pathname.slice(1) === tst.toastLink) return null;
+          return history.push(tst.toastLink);
+        }
       )
     );
   }
@@ -97,7 +100,10 @@ export const realtimeToasts = (tst, history) => (dispatch) => {
         "new",
         toastsModel.offerApproved.title,
         toastsModel.offerApproved.msg(tst.lotTitle, tst.offerTitle),
-        () => history.push(tst.toastLink)
+        () => {
+          if (history.location.pathname.slice(1) === tst.toastLink) return null;
+          return history.push(tst.toastLink);
+        }
       )
     );
   }

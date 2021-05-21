@@ -48,7 +48,10 @@ const Home = ({
   );
 
   useEffect(() => {
-    console.log(query.get("action") in querySelector);
+    if (query.has("action") && !querySelector[query.get("action")]) {
+      console.log("bad link query");
+      return history.push(`/`);
+    }
 
     if (
       query.get("action") === "createpost" &&
@@ -57,13 +60,12 @@ const Home = ({
       setFormMode(true);
       history.push("/");
     }
-  }, [setFormMode, query, querySelector]);
+  }, [setFormMode, query, querySelector, history]);
 
   useEffect(() => {
-    // setFormMode(false);
     resetMetaState();
     setProfile(null);
-  }, [resetMetaState, setProfile]); // setFormMode
+  }, [resetMetaState, setProfile]);
 
   return (
     <div className={styles.home}>

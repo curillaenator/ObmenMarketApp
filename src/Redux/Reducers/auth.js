@@ -115,14 +115,14 @@ export const authCheck = (curUser, history) => (dispatch) => {
         dispatch(setIsAuth(true));
         dispatch(setInitialized(true));
 
-        dispatch(
-          setNewToast(
-            "success",
-            toastsModel.login.title,
-            toastsModel.login.msg,
-            null
-          )
-        );
+        // dispatch(
+        //   setNewToast(
+        //     "success",
+        //     toastsModel.login.title,
+        //     toastsModel.login.msg,
+        //     null
+        //   )
+        // );
       });
     });
   }

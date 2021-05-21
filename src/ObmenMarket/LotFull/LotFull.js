@@ -333,23 +333,20 @@ const Offers = ({
   const [selectedOffer, setSelectedOffer] = useState(null);
 
   useEffect(() => {
+    if (query.has("action") && !querySelector[query.get("action")]) {
+      console.log("bad link query");
+      return history.push(`/posts/${lotMeta.postid}`);
+    }
+
     if (
       (query.get("action") === "approved" ||
-        query.get("action") === "confirmed") &&
+        query.get("action") === "confirmed" ||
+        query.get("action") === "decline") &&
       query.get("action") in querySelector
     ) {
       const offerMeta = offers.find((o) => o.offerID === query.get("offerID"));
-
-      return offerMeta
-        ? querySelector[query.get("action")](offerMeta)
-        : history.push(`/posts/${lotMeta.postid}`);
+      return querySelector[query.get("action")](offerMeta);
     }
-
-    // if (query.has("action") && !querySelector[query.get("action")]) {
-    //   console.log("push");
-
-    //   return history.push(`/posts/${lotMeta.postid}`);
-    // }
   }, [offers, lotMeta.postid, query, querySelector, history]);
 
   const handleOffersIfAccepted = () => {
@@ -461,12 +458,26 @@ const LotFull = ({
 
         history.push(`/posts/${lotMeta.postid}`);
       },
+      decline: (offerMeta) => {
+        removeOffer(offerMeta.offerID);
+
+        history.push(`/posts/${lotMeta.postid}`);
+      },
       extend: () => {
         setIsModalOn(true);
         history.push(`/posts/${lotid}`);
       },
     }),
-    [lotid, acceptConfirmOffer, chatRoom, history, lotMeta, query, setIsModalOn]
+    [
+      lotid,
+      acceptConfirmOffer,
+      removeOffer,
+      chatRoom,
+      history,
+      lotMeta,
+      query,
+      setIsModalOn,
+    ]
   );
 
   const [isOfferForm, setIsOfferForm] = useState(false);
