@@ -1,10 +1,9 @@
 import { useState } from "react";
 import Lightbox from "react-image-lightbox";
-// import ImageShadow from "react-image-shadow";
+import ImageShadow from "react-image-shadow";
 
 import openGallery from "../../../Assets/Icons/openGallery.svg";
 
-import "./lightbox.css";
 import styles from "./gallery.module.scss";
 
 const Tint = ({ title, icon, count }) => {
@@ -26,35 +25,16 @@ const Tint = ({ title, icon, count }) => {
 };
 
 const Thumb = ({ photo, label, selected, setSelected }) => {
-  const thumbClassName =
-    label === selected
-      ? `${styles.thumb} ${styles.thumb_active}`
-      : styles.thumb;
-
   return (
-    <div className={thumbClassName} onClick={() => setSelected(label)}>
+    <div
+      className={
+        label === selected
+          ? `${styles.thumb} ${styles.thumb_active}`
+          : styles.thumb
+      }
+      onClick={() => setSelected(label)}
+    >
       <img src={photo} alt="" />
-    </div>
-  );
-};
-
-const Track = ({ lotPhotos, selected }) => {
-  const count = lotPhotos.length;
-
-  const trackStyle = {
-    width: `calc(100% * ${count})`,
-    left: `${-100 * selected}%`,
-  };
-
-  const photoStyle = {
-    width: `calc(100% / ${count})`,
-  };
-
-  return (
-    <div className={styles.phototrack} style={trackStyle}>
-      {lotPhotos.map((photo) => (
-        <img src={photo} alt="" key={photo} style={photoStyle} />
-      ))}
     </div>
   );
 };
@@ -63,12 +43,16 @@ export const Gallery = ({ lotPhotos }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(0);
 
-  if (!lotPhotos) return <div className={styles.layout}></div>;
-
   return (
     <div className={styles.gallery}>
       <div className={styles.mainphoto} onClick={() => setIsOpen(true)}>
-        <Track lotPhotos={lotPhotos} selected={selected} />
+        <ImageShadow
+          src={lotPhotos[selected]}
+          className={styles.trackshadowed}
+          shadowRadius="16"
+          shadowBlur="20"
+          style={{ width: "100%" }}
+        />
 
         <Tint
           title="Открыть галлерею"

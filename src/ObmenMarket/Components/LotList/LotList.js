@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
+import ImageShadow from "react-image-shadow";
 
 import {
   getPaginationFirstPage,
@@ -10,9 +11,6 @@ import {
 
 import { Button } from "../Button/Button";
 import { StatusBar } from "../StatusBar/StatusBar";
-
-import ImageShadow from "react-image-shadow";
-import "./imageshadow.scss";
 
 import styles from "./lotlist.module.scss";
 

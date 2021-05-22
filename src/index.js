@@ -7,8 +7,11 @@ import { ToastContainer } from "react-toastify";
 import ScrollMemory from "react-router-scroll-memory";
 import { ObmenMarketApp } from "./ObmenMarket/Obmen";
 
+import "react-image-shadow/assets/index.css";
 import "react-toastify/dist/ReactToastify.css";
 import "./toastsAnimation.scss";
+import "./imageshadow.scss";
+import "./lightbox.scss";
 import "./index.scss";
 
 const App = () => {
