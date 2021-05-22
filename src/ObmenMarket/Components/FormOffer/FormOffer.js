@@ -23,6 +23,7 @@ import cloudtail from "../../../Assets/Icons/cloudtail.svg";
 import styles from "./formoffer.module.scss";
 
 const OfferFormFields = ({
+  icons,
   formOfferUI,
   createOfferId,
   lotID,
@@ -128,6 +129,7 @@ const OfferFormFields = ({
           <Button
             width={217}
             height={56}
+            icon={icons.ctaoffer}
             disabled={isUploading}
             loader={isUploading}
             title={isUploading ? "Загружзка..." : "Предложить обмен"}

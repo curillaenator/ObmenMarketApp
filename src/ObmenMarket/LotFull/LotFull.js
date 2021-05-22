@@ -1,15 +1,15 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { connect, useSelector } from "react-redux";
 import { useLocation, useHistory, useParams } from "react-router-dom";
 
 import { Loading } from "../Components/Loading/Loading";
+import { Controls } from "../Components/Controls/Controls";
 import { Author } from "../Components/Author/Author";
 import { Gallery } from "../Components/Gallery/Gallery";
 import { Extend } from "../Components/Modals/Extend";
 import { StatusBar } from "../Components/StatusBar/StatusBar";
+import { OfferCard } from "../Components/OfferCard/OfferCard";
 import { Button } from "../Components/Button/Button";
-import { ButtonGhost } from "../Components/Button/ButtonGhost";
-import { Controls } from "../Components/Controls/Controls";
 import { FormFull } from "../Components/FormFull/FormFull";
 import { FormOffer } from "../Components/FormOffer/FormOffer";
 
@@ -26,9 +26,6 @@ import {
 } from "../../Redux/Reducers/lots";
 import { setFormMode, setIsModalOn } from "../../Redux/Reducers/home";
 import { chatRoom, setChatFromLotFull } from "../../Redux/Reducers/chat";
-
-import readytopay from "../../Assets/Icons/readytopay.svg";
-import shrink from "../../Assets/Icons/shrink.svg";
 
 import styles from "./lotfull.module.scss";
 
@@ -56,9 +53,6 @@ const Buttons = ({
     };
   }, []);
 
-  const offerTitle = isOfferForm ? "Передумал" : "Предложить обмен";
-  const ctaIcon = isOfferForm ? icons.cancel : icons.pencil;
-
   return (
     <div className={styles.buttons} ref={btnContainer}>
       <div className={styles.spacer}></div>
@@ -68,8 +62,8 @@ const Buttons = ({
           <Button
             width={btnContainer.current.clientWidth}
             height={56}
-            title={offerTitle}
-            icon={ctaIcon}
+            title={isOfferForm ? "Передумал" : "Предложить обмен"}
+            icon={icons.ctaoffer}
             handler={handleOfferForm}
             active={isOfferForm}
           />
@@ -153,163 +147,6 @@ const Descrption = ({ lotMeta }) => {
 
 // OFFERS
 
-const OfferCard = ({
-  offerMeta,
-  lotMeta,
-  ownerID,
-  acceptConfirmOffer,
-  selectedOffer,
-  setSelectedOffer,
-  removeOffer,
-  chatRoom,
-}) => {
-  const icons = useSelector((state) => state.ui.icons);
-  const ref = useRef({});
-  const [openHeigth, setOpenHeigth] = useState(null);
-
-  const select = useCallback(() => {
-    setSelectedOffer(offerMeta.offerID);
-    setOpenHeigth(ref.current.scrollHeight);
-  }, [offerMeta.offerID, setSelectedOffer]);
-
-  const deselect = () => setOpenHeigth(null);
-
-  useEffect(() => {
-    if (lotMeta.acceptedOffer) select();
-    if (offerMeta.offerID !== selectedOffer) deselect();
-  }, [
-    select,
-    selectedOffer,
-    ref.current.scrollHeight,
-    lotMeta.acceptedOffer,
-    offerMeta.offerID,
-  ]);
-
-  const handleSelectOffer = () => (openHeigth ? deselect() : select());
-
-  const acceptConfirmReset = {
-    acceptedOffer: null,
-    offerConfirmed: null,
-  };
-
-  const approveOfferByLotAuthor = () => {
-    if (lotMeta.acceptedOffer)
-      return acceptConfirmOffer(lotMeta, offerMeta, acceptConfirmReset);
-
-    if (!lotMeta.acceptedOffer)
-      return acceptConfirmOffer(lotMeta, offerMeta, {
-        acceptedOffer: offerMeta.offerID,
-      });
-  };
-
-  const confirmOfferByOfferAuthor = () => {
-    if (lotMeta.offerConfirmed) {
-      return acceptConfirmOffer(lotMeta, offerMeta, acceptConfirmReset);
-    }
-
-    if (!lotMeta.offerConfirmed) {
-      acceptConfirmOffer(lotMeta, offerMeta, {
-        offerConfirmed: offerMeta.offerID,
-      });
-      chatRoom(lotMeta, offerMeta);
-      return null;
-    }
-  };
-
-  return (
-    <div className={styles.offer}>
-      <div
-        className={
-          openHeigth
-            ? `${styles.minimized} ${styles.minimized_active}`
-            : styles.minimized
-        }
-        style={lotMeta.acceptedOffer ? { justifyContent: "flex-end" } : {}}
-      >
-        {!lotMeta.acceptedOffer && (
-          <div
-            className={styles.minimized_detailes}
-            onClick={handleSelectOffer}
-          >
-            <img
-              className={styles.minimized_detailes_img}
-              src={openHeigth ? shrink : offerMeta.photoURLs[0]}
-              alt={offerMeta.name}
-            />
-
-            <div className={styles.minimized_detailes_title}>
-              {openHeigth ? "Свернуть" : offerMeta.name}
-            </div>
-          </div>
-        )}
-
-        <div className={styles.minimized_buttons}>
-          {ownerID !== offerMeta.authorID && (
-            <Button
-              width={116}
-              height={24}
-              title={lotMeta.acceptedOffer ? "Отменить обмен" : "Согласиться"}
-              fontsize={12}
-              handler={approveOfferByLotAuthor}
-              active={lotMeta.acceptedOffer}
-            />
-          )}
-
-          {!!lotMeta.acceptedOffer &&
-            lotMeta.acceptedOffer === offerMeta.offerID &&
-            offerMeta.authorID === ownerID && (
-              <Button
-                width={126}
-                height={24}
-                title={
-                  lotMeta.offerConfirmed ? "Отменить обмен" : "Подтвердить"
-                }
-                fontsize={12}
-                handler={confirmOfferByOfferAuthor}
-                active={lotMeta.offerConfirmed}
-              />
-            )}
-
-          <ButtonGhost
-            icon={icons.delete}
-            handler={() => removeOffer(offerMeta.offerID)}
-          />
-        </div>
-      </div>
-
-      <div
-        className={styles.maximized}
-        ref={ref}
-        style={{ maxHeight: `${openHeigth ? openHeigth : 0}px` }}
-      >
-        <div className={styles.maximized_title}>{offerMeta.name}</div>
-
-        <Gallery lotPhotos={offerMeta.photoURLs} />
-
-        <div className={styles.maximized_author}>
-          <Author
-            authorID={offerMeta.authorID}
-            avatar={offerMeta.avatar}
-            name={offerMeta.authorName}
-          />
-        </div>
-
-        <div className={styles.maximized_text}>{offerMeta.description}</div>
-
-        <div className={styles.maximized_overprice}>
-          {offerMeta.overprice && <img src={readytopay} alt="" />}
-
-          <p>
-            {offerMeta.overprice
-              ? "Автор готов доплатить"
-              : "Автор не готов к доплате"}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const Offers = ({
   query,
   querySelector,
@@ -320,8 +157,10 @@ const Offers = ({
   removeOffer,
 }) => {
   const offers = lotMeta.offers;
-
   const history = useHistory();
+
+  const selectedOfferID = useSelector((state) => state.lots.selectedOfferID);
+
   const [selectedOffer, setSelectedOffer] = useState(null);
 
   useEffect(() => {
@@ -395,6 +234,7 @@ const Offers = ({
               removeOffer={removeOffer}
               acceptConfirmOffer={acceptConfirmOffer}
               selectedOffer={selectedOffer}
+              selectedOfferID={selectedOfferID}
               setSelectedOffer={setSelectedOffer}
               chatRoom={chatRoom}
             />

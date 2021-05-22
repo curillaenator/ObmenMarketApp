@@ -36,6 +36,7 @@ const SET_NEWLOT_ID = "lots/SET_NEWLOT_ID";
 const SET_NEWOFFER_ID = "lots/SET_NEWOFFER_ID";
 const SET_CURRENT_LOTMETA = "lots/SET_CURRENT_LOT";
 const SET_CURRENT_LOTOFFERS = "lots/SET_CURRENT_LOTOFFERS";
+const SET_SELECTED_OFFERID = "lots/SET_SELECTED_OFFERID";
 
 const initialState = {
   // main page params
@@ -54,6 +55,7 @@ const initialState = {
   createLotId: null,
   createOfferId: null,
   currentLotMeta: null,
+  selectedOfferID: null,
 };
 
 export const lots = (state = initialState, action) => {
@@ -100,6 +102,9 @@ export const lots = (state = initialState, action) => {
     case SET_NEWOFFER_ID:
       return { ...state, createOfferId: action.id };
 
+    case SET_SELECTED_OFFERID:
+      return { ...state, selectedOfferID: action.id };
+
     case SET_CURRENT_LOTMETA:
       return { ...state, currentLotMeta: action.payload };
 
@@ -129,6 +134,7 @@ export const setMyLotsPage = (payload) => ({ type: MY_LOTS_PAGE, payload });
 
 export const setNewLotId = (id) => ({ type: SET_NEWLOT_ID, id });
 const setNewOfferId = (id) => ({ type: SET_NEWOFFER_ID, id });
+export const setSelectedOfferID = (id) => ({ type: SET_SELECTED_OFFERID, id });
 const setLotMeta = (payload) => ({ type: SET_CURRENT_LOTMETA, payload });
 const setLotOffers = (offers) => ({ type: SET_CURRENT_LOTOFFERS, offers });
 
@@ -755,7 +761,6 @@ export const removeOffer = (offerID) => (dispatch, getState) => {
 
   batch(() => {
     dispatch(setProgress(1));
-    dispatch(onOfferCancel(offerID));
   });
 
   const Success = () => {
@@ -767,6 +772,12 @@ export const removeOffer = (offerID) => (dispatch, getState) => {
           toastsModel.offerRemoved.msg,
           null
         )
+      );
+
+      dispatch(onOfferCancel(offerID));
+
+      dispatch(
+        setLotMeta({ ...lotMeta, acceptedOffer: null, offerConfirmed: null })
       );
 
       dispatch(setProgress(100));
