@@ -12,11 +12,11 @@ const shapeFilter = ({ params, active, disabled }) => {
   return params;
 };
 
-const iconState = ({ icon, active, disabled, state }) => {
-  if (disabled) return icon && icon.disabled;
-  if (active) return icon && icon.active;
-  return icon && icon[state];
-};
+// const iconState = ({ icon, active, disabled, state }) => {
+//   if (disabled) return icon && icon.disabled;
+//   if (active) return icon && icon.active;
+//   return icon && icon[state];
+// };
 
 const ttlColor = ({ base, active, disabled }) => {
   if (disabled) return colors.primaryDisabled;
@@ -82,24 +82,9 @@ const ButtonWrap = styled.button`
   }
 
   .icon {
-    height: 24px;
     width: 24px;
+    height: 24px;
     margin-right: ${(props) => (props.title ? "12px" : "0px")};
-    background-image: url(${(props) => iconState({ ...props, state: "idle" })});
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
-    transition: 0.08s linear;
-  }
-
-  &:hover .icon {
-    background-image: url(${(props) =>
-      iconState({ ...props, state: "hover" })});
-  }
-
-  &:active .icon {
-    background-image: url(${(props) =>
-      iconState({ ...props, state: "clicked" })});
   }
 
   .title {
@@ -142,13 +127,24 @@ export const Button = ({
     ? shapeColors
     : { idle: colors.primary, hover: colors.primaryHover };
 
+  const iconView = () => {
+    switch (true) {
+      case disabled:
+        return icon.disabled;
+      case active:
+        return icon.active;
+      default:
+        return icon.idle;
+    }
+  };
+
   const W = width;
   const H = height;
   const R = H / 2 < radius ? H / 2 : radius; // 2.4
   const S = (0.08 + R * 0.000012) * smoothQ - 4 / smoothQ - 3;
   return (
     <ButtonWrap
-      icon={icon}
+      // icon={icon}
       width={width}
       height={height}
       title={title}
@@ -179,7 +175,7 @@ export const Button = ({
 
       {loader && <img className="loader" src={preloader} alt="Загрузка" />}
 
-      {!loader && icon && <div className="icon"></div>}
+      {!loader && icon && <div className="icon">{iconView()}</div>}
 
       {title && (
         <div className="title">

@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { fa } from "../Utils/firebase";
 import { slidein } from "../Utils/toasts";
 
-import { Loading } from "./Components/Loading/Loading";
+import { LoadingFS } from "./Components/Loading/Loading";
 import { HeaderCont } from "./Components/Header/Header";
 import { ToastComponent } from "./Components/Toast/Toast";
 import { LoginCont } from "./Login/Login";
@@ -79,7 +79,7 @@ const ObmenMarket = ({
 
   history.listen(() => isModalOn && setIsModalOn(false));
 
-  if (userLoading) return <Loading />;
+  if (userLoading) return <LoadingFS />;
 
   return (
     <div className={styles.app}>

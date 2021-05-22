@@ -18,8 +18,8 @@ export const colors = {
   primaryActive: "#edeff2",
   primaryDisabled: "#b5b1bf",
   primaryFontClicked: "#ccd1ff",
-  ctaIconHover1: "#ffffff",
-  ctaIconHover2: "#a966ff",
+  // ctaIconHover1: "#ffffff",
+  // ctaIconHover2: "#a966ff",
   // OUTLINE BUTTON
   outline: "#f9f8ff",
   outlineStroke: "#efecff",
@@ -45,4 +45,6 @@ export const colors = {
   chatfont2: "#958aab",
   ownermessage: "#7000ff",
   opponentmessage: "#F7F6F8",
+  //MODAL
+  modalBG: '#080314e5',
 };

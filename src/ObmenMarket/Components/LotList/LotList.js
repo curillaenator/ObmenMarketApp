@@ -43,7 +43,7 @@ const Lot = ({ data }) => {
   );
 };
 
-const Pagination = ({ lotsPending, allLotsLoaded, handleNextPage }) => {
+const Pagination = ({ icons, lotsPending, allLotsLoaded, handleNextPage }) => {
   return (
     <div className={styles.lotlist_pagination}>
       {!allLotsLoaded && (
@@ -51,6 +51,7 @@ const Pagination = ({ lotsPending, allLotsLoaded, handleNextPage }) => {
           title={lotsPending ? "Загрузка" : "Загрузить еще..."}
           width={217}
           height={56}
+          icon={icons.loadmore}
           loader={lotsPending}
           disabled={lotsPending}
           handler={handleNextPage}
@@ -65,6 +66,7 @@ const Pagination = ({ lotsPending, allLotsLoaded, handleNextPage }) => {
 };
 
 const LotList = ({
+  icons,
   myLots = false, // false for main page, true for profile page
 
   // main page params (are used when myLots is false)
@@ -82,10 +84,10 @@ const LotList = ({
   myLotsPerPage, // num of lots to add on loadmore click
   setMyLotsPage,
 }) => {
-  useEffect(() => lotList.length === 0 && getPaginationFirstPage(), [
-    getPaginationFirstPage,
-    lotList.length,
-  ]);
+  useEffect(
+    () => lotList.length === 0 && getPaginationFirstPage(),
+    [getPaginationFirstPage, lotList.length]
+  );
 
   const handleNextPage = myLots
     ? () => setMyLotsPage(myLotsPage + myLotsPerPage)
@@ -100,6 +102,7 @@ const LotList = ({
       </div>
 
       <Pagination
+        icons={icons}
         allLotsLoaded={myLots ? myLotList.length < myLotsPage : allLotsLoaded}
         lotsPending={myLots ? myLotsPending : lotsPending}
         handleNextPage={handleNextPage}
@@ -109,6 +112,7 @@ const LotList = ({
 };
 
 const mstp = (state) => ({
+  icons: state.ui.icons,
   lotList: state.lots.lotList,
   myLotList: state.lots.myLotList,
   allLotsLoaded: state.lots.allLotsLoaded,

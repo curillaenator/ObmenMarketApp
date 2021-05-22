@@ -5,7 +5,7 @@ import { useLocation, useHistory, useParams } from "react-router-dom";
 import { Loading } from "../Components/Loading/Loading";
 import { Author } from "../Components/Author/Author";
 import { Gallery } from "../Components/Gallery/Gallery";
-import { Prolong } from "./Prolong/Prolong";
+import { Extend } from "../Components/Modals/Extend";
 import { StatusBar } from "../Components/StatusBar/StatusBar";
 import { Button } from "../Components/Button/Button";
 import { ButtonGhost } from "../Components/Button/ButtonGhost";
@@ -24,14 +24,8 @@ import {
   createOffer,
   acceptConfirmOffer,
 } from "../../Redux/Reducers/lots";
-
 import { setFormMode, setIsModalOn } from "../../Redux/Reducers/home";
-
-import {
-  chatRoom,
-  // setIsChatOn,
-  setChatFromLotFull,
-} from "../../Redux/Reducers/chat";
+import { chatRoom, setChatFromLotFull } from "../../Redux/Reducers/chat";
 
 import readytopay from "../../Assets/Icons/readytopay.svg";
 import shrink from "../../Assets/Icons/shrink.svg";
@@ -48,7 +42,6 @@ const Buttons = ({
   setIsModalOn,
   setChatFromLotFull,
 }) => {
-  // eslint-disable-next-line
   const [draw, callDraw] = useState(null);
 
   const btnContainer = useRef(0);
@@ -90,7 +83,7 @@ const Buttons = ({
             height={56}
             title="Перейти в чат"
             disabled={!lotMeta.offerConfirmed || isChatOn}
-            // icon={icons.add}
+            icon={icons.chat}
             handler={setChatFromLotFull}
           />
         </div>
@@ -98,7 +91,7 @@ const Buttons = ({
 
       {draw && !lotMeta.acceptedOffer && ownerID === lotMeta.uid && (
         <div className={styles.buttons_block}>
-          <Prolong
+          <Extend
             butCont={btnContainer.current.clientWidth}
             setIsModalOn={setIsModalOn}
           />
@@ -111,7 +104,6 @@ const Buttons = ({
 //DESCRIPTION
 
 const Descrption = ({ lotMeta }) => {
-  // console.log(lotMeta);
   return (
     <div className={styles.description}>
       <div className={styles.author}>
@@ -332,21 +324,18 @@ const Offers = ({
   const history = useHistory();
   const [selectedOffer, setSelectedOffer] = useState(null);
 
-  console.log(selectedOffer);
-
   useEffect(() => {
     if (query.has("action") && !querySelector[query.get("action")]) {
       console.log("bad link query");
       return history.push(`/posts/${lotMeta.postid}`);
     }
 
-    if (query.get("action") === "view") {
-      querySelector[query.get("action")](
-        query.get("offerID"),
-        setSelectedOffer
-      );
-      // setSelectedOffer(query.get("offerID"));
-    }
+    // if (query.get("action") === "view") {
+    //   querySelector[query.get("action")](
+    //     query.get("offerID"),
+    //     setSelectedOffer
+    //   );
+    // }
 
     if (
       (query.get("action") === "approved" ||
@@ -445,6 +434,7 @@ const LotFull = ({
 }) => {
   const history = useHistory();
   const { lotid } = useParams();
+
   const locationSeacrh = useLocation().search;
   const query = useMemo(
     () => new URLSearchParams(locationSeacrh),
@@ -474,10 +464,10 @@ const LotFull = ({
 
         history.push(`/posts/${lotMeta.postid}`);
       },
-      view: (offerID, idSet) => {
-        idSet(offerID);
-        // history.push(`/posts/${lotMeta.postid}`);
-      },
+      // view: (offerID, idSet) => {
+      //   idSet(offerID);
+      //   history.push(`/posts/${lotMeta.postid}`);
+      // },
       extend: () => {
         setIsModalOn(true);
         history.push(`/posts/${lotid}`);
@@ -628,7 +618,6 @@ export const LotFullCont = connect(mstp, {
   setNewLotId,
   getLotMeta,
   updateLotFromEditForm,
-  // onLotCreateFormCancel,
   removeLot,
   onOfferCreate,
   onOfferCancel,
