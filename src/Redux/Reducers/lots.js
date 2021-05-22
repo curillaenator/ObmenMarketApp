@@ -132,7 +132,7 @@ const myLotsPending = (payload) => ({ type: MY_LOTS_PENDING, payload });
 const setLastProfile = (payload) => ({ type: SET_LAST_PROFILE, payload });
 export const setMyLotsPage = (payload) => ({ type: MY_LOTS_PAGE, payload });
 
-export const setNewLotId = (id) => ({ type: SET_NEWLOT_ID, id });
+const setNewLotId = (id) => ({ type: SET_NEWLOT_ID, id });
 const setNewOfferId = (id) => ({ type: SET_NEWOFFER_ID, id });
 export const setSelectedOfferID = (id) => ({ type: SET_SELECTED_OFFERID, id });
 const setLotMeta = (payload) => ({ type: SET_CURRENT_LOTMETA, payload });
@@ -387,8 +387,8 @@ export const publishNewLotFromForm = (updData, history) => (dispatch) => {
         )
       );
 
+      dispatch(setNewLotId(null));
       dispatch(setFormMode(false));
-
       dispatch(setProgress(100));
     });
 

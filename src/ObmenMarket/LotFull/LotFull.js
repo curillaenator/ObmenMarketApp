@@ -14,7 +14,6 @@ import { FormFull } from "../Components/FormFull/FormFull";
 import { FormOffer } from "../Components/FormOffer/FormOffer";
 
 import {
-  setNewLotId,
   getLotMeta,
   updateLotFromEditForm,
   removeLot,
@@ -29,7 +28,7 @@ import { chatRoom, setChatFromLotFull } from "../../Redux/Reducers/chat";
 
 import styles from "./lotfull.module.scss";
 
-const Buttons = ({
+const LotButtons = ({
   icons,
   isOfferForm,
   isChatOn,
@@ -161,8 +160,6 @@ const Offers = ({
 
   const selectedOfferID = useSelector((state) => state.lots.selectedOfferID);
 
-  const [selectedOffer, setSelectedOffer] = useState(null);
-
   useEffect(() => {
     if (query.has("action") && !querySelector[query.get("action")]) {
       console.log("bad link query");
@@ -214,7 +211,7 @@ const Offers = ({
 
   return (
     filteredOffers && (
-      <div className={styles.offers}>
+      <>
         {filteredOffers.length > 0 && (
           <div className={styles.offers_title}>
             {ownerID === lotMeta.uid
@@ -223,24 +220,19 @@ const Offers = ({
           </div>
         )}
 
-        <div className={styles.offers_list}>
-          {filteredOffers.map((offer) => (
-            <OfferCard
-              key={offer.offerID}
-              query={query}
-              ownerID={ownerID}
-              offerMeta={offer}
-              lotMeta={lotMeta}
-              removeOffer={removeOffer}
-              acceptConfirmOffer={acceptConfirmOffer}
-              selectedOffer={selectedOffer}
-              selectedOfferID={selectedOfferID}
-              setSelectedOffer={setSelectedOffer}
-              chatRoom={chatRoom}
-            />
-          ))}
-        </div>
-      </div>
+        {filteredOffers.map((offer) => (
+          <OfferCard
+            key={offer.offerID}
+            ownerID={ownerID}
+            offerMeta={offer}
+            lotMeta={lotMeta}
+            removeOffer={removeOffer}
+            acceptConfirmOffer={acceptConfirmOffer}
+            selectedOfferID={selectedOfferID}
+            chatRoom={chatRoom}
+          />
+        ))}
+      </>
     )
   );
 };
@@ -260,7 +252,6 @@ const LotFull = ({
   lotMeta,
   getLotMeta,
   isChatOn,
-  setNewLotId,
   updateLotFromEditForm,
   removeLot,
   onOfferCreate,
@@ -340,10 +331,7 @@ const LotFull = ({
     }
   };
 
-  useEffect(() => {
-    setNewLotId(null);
-    getLotMeta(lotid, history);
-  }, [lotid, setNewLotId, getLotMeta, history]);
+  useEffect(() => getLotMeta(lotid, history), [lotid, getLotMeta, history]);
 
   useEffect(() => {
     if (
@@ -382,7 +370,7 @@ const LotFull = ({
               />
             </div>
 
-            <Buttons
+            <LotButtons
               icons={icons}
               isOfferForm={isOfferForm}
               isChatOn={isChatOn}
@@ -455,7 +443,6 @@ const mstp = (state) => ({
 
 export const LotFullCont = connect(mstp, {
   setFormMode,
-  setNewLotId,
   getLotMeta,
   updateLotFromEditForm,
   removeLot,
