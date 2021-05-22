@@ -209,7 +209,7 @@ export const Modal = ({
       {page === 2 && (
         <div className="page">
           <InfoStyled>
-            {extendModal.page1.icon}
+            {extendModal.page2.icon}
             <div className="info_title">{extendModal.page2.title}</div>
             <div className="info_text">{extendModal.page2.text}</div>
           </InfoStyled>

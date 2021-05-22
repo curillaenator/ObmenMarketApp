@@ -2,6 +2,7 @@ import styles from "./statusbar.module.scss";
 
 import offerspic from "../../../Assets/Icons/offers.svg";
 import timepic from "../../../Assets/Icons/time.svg";
+import timepic_r from "../../../Assets/Icons/time_red.svg";
 
 export const StatusBar = ({ expiryDate, offersQty }) => {
   const diff = new Date(expiryDate) - new Date();
@@ -31,6 +32,7 @@ export const StatusBar = ({ expiryDate, offersQty }) => {
     twoTo4: "предложения",
     default: "предложений",
   };
+
   const worder = (value, dict) => {
     switch (true) {
       case value > 10 && value < 21:
@@ -61,9 +63,10 @@ export const StatusBar = ({ expiryDate, offersQty }) => {
         <img src={offerspic} alt="O" />
         <p>{worder(offersQty, offers)}</p>
       </div>
+
       <div className={styles.timing}>
         <p>{getLeftTime()}</p>
-        <img src={timepic} alt="T" />
+        <img src={diff < 172800000 ? timepic_r : timepic} alt="T" />
       </div>
     </div>
   );
