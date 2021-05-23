@@ -1,13 +1,11 @@
 import { useRef, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 
 import { Author } from "../Author/Author";
 import { Gallery } from "../Gallery/Gallery";
 import { Button } from "../Button/Button";
 import { ButtonGhost } from "../Button/ButtonGhost";
-
-import { setSelectedOfferID } from "../../../Redux/Reducers/lots";
 
 import { colors } from "../../../Utils/palette";
 
@@ -132,7 +130,8 @@ const OfferStyled = styled.div`
   border-radius: 16px;
   background-color: ${colors.primaryActive};
   overflow: hidden;
-  transition: 0.08s linear;
+  transition: background-color 0.08s linear;
+  transition: height 0.2s ease-in-out;
 
   @media (min-width: 1024px) {
     background-color: ${({ selected }) =>
@@ -149,29 +148,29 @@ export const OfferCard = ({
   offerMeta,
   ownerID,
   selectedOfferID,
+  setSelectedOfferID,
   acceptConfirmOffer,
   removeOffer,
   chatRoom,
 }) => {
   const bodyRef = useRef(null);
-  const dispatch = useDispatch();
   const { icons } = useSelector((state) => state.ui);
 
   useEffect(() => {
     if (lotMeta.acceptedOffer === offerMeta.offerID) {
-      dispatch(setSelectedOfferID(offerMeta.offerID));
+      setSelectedOfferID(offerMeta.offerID);
     }
-  }, [lotMeta.acceptedOffer, offerMeta.offerID, dispatch]);
+  }, [lotMeta.acceptedOffer, offerMeta.offerID, setSelectedOfferID]);
 
   const openOfferHandler = () => {
     if (offerMeta.offerID !== selectedOfferID)
-      return dispatch(setSelectedOfferID(offerMeta.offerID));
-    return dispatch(setSelectedOfferID(null));
+      return setSelectedOfferID(offerMeta.offerID);
+    return setSelectedOfferID(null);
   };
 
   const removeOfferHandler = () => {
     removeOffer(offerMeta.offerID);
-    dispatch(setSelectedOfferID(null));
+    setSelectedOfferID(null);
   };
 
   const acceptConfirmReset = {

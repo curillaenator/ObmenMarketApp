@@ -21,6 +21,7 @@ import {
   onOfferCancel,
   removeOffer,
   createOffer,
+  setSelectedOfferID,
   acceptConfirmOffer,
 } from "../../Redux/Reducers/lots";
 import { setFormMode, setIsModalOn } from "../../Redux/Reducers/home";
@@ -147,64 +148,36 @@ const Descrption = ({ lotMeta }) => {
 // OFFERS
 
 const Offers = ({
-  query,
-  querySelector,
   ownerID,
   lotMeta,
   acceptConfirmOffer,
   chatRoom,
   removeOffer,
+  setSelectedOfferID,
 }) => {
   const offers = lotMeta.offers;
-  const history = useHistory();
-
   const selectedOfferID = useSelector((state) => state.lots.selectedOfferID);
 
-  useEffect(() => {
-    if (query.has("action") && !querySelector[query.get("action")]) {
-      console.log("bad link query");
-      return history.push(`/posts/${lotMeta.postid}`);
-    }
-
-    // if (query.get("action") === "view") {
-    //   querySelector[query.get("action")](
-    //     query.get("offerID"),
-    //     setSelectedOffer
-    //   );
-    // }
-
-    if (
-      (query.get("action") === "approved" ||
-        query.get("action") === "confirmed" ||
-        query.get("action") === "decline") &&
-      query.get("action") in querySelector
-    ) {
-      const offerMeta = offers.find((o) => o.offerID === query.get("offerID"));
-      return querySelector[query.get("action")](offerMeta);
-    }
-  }, [offers, lotMeta.postid, query, querySelector, history]);
-
-  const handleOffersIfAccepted = () => {
-    if (lotMeta.acceptedOffer)
-      return offers.filter((offer) => offer.offerID === lotMeta.acceptedOffer);
-
-    return offers;
-  };
-
-  const handleOffersIfConfirmed = () => {
-    if (!lotMeta.offerConfirmed && !lotMeta.acceptedOffer) {
-      return offers.filter((offer) => offer.authorID === ownerID);
-    }
-
-    return offers.filter(
-      (offer) =>
-        offer.offerID === lotMeta.acceptedOffer && offer.authorID === ownerID
-    );
-  };
-
   const handleFilteredOffers = () => {
-    if (ownerID === lotMeta.uid) return handleOffersIfAccepted();
-    if (ownerID !== lotMeta.uid) return handleOffersIfConfirmed();
+    if (ownerID === lotMeta.uid) {
+      if (lotMeta.acceptedOffer)
+        return offers.filter(
+          (offer) => offer.offerID === lotMeta.acceptedOffer
+        );
+
+      return offers;
+    }
+
+    if (ownerID !== lotMeta.uid) {
+      if (!lotMeta.offerConfirmed && !lotMeta.acceptedOffer) {
+        return offers.filter((offer) => offer.authorID === ownerID);
+      }
+
+      return offers.filter(
+        (offer) =>
+          offer.offerID === lotMeta.acceptedOffer && offer.authorID === ownerID
+      );
+    }
   };
 
   const filteredOffers = offers ? handleFilteredOffers() : null;
@@ -229,6 +202,7 @@ const Offers = ({
             removeOffer={removeOffer}
             acceptConfirmOffer={acceptConfirmOffer}
             selectedOfferID={selectedOfferID}
+            setSelectedOfferID={setSelectedOfferID}
             chatRoom={chatRoom}
           />
         ))}
@@ -258,6 +232,7 @@ const LotFull = ({
   onOfferCancel,
   removeOffer,
   createOffer,
+  setSelectedOfferID,
   acceptConfirmOffer,
   setIsModalOn,
   chatRoom,
@@ -265,56 +240,6 @@ const LotFull = ({
 }) => {
   const history = useHistory();
   const { lotid } = useParams();
-
-  const locationSeacrh = useLocation().search;
-  const query = useMemo(
-    () => new URLSearchParams(locationSeacrh),
-    [locationSeacrh]
-  );
-
-  const querySelector = useMemo(
-    () => ({
-      approved: (offerMeta) => {
-        acceptConfirmOffer(lotMeta, offerMeta, {
-          acceptedOffer: query.get("offerID"),
-        });
-
-        history.push(`/posts/${lotMeta.postid}`);
-      },
-      confirmed: (offerMeta) => {
-        acceptConfirmOffer(lotMeta, offerMeta, {
-          offerConfirmed: query.get("offerID"),
-        });
-
-        chatRoom(lotMeta, offerMeta);
-
-        history.push(`/posts/${lotMeta.postid}`);
-      },
-      decline: (offerMeta) => {
-        removeOffer(offerMeta.offerID);
-
-        history.push(`/posts/${lotMeta.postid}`);
-      },
-      // view: (offerID, idSet) => {
-      //   idSet(offerID);
-      //   history.push(`/posts/${lotMeta.postid}`);
-      // },
-      extend: () => {
-        setIsModalOn(true);
-        history.push(`/posts/${lotid}`);
-      },
-    }),
-    [
-      lotid,
-      acceptConfirmOffer,
-      removeOffer,
-      chatRoom,
-      history,
-      lotMeta,
-      query,
-      setIsModalOn,
-    ]
-  );
 
   const [isOfferForm, setIsOfferForm] = useState(false);
   const handleOfferForm = () => {
@@ -331,16 +256,83 @@ const LotFull = ({
     }
   };
 
+  const locationSeacrh = useLocation().search;
+  const query = useMemo(
+    () => new URLSearchParams(locationSeacrh),
+    [locationSeacrh]
+  );
+
+  const querySelector = useMemo(
+    () => ({
+      approved: (offerMeta) => {
+        acceptConfirmOffer(lotMeta, offerMeta, {
+          acceptedOffer: query.get("offerID"),
+        });
+
+        history.push(`/posts/${lotid}`);
+      },
+      confirmed: (offerMeta) => {
+        acceptConfirmOffer(lotMeta, offerMeta, {
+          offerConfirmed: query.get("offerID"),
+        });
+
+        chatRoom(lotMeta, offerMeta);
+
+        history.push(`/posts/${lotid}`);
+      },
+      decline: (offerMeta) => {
+        removeOffer(offerMeta.offerID);
+        history.push(`/posts/${lotid}`);
+      },
+      view: (offerMeta) => {
+        setSelectedOfferID(offerMeta.offerID);
+        history.push(`/posts/${lotid}`);
+      },
+      extend: () => {
+        setIsModalOn(true);
+        history.push(`/posts/${lotid}`);
+      },
+    }),
+    [
+      lotid,
+      acceptConfirmOffer,
+      setSelectedOfferID,
+      removeOffer,
+      chatRoom,
+      history,
+      lotMeta,
+      query,
+      setIsModalOn,
+    ]
+  );
+
   useEffect(() => getLotMeta(lotid, history), [lotid, getLotMeta, history]);
 
   useEffect(() => {
-    if (
-      query.get("action") === "extend" &&
-      query.get("action") in querySelector
-    ) {
-      querySelector[query.get("action")]();
+    if (!lotMeta) return null;
+
+    if (!query.has("action")) return null;
+
+    if (query.has("action") && !querySelector[query.get("action")]) {
+      console.log("bad link query");
+      return history.push(`/posts/${lotid}`);
     }
-  }, [query, querySelector]);
+
+    
+
+    if (
+      query.get("action") === "approved" ||
+      query.get("action") === "confirmed" ||
+      query.get("action") === "decline" ||
+      query.get("action") === "view" ||
+      query.get("action") === "extend"
+    ) {
+      const offers = lotMeta.offers;
+      const offerMeta = offers.find((o) => o.offerID === query.get("offerID"));
+
+      return querySelector[query.get("action")](offerMeta);
+    }
+  }, [lotid, query, querySelector, history, lotMeta]);
 
   if (!lotMeta) return <Loading />;
 
@@ -398,12 +390,11 @@ const LotFull = ({
 
             {isAuth && (
               <Offers
-                query={query}
-                querySelector={querySelector}
-                lotMeta={lotMeta}
-                acceptConfirmOffer={acceptConfirmOffer}
                 ownerID={ownerID}
+                lotMeta={lotMeta}
                 removeOffer={removeOffer}
+                acceptConfirmOffer={acceptConfirmOffer}
+                setSelectedOfferID={setSelectedOfferID}
                 chatRoom={chatRoom}
               />
             )}
@@ -450,6 +441,7 @@ export const LotFullCont = connect(mstp, {
   onOfferCancel,
   removeOffer,
   createOffer,
+  setSelectedOfferID,
   acceptConfirmOffer,
   setIsModalOn,
   chatRoom,

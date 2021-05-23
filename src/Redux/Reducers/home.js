@@ -1,6 +1,8 @@
 import { batch } from "react-redux";
-import { db, fa } from "../../Utils/firebase";
+import { db, db_offer, fst, fa } from "../../Utils/firebase";
 import { toastsModel } from "../../Utils/toasts";
+
+import { setLotOffers, setSelectedOfferID } from "./lots";
 
 const SET_PROGRESS = "home/SET_PROGRESS";
 const SET_FORM_MODE = "home/SET_FORM_MODE";
@@ -79,17 +81,54 @@ export const getProfile = (ownerID, matchedID) => (dispatch, getState) => {
   }
 };
 
-export const realtimeToasts = (tst, history) => (dispatch) => {
+export const realtimeToasts = (tst, history) => (dispatch, getState) => {
   if (tst.type === "offerAdded") {
+    //
+    // if recieve new offer for lot when on lot page
+    //
+    if (history.location.pathname.slice(1) === tst.toastLink) {
+      const lotID = tst.toastLink.replace("posts/", "");
+
+      db_offer
+        .ref(`${lotID}/${tst.offerID}`)
+        .once("value", async (newOffer) => {
+          const photoPromises = await fst
+            .ref()
+            .child(`/offers/${lotID}/${newOffer.key}`)
+            .listAll()
+            .then((res) => res.items.map((item) => item.getDownloadURL()));
+          const photoURLs = await Promise.all(photoPromises);
+
+          dispatch(
+            setLotOffers([
+              ...(getState().lots.currentLotMeta.offers || []),
+              { ...newOffer.val(), photoURLs },
+            ])
+          );
+        })
+        .then(() => {
+          dispatch(
+            setNewToast(
+              "new",
+              toastsModel.offerAdded.title,
+              toastsModel.offerAdded.msg(tst.lotTitle),
+              () => dispatch(setSelectedOfferID(tst.offerID))
+            )
+          );
+        });
+
+      return;
+    }
+
+    // if reciev new offer for lot and not on lot page
+
     return dispatch(
       setNewToast(
         "new",
         toastsModel.offerAdded.title,
         toastsModel.offerAdded.msg(tst.lotTitle),
-        () => {
-          if (history.location.pathname.slice(1) === tst.toastLink) return null;
-          return history.push(tst.toastLink);
-        }
+        () =>
+          history.push(`${tst.toastLink}?action=view&offerID=${tst.offerID}`)
       )
     );
   }

@@ -34,8 +34,8 @@ const SET_LAST_PROFILE = "lots/SET_LAST_PROFILE";
 const RESET_STATE = "lots/RESET_STATE";
 const SET_NEWLOT_ID = "lots/SET_NEWLOT_ID";
 const SET_NEWOFFER_ID = "lots/SET_NEWOFFER_ID";
-const SET_CURRENT_LOTMETA = "lots/SET_CURRENT_LOT";
-const SET_CURRENT_LOTOFFERS = "lots/SET_CURRENT_LOTOFFERS";
+const SET_CURRENT_LOTMETA = "lots/SET_CURRENT_LOTMETA";
+const SET_LOTOFFERS = "lots/SET_LOTOFFERS";
 const SET_SELECTED_OFFERID = "lots/SET_SELECTED_OFFERID";
 
 const initialState = {
@@ -108,7 +108,7 @@ export const lots = (state = initialState, action) => {
     case SET_CURRENT_LOTMETA:
       return { ...state, currentLotMeta: action.payload };
 
-    case SET_CURRENT_LOTOFFERS:
+    case SET_LOTOFFERS:
       return {
         ...state,
         currentLotMeta: { ...state.currentLotMeta, offers: action.offers },
@@ -136,7 +136,7 @@ const setNewLotId = (id) => ({ type: SET_NEWLOT_ID, id });
 const setNewOfferId = (id) => ({ type: SET_NEWOFFER_ID, id });
 export const setSelectedOfferID = (id) => ({ type: SET_SELECTED_OFFERID, id });
 const setLotMeta = (payload) => ({ type: SET_CURRENT_LOTMETA, payload });
-const setLotOffers = (offers) => ({ type: SET_CURRENT_LOTOFFERS, offers });
+export const setLotOffers = (offers) => ({ type: SET_LOTOFFERS, offers });
 
 export const resetLotsState = () => ({ type: RESET_STATE });
 
@@ -827,7 +827,8 @@ export const createOffer = (lotMeta, offerData) => (dispatch, getState) => {
     const newEventID = db_notes.ref(lotMeta.uid).push().key;
     db_notes.ref(`${lotMeta.uid}/${newEventID}`).update({
       type: "offerAdded",
-      toastLink: `posts/${lotMeta.postid}`,
+      toastLink: `posts/${lotMeta.postid}`, // ?action=view&offerID=${offerData.offerID}
+      offerID: offerData.offerID,
       lotTitle: lotMeta.title,
       offerTitle: offerData.name,
       timestamp: fb.database.ServerValue.TIMESTAMP,
