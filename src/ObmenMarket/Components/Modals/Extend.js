@@ -169,7 +169,8 @@ export const Modal = ({
   const [page, setPage] = useState(1);
 
   const payButtonHandler = () => {
-    an.logEvent("purchase30", { cost: "30", payMethod: paySelected });
+    an.logEvent("purchase", { value: 30 });
+    // an.logEvent("add_payment_info", { payment_type: paySelected });
     setPage(page + 1);
   };
 
