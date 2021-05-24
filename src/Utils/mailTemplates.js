@@ -727,7 +727,7 @@ export const newOfferTpl = (
 </head>
 
 <body style="word-spacing:normal;background-color:#ffffff;">
-  <div style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;"> 🎉 Новое предложение обмена: ${offerTitle} обменять на ${lotTitle}. Если оно вам не подходит, дождитесь другого и всегда помните, что вы можете увеличить срок публикации!<br>
+  <div style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">"${lotTitle}" обменять на "${offerTitle}". Если это предложение вам не подходит, дождитесь другого и всегда помните, что вы можете увеличить срок публикации!<br>
   </div>
   <div class="back" style="background-color:#ffffff;">
     <!-- Logo -->
@@ -1308,7 +1308,7 @@ export const offerApprovedTpl = (
 </head>
 
 <body style="word-spacing:normal;background-color:#ffffff;">
-  <div style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;"> 🕺 Предложение принято: ${offerTitle} обменять на ${lotTitle}. Подтвердите обмен, если до сих пор готовы обменяться и вас всё устраивает.<br>
+  <div style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">"${lotTitle}" обменять на "${offerTitle}". Подтвердите обмен, если предложение до сих пор в силе и вас всё устраивает.<br>
   </div>
   <div class="back" style="background-color:#ffffff;">
     <!-- Logo -->
@@ -1988,7 +1988,7 @@ export const offerConfirmedTpl = (
 </head>
 
 <body style="word-spacing:normal;background-color:#ffffff;">
-  <div style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;"> 🕺 Обмен подтверждён: ${offerTitle} обменять на ${lotTitle}. Можете начать чат и договориться о встрече, надеемся что все получат то что хотят ☺️<br>
+  <div style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">"${lotTitle}" обменять на "${offerTitle}". Можете начать чат и договориться о встрече, надеемся что все получат то что хотят ☺️<br>
   </div>
   <div class="back" style="background-color:#ffffff;">
     <!-- Logo -->

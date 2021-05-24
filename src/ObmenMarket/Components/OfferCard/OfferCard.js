@@ -41,12 +41,12 @@ const HeadStyled = styled.div`
       -webkit-box-orient: vertical;
       overflow: hidden;
       margin: 0 12px;
-      font-weight: 700;
-      font-size: 13px;
-      line-height: 13px;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 20px;
       letter-spacing: -0.08px;
       color: ${colors.fontTitle};
-      border-bottom: 1.5px dashed ${colors.fontTitle};
+      // border-bottom: 1.5px dashed ${colors.fontTitle};
     }
 
     &:hover .head_title {
@@ -100,6 +100,7 @@ const BodyStyled = styled.div`
     font-size: 13px;
     line-height: 19px;
     letter-spacing: -0.08px;
+    font-feature-settings: 'cv02' on, 'cv03' on, 'cv04' on, 'cv05' on, 'cv10' on, 'cv09' on, 'cv08' on, 'cv07' on, 'cv06' on;
     color: ${colors.fontGrey};
   }
 

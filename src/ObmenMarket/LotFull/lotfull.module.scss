@@ -32,7 +32,8 @@
 
     .offers_title {
       font-weight: 800;
-      font-size: 22px;
+      font-size: 24px;
+      line-height: 28px;
       letter-spacing: -0.64px;
       color: $fontTitle;
       margin-bottom: 16px;
@@ -45,14 +46,21 @@
 
     .author {
       margin-bottom: 16px;
+      font-weight: bold;
+      font-size: 16px;
+      line-height: 20px;
+      letter-spacing: -0.16px;
+      margin-bottom: 32px;
     }
 
     .majortitle {
       font-weight: 800;
-      font-size: 22px;
-      letter-spacing: -0.64px;
+      font-size: 32px;
+      line-height: 40px;
+      letter-spacing: -0.72px;
+      font-feature-settings: 'cv02' on, 'cv03' on, 'cv04' on, 'cv05' on, 'cv10' on, 'cv09' on, 'cv08' on, 'cv07' on, 'cv06' on;
       color: $fontTitle;
-      margin-bottom: 6px;
+      margin-bottom: 32px;
     }
 
     .minortitle {
@@ -64,12 +72,16 @@
     }
 
     .majortext {
+      font-family: Inter;
+      font-style: normal;
       font-weight: 500;
-      font-size: 13px;
-      line-height: 19px;
-      letter-spacing: -0.08px;
+      font-size: 14px;
+      line-height: 24px;
+      letter-spacing: -0.0008em;
       color: $fontGrey;
-      margin-bottom: 16px;
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 0.5px solid #C6BCFF;
     }
 
     .addinfo {
@@ -80,20 +92,21 @@
       }
 
       &_title {
-        font-weight: 600;
-        font-size: 13px;
+        font-weight: bold;
+        font-size: 18px;
         line-height: 19px;
-        letter-spacing: -0.08px;
-        color: $fontGrey;
+        letter-spacing: -0.16px;
+        color: $fontTitle;
         margin-bottom: 6px;
       }
 
       &_value {
-        font-weight: bold;
-        font-size: 13px;
-        line-height: 19px;
-        letter-spacing: -0.08px;
-        color: $fontTitle;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 24px;
+        letter-spacing: -0.16px;
+        color: $fontGrey;
       }
     }
   }
