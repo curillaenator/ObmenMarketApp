@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { connect, useSelector } from "react-redux";
 import { useLocation, useHistory, useParams } from "react-router-dom";
-// import { an } from "../../Utils/firebase";
 
 import { Loading } from "../Components/Loading/Loading";
 import { Controls } from "../Components/Controls/Controls";
@@ -306,7 +305,11 @@ const LotFull = ({
     ]
   );
 
+  // get lotMeta
+
   useEffect(() => getLotMeta(lotid, history), [lotid, getLotMeta, history]);
+
+  // handle queries from url
 
   useEffect(() => {
     if (!isAuth) return history.push(`/posts/${lotid}`);
@@ -331,6 +334,8 @@ const LotFull = ({
       return querySelector[query.get("action")](offerMeta);
     }
   }, [isAuth, lotid, query, querySelector, history, lotMeta]);
+
+  // change page title
 
   useEffect(() => {
     lotMeta && setTitle(lotMeta.title);

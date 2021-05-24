@@ -316,19 +316,9 @@ const Chat = ({
   getDialogOpponent,
   removeChatRoom,
 }) => {
-  const [isMobile, setIsMobile] = useState(false);
-
   const handleSelected = (roomID) => {
     curRoomID === roomID ? deselectRoom() : selectRoom(roomID);
   };
-
-  const chatResize = () => {
-    console.log(window.innerWidth);
-  };
-
-  useEffect(() => {
-    window.addEventListener("resize", chatResize);
-  }, []);
 
   return (
     <div className={styles.chat}>

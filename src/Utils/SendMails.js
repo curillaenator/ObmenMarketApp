@@ -1,5 +1,10 @@
 import { fsdb, fst } from "./firebase";
-import { newPostTpl, newOfferTpl, offerApprovedTpl, offerConfirmedTpl } from "./mailTemplates";
+import {
+  newPostTpl,
+  newOfferTpl,
+  offerApprovedTpl,
+  offerConfirmedTpl,
+} from "./mailTemplates";
 
 // SENDMAIL UTILS
 
@@ -27,14 +32,11 @@ export const onLotCreateSendMail = async (lotData) => {
     .child(`posts/${lotData.uid}/${lotData.postid}/photo0`)
     .getDownloadURL();
 
-  
-  // const lotDescription =
-  //   lotData.description.length > 50
-  //     ? `${lotData.description.slice(0, 50)}...`
-  //     : lotData.description;
-
   // Lot phtoto
-  const finalLotPhoto = lotPhoto.replace("https://firebasestorage.googleapis.com", "https://ik.imagekit.io/wnq6ecptz6/firebase/tr:n-mail_small_photo");
+  const finalLotPhoto = lotPhoto.replace(
+    "https://firebasestorage.googleapis.com",
+    "https://ik.imagekit.io/wnq6ecptz6/firebase/tr:n-mail_small_photo"
+  );
 
   const lotMailBody = {
     delivery: { state: "CREATED" },
@@ -49,7 +51,19 @@ export const onLotCreateSendMail = async (lotData) => {
         `https://obmen.market?action=createpost`
       ),
     },
+    filters: {
+      ganalytics: {
+        settings: {
+          enable: 1,
+          utm_source: "New post notification",
+          utm_medium: "email",
+          utm_content: "Объявление опубликовано",
+          utm_campaign: "Email notification",
+        },
+      },
+    },
   };
+
   fsdb
     .collection("mail")
     .add(lotMailBody)
@@ -57,19 +71,23 @@ export const onLotCreateSendMail = async (lotData) => {
 };
 
 export const onOfferCreateSendMail = async (lotMeta, offerData) => {
-
   const lotPhoto = await fst
-  .ref()
-  .child(`posts/${lotMeta.uid}/${lotMeta.postid}/photo0`)
-  .getDownloadURL();
+    .ref()
+    .child(`posts/${lotMeta.uid}/${lotMeta.postid}/photo0`)
+    .getDownloadURL();
 
   // Offer photo
   const offerPhotoPath = offerData.photoURLs[0];
-  const finalOfferPhoto = offerPhotoPath.replace("https://firebasestorage.googleapis.com", "https://ik.imagekit.io/wnq6ecptz6/firebase/tr:n-mail_big_photo");
+  const finalOfferPhoto = offerPhotoPath.replace(
+    "https://firebasestorage.googleapis.com",
+    "https://ik.imagekit.io/wnq6ecptz6/firebase/tr:n-mail_big_photo"
+  );
 
   // Lot phtoto
-  const finalLotPhoto = lotPhoto.replace("https://firebasestorage.googleapis.com", "https://ik.imagekit.io/wnq6ecptz6/firebase/tr:n-mail_small_photo");
-
+  const finalLotPhoto = lotPhoto.replace(
+    "https://firebasestorage.googleapis.com",
+    "https://ik.imagekit.io/wnq6ecptz6/firebase/tr:n-mail_small_photo"
+  );
 
   const offerMailBody = {
     delivery: { state: "CREATED" },
@@ -88,6 +106,17 @@ export const onOfferCreateSendMail = async (lotMeta, offerData) => {
         finalLotPhoto
       ),
     },
+    filters: {
+      ganalytics: {
+        settings: {
+          enable: 1,
+          utm_source: "New offer notification",
+          utm_medium: "email",
+          utm_content: "Новое предложение",
+          utm_campaign: "Email notification",
+        },
+      },
+    },
   };
 
   fsdb
@@ -97,14 +126,16 @@ export const onOfferCreateSendMail = async (lotMeta, offerData) => {
 };
 
 export const onApproveByLotAuthor = async (lotMeta, offerData) => {
-  
   const lotPhoto = await fst
-  .ref()
-  .child(`posts/${lotMeta.uid}/${lotMeta.postid}/photo0`)
-  .getDownloadURL();
+    .ref()
+    .child(`posts/${lotMeta.uid}/${lotMeta.postid}/photo0`)
+    .getDownloadURL();
 
   // Lot phtoto
-  const finalLotPhoto = await lotPhoto.replace("https://firebasestorage.googleapis.com", "https://ik.imagekit.io/wnq6ecptz6/firebase/tr:n-mail_small_photo");
+  const finalLotPhoto = await lotPhoto.replace(
+    "https://firebasestorage.googleapis.com",
+    "https://ik.imagekit.io/wnq6ecptz6/firebase/tr:n-mail_small_photo"
+  );
 
   const approveMailBody = {
     delivery: { state: "CREATED" },
@@ -121,6 +152,17 @@ export const onApproveByLotAuthor = async (lotMeta, offerData) => {
         `https://obmen.market/posts/${lotMeta.postid}?action=decline&offerID=${offerData.offerID}`
       ),
     },
+    filters: {
+      ganalytics: {
+        settings: {
+          enable: 1,
+          utm_source: "Offer approved notification",
+          utm_medium: "email",
+          utm_content: "Предложение принято",
+          utm_campaign: "Email notification",
+        },
+      },
+    },
   };
 
   fsdb
@@ -130,14 +172,16 @@ export const onApproveByLotAuthor = async (lotMeta, offerData) => {
 };
 
 export const onConfirmByOfferAuthor = async (lotMeta, offerData) => {
-  
   const lotPhoto = await fst
-  .ref()
-  .child(`posts/${lotMeta.uid}/${lotMeta.postid}/photo0`)
-  .getDownloadURL();
+    .ref()
+    .child(`posts/${lotMeta.uid}/${lotMeta.postid}/photo0`)
+    .getDownloadURL();
 
   // Lot phtoto
-  const finalLotPhoto = lotPhoto.replace("https://firebasestorage.googleapis.com", "https://ik.imagekit.io/wnq6ecptz6/firebase/tr:n-mail_small_photo");
+  const finalLotPhoto = lotPhoto.replace(
+    "https://firebasestorage.googleapis.com",
+    "https://ik.imagekit.io/wnq6ecptz6/firebase/tr:n-mail_small_photo"
+  );
 
   const confirmMailBody = {
     delivery: { state: "CREATED" },
@@ -152,6 +196,17 @@ export const onConfirmByOfferAuthor = async (lotMeta, offerData) => {
         `https://obmen.market/posts/${lotMeta.postid}`,
         `https://obmen.market/posts/${lotMeta.postid}?action=chat&chatroomID=${offerData.offerID}`
       ),
+    },
+    filters: {
+      ganalytics: {
+        settings: {
+          enable: 1,
+          utm_source: "Exchange confirmed notification",
+          utm_medium: "email",
+          utm_content: "Предложение принято",
+          utm_campaign: "Email notification",
+        },
+      },
     },
   };
 

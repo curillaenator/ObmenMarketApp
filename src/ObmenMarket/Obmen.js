@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Route, Switch, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
@@ -48,21 +48,42 @@ const ObmenMarket = ({
   const history = useHistory();
   const [user, userLoading] = useAuthState(fa);
 
-  window.pushlink = history;
+  const [isMobile, setIsMobile] = useState(false);
+  const chatResize = () => {
+    window.innerWidth >= 768 && setIsMobile(false);
+    window.innerWidth < 768 && setIsMobile(true);
+  };
+
+  // listen for viewport resize
+
+  useEffect(() => {
+    chatResize();
+    window.addEventListener("resize", chatResize);
+  }, []);
+
+  // change title by state title
 
   useEffect(() => (document.title = title), [title]);
+
+  // check for user auth
 
   useEffect(() => {
     !userLoading && authCheck(user, history);
   }, [user, authCheck, userLoading, history]);
 
+  // connect disconect handler
+
   useEffect(() => {
     onConnectDisconnect(ownerID);
   }, [ownerID, onConnectDisconnect]);
 
+  // progress bar watcher
+
   useEffect(() => {
     progress === 100 && setTimeout(() => setProgress(null), 1000);
   }, [progress, setProgress]);
+
+  // toasts watcher
 
   useEffect(() => {
     isToast &&
@@ -87,6 +108,8 @@ const ObmenMarket = ({
         { transition: slidein }
       );
   }, [isToast, icons.toasts]);
+
+  // chat rooms subscription
 
   useEffect(() => {
     ownerID && subRoomsMsgs(ownerID);
@@ -121,7 +144,7 @@ const ObmenMarket = ({
       >
         <HeaderCont />
 
-        {isInitialized && isAuth && <Chat />}
+        {isInitialized && isAuth && !isMobile && <Chat />}
 
         <Switch>
           <Route exact path="/" render={() => <HomeCont />} />
