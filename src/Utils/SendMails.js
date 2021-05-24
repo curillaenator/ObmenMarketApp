@@ -75,7 +75,7 @@ export const onOfferCreateSendMail = async (lotMeta, offerData) => {
     delivery: { state: "CREATED" },
     toUids: [`${lotMeta.uid}`],
     message: {
-      subject: "🎉 Новое предложение!",
+      subject: "⚡️ Новое предложение!",
       html: newOfferTpl(
         offerData.name,
         `https://obmen.market/posts/${lotMeta.postid}?action=view&offerID=${offerData.offerID}`,
@@ -110,7 +110,7 @@ export const onApproveByLotAuthor = async (lotMeta, offerData) => {
     delivery: { state: "CREATED" },
     toUids: [`${offerData.authorID}`],
     message: {
-      subject: "🥂 Предложение принято!",
+      subject: "🤝 Предложение принято!",
       html: offerApprovedTpl(
         lotMeta.title,
         finalLotPhoto,
@@ -143,7 +143,7 @@ export const onConfirmByOfferAuthor = async (lotMeta, offerData) => {
     delivery: { state: "CREATED" },
     toUids: [`${lotMeta.uid}`],
     message: {
-      subject: "Предложение подтверждено!",
+      subject: "🎉 Обмен подтвержден!",
       html: offerConfirmedTpl(
         lotMeta.title,
         finalLotPhoto,
