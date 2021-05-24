@@ -75,7 +75,7 @@ const LotButtons = ({
           <Button
             width={btnContainer.current.clientWidth}
             height={56}
-            title="Перейти в чат"
+            title="Открыть мессенджер"
             disabled={!lotMeta.offerConfirmed || isChatOn}
             icon={icons.chat}
             handler={setChatFromLotFull}
@@ -188,8 +188,8 @@ const Offers = ({
         {filteredOffers.length > 0 && (
           <div className={styles.offers_title}>
             {ownerID === lotMeta.uid
-              ? "Вам предложили в обмен:"
-              : "Вы предложили к обмену:"}
+              ? "Предложения"
+              : "Вы предложили к обмену"}
           </div>
         )}
 
