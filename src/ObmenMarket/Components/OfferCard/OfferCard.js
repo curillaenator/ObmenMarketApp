@@ -41,12 +41,12 @@ const HeadStyled = styled.div`
       -webkit-box-orient: vertical;
       overflow: hidden;
       margin: 0 12px;
-      font-weight: 700;
-      font-size: 13px;
-      line-height: 13px;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 20px;
       letter-spacing: -0.08px;
       color: ${colors.fontTitle};
-      border-bottom: 1.5px dashed ${colors.fontTitle};
+      // border-bottom: 1.5px dashed ${colors.fontTitle};
     }
 
     &:hover .head_title {
