@@ -10,6 +10,8 @@ const SET_IS_OWNER = "home/SET_IS_OWNER";
 const SET_PROFILE = "home/SET_PROFILE";
 const SET_IS_MODAL_ON = "home/SET_IS_MODAL_ON";
 const SET_TOAST = "home/SET_TOAST";
+const SET_TOAST_LIST = "home/SET_TOAST_LIST";
+const SET_TOAST_NEW = "home/SET_TOAST_NEW";
 
 const initialState = {
   progress: null,
@@ -18,6 +20,8 @@ const initialState = {
   profile: null,
   isModalOn: false,
   isToast: null,
+  toastsList: null,
+  toastsNew: 0,
 };
 
 export const home = (state = initialState, action) => {
@@ -40,6 +44,12 @@ export const home = (state = initialState, action) => {
     case SET_TOAST:
       return { ...state, isToast: action.payload };
 
+    case SET_TOAST_LIST:
+      return { ...state, toastsList: action.payload };
+
+    case SET_TOAST_NEW:
+      return { ...state, toastsNew: action.payload };
+
     default:
       return state;
   }
@@ -53,6 +63,8 @@ export const setFormMode = (mode) => ({ type: SET_FORM_MODE, mode });
 const setIsOwner = (payload) => ({ type: SET_IS_OWNER, payload });
 export const setProfile = (payload) => ({ type: SET_PROFILE, payload });
 const setToast = (payload) => ({ type: SET_TOAST, payload });
+// const setToastsList = (payload) => ({ type: SET_TOAST_LIST, payload });
+// const setToastsNew = (payload) => ({ type: SET_TOAST_NEW, payload });
 
 // THUNKs
 
@@ -116,6 +128,10 @@ export const realtimeToasts = (tst, history) => (dispatch, getState) => {
             )
           );
         });
+      // .then(() => {
+      //   const ownerID = getState().auth.ownerID;
+      //   db_notes.ref(`${ownerID}/${tst.toastID}`).remove();
+      // });
 
       return;
     }
@@ -158,4 +174,13 @@ export const realtimeToasts = (tst, history) => (dispatch, getState) => {
       )
     );
   }
+};
+
+export const getToastList = (ownerID) => (dispatch) => {
+  //   db_notes.ref(ownerID).on("child_added", (notes) => {
+  //     const notesArr = Object.keys(notes.val()).map(
+  //       (noteID) => notes.val()[noteID]
+  //     );
+  //     dispatch(setToastsList(notes.val()));
+  //   });
 };

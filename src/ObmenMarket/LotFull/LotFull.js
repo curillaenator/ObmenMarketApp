@@ -309,16 +309,14 @@ const LotFull = ({
   useEffect(() => getLotMeta(lotid, history), [lotid, getLotMeta, history]);
 
   useEffect(() => {
-    if (!lotMeta) return null;
+    if (!isAuth) return history.push(`/posts/${lotid}`);
 
-    if (!query.has("action")) return null;
+    if (!lotMeta || !query.has("action")) return null;
 
     if (query.has("action") && !querySelector[query.get("action")]) {
       console.log("bad link query");
       return history.push(`/posts/${lotid}`);
     }
-
-    
 
     if (
       query.get("action") === "approved" ||
@@ -332,7 +330,7 @@ const LotFull = ({
 
       return querySelector[query.get("action")](offerMeta);
     }
-  }, [lotid, query, querySelector, history, lotMeta]);
+  }, [isAuth, lotid, query, querySelector, history, lotMeta]);
 
   if (!lotMeta) return <Loading />;
 

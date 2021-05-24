@@ -19,7 +19,11 @@ import Chat from "./Components/Chat/Chat";
 // import { Footer } from "./Components/Footer/Footer";
 
 import { authCheck, onConnectDisconnect } from "../Redux/Reducers/auth";
-import { setIsModalOn, setProgress } from "../Redux/Reducers/home";
+import {
+  setIsModalOn,
+  setProgress,
+  getToastList,
+} from "../Redux/Reducers/home";
 
 import styles from "./obmen.module.scss";
 
@@ -35,6 +39,7 @@ const ObmenMarket = ({
   authCheck,
   setIsModalOn,
   onConnectDisconnect,
+  getToastList,
 }) => {
   const history = useHistory();
   const [user, userLoading] = useAuthState(fa);
@@ -76,6 +81,10 @@ const ObmenMarket = ({
         { transition: slidein }
       );
   }, [isToast, icons.toasts]);
+
+  // useEffect(() => {
+  //   ownerID && getToastList(ownerID);
+  // }, [ownerID, getToastList]);
 
   history.listen(() => isModalOn && setIsModalOn(false));
 
@@ -135,4 +144,5 @@ export const ObmenMarketApp = connect(mstp, {
   authCheck,
   setIsModalOn,
   onConnectDisconnect,
+  getToastList,
 })(ObmenMarket);

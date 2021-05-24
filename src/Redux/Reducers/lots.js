@@ -829,6 +829,7 @@ export const createOffer = (lotMeta, offerData) => (dispatch, getState) => {
       type: "offerAdded",
       toastLink: `posts/${lotMeta.postid}`, // ?action=view&offerID=${offerData.offerID}
       offerID: offerData.offerID,
+      toastID: newEventID,
       lotTitle: lotMeta.title,
       offerTitle: offerData.name,
       timestamp: fb.database.ServerValue.TIMESTAMP,

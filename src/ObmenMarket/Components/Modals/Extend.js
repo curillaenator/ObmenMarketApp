@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Popup from "reactjs-popup";
 import styled, { keyframes } from "styled-components";
+import { an } from "../../../Utils/firebase";
 
 import { setExtendPay } from "../../../Redux/Reducers/fees";
 import { prolongLotExpiry } from "../../../Redux/Reducers/lots";
@@ -81,8 +82,7 @@ const OptionStyled = styled.div`
   margin-right: 8px;
   padding: 0 16px;
   border-radius: 16px;
-  background-color: ${({ payOption, paySelected }) =>
-    payOption === paySelected ? "#ffffff" : "transparent"};
+  background-color: ${({ selected }) => (selected ? "#ffffff" : "transparent")};
   cursor: pointer;
 
   &:last-child {
@@ -168,6 +168,11 @@ export const Modal = ({
 }) => {
   const [page, setPage] = useState(1);
 
+  const payButtonHandler = () => {
+    an.logEvent("purchase30", { cost: "30", payMethod: paySelected });
+    setPage(page + 1);
+  };
+
   return (
     <ModalStyled>
       {page === 1 && (
@@ -183,8 +188,9 @@ export const Modal = ({
               <OptionStyled
                 key={option.name}
                 onClick={() => dispatch(setExtendPay(option.name))}
-                payOption={option.name}
-                paySelected={paySelected}
+                // payOption={option.name}
+                // paySelected={paySelected}
+                selected={option.name === paySelected}
                 title={option.title}
               >
                 {icons.modal[option.name]}
@@ -198,7 +204,7 @@ export const Modal = ({
               width={163}
               height={56}
               title="Оплатить 30₽"
-              handler={() => setPage(page + 1)}
+              handler={payButtonHandler}
             />
 
             <CancelStyled onClick={close}>Отмена</CancelStyled>

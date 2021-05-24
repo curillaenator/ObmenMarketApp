@@ -92,7 +92,13 @@ export const googleSignIn = () => async (dispatch) => {
 
 export const authCheck = (curUser, history) => (dispatch) => {
   if (curUser) {
-    db.ref("users/" + curUser.uid).once("value", (userMeta) => {
+    db.ref("users/" + curUser.uid).once("value", async (userMeta) => {
+      await batch(() => {
+        dispatch(setOwnerID(curUser.uid));
+        dispatch(setAuthedUser(userMeta.val()));
+        dispatch(setIsAuth(true));
+        dispatch(setInitialized(true));
+      });
       //
       // Listener for new toasts when online
       //
@@ -104,25 +110,6 @@ export const authCheck = (curUser, history) => (dispatch) => {
             dispatch(realtimeToasts(added.val(), history));
           }
         });
-      });
-      //
-      //
-      //
-
-      batch(() => {
-        dispatch(setOwnerID(curUser.uid));
-        dispatch(setAuthedUser(userMeta.val()));
-        dispatch(setIsAuth(true));
-        dispatch(setInitialized(true));
-
-        // dispatch(
-        //   setNewToast(
-        //     "success",
-        //     toastsModel.login.title,
-        //     toastsModel.login.msg,
-        //     null
-        //   )
-        // );
       });
     });
   }
