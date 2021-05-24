@@ -2,7 +2,7 @@ import { useEffect, useMemo } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { setFormMode, setProfile } from "../../Redux/Reducers/home";
+import { setTitle, setFormMode, setProfile } from "../../Redux/Reducers/home";
 
 import {
   resetMetaState,
@@ -25,6 +25,7 @@ const Home = ({
   ownerID,
   formFullUI,
   isFormModeOn,
+  setTitle,
   createLotId,
   setFormMode,
   setProfile,
@@ -66,6 +67,8 @@ const Home = ({
     resetMetaState();
     setProfile(null);
   }, [resetMetaState, setProfile]);
+
+  useEffect(() => setTitle("Обмен.маркет"), [setTitle]);
 
   return (
     <div className={styles.home}>
@@ -116,6 +119,7 @@ const mstp = (state) => ({
 });
 
 export const HomeCont = connect(mstp, {
+  setTitle,
   resetMetaState,
   setFormMode,
   setProfile,

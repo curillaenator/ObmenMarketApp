@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { connect, useSelector } from "react-redux";
 import { useLocation, useHistory, useParams } from "react-router-dom";
+// import { an } from "../../Utils/firebase";
 
 import { Loading } from "../Components/Loading/Loading";
 import { Controls } from "../Components/Controls/Controls";
@@ -24,7 +25,7 @@ import {
   setSelectedOfferID,
   acceptConfirmOffer,
 } from "../../Redux/Reducers/lots";
-import { setFormMode, setIsModalOn } from "../../Redux/Reducers/home";
+import { setTitle, setFormMode, setIsModalOn } from "../../Redux/Reducers/home";
 import { chatRoom, setChatFromLotFull } from "../../Redux/Reducers/chat";
 
 import styles from "./lotfull.module.scss";
@@ -187,9 +188,7 @@ const Offers = ({
       <>
         {filteredOffers.length > 0 && (
           <div className={styles.offers_title}>
-            {ownerID === lotMeta.uid
-              ? "Предложения"
-              : "Вы предложили к обмену"}
+            {ownerID === lotMeta.uid ? "Предложения" : "Вы предложили к обмену"}
           </div>
         )}
 
@@ -226,6 +225,7 @@ const LotFull = ({
   lotMeta,
   getLotMeta,
   isChatOn,
+  setTitle,
   updateLotFromEditForm,
   removeLot,
   onOfferCreate,
@@ -332,6 +332,10 @@ const LotFull = ({
     }
   }, [isAuth, lotid, query, querySelector, history, lotMeta]);
 
+  useEffect(() => {
+    lotMeta && setTitle(lotMeta.title);
+  }, [lotMeta, setTitle]);
+
   if (!lotMeta) return <Loading />;
 
   return (
@@ -431,6 +435,7 @@ const mstp = (state) => ({
 });
 
 export const LotFullCont = connect(mstp, {
+  setTitle,
   setFormMode,
   getLotMeta,
   updateLotFromEditForm,

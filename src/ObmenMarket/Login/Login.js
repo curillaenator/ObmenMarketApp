@@ -1,13 +1,18 @@
+import { useEffect } from "react";
 import { connect } from "react-redux";
 import { Button } from "../Components/Button/Button";
 import { Redirect } from "react-router-dom";
+
 import { googleSignIn } from "../../Redux/Reducers/auth";
+import { setTitle } from "../../Redux/Reducers/home";
 
 import styles from "./login.module.scss";
 
-const Login = ({ icons, isAuth, googleSignIn }) => {
+const Login = ({ setTitle, icons, isAuth, googleSignIn }) => {
   const handleLogin = () => googleSignIn(null);
-   
+
+  useEffect(() => setTitle("Вход в Обмен.маркет"), [setTitle]);
+
   if (isAuth) return <Redirect to="/" />;
 
   return (
@@ -35,4 +40,5 @@ const mstp = (state) => ({
 
 export const LoginCont = connect(mstp, {
   googleSignIn,
+  setTitle,
 })(Login);

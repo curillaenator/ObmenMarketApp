@@ -19,32 +19,38 @@ import Chat from "./Components/Chat/Chat";
 // import { Footer } from "./Components/Footer/Footer";
 
 import { authCheck, onConnectDisconnect } from "../Redux/Reducers/auth";
+import { subRoomsMsgs } from "../Redux/Reducers/chat";
 import {
   setIsModalOn,
   setProgress,
-  getToastList,
+  // getToastList,
 } from "../Redux/Reducers/home";
 
 import styles from "./obmen.module.scss";
 
 const ObmenMarket = ({
+  title,
   icons,
   isInitialized,
   isAuth,
   ownerID,
   isModalOn,
+  // isChatOn,
   progress,
   isToast,
   setProgress,
   authCheck,
   setIsModalOn,
   onConnectDisconnect,
-  getToastList,
+  subRoomsMsgs,
+  // getToastList,
 }) => {
   const history = useHistory();
   const [user, userLoading] = useAuthState(fa);
 
   window.pushlink = history;
+
+  useEffect(() => (document.title = title), [title]);
 
   useEffect(() => {
     !userLoading && authCheck(user, history);
@@ -82,9 +88,9 @@ const ObmenMarket = ({
       );
   }, [isToast, icons.toasts]);
 
-  // useEffect(() => {
-  //   ownerID && getToastList(ownerID);
-  // }, [ownerID, getToastList]);
+  useEffect(() => {
+    ownerID && subRoomsMsgs(ownerID);
+  }, [ownerID, subRoomsMsgs]);
 
   history.listen(() => isModalOn && setIsModalOn(false));
 
@@ -130,6 +136,7 @@ const ObmenMarket = ({
   );
 };
 const mstp = (state) => ({
+  title: state.home.title,
   icons: state.ui.icons,
   progress: state.home.progress,
   isInitialized: state.auth.isInitialized,
@@ -137,6 +144,7 @@ const mstp = (state) => ({
   ownerID: state.auth.ownerID,
   isModalOn: state.home.isModalOn,
   isToast: state.home.isToast,
+  // isChatOn: state.chat.isChatOn,
 });
 
 export const ObmenMarketApp = connect(mstp, {
@@ -144,5 +152,6 @@ export const ObmenMarketApp = connect(mstp, {
   authCheck,
   setIsModalOn,
   onConnectDisconnect,
-  getToastList,
+  subRoomsMsgs,
+  // getToastList,
 })(ObmenMarket);

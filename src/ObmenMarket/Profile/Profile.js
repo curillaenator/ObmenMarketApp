@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { useParams, useHistory } from "react-router-dom";
 
 import { logout, updateUserProfile } from "../../Redux/Reducers/auth";
-import { setFormMode, getProfile } from "../../Redux/Reducers/home";
+import { setTitle, setFormMode, getProfile } from "../../Redux/Reducers/home";
 import {
   resetMetaState,
   setAuthoredLots,
@@ -32,6 +32,7 @@ const Profile = ({
   ownerID,
   profile,
   myLotsPage,
+  setTitle,
   getProfile,
   logout,
   updateUserProfile,
@@ -68,6 +69,10 @@ const Profile = ({
     history,
     isAuth,
   ]);
+
+  useEffect(() => {
+    profile && setTitle(`${profile.username}`);
+  }, [setTitle, profile]);
 
   return (
     profile && (
@@ -158,4 +163,5 @@ export const ProfileCont = connect(mstp, {
   onLotCreateFromForm,
   onLotCreateFormCancel,
   publishNewLotFromForm,
+  setTitle,
 })(Profile);

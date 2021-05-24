@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 
 import { setFormMode } from "../../../Redux/Reducers/home";
-import { setIsChatOn, setIsChatTouched } from "../../../Redux/Reducers/chat";
+import { handleChatOn } from "../../../Redux/Reducers/chat";
 import { onLogoClick } from "../../../Redux/Reducers/lots";
 
 import { ButtonOutline } from "../Button/ButtonOutline";
@@ -11,7 +11,7 @@ import logo1 from "../../../Assets/Icons/logo1.svg";
 import logo2 from "../../../Assets/Icons/logo2.svg";
 import logo3 from "../../../Assets/Icons/logo3.svg";
 import chaticon from "../../../Assets/Icons/chat.svg";
-import bellicon from "../../../Assets/Icons/bell.svg";
+// import bellicon from "../../../Assets/Icons/bell.svg";
 
 import styles from "./header.module.scss";
 
@@ -45,20 +45,9 @@ const HeaderButton = ({ icon, iconpos = 0, notes, active, handler }) => {
   );
 };
 
-const Authorized = ({
-  user,
-  roomsNewMsgs,
-  isChatOn,
-  setIsChatOn,
-  setIsChatTouched,
-}) => {
-  const handleChatButton = () => {
-    setIsChatTouched();
-    setIsChatOn(true);
-  };
-
-  const notesCnt = Object.keys(roomsNewMsgs)
-    .map((id) => roomsNewMsgs[id])
+const Authorized = ({ user, newMsgsQty, isChatOn, handleChatOn }) => {
+  const notesCnt = Object.keys(newMsgsQty)
+    .map((id) => newMsgsQty[id])
     .reduce((a, b) => a + b, 0);
 
   return (
@@ -72,16 +61,16 @@ const Authorized = ({
         iconpos={2}
         notes={notesCnt}
         active={isChatOn}
-        handler={handleChatButton}
+        handler={handleChatOn}
       />
 
-      <HeaderButton
+      {/* <HeaderButton
         icon={bellicon}
         iconpos={0}
         notes={0}
         active={false}
         handler={() => {}}
-      />
+      /> */}
     </div>
   );
 };
@@ -90,10 +79,10 @@ export const Header = ({
   user,
   isAuth,
   isInitialized,
-  roomsNewMsgs,
+  newMsgsQty,
   isChatOn,
   setFormMode,
-  setIsChatOn,
+  handleChatOn,
   setIsChatTouched,
   onLogoClick,
 }) => {
@@ -112,8 +101,8 @@ export const Header = ({
         {isInitialized && isAuth && (
           <Authorized
             user={user}
-            roomsNewMsgs={roomsNewMsgs}
-            setIsChatOn={setIsChatOn}
+            newMsgsQty={newMsgsQty}
+            handleChatOn={handleChatOn}
             isChatOn={isChatOn}
             setIsChatTouched={setIsChatTouched}
           />
@@ -141,12 +130,11 @@ const mstp = (state) => ({
   isInitialized: state.auth.isInitialized,
   isFormModeOn: state.home.isFormModeOn,
   isChatOn: state.chat.isChatOn,
-  roomsNewMsgs: state.chat.roomsNewMsgs,
+  newMsgsQty: state.chat.roomsNewMsgs,
 });
 
 export const HeaderCont = connect(mstp, {
   setFormMode,
-  setIsChatOn,
-  setIsChatTouched,
+  handleChatOn,
   onLogoClick,
 })(Header);

@@ -1,4 +1,4 @@
-import { fb, fa, db, db_notes } from "../../Utils/firebase";
+import { fb, fa, db, db_notes, an } from "../../Utils/firebase";
 import { batch } from "react-redux";
 
 import { chatReset } from "./chat";
@@ -50,6 +50,8 @@ const setAuthedUser = (user) => ({ type: SET_USER, user });
 // authorization
 
 export const googleSignIn = () => async (dispatch) => {
+  dispatch(resetLotsState());
+
   const newUser = (user) => {
     const newUser = {
       username: user.displayName,
@@ -57,9 +59,13 @@ export const googleSignIn = () => async (dispatch) => {
       avatar: user.photoURL,
     };
 
-    db.ref("users/" + user.uid)
+    db.ref(`users/${user.uid}`)
       .set(newUser)
       .then(() => {
+        //
+        // registration merics
+        an.logEvent("sign_up", { method: "Google" });
+
         batch(() => {
           dispatch(setOwnerID(user.uid));
           dispatch(setAuthedUser(newUser));
@@ -78,21 +84,25 @@ export const googleSignIn = () => async (dispatch) => {
       });
   };
 
-  dispatch(resetLotsState());
-
   const provider = new fb.auth.GoogleAuthProvider();
   await fb.auth().signInWithPopup(provider);
 
   await fb.auth().onAuthStateChanged((user) => {
-    if (!user) return;
-    const ref = db.ref("users/" + user.uid);
-    ref.once("value", (snapshot) => !snapshot.exists() && newUser(user));
+    // if (!user) return;
+    // const ref = db.ref(`users/${user.uid}`);
+    db.ref(`users/${user.uid}`).once("value", (snapshot) => {
+      !snapshot.exists() && newUser(user);
+    });
   });
 };
 
 export const authCheck = (curUser, history) => (dispatch) => {
   if (curUser) {
     db.ref("users/" + curUser.uid).once("value", async (userMeta) => {
+      //
+      // login metrics
+      an.logEvent("login", { method: "Google" }); 
+
       await batch(() => {
         dispatch(setOwnerID(curUser.uid));
         dispatch(setAuthedUser(userMeta.val()));

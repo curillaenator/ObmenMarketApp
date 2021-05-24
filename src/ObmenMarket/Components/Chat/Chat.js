@@ -8,14 +8,14 @@ import { ButtonIcon } from "../../Components/Button/ButtonIcon";
 import { Dropdown } from "../Dropdown/Dropdown";
 import { TextInput } from "../../Components/Inputs/Inputs";
 import { Author } from "../Author/Author";
+import { Loading } from "../Loading/Loading";
 
 import {
   removeChatRoom,
   selectRoom,
   deselectRoom,
-  closeChat,
+  handleChatOn,
   postMessage,
-  subscribeRoomsMsgs,
   getDialogOpponent,
 } from "../../../Redux/Reducers/chat";
 
@@ -131,9 +131,10 @@ const Contacts = ({
   roomsMsgs,
   contactsOpen,
   isDialogsOn,
+  isChatLoading,
   curRoomID,
   handleSelected,
-  closeChat,
+  handleChatOn,
   removeChatRoom,
 }) => {
   return (
@@ -141,7 +142,7 @@ const Contacts = ({
       <div className={styles.contacts_header}>
         <div className={styles.title}>Мессенджер</div>
 
-        <ButtonIcon icon={icons.cancel} handler={closeChat} />
+        <ButtonIcon icon={icons.cancel} handler={handleChatOn} />
       </div>
 
       <div className={styles.contacts_search}>
@@ -149,26 +150,37 @@ const Contacts = ({
       </div>
 
       <Scrollbars autoHide classes={{ view: styles.contacts_list }}>
-        {rooms.map((room) => {
-          const messages = roomsMsgs[room.roomID];
-          const lastMessage = messages ? messages[messages.length - 1] : "";
+        {isChatLoading && (
+          <div className={styles.empty_contacts}>
+            <Loading />
+          </div>
+        )}
 
-          return (
-            <ContactCard
-              key={room.roomID}
-              icons={icons}
-              ownerID={ownerID}
-              room={room}
-              rooms={rooms.map((room) => room.roomID)}
-              curRoomID={curRoomID}
-              messqty={roomsNewMsgs[room.roomID]}
-              lastMessage={lastMessage}
-              isDialogsOn={isDialogsOn}
-              handleSelected={handleSelected}
-              removeChatRoom={removeChatRoom}
-            />
-          );
-        })}
+        {!isChatLoading && rooms.length === 0 && (
+          <div className={styles.empty_contacts}>Список пуст</div>
+        )}
+
+        {rooms.length > 0 &&
+          rooms.map((room) => {
+            const messages = roomsMsgs[room.roomID];
+            const lastMessage = messages ? messages[messages.length - 1] : "";
+
+            return (
+              <ContactCard
+                key={room.roomID}
+                icons={icons}
+                ownerID={ownerID}
+                room={room}
+                rooms={rooms.map((room) => room.roomID)}
+                curRoomID={curRoomID}
+                messqty={roomsNewMsgs[room.roomID]}
+                lastMessage={lastMessage}
+                isDialogsOn={isDialogsOn}
+                handleSelected={handleSelected}
+                removeChatRoom={removeChatRoom}
+              />
+            );
+          })}
       </Scrollbars>
     </div>
   );
@@ -196,10 +208,10 @@ const Dialogs = ({
     return null;
   }, [curRoomID, ownerID, roomInfo]);
 
-  useEffect(() => messages && ref.current.scrollToBottom(), [
-    messages,
-    curRoomID,
-  ]);
+  useEffect(
+    () => messages && ref.current.scrollToBottom(),
+    [messages, curRoomID]
+  );
 
   // useEffect(() => getDialogOpponent(opponentID()), [
   //   getDialogOpponent,
@@ -290,34 +302,44 @@ const Chat = ({
   icons,
   ownerID,
   isChatOn,
+  isChatLoading,
   isDialogsOn,
   curRoomID,
   rooms,
   roomsMsgs,
   roomsNewMsgs,
   opponent,
-  subscribeRoomsMsgs,
   selectRoom,
   deselectRoom,
-  closeChat,
+  handleChatOn,
   postMessage,
   getDialogOpponent,
   removeChatRoom,
 }) => {
+  const [isMobile, setIsMobile] = useState(false);
+
   const handleSelected = (roomID) => {
     curRoomID === roomID ? deselectRoom() : selectRoom(roomID);
   };
 
+  const chatResize = () => {
+    console.log(window.innerWidth);
+  };
+
   useEffect(() => {
-    ownerID && subscribeRoomsMsgs(ownerID);
-  }, [ownerID, subscribeRoomsMsgs]);
+    window.addEventListener("resize", chatResize);
+  }, []);
 
   return (
-    rooms && (
-      <div className={styles.chat}>
+    <div className={styles.chat}>
+      {rooms && (
         <Dialogs
           icons={icons}
-          dialogsOpen={isDialogsOn ? { width: "720px" } : { width: "0px" }}
+          dialogsOpen={
+            isDialogsOn
+              ? { width: "calc(100vw - 416px)", maxWidth: "720px" }
+              : { width: "0px" }
+          }
           roomInfo={rooms.find((room) => room.roomID === curRoomID)}
           curRoomID={curRoomID}
           ownerID={ownerID}
@@ -327,22 +349,23 @@ const Chat = ({
           opponent={opponent}
           deselectRoom={deselectRoom}
         />
+      )}
 
-        <Contacts
-          icons={icons}
-          isDialogsOn={isDialogsOn}
-          contactsOpen={isChatOn ? { width: "416px" } : { width: "0px" }}
-          ownerID={ownerID}
-          rooms={rooms}
-          roomsNewMsgs={roomsNewMsgs}
-          roomsMsgs={roomsMsgs}
-          curRoomID={curRoomID}
-          handleSelected={handleSelected}
-          closeChat={closeChat}
-          removeChatRoom={removeChatRoom}
-        />
-      </div>
-    )
+      <Contacts
+        icons={icons}
+        isDialogsOn={isDialogsOn}
+        isChatLoading={isChatLoading}
+        contactsOpen={isChatOn ? { width: "416px" } : { width: "0px" }}
+        ownerID={ownerID}
+        rooms={rooms ? rooms : []}
+        roomsNewMsgs={roomsNewMsgs}
+        roomsMsgs={roomsMsgs}
+        curRoomID={curRoomID}
+        handleSelected={handleSelected}
+        handleChatOn={handleChatOn}
+        removeChatRoom={removeChatRoom}
+      />
+    </div>
   );
 };
 
@@ -352,6 +375,7 @@ const mstp = (state) => ({
   rooms: state.chat.rooms,
   curRoomID: state.chat.curRoomID,
   isChatOn: state.chat.isChatOn,
+  isChatLoading: state.chat.isChatLoading,
   isDialogsOn: state.chat.isDialogsOn,
   roomsMsgs: state.chat.roomsMsgs,
   roomsNewMsgs: state.chat.roomsNewMsgs,
@@ -362,9 +386,9 @@ const ChatCont = connect(mstp, {
   removeChatRoom,
   selectRoom,
   deselectRoom,
-  closeChat,
+  handleChatOn,
   postMessage,
-  subscribeRoomsMsgs,
+  // subscribeRoomsMsgs,
   getDialogOpponent,
 })(Chat);
 

@@ -4,21 +4,25 @@ import { toastsModel } from "../../Utils/toasts";
 
 import { setLotOffers, setSelectedOfferID } from "./lots";
 
+const SET_TITLE = "home/SET_TITLE";
 const SET_PROGRESS = "home/SET_PROGRESS";
 const SET_FORM_MODE = "home/SET_FORM_MODE";
 const SET_IS_OWNER = "home/SET_IS_OWNER";
 const SET_PROFILE = "home/SET_PROFILE";
 const SET_IS_MODAL_ON = "home/SET_IS_MODAL_ON";
+// const SET_NEW_MSGS_QTY = "home/SET_NEW_MSGS_QTY";
 const SET_TOAST = "home/SET_TOAST";
 const SET_TOAST_LIST = "home/SET_TOAST_LIST";
 const SET_TOAST_NEW = "home/SET_TOAST_NEW";
 
 const initialState = {
+  title: "",
   progress: null,
   isFormModeOn: false,
   isOwner: false,
   profile: null,
   isModalOn: false,
+  // newMsgsQty: {},
   isToast: null,
   toastsList: null,
   toastsNew: 0,
@@ -26,6 +30,9 @@ const initialState = {
 
 export const home = (state = initialState, action) => {
   switch (action.type) {
+    case SET_TITLE:
+      return { ...state, title: action.title };
+
     case SET_PROGRESS:
       return { ...state, progress: action.payload };
 
@@ -40,6 +47,9 @@ export const home = (state = initialState, action) => {
 
     case SET_IS_MODAL_ON:
       return { ...state, isModalOn: action.payload };
+
+    // case SET_NEW_MSGS_QTY:
+    //   return { ...state, newMsgsQty: action.qty };
 
     case SET_TOAST:
       return { ...state, isToast: action.payload };
@@ -56,7 +66,8 @@ export const home = (state = initialState, action) => {
 };
 
 // ACTIONs
-
+// const setNewMsgsQty = (qty) => ({ type: SET_NEW_MSGS_QTY, qty });
+export const setTitle = (title) => ({ type: SET_TITLE, title });
 export const setProgress = (payload) => ({ type: SET_PROGRESS, payload });
 export const setIsModalOn = (payload) => ({ type: SET_IS_MODAL_ON, payload });
 export const setFormMode = (mode) => ({ type: SET_FORM_MODE, mode });
@@ -71,6 +82,9 @@ const setToast = (payload) => ({ type: SET_TOAST, payload });
 export const setNewToast = (type, title, message, button) => (dispatch) => {
   dispatch(setToast({ type, title, message, button }));
 };
+
+// export const getNewMsgsQty = (ownerID) => (dispatch, getState) => {
+// };
 
 export const getProfile = (ownerID, matchedID) => (dispatch, getState) => {
   const id = matchedID ? matchedID : ownerID;
