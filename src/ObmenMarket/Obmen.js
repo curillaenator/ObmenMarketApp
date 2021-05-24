@@ -16,6 +16,7 @@ import { HomeCont } from "./Home/Home";
 import { ProfileCont } from "./Profile/Profile";
 import { LotFullCont } from "./LotFull/LotFull";
 import Chat from "./Components/Chat/Chat";
+import { ChatMobileCont } from "./Components/Chat/ChatMobile";
 // import { Footer } from "./Components/Footer/Footer";
 
 import { authCheck, onConnectDisconnect } from "../Redux/Reducers/auth";
@@ -145,6 +146,7 @@ const ObmenMarket = ({
         <HeaderCont />
 
         {isInitialized && isAuth && !isMobile && <Chat />}
+        {isInitialized && isAuth && isMobile && <ChatMobileCont />}
 
         <Switch>
           <Route exact path="/" render={() => <HomeCont />} />

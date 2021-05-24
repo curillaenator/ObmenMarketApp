@@ -92,6 +92,9 @@ export const googleSignIn = () => async (dispatch) => {
     // const ref = db.ref(`users/${user.uid}`);
     db.ref(`users/${user.uid}`).once("value", (snapshot) => {
       !snapshot.exists() && newUser(user);
+
+      // login metrics
+      snapshot.exists() && an.logEvent("login", { method: "Google" });
     });
   });
 };
@@ -100,8 +103,6 @@ export const authCheck = (curUser, history) => (dispatch) => {
   if (curUser) {
     db.ref("users/" + curUser.uid).once("value", async (userMeta) => {
       //
-      // login metrics
-      an.logEvent("login", { method: "Google" }); 
 
       await batch(() => {
         dispatch(setOwnerID(curUser.uid));
