@@ -169,8 +169,26 @@ export const Modal = ({
   const [page, setPage] = useState(1);
 
   const payButtonHandler = () => {
-    an.logEvent("purchase", { value: 30 });
-    // an.logEvent("add_payment_info", { payment_type: paySelected });
+
+    const transID = Math.floor(100000 + Math.random() * 900000);
+
+    const extend48 = {
+      item_id: 'SKU_extend48',
+      item_name: 'Продление публикации на 48 часов',
+      item_category: 'Встроенная покупка',
+      price: 30.00
+    };
+
+    // Log event
+    an.logEvent("purchase", {
+      transaction_id: `T${transID}`,
+      affiliation: 'InApp Purchase',
+      currency: 'RUR',
+      payment_type: `${paySelected}`,
+      value: 30.00, // Total Revenue
+      items: [extend48]
+    });
+
     setPage(page + 1);
   };
 
