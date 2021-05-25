@@ -2,7 +2,9 @@ import styled from "styled-components";
 import { colors } from "../../../Utils/palette";
 
 const ButtonWrap = styled.button`
+  flex-shrink: 0;
   cursor: pointer;
+  background-color: transparent;
 
   & > svg {
     width: 26px;

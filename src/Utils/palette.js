@@ -38,6 +38,7 @@ export const colors = {
   disabledStrike: "#efecff",
   // CHAT
   chatbox: "#f7f6f8",
+  dialogs: "#EBE9EE",
   chathover: "#d4d2dd",
   chatoverlay: "#ffffff60",
   chatfont1: "#3d3158",
@@ -46,5 +47,5 @@ export const colors = {
   ownermessage: "#7000ff",
   opponentmessage: "#F7F6F8",
   //MODAL
-  modalBG: '#080314e5',
+  modalBG: "#080314e5",
 };
