@@ -37,6 +37,7 @@ const SET_NEWOFFER_ID = "lots/SET_NEWOFFER_ID";
 const SET_CURRENT_LOTMETA = "lots/SET_CURRENT_LOTMETA";
 const SET_LOTOFFERS = "lots/SET_LOTOFFERS";
 const SET_SELECTED_OFFERID = "lots/SET_SELECTED_OFFERID";
+const SET_SRCH_RES = "home/SET_SRCH_RES";
 
 const initialState = {
   // main page params
@@ -56,6 +57,8 @@ const initialState = {
   createOfferId: null,
   currentLotMeta: null,
   selectedOfferID: null,
+  // search results
+  searchResults: null,
 };
 
 export const lots = (state = initialState, action) => {
@@ -90,6 +93,11 @@ export const lots = (state = initialState, action) => {
 
     case SET_LAST_PROFILE:
       return { ...state, lastProfile: action.payload };
+
+    // search results
+
+    case SET_SRCH_RES:
+      return { ...state, searchResults: action.payload };
 
     // rest setters
 
@@ -126,6 +134,8 @@ const resetLotList = () => ({ type: RESET_LOTLIST });
 const setEndBeforeID = (id) => ({ type: SET_ENDBEFORE_ID, id });
 const setLotsPending = (payload) => ({ type: SET_LOTS_PENDING, payload });
 const setAllLotsLoaded = (payload) => ({ type: SET_ALLLOTS_LOADED, payload });
+
+export const setSearchRes = (payload) => ({ type: SET_SRCH_RES, payload });
 
 const myLotList = (lotList) => ({ type: MY_LOTLIST, lotList });
 const myLotsPending = (payload) => ({ type: MY_LOTS_PENDING, payload });

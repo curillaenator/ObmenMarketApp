@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import ImageShadow from "react-image-shadow";
@@ -81,11 +81,22 @@ const LotList = ({
   myLotsPage, // current num of lots loaded
   myLotsPerPage, // num of lots to add on loadmore click
   setMyLotsPage,
+
+  // search
+  searchResults,
 }) => {
+  const [display, setDisplay] = useState([]);
+
   useEffect(
     () => lotList.length === 0 && getPaginationFirstPage(),
     [getPaginationFirstPage, lotList.length]
   );
+
+  useEffect(() => {
+    if (searchResults) return setDisplay(searchResults);
+    if (myLots) return setDisplay(myLotList);
+    return setDisplay(lotList);
+  }, [searchResults, myLots, myLotList, lotList]);
 
   const handleNextPage = myLots
     ? () => setMyLotsPage(myLotsPage + myLotsPerPage)
@@ -94,9 +105,9 @@ const LotList = ({
   return (
     <div className={styles.lotlist}>
       <div className={styles.lotlist_list}>
-        {myLots && myLotList.map((lot) => <Lot data={lot} key={lot.postid} />)}
-
-        {!myLots && lotList.map((lot) => <Lot data={lot} key={lot.postid} />)}
+        {display.map((lot) => (
+          <Lot data={lot} key={lot.postid} />
+        ))}
       </div>
 
       <Pagination
@@ -113,6 +124,7 @@ const mstp = (state) => ({
   icons: state.ui.icons,
   lotList: state.lots.lotList,
   myLotList: state.lots.myLotList,
+  searchResults: state.lots.searchResults,
   allLotsLoaded: state.lots.allLotsLoaded,
   endBeforeID: state.lots.endBeforeID,
   myLotsPage: state.lots.myLotsPage,

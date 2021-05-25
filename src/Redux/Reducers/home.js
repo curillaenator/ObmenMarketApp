@@ -2,7 +2,7 @@ import { batch } from "react-redux";
 import { db, db_offer, fst, fa } from "../../Utils/firebase";
 import { toastsModel } from "../../Utils/toasts";
 
-import { setLotOffers, setSelectedOfferID } from "./lots";
+import { setLotOffers, setSelectedOfferID, setSearchRes } from "./lots";
 
 const SET_TITLE = "home/SET_TITLE";
 const SET_PROGRESS = "home/SET_PROGRESS";
@@ -14,8 +14,11 @@ const SET_IS_MODAL_ON = "home/SET_IS_MODAL_ON";
 const SET_TOAST = "home/SET_TOAST";
 const SET_TOAST_LIST = "home/SET_TOAST_LIST";
 const SET_TOAST_NEW = "home/SET_TOAST_NEW";
+// search
+const SET_IS_SEARCH = "home/SET_IS_SEARCH";
 const SET_LAST_SEARCH = "home/SET_LAST_SEARCH";
-const SET_RESULTS = "home/SET_RESULTS";
+const SET_FILT_SEL = "home/SET_FILT_SEL";
+const SET_ONSEARCH_MSG = "home/SET_ONSEARCH_MSG";
 
 const initialState = {
   title: "",
@@ -24,12 +27,15 @@ const initialState = {
   isOwner: false,
   profile: null,
   isModalOn: false,
-  // newMsgsQty: {},
+  // toasts
   isToast: null,
   toastsList: null,
   toastsNew: 0,
+  // search
+  isSearching: false,
   lastSearch: "",
-  results: null,
+  filterSelected: "asc",
+  onSearchMsg: "",
 };
 
 export const home = (state = initialState, action) => {
@@ -52,9 +58,6 @@ export const home = (state = initialState, action) => {
     case SET_IS_MODAL_ON:
       return { ...state, isModalOn: action.payload };
 
-    // case SET_NEW_MSGS_QTY:
-    //   return { ...state, newMsgsQty: action.qty };
-
     case SET_TOAST:
       return { ...state, isToast: action.payload };
 
@@ -64,11 +67,19 @@ export const home = (state = initialState, action) => {
     case SET_TOAST_NEW:
       return { ...state, toastsNew: action.payload };
 
+    // search
+
+    case SET_IS_SEARCH:
+      return { ...state, isSearching: action.payload };
+
     case SET_LAST_SEARCH:
       return { ...state, lastSearch: action.payload };
 
-    case SET_RESULTS:
-      return { ...state, results: action.payload };
+    case SET_FILT_SEL:
+      return { ...state, filterSelected: action.payload };
+
+    case SET_ONSEARCH_MSG:
+      return { ...state, onSearchMsg: action.payload };
 
     default:
       return state;
@@ -84,8 +95,11 @@ export const setFormMode = (mode) => ({ type: SET_FORM_MODE, mode });
 const setIsOwner = (payload) => ({ type: SET_IS_OWNER, payload });
 export const setProfile = (payload) => ({ type: SET_PROFILE, payload });
 const setToast = (payload) => ({ type: SET_TOAST, payload });
+
+const setIsSearching = (payload) => ({ type: SET_IS_SEARCH, payload });
 const setLastSearch = (payload) => ({ type: SET_LAST_SEARCH, payload });
-const setResults = (payload) => ({ type: SET_RESULTS, payload });
+const setSelectedFilter = (payload) => ({ type: SET_FILT_SEL, payload });
+const setOnSearchMsg = (payload) => ({ type: SET_ONSEARCH_MSG, payload });
 // const setToastsList = (payload) => ({ type: SET_TOAST_LIST, payload });
 // const setToastsNew = (payload) => ({ type: SET_TOAST_NEW, payload });
 
@@ -94,9 +108,6 @@ const setResults = (payload) => ({ type: SET_RESULTS, payload });
 export const setNewToast = (type, title, message, button) => (dispatch) => {
   dispatch(setToast({ type, title, message, button }));
 };
-
-// export const getNewMsgsQty = (ownerID) => (dispatch, getState) => {
-// };
 
 export const getProfile = (ownerID, matchedID) => (dispatch, getState) => {
   const id = matchedID ? matchedID : ownerID;
@@ -211,18 +222,65 @@ export const getToastList = (ownerID) => (dispatch) => {
   //   });
 };
 
-export const ctaSearch = (searchData) => (dispatch) => {
-  dispatch(setLastSearch(searchData.query));
+// messages on search
+
+const searchWorder = (query, param) => {
+  const phraser = {
+    none: `По вашему запросу "${query}" ничего к не найдено(((`,
+    ok: `Гля че нашли по запросу "${query}"!!!`,
+  };
+
+  return phraser[param];
+};
+
+export const ctaSearch = (searchData) => (dispatch, getState) => {
+  const filter = getState().home.filterSelected;
+
+  const searchload = {
+    ...searchData,
+    ...{ ranking: [`${filter}(expireDate)`] },
+  };
+
+  batch(() => {
+    dispatch(setIsSearching(true));
+    dispatch(setLastSearch(searchData.query));
+  });
 
   const queryKey = db.ref().child(`search/queries/`).push().key;
 
   const Success = () => {
     db.ref(`search/results`).on("child_added", (added) => {
-      console.log(added.val());
-
       if (added.key === queryKey) {
-        dispatch(setResults(added.val()));
-        return db.ref(`search/results`).off();
+        db.ref(`search/results`).off();
+        //
+        if (!added.exists() || added.val().hits.length === 0) {
+          return batch(() => {
+            dispatch(setOnSearchMsg(searchWorder(searchData.query, "none")));
+            dispatch(setIsSearching(false));
+          });
+        }
+
+        if (added.exists()) {
+          const lotPromise = added.val().hits.map(async (item) => {
+            const lot = await db.ref(`posts/${item.objectID}`).once("value");
+
+            const photoURL = await fst
+              .ref(`posts/${lot.val().uid}/${lot.val().postid}/photo0`)
+              .getDownloadURL();
+
+            return { ...lot.val(), photoURL };
+          });
+
+          Promise.all(lotPromise).then((res) => {
+            console.log(res);
+
+            batch(() => {
+              dispatch(setSearchRes(res));
+              dispatch(setOnSearchMsg(searchWorder(searchData.query, "ok")));
+              dispatch(setIsSearching(false));
+            });
+          });
+        }
       }
     });
   };
@@ -231,7 +289,11 @@ export const ctaSearch = (searchData) => (dispatch) => {
     console.log(err);
   };
 
-  db.ref(`search/queries/${queryKey}`).update(searchData, (err) =>
+  db.ref(`search/queries/${queryKey}`).update(searchload, (err) =>
     err ? Failure(err) : Success()
   );
+};
+
+export const handleSearchFilters = (filter) => (dispatch) => {
+  dispatch(setSelectedFilter(filter));
 };

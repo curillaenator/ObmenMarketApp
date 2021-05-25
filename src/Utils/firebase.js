@@ -7,6 +7,8 @@ import "firebase/functions";
 import "firebase/performance";
 import "firebase/analytics";
 
+import algoliasearch from "algoliasearch";
+
 const config = {
   apiKey: "AIzaSyBmYNXLxCwaIR_U2RYWUAzCeRIQjixMVv4",
   authDomain: "obmen.market",
@@ -49,6 +51,11 @@ export const fn = firebase.functions();
 export const fst = firebase.storage();
 export const an = firebase.analytics();
 export const perf = firebase.performance();
+
+export const algolia = algoliasearch(
+  "TGH8UVIE95",
+  "b83a9442d3680f74fc45bb16cebe1ecd"
+);
 
 // using SendGrid's Node.js Library - https://github.com/sendgrid/sendgrid-nodejs
 // export const sg = require("@sendgrid/mail");

@@ -18,8 +18,10 @@ import {
 
 import { Warning } from "../Components/Warning/Warning";
 import { Cta } from "../Components/CTA/CTA";
+import { FiltersCont } from "../Components/Search/SearchResult";
 import { LotListCont } from "../Components/LotList/LotList";
 import { FormFull } from "../Components/FormFull/FormFull";
+import { Loading } from "../Components/Loading/Loading";
 
 import styles from "./home.module.scss";
 
@@ -30,6 +32,8 @@ const Home = ({
   ownerID,
   formFullUI,
   isFormModeOn,
+  isSearching,
+  searchResults,
   setTitle,
   createLotId,
   setFormMode,
@@ -94,9 +98,17 @@ const Home = ({
         onLotCreateFormCancel={onLotCreateFormCancel}
       />
 
-      {!isFormModeOn && <LotListCont />}
-
       {!isAuth && isFormModeOn && <Warning />}
+
+      {isSearching && (
+        <div className={styles.searchloading}>
+          <Loading />
+        </div>
+      )}
+
+      {!isFormModeOn && !isSearching && searchResults && <FiltersCont />}
+
+      {!isFormModeOn && !isSearching && <LotListCont />}
 
       {isAuth && isFormModeOn && (
         <FormFull
@@ -120,6 +132,8 @@ const mstp = (state) => ({
   icons: state.ui.icons,
   user: state.auth.user,
   ownerID: state.auth.ownerID,
+  isSearching: state.home.isSearching,
+  searchResults: state.lots.searchResults,
   formFullUI: state.ui.formFull,
   isFormModeOn: state.home.isFormModeOn,
   createLotId: state.lots.createLotId,

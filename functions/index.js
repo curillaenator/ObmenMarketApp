@@ -1,68 +1,67 @@
-/**
- * Copyright 2015 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-"use strict";
-
+const algoliasearch = require("algoliasearch");
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
+
 admin.initializeApp({
   databaseURL: "https://obmenmarket.europe-west1.firebasedatabase.app/",
 });
 
-// Authenticate to Algolia Database.
-// TODO: Make sure you configure the `algolia.app_id` and `algolia.api_key` Google Cloud environment variables.
-const algoliasearch = require("algoliasearch").default;
 const client = algoliasearch(
   functions.config().algolia.app_id,
   functions.config().algolia.api_key
 );
 
-// Name fo the algolia index for Blog posts content.
-const ALGOLIA_POSTS_INDEX_NAME = "postSearch";
+const index = client.initIndex("title");
 
-// Updates the search index when new blog entries are created or updated.
+const database = admin.database().ref("posts");
+
+exports.baseentry = functions.database
+  .instance("obmenmarket")
+  .ref("/search/write")
+  .onWrite(async (data, context) => {
+    database.once("value", (posts) => {
+      const postsArr = Object.keys(posts.val())
+        .map((id) => posts.val()[id])
+        .map((obj) => ({
+          title: obj.title,
+          description: obj.description,
+          categories: obj.categories,
+          wishes: obj.wishes,
+          objectID: obj.postid,
+          expireDate: obj.expireDate,
+        }));
+
+      index
+        .saveObjects(postsArr)
+        .then(({ postsIDs }) => console.log(postsIDs))
+        .catch((err) => console.log(err));
+    });
+  });
+
 exports.indexentry = functions.database
   .instance("obmenmarket")
-  .ref("/posts/{postId}/title")
+  .ref("/posts/{postid}")
   .onWrite(async (data, context) => {
-    console.log(data);
-
-    const index = client.initIndex(ALGOLIA_POSTS_INDEX_NAME);
-
     const firebaseObject = {
-      text: data.after.val(),
+      title: data.after.val().title,
+      description: data.after.val().description,
+      categories: data.after.val().categories,
+      wishes: data.after.val().wishes,
+      expireDate: data.after.val().expireDate,
       objectID: context.params.postid,
     };
 
-    console.log(firebaseObject);
-
     await index.saveObject(firebaseObject);
 
-    return data.after.ref.parent
-      .child("last_index_timestamp")
-      .set(Date.parse(context.timestamp));
+    // return data.after.ref.parent
+    //   .child("last_index_timestamp")
+    //   .set(Date.parse(context.timestamp));
   });
 
-// Starts a search query whenever a query is requested (by adding one to the `/search/queries`
-// element. Search results are then written under `/search/results`.
 exports.searchentry = functions.database
   .instance("obmenmarket")
   .ref("/search/queries/{queryid}")
   .onCreate(async (snap, context) => {
-    const index = client.initIndex(ALGOLIA_POSTS_INDEX_NAME);
-
     const query = snap.val().query;
     const key = snap.key;
 
