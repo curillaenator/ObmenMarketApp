@@ -314,7 +314,6 @@ export const ChatMobile = ({
   const ref = useRef(null);
   const [roomsFull, setRoomsFull] = useState([]);
   const [messages, setMessages] = useState([]);
-  const [opened, setOpened] = useState(null);
 
   const curRoom = curRoomID && roomsFull.find((r) => r.roomID === curRoomID);
 

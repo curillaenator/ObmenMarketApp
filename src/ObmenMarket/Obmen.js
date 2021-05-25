@@ -4,6 +4,7 @@ import { Route, Switch, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import ProgressBar from "@ramonak/react-progress-bar";
 import { toast } from "react-toastify";
+import { RemoveScroll } from "react-remove-scroll";
 
 import { fa } from "../Utils/firebase";
 import { slidein } from "../Utils/toasts";
@@ -36,7 +37,7 @@ const ObmenMarket = ({
   isAuth,
   ownerID,
   isModalOn,
-  // isChatOn,
+  isChatOn,
   progress,
   isToast,
   setProgress,
@@ -139,14 +140,16 @@ const ObmenMarket = ({
         />
       </div>
 
+      <RemoveScroll enabled={isChatOn}>
+        {isInitialized && isAuth && !isMobile && <Chat />}
+        {isInitialized && isAuth && isMobile && <ChatMobileCont />}
+      </RemoveScroll>
+
       <div
         className={styles.container}
         style={isModalOn ? { filter: "blur(20px)" } : {}}
       >
         <HeaderCont />
-
-        {isInitialized && isAuth && !isMobile && <Chat />}
-        {isInitialized && isAuth && isMobile && <ChatMobileCont />}
 
         <Switch>
           <Route exact path="/" render={() => <HomeCont />} />
@@ -169,7 +172,7 @@ const mstp = (state) => ({
   ownerID: state.auth.ownerID,
   isModalOn: state.home.isModalOn,
   isToast: state.home.isToast,
-  // isChatOn: state.chat.isChatOn,
+  isChatOn: state.chat.isChatOn,
 });
 
 export const ObmenMarketApp = connect(mstp, {

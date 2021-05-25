@@ -125,6 +125,7 @@ const ContactCard = ({
 
 const Contacts = ({
   icons,
+  // isChatOn,
   ownerID,
   rooms,
   roomsNewMsgs,
@@ -188,6 +189,7 @@ const Contacts = ({
 
 const Dialogs = ({
   icons,
+  // isChatOn,
   dialogsOpen,
   roomInfo,
   curRoomID,
@@ -251,21 +253,20 @@ const Dialogs = ({
 
         <ButtonIcon icon={icons.fold} handler={deselectRoom} />
       </div>
-
-      <div className={styles.dialogs_messages}>
-        <Scrollbars
-          ref={ref}
-          autoHide
-          classes={{ view: styles.dialogs_scroll }}
-        >
-          {messages &&
-            Object.keys(messages)
-              .map((id) => messages[id])
-              .map((message) => (
-                <Message key={message.postedAt} message={message} />
-              ))}
-        </Scrollbars>
-      </div>
+        <div className={styles.dialogs_messages}>
+          <Scrollbars
+            ref={ref}
+            autoHide
+            classes={{ view: styles.dialogs_scroll }}
+          >
+            {messages &&
+              Object.keys(messages)
+                .map((id) => messages[id])
+                .map((message) => (
+                  <Message key={message.postedAt} message={message} />
+                ))}
+          </Scrollbars>
+        </div>
 
       <Form
         onSubmit={onSubmit}
@@ -325,6 +326,7 @@ const Chat = ({
       {rooms && (
         <Dialogs
           icons={icons}
+          // isChatOn={isChatOn}
           dialogsOpen={
             isDialogsOn
               ? { width: "calc(100vw - 416px)", maxWidth: "720px" }
@@ -343,6 +345,7 @@ const Chat = ({
 
       <Contacts
         icons={icons}
+        // isChatOn={isChatOn}
         isDialogsOn={isDialogsOn}
         isChatLoading={isChatLoading}
         contactsOpen={isChatOn ? { width: "416px" } : { width: "0px" }}
