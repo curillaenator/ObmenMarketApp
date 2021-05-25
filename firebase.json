@@ -49,5 +49,7 @@
     "ui": {
       "enabled": true
     }
-  }
+  },
+  "appAssociation": "AUTO",
+  "rewrites": [ { "source": "/go/**", "dynamicLinks": true } ]
 }
