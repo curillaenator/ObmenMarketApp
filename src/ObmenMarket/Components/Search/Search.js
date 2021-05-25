@@ -1,6 +1,7 @@
 import { Form, Field } from "react-final-form";
 import styled from "styled-components";
 import { useState } from "react";
+import { db } from "../../../Utils/firebase";
 
 import { colors } from "../../../Utils/palette";
 
@@ -74,6 +75,8 @@ export const Search = ({ icon }) => {
 
   const onSubmit = (searchData) => {
     console.log(searchData);
+
+    db.ref(`search/queries/`).set({ query: searchData });
   };
 
   return (

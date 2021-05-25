@@ -1,9 +1,9 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import { Form, Field } from "react-final-form";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { Scrollbars } from "rc-scrollbars";
-import { db, fst, fb } from "../../../Utils/firebase";
+import { fb } from "../../../Utils/firebase";
 
 import {
   removeChatRoom,
@@ -11,10 +11,12 @@ import {
   deselectRoom,
   handleChatOn,
   postMessage,
+  resetNewMsgs,
 } from "../../../Redux/Reducers/chat";
 
 import { ButtonIcon } from "../Button/ButtonIcon";
 import { TextInput } from "../Inputs/Inputs";
+import { Loading } from "../Loading/Loading";
 
 import { colors } from "../../../Utils/palette";
 import mask from "../../../Assets/Masks/commonBtn.svg";
@@ -81,6 +83,7 @@ const DialogHeader = styled.div`
 const ContactCard = styled.div`
   .card_header {
     display: flex;
+    padding-right: 24px;
 
     .card_header_info {
       display: flex;
@@ -114,7 +117,7 @@ const ContactCard = styled.div`
           }
 
           .card_header_newmsgs {
-            display: flex;
+            display: ${({ newMsgs }) => (newMsgs > 0 ? "flex" : "none")};
             justify-content: center;
             align-items: center;
             position: absolute;
@@ -207,6 +210,18 @@ const ContactsList = styled.div`
 
   .chat_body {
     height: calc(100vh - 184px);
+
+    .empty_contacts {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.16px;
+      color: #958aab;
+    }
   }
 `;
 
@@ -229,7 +244,7 @@ const Message = styled.div`
 const Dialog = styled.div`
   position: absolute;
   width: 100vw;
-  height: calc(100vh - 104px);
+  height: calc(100vh - 120px);
   background-color: ${colors.dialogs};
   transform: translateX(${({ curRoomID }) => (curRoomID ? "0%" : "-100%")});
   transition: 0.16s ease-in-out;
@@ -248,7 +263,7 @@ const NewMessage = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  height: 104px;
+  height: 120px;
   padding: 0 32px;
   background-color: #f3f2f5;
   transform: translateY(${({ curRoomID }) => (curRoomID ? "0%" : "100%")});
@@ -263,6 +278,8 @@ const NewMessage = styled.div`
       position: absolute;
       top: 50%;
       right: 16px;
+      width: 32px;
+      height: 32px;
       border: 0;
       background-color: transparent;
       outline: none;
@@ -276,6 +293,11 @@ const NewMessage = styled.div`
 
       &:active {
         transform: translateY(-50%) scale(1);
+      }
+
+      & > img {
+        width: 32px;
+        height: 32px;
       }
     }
   }
@@ -293,14 +315,55 @@ const ChatMobileStyled = styled.div`
   z-index: 800;
 `;
 
+const ListCard = ({
+  room,
+  curRoomID,
+  lastMessage,
+  newMsgs,
+  selectRoom,
+  deselectRoom,
+}) => {
+  return (
+    <ContactCard
+      key={room.roomID}
+      selected={curRoomID === room.roomID}
+      newMsgs={newMsgs}
+    >
+      <div className="card_header">
+        <div
+          className="card_header_info"
+          onClick={() =>
+            curRoomID === room.roomID ? deselectRoom() : selectRoom(room.roomID)
+          }
+        >
+          <div className="card_header_image">
+            <div className="card_header_thumb">
+              <img className="card_header_pic" src={room.photoURLs[0]} alt="" />
+
+              <div className="card_header_newmsgs">{newMsgs}</div>
+            </div>
+          </div>
+
+          <div className="card_header_labels">
+            <div className="card_header_title">{room.title}</div>
+
+            <div className="card_header_sub">{lastMessage.message}</div>
+          </div>
+        </div>
+      </div>
+    </ContactCard>
+  );
+};
+
 export const ChatMobile = ({
   icons,
   ownerID,
   rooms,
   curRoomID,
+  curRoom,
   isChatOn,
   isChatLoading,
-  isDialogsOn,
+  // isDialogsOn,
   roomsMsgs,
   roomsNewMsgs,
   // methods
@@ -309,103 +372,76 @@ export const ChatMobile = ({
   selectRoom,
   deselectRoom,
   postMessage,
+  resetNewMsgs,
   // subscribeRoomsMsgs,
 }) => {
   const ref = useRef(null);
-  const [roomsFull, setRoomsFull] = useState([]);
-  const [messages, setMessages] = useState([]);
 
-  const curRoom = curRoomID && roomsFull.find((r) => r.roomID === curRoomID);
-
-  const opponentID = useCallback(
-    (room) => {
-      if (room.lotAuthorID === ownerID) return room.offerAuthorID;
-      if (room.offerAuthorID === ownerID) return room.lotAuthorID;
-    },
-    [ownerID]
+  useEffect(
+    () => roomsMsgs[curRoomID] && ref.current.scrollToBottom(),
+    [roomsMsgs, curRoomID]
   );
 
-  useEffect(() => {
-    if (!curRoomID) return setMessages([]);
-
-    if (curRoomID && !roomsMsgs[curRoomID]) {
-      return setMessages([]);
-    }
-
-    if (curRoomID && roomsMsgs[curRoomID]) {
-      return setMessages(roomsMsgs[curRoomID]);
-    }
-  }, [curRoomID, roomsMsgs]);
-
-  useEffect(() => {
-    const roomsPromise = (rooms || []).map(async (room) => {
-      const photoPromise = await fst
-        .ref(room.photoPath)
-        .listAll()
-        .then((res) => res.items.map((item) => item.getDownloadURL()));
-
-      const photoURLs = await Promise.all(photoPromise);
-
-      const opponentPromise = new Promise((resolve) => {
-        db.ref(`users/${opponentID(room)}`).once("value", (oppMeta) => {
-          resolve(oppMeta.val());
-        });
-      });
-
-      const opponent = await Promise.resolve(opponentPromise);
-
-      return { ...room, photoURLs, opponent };
-    });
-
-    Promise.all(roomsPromise).then((newRooms) => setRoomsFull(newRooms));
-  }, [rooms, ownerID, opponentID]);
-
-  useEffect(() => messages && ref.current.scrollToBottom(), [messages]);
-
   const onSubmit = (messData) => {
+    const opponentID = () => {
+      if (curRoom.lotAuthorID === ownerID) return curRoom.offerAuthorID;
+      if (curRoom.offerAuthorID === ownerID) return curRoom.lotAuthorID;
+    };
+
     const messMeta = {
       authorID: ownerID,
       postedAt: fb.database.ServerValue.TIMESTAMP,
     };
 
-    postMessage(curRoomID, { ...messData, ...messMeta }, opponentID(curRoom));
+    postMessage(curRoomID, { ...messData, ...messMeta }, opponentID());
+  };
+
+  const roomMessages = () => {
+    if (curRoomID) return roomsMsgs[curRoomID] || [];
+    return [];
   };
 
   return (
     <ChatMobileStyled isChatOn={isChatOn}>
       <DialogHeader curRoomID={curRoomID}>
-        <img
-          className="dialog_header_img"
-          src={curRoom && curRoom.photoURLs[0]}
-          alt=""
-        />
+        {curRoom && (
+          <>
+            <img
+              className="dialog_header_img"
+              src={curRoom.photoURLs[0]}
+              alt=""
+            />
 
-        <div className="dialog_header_info">
-          <div className="dialog_header_label">{curRoom && curRoom.title}</div>
+            <div className="dialog_header_info">
+              <div className="dialog_header_label">{curRoom.title}</div>
 
-          <div className="dialog_header_user">
-            {curRoom && curRoom.opponent.isOnline && icons.online}
+              <div className="dialog_header_user">
+                {curRoom.opponent.isOnline && icons.online}
 
-            <div className="dialog_header_username">
-              {curRoom && curRoom.opponent.username}
+                <div className="dialog_header_username">
+                  {curRoom.opponent.username}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <ButtonIcon icon={icons.fold} handler={deselectRoom} />
+            <ButtonIcon icon={icons.fold} handler={deselectRoom} />
+          </>
+        )}
       </DialogHeader>
 
       <Dialog curRoomID={curRoomID}>
-        <Scrollbars ref={ref} autoHide classes={{ view: "dialog_scroll" }}>
-          {messages.map((message) => (
-            <Message
-              key={message.postedAt}
-              isAuthor={message.authorID === ownerID}
-            >
-              {message.message}
-            </Message>
-          ))}
-        </Scrollbars>
+        {curRoomID && (
+          <Scrollbars ref={ref} autoHide classes={{ view: "dialog_scroll" }}>
+            {roomMessages().map((message) => (
+              <Message
+                key={message.postedAt}
+                isAuthor={message.authorID === ownerID}
+              >
+                {message.message}
+              </Message>
+            ))}
+          </Scrollbars>
+        )}
       </Dialog>
 
       <ContactsList curRoomID={curRoomID}>
@@ -421,54 +457,32 @@ export const ChatMobile = ({
         </div>
 
         <Scrollbars autoHide classes={{ view: "chat_body" }}>
-          {rooms &&
-            roomsFull.length > 0 &&
-            roomsFull.map((room) => {
-              const messages = roomsMsgs[room.roomID];
-              const lastMessage = messages ? messages[messages.length - 1] : "";
+          {isChatLoading && (
+            <div className="empty_contacts">
+              <Loading />
+            </div>
+          )}
 
-              return (
-                <ContactCard
-                  key={room.roomID}
-                  selected={curRoomID === room.roomID}
-                >
-                  <div className="card_header">
-                    <div
-                      className="card_header_info"
-                      onClick={() =>
-                        curRoomID === room.roomID
-                          ? deselectRoom()
-                          : selectRoom(room.roomID)
-                      }
-                    >
-                      <div className="card_header_image">
-                        <div className="card_header_thumb">
-                          <img
-                            className="card_header_pic"
-                            src={room.photoURLs[0]}
-                            alt=""
-                          />
+          {!isChatLoading && rooms.length === 0 && (
+            <div className="empty_contacts">Список пуст</div>
+          )}
 
-                          {roomsNewMsgs[room.roomID] > 0 && (
-                            <div className="card_header_newmsgs">
-                              {roomsNewMsgs[room.roomID]}
-                            </div>
-                          )}
-                        </div>
-                      </div>
+          {rooms.map((room) => {
+            const messages = roomsMsgs[room.roomID];
 
-                      <div className="card_header_labels">
-                        <div className="card_header_title">{room.title}</div>
-
-                        <div className="card_header_sub">
-                          {lastMessage.message}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </ContactCard>
-              );
-            })}
+            return (
+              <ListCard
+                key={room.roomID}
+                room={room}
+                curRoomID={curRoomID}
+                newMsgs={roomsNewMsgs[room.roomID]}
+                lastMessage={messages ? messages[messages.length - 1] : ""}
+                selectRoom={selectRoom}
+                deselectRoom={deselectRoom}
+                // removeChatRoom={removeChatRoom}
+              />
+            );
+          })}
         </Scrollbars>
       </ContactsList>
 
@@ -508,6 +522,7 @@ const mstp = (state) => ({
   ownerID: state.auth.ownerID,
   rooms: state.chat.rooms,
   curRoomID: state.chat.curRoomID,
+  curRoom: state.chat.curRoom,
   isChatOn: state.chat.isChatOn,
   isChatLoading: state.chat.isChatLoading,
   isDialogsOn: state.chat.isDialogsOn,
@@ -522,4 +537,5 @@ export const ChatMobileCont = connect(mstp, {
   handleChatOn,
   postMessage,
   // subscribeRoomsMsgs,
+  resetNewMsgs,
 })(ChatMobile);

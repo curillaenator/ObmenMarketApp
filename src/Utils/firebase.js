@@ -3,7 +3,7 @@ import "firebase/firestore";
 import "firebase/storage";
 import "firebase/auth";
 import "firebase/database";
-// import "firebase/functions";
+import "firebase/functions";
 import "firebase/performance";
 import "firebase/analytics";
 
@@ -22,7 +22,7 @@ const app = firebase.initializeApp(config);
 
 // POSTS
 
-export const db = app.database();  
+export const db = app.database();
 
 /// OFFERS
 
@@ -45,7 +45,7 @@ export const db_notes = app.database(
 export const fb = firebase;
 export const fa = firebase.auth();
 export const fsdb = firebase.firestore();
-// export const fn = firebase.functions();
+export const fn = firebase.functions();
 export const fst = firebase.storage();
 export const an = firebase.analytics();
 export const perf = firebase.performance();

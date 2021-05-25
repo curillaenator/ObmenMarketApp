@@ -22,11 +22,7 @@ import { ChatMobileCont } from "./Components/Chat/ChatMobile";
 
 import { authCheck, onConnectDisconnect } from "../Redux/Reducers/auth";
 import { subRoomsMsgs } from "../Redux/Reducers/chat";
-import {
-  setIsModalOn,
-  setProgress,
-  // getToastList,
-} from "../Redux/Reducers/home";
+import { setIsModalOn, setProgress } from "../Redux/Reducers/home";
 
 import styles from "./obmen.module.scss";
 
@@ -45,7 +41,6 @@ const ObmenMarket = ({
   setIsModalOn,
   onConnectDisconnect,
   subRoomsMsgs,
-  // getToastList,
 }) => {
   const history = useHistory();
   const [user, userLoading] = useAuthState(fa);
@@ -181,5 +176,4 @@ export const ObmenMarketApp = connect(mstp, {
   setIsModalOn,
   onConnectDisconnect,
   subRoomsMsgs,
-  // getToastList,
 })(ObmenMarket);

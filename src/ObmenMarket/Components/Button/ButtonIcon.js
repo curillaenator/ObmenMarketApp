@@ -4,6 +4,8 @@ import { colors } from "../../../Utils/palette";
 const ButtonWrap = styled.button`
   flex-shrink: 0;
   cursor: pointer;
+  width: 26px;
+  height: 26px;
   background-color: transparent;
 
   & > svg {

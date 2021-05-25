@@ -169,24 +169,21 @@ export const Modal = ({
   const [page, setPage] = useState(1);
 
   const payButtonHandler = () => {
-
     const transID = Math.floor(100000 + Math.random() * 900000);
-
-    const extend48 = {
-      item_id: 'SKU_extend48',
-      item_name: 'Продление публикации на 48 часов',
-      item_category: 'Встроенная покупка',
-      price: 30.00
-    };
 
     // Log event
     an.logEvent("purchase", {
       transaction_id: `T${transID}`,
-      affiliation: 'InApp Purchase',
-      currency: 'RUR',
+      affiliation: "InApp Purchase",
+      currency: "RUR",
       payment_type: `${paySelected}`,
-      value: 30.00, // Total Revenue
-      items: [extend48]
+      value: 30.0, // Total Revenue
+      items: {
+        item_id: "SKU_extend48",
+        item_name: "Продление публикации на 48 часов",
+        item_category: "Встроенная покупка",
+        price: 30.0,
+      },
     });
 
     setPage(page + 1);
@@ -207,8 +204,6 @@ export const Modal = ({
               <OptionStyled
                 key={option.name}
                 onClick={() => dispatch(setExtendPay(option.name))}
-                // payOption={option.name}
-                // paySelected={paySelected}
                 selected={option.name === paySelected}
                 title={option.title}
               >
