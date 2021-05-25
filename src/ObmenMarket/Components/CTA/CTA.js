@@ -11,6 +11,7 @@ export const Cta = ({
   createLotId,
   onLotCreateFromForm,
   onLotCreateFormCancel,
+  ctaSearch,
 }) => {
   const formModeHandlerUnauthed = () => setFormMode(!isFormModeOn);
 
@@ -35,7 +36,7 @@ export const Cta = ({
         />
       </div>
 
-      <Search icon={icons.search} />
+      <Search icon={icons.search} ctaSearch={ctaSearch} />
     </div>
   );
 };

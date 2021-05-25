@@ -13,48 +13,63 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 'use strict';
+"use strict";
 
- const functions = require('firebase-functions');
- const admin = require('firebase-admin');
- admin.initializeApp({
-    databaseURL: "https://obmenmarket.europe-west1.firebasedatabase.app/",
- });
- 
- // Authenticate to Algolia Database.
- // TODO: Make sure you configure the `algolia.app_id` and `algolia.api_key` Google Cloud environment variables.
- const algoliasearch = require('algoliasearch').default;
- const client = algoliasearch(functions.config().algolia.app_id, functions.config().algolia.api_key);
- 
- // Name fo the algolia index for Blog posts content.
- const ALGOLIA_POSTS_INDEX_NAME = 'postSearch';
- 
- // Updates the search index when new blog entries are created or updated.
- exports.indexentry = functions.database.instance('obmenmarket').ref('/posts/{postId}/title').onWrite(
-     async (data, context) => {
-       const index = client.initIndex(ALGOLIA_POSTS_INDEX_NAME);
-       const firebaseObject = {
-         text: data.after.val(),
-         objectID: context.params.postid
-       };
- 
-       await index.saveObject(firebaseObject);
-       return data.after.ref.parent.child('last_index_timestamp').set(Date.parse(context.timestamp));
-     });
- 
- // Starts a search query whenever a query is requested (by adding one to the `/search/queries`
- // element. Search results are then written under `/search/results`.
- exports.searchentry = functions.database.instance('obmenmarket').ref('/search/queries/{queryid}').onCreate(
-     async (snap, context) => {
-       const index = client.initIndex(ALGOLIA_POSTS_INDEX_NAME);
- 
-       const query = snap.val().query;
-       const key = snap.key;
- 
-       const content = await index.search(query);
-       const updates = {
-         '/search/last_query_timestamp': Date.parse(context.timestamp),
-       };
-       updates[`/search/results/${key}`] = content;
-       return admin.database().ref().update(updates);
-     });
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
+admin.initializeApp({
+  databaseURL: "https://obmenmarket.europe-west1.firebasedatabase.app/",
+});
+
+// Authenticate to Algolia Database.
+// TODO: Make sure you configure the `algolia.app_id` and `algolia.api_key` Google Cloud environment variables.
+const algoliasearch = require("algoliasearch").default;
+const client = algoliasearch(
+  functions.config().algolia.app_id,
+  functions.config().algolia.api_key
+);
+
+// Name fo the algolia index for Blog posts content.
+const ALGOLIA_POSTS_INDEX_NAME = "postSearch";
+
+// Updates the search index when new blog entries are created or updated.
+exports.indexentry = functions.database
+  .instance("obmenmarket")
+  .ref("/posts/{postId}/title")
+  .onWrite(async (data, context) => {
+    console.log(data);
+
+    const index = client.initIndex(ALGOLIA_POSTS_INDEX_NAME);
+
+    const firebaseObject = {
+      text: data.after.val(),
+      objectID: context.params.postid,
+    };
+
+    console.log(firebaseObject);
+
+    await index.saveObject(firebaseObject);
+
+    return data.after.ref.parent
+      .child("last_index_timestamp")
+      .set(Date.parse(context.timestamp));
+  });
+
+// Starts a search query whenever a query is requested (by adding one to the `/search/queries`
+// element. Search results are then written under `/search/results`.
+exports.searchentry = functions.database
+  .instance("obmenmarket")
+  .ref("/search/queries/{queryid}")
+  .onCreate(async (snap, context) => {
+    const index = client.initIndex(ALGOLIA_POSTS_INDEX_NAME);
+
+    const query = snap.val().query;
+    const key = snap.key;
+
+    const content = await index.search(query);
+    const updates = {
+      "/search/last_query_timestamp": Date.parse(context.timestamp),
+    };
+    updates[`/search/results/${key}`] = content;
+    return admin.database().ref().update(updates);
+  });

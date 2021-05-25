@@ -14,6 +14,8 @@ const SET_IS_MODAL_ON = "home/SET_IS_MODAL_ON";
 const SET_TOAST = "home/SET_TOAST";
 const SET_TOAST_LIST = "home/SET_TOAST_LIST";
 const SET_TOAST_NEW = "home/SET_TOAST_NEW";
+const SET_LAST_SEARCH = "home/SET_LAST_SEARCH";
+const SET_RESULTS = "home/SET_RESULTS";
 
 const initialState = {
   title: "",
@@ -26,6 +28,8 @@ const initialState = {
   isToast: null,
   toastsList: null,
   toastsNew: 0,
+  lastSearch: "",
+  results: null,
 };
 
 export const home = (state = initialState, action) => {
@@ -60,6 +64,12 @@ export const home = (state = initialState, action) => {
     case SET_TOAST_NEW:
       return { ...state, toastsNew: action.payload };
 
+    case SET_LAST_SEARCH:
+      return { ...state, lastSearch: action.payload };
+
+    case SET_RESULTS:
+      return { ...state, results: action.payload };
+
     default:
       return state;
   }
@@ -74,6 +84,8 @@ export const setFormMode = (mode) => ({ type: SET_FORM_MODE, mode });
 const setIsOwner = (payload) => ({ type: SET_IS_OWNER, payload });
 export const setProfile = (payload) => ({ type: SET_PROFILE, payload });
 const setToast = (payload) => ({ type: SET_TOAST, payload });
+const setLastSearch = (payload) => ({ type: SET_LAST_SEARCH, payload });
+const setResults = (payload) => ({ type: SET_RESULTS, payload });
 // const setToastsList = (payload) => ({ type: SET_TOAST_LIST, payload });
 // const setToastsNew = (payload) => ({ type: SET_TOAST_NEW, payload });
 
@@ -197,4 +209,29 @@ export const getToastList = (ownerID) => (dispatch) => {
   //     );
   //     dispatch(setToastsList(notes.val()));
   //   });
+};
+
+export const ctaSearch = (searchData) => (dispatch) => {
+  dispatch(setLastSearch(searchData.query));
+
+  const queryKey = db.ref().child(`search/queries/`).push().key;
+
+  const Success = () => {
+    db.ref(`search/results`).on("child_added", (added) => {
+      console.log(added.val());
+
+      if (added.key === queryKey) {
+        dispatch(setResults(added.val()));
+        return db.ref(`search/results`).off();
+      }
+    });
+  };
+
+  const Failure = (err) => {
+    console.log(err);
+  };
+
+  db.ref(`search/queries/${queryKey}`).update(searchData, (err) =>
+    err ? Failure(err) : Success()
+  );
 };

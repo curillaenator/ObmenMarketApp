@@ -2,7 +2,12 @@ import { useEffect, useMemo } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { setTitle, setFormMode, setProfile } from "../../Redux/Reducers/home";
+import {
+  setTitle,
+  setFormMode,
+  setProfile,
+  ctaSearch,
+} from "../../Redux/Reducers/home";
 
 import {
   resetMetaState,
@@ -33,6 +38,7 @@ const Home = ({
   onLotCreateFormCancel,
   publishNewLotFromForm,
   resetMetaState,
+  ctaSearch,
 }) => {
   const history = useHistory();
   const locationSeacrh = useLocation().search;
@@ -80,6 +86,7 @@ const Home = ({
       <Cta
         icons={icons}
         isAuth={isAuth}
+        ctaSearch={ctaSearch}
         isFormModeOn={isFormModeOn}
         setFormMode={setFormMode}
         createLotId={createLotId}
@@ -126,4 +133,5 @@ export const HomeCont = connect(mstp, {
   onLotCreateFromForm,
   onLotCreateFormCancel,
   publishNewLotFromForm,
+  ctaSearch,
 })(Home);
