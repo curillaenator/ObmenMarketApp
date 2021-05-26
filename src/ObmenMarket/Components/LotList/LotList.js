@@ -24,7 +24,7 @@ const Lot = ({ data }) => {
 
       <Link to={`/posts/${data.postid}`} className={styles.content}>
         <ImageShadow
-          src={data.photoURL}
+          src={data.photoURLs[0]}
           className={styles.photo}
           shadowRadius="16"
           shadowBlur="20"

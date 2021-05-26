@@ -179,9 +179,11 @@ export const onLogoClick = () => (dispatch) => {
 
 const lotMetasPageLoader = (listArr) => {
   return listArr.map(async (lot) => {
-    const photoURL = await fst
-      .ref(`posts/${lot.uid}/${lot.postid}/photo0`)
-      .getDownloadURL();
+    const photoPromise = await (
+      await fst.ref(`posts/${lot.uid}/${lot.postid}`).listAll()
+    ).items.map((item) => item.getDownloadURL());
+
+    const photoURLs = await Promise.all(photoPromise);
 
     const offersQtySnap = await db_offer.ref(lot.postid).once("value");
 
@@ -189,7 +191,7 @@ const lotMetasPageLoader = (listArr) => {
       ? Object.keys(offersQtySnap.val()).length
       : 0;
 
-    return { ...lot, photoURL, offersQty };
+    return { ...lot, photoURLs, offersQty };
   });
 };
 

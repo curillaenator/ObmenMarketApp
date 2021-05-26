@@ -26,28 +26,29 @@ const onSendRemover = (id) => {
 
 // FUNCTIONS
 
-export const onLotCreateSendMail = async (lotData) => {
-  const lotPhoto = await fst
-    .ref()
-    .child(`posts/${lotData.uid}/${lotData.postid}/photo0`)
-    .getDownloadURL();
+export const onLotCreateSendMail = async (lotMeta) => {
+  const lotPromise = await (
+    await fst.ref().child(`posts/${lotMeta.uid}/${lotMeta.postid}`).listAll()
+  ).items.map((item) => item.getDownloadURL());
+
+  const lotPhoto = await Promise.all(lotPromise);
 
   // Lot phtoto
-  const finalLotPhoto = lotPhoto.replace(
+  const finalLotPhoto = lotPhoto[0].replace(
     "https://firebasestorage.googleapis.com",
     "https://ik.imagekit.io/wnq6ecptz6/firebase/tr:n-mail_small_photo"
   );
 
   const lotMailBody = {
     delivery: { state: "CREATED" },
-    toUids: [`${lotData.uid}`],
+    toUids: [`${lotMeta.uid}`],
     message: {
       subject: "✏️ Объявление опубликовано!",
       html: newPostTpl(
-        lotData.title,
-        `https://obmen.market/posts/${lotData.postid}`,
+        lotMeta.title,
+        `https://obmen.market/posts/${lotMeta.postid}`,
         finalLotPhoto,
-        `https://obmen.market/posts/${lotData.postid}?action=extend`,
+        `https://obmen.market/posts/${lotMeta.postid}?action=extend`,
         `https://obmen.market?action=createpost`
       ),
     },
@@ -71,10 +72,11 @@ export const onLotCreateSendMail = async (lotData) => {
 };
 
 export const onOfferCreateSendMail = async (lotMeta, offerData) => {
-  const lotPhoto = await fst
-    .ref()
-    .child(`posts/${lotMeta.uid}/${lotMeta.postid}/photo0`)
-    .getDownloadURL();
+  const lotPromise = await (
+    await fst.ref().child(`posts/${lotMeta.uid}/${lotMeta.postid}`).listAll()
+  ).items.map((item) => item.getDownloadURL());
+
+  const lotPhoto = await Promise.all(lotPromise);
 
   // Offer photo
   const offerPhotoPath = offerData.photoURLs[0];
@@ -84,7 +86,7 @@ export const onOfferCreateSendMail = async (lotMeta, offerData) => {
   );
 
   // Lot phtoto
-  const finalLotPhoto = lotPhoto.replace(
+  const finalLotPhoto = lotPhoto[0].replace(
     "https://firebasestorage.googleapis.com",
     "https://ik.imagekit.io/wnq6ecptz6/firebase/tr:n-mail_small_photo"
   );
@@ -126,13 +128,14 @@ export const onOfferCreateSendMail = async (lotMeta, offerData) => {
 };
 
 export const onApproveByLotAuthor = async (lotMeta, offerData) => {
-  const lotPhoto = await fst
-    .ref()
-    .child(`posts/${lotMeta.uid}/${lotMeta.postid}/photo0`)
-    .getDownloadURL();
+  const lotPromise = await (
+    await fst.ref().child(`posts/${lotMeta.uid}/${lotMeta.postid}`).listAll()
+  ).items.map((item) => item.getDownloadURL());
+
+  const lotPhoto = await Promise.all(lotPromise);
 
   // Lot phtoto
-  const finalLotPhoto = await lotPhoto.replace(
+  const finalLotPhoto = await lotPhoto[0].replace(
     "https://firebasestorage.googleapis.com",
     "https://ik.imagekit.io/wnq6ecptz6/firebase/tr:n-mail_small_photo"
   );
@@ -172,13 +175,14 @@ export const onApproveByLotAuthor = async (lotMeta, offerData) => {
 };
 
 export const onConfirmByOfferAuthor = async (lotMeta, offerData) => {
-  const lotPhoto = await fst
-    .ref()
-    .child(`posts/${lotMeta.uid}/${lotMeta.postid}/photo0`)
-    .getDownloadURL();
+  const lotPromise = await (
+    await fst.ref().child(`posts/${lotMeta.uid}/${lotMeta.postid}`).listAll()
+  ).items.map((item) => item.getDownloadURL());
+
+  const lotPhoto = await Promise.all(lotPromise);
 
   // Lot phtoto
-  const finalLotPhoto = lotPhoto.replace(
+  const finalLotPhoto = lotPhoto[0].replace(
     "https://firebasestorage.googleapis.com",
     "https://ik.imagekit.io/wnq6ecptz6/firebase/tr:n-mail_small_photo"
   );

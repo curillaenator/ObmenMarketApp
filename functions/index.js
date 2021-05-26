@@ -1,58 +1,99 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const gm = require("gm").subClass({ imageMagick: true });
+admin.initializeApp();
+
+//---------------------------------
+// Детект порева, жморева и Киркорева
+//---------------------------------
+
+// Node.js core modules
+const fs = require("fs");
+const mkdirp = fs.promises.mkdir;
+const { promisify } = require("util");
+const exec = promisify(require("child_process").exec);
 const path = require("path");
+const os = require("os");
+
+// Vision API
 const vision = require("@google-cloud/vision");
 
-const BLURED = "blured";
+// Where we'll save blurred images
+const BLURRED_FOLDER = "blurred";
 
-admin.initializeApp({
-  databaseURL: "https://obmenmarket.europe-west1.firebasedatabase.app/",
-});
-
+/**
+ * When an image is uploaded we check if it is flagged as Adult or Violence by the Cloud Vision
+ * API and if it is we blur it using ImageMagick.
+ */
 exports.blurOffensiveImages = functions.storage
   .object()
   .onFinalize(async (object) => {
-    const storage = admin.storage();
-    const bucket = storage.bucket(object.bucket);
-    const file = bucket.file(object.name);
-    const filePath = `gs://${object.bucket}/${object.name}`;
-
-    const fileMeta = await file.getMetadata();
-    const meta = { ...fileMeta, contentType: object.contentType };
-
-    console.log(filePath, meta);
-
-    const bluredPhoto = bucket.file(`${BLURED}/${object.name}`);
-
-    if (bluredPhoto.exists()) {
+    // Ignore things we've already blurred
+    if (object.name.startsWith(`${BLURRED_FOLDER}/`)) {
+      functions.logger.log(
+        `Ignoring upload "${object.name}" because it was already blurred.`
+      );
       return null;
     }
 
-    const checked = await vision.detectSafeSearch(file);
+    // Check the image content using the Cloud Vision API.
+    const visionClient = new vision.ImageAnnotatorClient();
+    const data = await visionClient.safeSearchDetection(
+      `gs://${object.bucket}/${object.name}`
+    );
+    const safeSearchResult = data[0].safeSearchAnnotation;
+    functions.logger.log(
+      `SafeSearch results on image "${object.name}"`,
+      safeSearchResult
+    );
 
-    if (checked[0].adult || checked[0].violence || checked[0].me) {
-      const tempFile = `gs://${object.bucket}/${BLURED}/${file.name}`;
-      const tempLocalDir = path.dirname(tempFile);
-
-      new Promise((resolve) => {
-        file.download({ destination: tempLocalDir });
-        resolve("ok");
-      })
-        .then((res) => {
-          console.log(res);
-
-          gm(tempLocalDir)
-            .blur(0, 16).colorspace(L)
-            .write(tempLocalDir, (err, out) => {
-              if (err) return err;
-              console.log(out);
-            });
-        })
-        .then(() => {
-          bucket.file(`${BLURED}/${object.name}`).setMetadata(meta);
-        });
+    // Tune these detection likelihoods to suit your app.
+    // The current settings show the most strict configuration
+    // Available likelihoods are defined in https://cloud.google.com/vision/docs/reference/rest/v1/AnnotateImageResponse#likelihood
+    if (
+      safeSearchResult.adult !== "VERY_UNLIKELY" ||
+      safeSearchResult.spoof !== "VERY_UNLIKELY" ||
+      safeSearchResult.medical !== "VERY_UNLIKELY" ||
+      safeSearchResult.violence !== "VERY_UNLIKELY" ||
+      safeSearchResult.racy !== "VERY_UNLIKELY"
+    ) {
+      functions.logger.log("Offensive image found. Blurring.");
+      return blurImage(object.name, object.bucket, object.metadata);
     }
+
+    return null;
   });
 
-// exec(`convert ${tempFile} -channel RGB -blur 0x8 ${tempFile}`);
+/**
+ * Blurs the given image located in the given bucket using ImageMagick.
+ */
+async function blurImage(filePath, bucketName, metadata) {
+  const tempLocalFile = path.join(os.tmpdir(), filePath);
+  const tempLocalDir = path.dirname(tempLocalFile);
+  
+  const bucket = admin.storage().bucket(bucketName);
+
+  // Create the temp directory where the storage file will be downloaded.
+  await mkdirp(tempLocalDir, { recursive: true });
+  functions.logger.log("Temporary directory has been created", tempLocalDir);
+
+  // Download file from bucket.
+  await bucket.file(filePath).download({ destination: tempLocalFile });
+  functions.logger.log("The file has been downloaded to", tempLocalFile);
+
+  // Blur the image using ImageMagick.
+  await exec(
+    `convert ${tempLocalFile} -resize 50% -grayscale Rec709Luma -blur 0x8 ${tempLocalFile}`
+  );
+  functions.logger.log("Blurred image created at", tempLocalFile);
+
+  // Uploading the Blurred image.
+  await bucket.upload(tempLocalFile, {
+    destination: `${BLURRED_FOLDER}/${filePath}`,
+    metadata: { metadata: metadata }, // Keeping custom metadata.
+  });
+  functions.logger.log("Blurred image uploaded to Storage at", filePath);
+
+  // Clean up the local file
+  fs.unlinkSync(tempLocalFile);
+  functions.logger.log("Deleted local file", filePath);
+}
