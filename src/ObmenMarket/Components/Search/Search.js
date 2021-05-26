@@ -1,7 +1,6 @@
 import { Form, Field } from "react-final-form";
 import styled from "styled-components";
 import { useState } from "react";
-import { db } from "../../../Utils/firebase";
 
 import { colors } from "../../../Utils/palette";
 
@@ -73,15 +72,7 @@ const FormStyled = styled.form`
 export const Search = ({ icon, ctaSearch }) => {
   const [isFocused, setFocus] = useState(false);
 
-<<<<<<< Updated upstream
   const onSubmit = (searchData) => ctaSearch({ query: searchData.search });
-=======
-  const onSubmit = (searchData) => {
-    console.log(searchData);
-
-    db.ref(`search/queries/`).set({ query: searchData });
-  };
->>>>>>> Stashed changes
 
   return (
     <Form
