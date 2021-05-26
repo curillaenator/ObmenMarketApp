@@ -170,8 +170,9 @@ export const resetMetaState = () => (dispatch) => {
 
 export const onLogoClick = () => (dispatch) => {
   batch(() => {
-    dispatch(setLotsPending(true));
-    dispatch(resetLotList());
+    dispatch(resetLotList([]));
+    dispatch(setSearchRes(null));
+    dispatch(setLotList([]));
   });
 };
 
@@ -179,11 +180,32 @@ export const onLogoClick = () => (dispatch) => {
 
 const lotMetasPageLoader = (listArr) => {
   return listArr.map(async (lot) => {
-    const photoPromise = await (
+    const normalPromise = await (
       await fst.ref(`posts/${lot.uid}/${lot.postid}`).listAll()
     ).items.map((item) => item.getDownloadURL());
 
-    const photoURLs = await Promise.all(photoPromise);
+    const bluredPromise = await (
+      await fst.ref(`blyadstvo/posts/${lot.uid}/${lot.postid}`).listAll()
+    ).items.map((item) => item.getDownloadURL());
+
+    const bucket =
+      "https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/";
+
+    const normalURLs = await Promise.all(normalPromise).then((res) =>
+      res.map((url) => url.replace(bucket, ""))
+    );
+
+    const bluredURLs = await Promise.all(bluredPromise).then((res) =>
+      res.map((url) => url.replace(bucket, ""))
+    );
+
+    const photoURLs = normalURLs
+      .map((url) =>
+        bluredURLs.includes(`blyadstvo%2F${url}`)
+          ? bluredURLs.find((blurl) => blurl === `blyadstvo%2F${url}`)
+          : url
+      )
+      .map((url) => `${bucket}${url}`);
 
     const offersQtySnap = await db_offer.ref(lot.postid).once("value");
 
@@ -230,7 +252,7 @@ export const setAuthoredLots =
 
 // get lots first page
 
-export const getPaginationFirstPage = (filt) => async (dispatch, getState) => {
+export const getPaginationFirstPage = () => async (dispatch, getState) => {
   batch(() => {
     dispatch(setProgress(1));
     dispatch(setLotsPending(true));
@@ -343,13 +365,34 @@ export const getLotMeta = (lotID, history) => (dispatch) => {
   dispatch(setProgress(1));
 
   const compileLotMeta = async (lotMeta) => {
-    const photoItems = await fst
-      .ref()
-      .child(`posts/${lotMeta.uid}/${lotMeta.postid}`)
+    const bucket =
+      "https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/";
+
+    const normalPromise = await fst
+      .ref(`posts/${lotMeta.uid}/${lotMeta.postid}`)
       .listAll()
       .then((res) => res.items.map((item) => item.getDownloadURL()));
 
-    const pLinks = await Promise.all(photoItems);
+    const bluredPromise = await fst
+      .ref(`blyadstvo/posts/${lotMeta.uid}/${lotMeta.postid}`)
+      .listAll()
+      .then((res) => res.items.map((item) => item.getDownloadURL()));
+
+    const normalLinks = await Promise.all(normalPromise).then((res) =>
+      res.map((url) => url.replace(bucket, ""))
+    );
+
+    const bluredLinks = await Promise.all(bluredPromise).then((res) =>
+      (res || []).map((url) => url.replace(bucket, ""))
+    );
+
+    const pLinks = normalLinks
+      .map((url) =>
+        bluredLinks.includes(`blyadstvo%2F${url}`)
+          ? bluredLinks.find((blurl) => blurl === `blyadstvo%2F${url}`)
+          : url
+      )
+      .map((url) => `${bucket}${url}`);
 
     const offersSnap = await db_offer.ref(lotMeta.postid).once("value");
 

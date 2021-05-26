@@ -3,6 +3,8 @@ import { useDispatch } from "react-redux";
 import { Form, Field } from "react-final-form";
 import { fst } from "../../../Utils/firebase";
 
+import { fileNamer } from "../../../Redux/Reducers/home";
+
 import { Button } from "../../Components/Button/Button";
 import { FormDropzone } from "../../Components/FormDropzone/FormDropzone";
 import { setProgress } from "../../../Redux/Reducers/home";
@@ -47,7 +49,7 @@ const OfferFormFields = ({
 
       const uploadTask = fst
         .ref()
-        .child(`offers/${lotID}/${createOfferId}/offer${num}`)
+        .child(`offers/${lotID}/${createOfferId}/${fileNamer(file.name, num)}`)
         .put(file, metadata);
 
       uploadTask.on(

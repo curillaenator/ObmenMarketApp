@@ -89,8 +89,8 @@ const LotList = ({
   const [display, setDisplay] = useState([]);
 
   useEffect(
-    () => lotList.length === 0 && getPaginationFirstPage(filterSelected),
-    [getPaginationFirstPage, lotList.length, filterSelected]
+    () => lotList.length === 0 && getPaginationFirstPage(),
+    [getPaginationFirstPage, lotList.length]
   );
 
   useEffect(() => {
