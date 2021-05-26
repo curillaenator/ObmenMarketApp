@@ -26,7 +26,12 @@ const ButtonWrap = styled.button`
 
 export const ButtonIcon = ({
   icon,
+  disabled,
   handler = () => console.log("ButtonIcon"),
 }) => {
-  return <ButtonWrap onClick={handler}>{icon}</ButtonWrap>;
+  return (
+    <ButtonWrap onClick={handler} disabled={disabled}>
+      {icon}
+    </ButtonWrap>
+  );
 };

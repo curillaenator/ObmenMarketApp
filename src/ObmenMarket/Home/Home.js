@@ -18,7 +18,7 @@ import {
 
 import { Warning } from "../Components/Warning/Warning";
 import { Cta } from "../Components/CTA/CTA";
-import { FiltersCont } from "../Components/Search/SearchResult";
+import { FiltersCont } from "../Components/Search/FiltersHome";
 import { LotListCont } from "../Components/LotList/LotList";
 import { FormFull } from "../Components/FormFull/FormFull";
 import { Loading } from "../Components/Loading/Loading";
@@ -100,13 +100,13 @@ const Home = ({
 
       {!isAuth && isFormModeOn && <Warning />}
 
+      {!isFormModeOn && <FiltersCont />}
+
       {isSearching && (
         <div className={styles.searchloading}>
           <Loading />
         </div>
       )}
-
-      {!isFormModeOn && !isSearching && searchResults && <FiltersCont />}
 
       {!isFormModeOn && !isSearching && <LotListCont />}
 

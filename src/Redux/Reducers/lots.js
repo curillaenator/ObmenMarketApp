@@ -152,6 +152,12 @@ export const resetLotsState = () => ({ type: RESET_STATE });
 
 // THUNKS
 
+export const resetSearchResult = () => (dispatch) => {
+  batch(() => {
+    dispatch(setSearchRes(null));
+  });
+};
+
 // Meta reset
 
 export const resetMetaState = () => (dispatch) => {
@@ -219,18 +225,30 @@ export const setAuthoredLots =
 
 // get lots first page
 
-export const getPaginationFirstPage = () => (dispatch, getState) => {
+export const getPaginationFirstPage = (filt) => async (dispatch, getState) => {
   batch(() => {
     dispatch(setProgress(1));
     dispatch(setLotsPending(true));
   });
 
+  // const descend = await db
+  //   .ref("posts")
+  //   .limitToLast(getState().lots.lotsPerPage)
+  //   .once("value");
+
+  // const ascend = await db
+  //   .ref("posts")
+  //   .limitToFirst(getState().lots.lotsPerPage)
+  //   .once("value");
+
+  // const page = filt === "asc" ? ascend : descend;
+
   db.ref("posts")
     .limitToLast(getState().lots.lotsPerPage)
-    .once("value", (list) => {
-      if (list.exists()) {
-        const listArr = Object.keys(list.val()).map(
-          (lotID) => list.val()[lotID]
+    .once("value", (page) => {
+      if (page.exists()) {
+        const listArr = Object.keys(page.val()).map(
+          (lotID) => page.val()[lotID]
         );
 
         Promise.all(lotMetasPageLoader(listArr)).then((lotsResolved) => {
@@ -243,7 +261,7 @@ export const getPaginationFirstPage = () => (dispatch, getState) => {
         });
       }
 
-      if (!list.exists()) {
+      if (!page.exists()) {
         batch(() => {
           dispatch(setAllLotsLoaded(true));
           dispatch(setProgress(100));

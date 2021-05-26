@@ -16,7 +16,7 @@ const SET_TOAST_LIST = "home/SET_TOAST_LIST";
 const SET_TOAST_NEW = "home/SET_TOAST_NEW";
 // search
 const SET_IS_SEARCH = "home/SET_IS_SEARCH";
-const SET_LAST_SEARCH = "home/SET_LAST_SEARCH";
+const SET_LASTSRCH = "home/SET_LAST_SEARCH";
 const SET_FILT_SEL = "home/SET_FILT_SEL";
 const SET_ONSEARCH_MSG = "home/SET_ONSEARCH_MSG";
 
@@ -72,7 +72,7 @@ export const home = (state = initialState, action) => {
     case SET_IS_SEARCH:
       return { ...state, isSearching: action.payload };
 
-    case SET_LAST_SEARCH:
+    case SET_LASTSRCH:
       return { ...state, lastSearch: action.payload };
 
     case SET_FILT_SEL:
@@ -97,7 +97,7 @@ export const setProfile = (payload) => ({ type: SET_PROFILE, payload });
 const setToast = (payload) => ({ type: SET_TOAST, payload });
 
 const setIsSearching = (payload) => ({ type: SET_IS_SEARCH, payload });
-const setLastSearch = (payload) => ({ type: SET_LAST_SEARCH, payload });
+export const setLastSearch = (payload) => ({ type: SET_LASTSRCH, payload });
 const setSelectedFilter = (payload) => ({ type: SET_FILT_SEL, payload });
 const setOnSearchMsg = (payload) => ({ type: SET_ONSEARCH_MSG, payload });
 // const setToastsList = (payload) => ({ type: SET_TOAST_LIST, payload });
@@ -233,14 +233,7 @@ const searchWorder = (query, param) => {
   return phraser[param];
 };
 
-export const ctaSearch = (searchData) => (dispatch, getState) => {
-  const filter = getState().home.filterSelected;
-
-  const searchload = {
-    ...searchData,
-    ...{ ranking: [`${filter}(expireDate)`] },
-  };
-
+export const ctaSearch = (searchData) => (dispatch) => {
   batch(() => {
     dispatch(setIsSearching(true));
     dispatch(setLastSearch(searchData.query));
@@ -272,8 +265,6 @@ export const ctaSearch = (searchData) => (dispatch, getState) => {
           });
 
           Promise.all(lotPromise).then((res) => {
-            console.log(res);
-
             batch(() => {
               dispatch(setSearchRes(res));
               dispatch(setOnSearchMsg(searchWorder(searchData.query, "ok")));
@@ -289,7 +280,7 @@ export const ctaSearch = (searchData) => (dispatch, getState) => {
     console.log(err);
   };
 
-  db.ref(`search/queries/${queryKey}`).update(searchload, (err) =>
+  db.ref(`search/queries/${queryKey}`).update(searchData, (err) =>
     err ? Failure(err) : Success()
   );
 };

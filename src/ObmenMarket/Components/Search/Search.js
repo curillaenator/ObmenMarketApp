@@ -81,6 +81,7 @@ export const Search = ({ icon, ctaSearch }) => {
         const findHandler = (e) => {
           e.preventDefault();
           form.submit();
+          form.reset();
           // setFocus(false);
         };
 

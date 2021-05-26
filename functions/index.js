@@ -1,74 +1,52 @@
-const algoliasearch = require("algoliasearch");
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
+const gm = require("gm").subClass({ imageMagick: true });
+const path = require("path");
+const vision = require("@google-cloud/vision");
+
+const BLURED = "blured";
 
 admin.initializeApp({
   databaseURL: "https://obmenmarket.europe-west1.firebasedatabase.app/",
 });
 
-const client = algoliasearch(
-  functions.config().algolia.app_id,
-  functions.config().algolia.api_key
-);
+exports.blurOffensiveImages = functions.storage
+  .object()
+  .onFinalize(async (object) => {
+    const storage = admin.storage();
+    const bucket = storage.bucket(object.bucket);
+    const file = bucket.file(object.name);
+    const filePath = `gs://${object.bucket}/${object.name}`;
 
-const index = client.initIndex("title");
+    const fileMeta = await file.getMetadata();
+    const meta = { ...fileMeta, contentType: object.contentType };
 
-const database = admin.database().ref("posts");
+    console.log(filePath, meta);
 
-exports.baseentry = functions.database
-  .instance("obmenmarket")
-  .ref("/search/write")
-  .onWrite(async (data, context) => {
-    database.once("value", (posts) => {
-      const postsArr = Object.keys(posts.val())
-        .map((id) => posts.val()[id])
-        .map((obj) => ({
-          title: obj.title,
-          description: obj.description,
-          categories: obj.categories,
-          wishes: obj.wishes,
-          objectID: obj.postid,
-          expireDate: obj.expireDate,
-        }));
+    const checked = await vision.detectSafeSearch(file);
 
-      index
-        .saveObjects(postsArr)
-        .then(({ postsIDs }) => console.log(postsIDs))
-        .catch((err) => console.log(err));
-    });
+    if (checked[0].adult || checked[0].violence) {
+      const tempFile = `gs://${object.bucket}/${BLURED}/${file.name}`;
+      const tempLocalDir = path.dirname(tempFile);
+
+      new Promise((resolve) => {
+        file.download({ destination: tempLocalDir });
+        resolve("ok");
+      })
+        .then((res) => {
+          console.log(res);
+
+          gm(tempLocalDir)
+            .blur(0, 16)
+            .write(tempLocalDir, (err, out) => {
+              if (err) return err;
+              console.log(out);
+            });
+        })
+        .then(() => {
+          bucket.file(`${BLURED}/${file.name}`).setMetadata(meta);
+        });
+    }
   });
 
-exports.indexentry = functions.database
-  .instance("obmenmarket")
-  .ref("/posts/{postid}")
-  .onWrite(async (data, context) => {
-    const firebaseObject = {
-      title: data.after.val().title,
-      description: data.after.val().description,
-      categories: data.after.val().categories,
-      wishes: data.after.val().wishes,
-      expireDate: data.after.val().expireDate,
-      objectID: context.params.postid,
-    };
-
-    await index.saveObject(firebaseObject);
-
-    // return data.after.ref.parent
-    //   .child("last_index_timestamp")
-    //   .set(Date.parse(context.timestamp));
-  });
-
-exports.searchentry = functions.database
-  .instance("obmenmarket")
-  .ref("/search/queries/{queryid}")
-  .onCreate(async (snap, context) => {
-    const query = snap.val().query;
-    const key = snap.key;
-
-    const content = await index.search(query);
-    const updates = {
-      "/search/last_query_timestamp": Date.parse(context.timestamp),
-    };
-    updates[`/search/results/${key}`] = content;
-    return admin.database().ref().update(updates);
-  });
+// exec(`convert ${tempFile} -channel RGB -blur 0x8 ${tempFile}`);

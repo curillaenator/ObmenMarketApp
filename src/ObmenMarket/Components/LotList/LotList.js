@@ -83,13 +83,14 @@ const LotList = ({
   setMyLotsPage,
 
   // search
+  filterSelected,
   searchResults,
 }) => {
   const [display, setDisplay] = useState([]);
 
   useEffect(
-    () => lotList.length === 0 && getPaginationFirstPage(),
-    [getPaginationFirstPage, lotList.length]
+    () => lotList.length === 0 && getPaginationFirstPage(filterSelected),
+    [getPaginationFirstPage, lotList.length, filterSelected]
   );
 
   useEffect(() => {
@@ -131,6 +132,7 @@ const mstp = (state) => ({
   myLotsPerPage: state.lots.myLotsPerPage,
   lotsPending: state.lots.lotsPending,
   myLotsPending: state.lots.myLotsPending,
+  filterSelected: state.home.filterSelected,
 });
 
 export const LotListCont = connect(mstp, {
