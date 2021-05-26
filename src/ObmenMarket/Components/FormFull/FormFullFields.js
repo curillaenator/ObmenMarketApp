@@ -8,6 +8,7 @@ import { Button } from "../Button/Button";
 import { ButtonOutline } from "../Button/ButtonOutline";
 
 import { setProgress } from "../../../Redux/Reducers/home";
+import { fileNamer } from "../../../Redux/Reducers/home";
 
 import {
   required,
@@ -141,7 +142,7 @@ export const FormFullFields = ({
 
       const uploadTask = fst
         .ref()
-        .child(`posts/${ownerID}/${lotID}/photo${num}`)
+        .child(`posts/${ownerID}/${lotID}/${fileNamer(file.name, num)}`)
         .put(file, metadata);
 
       uploadTask.on(

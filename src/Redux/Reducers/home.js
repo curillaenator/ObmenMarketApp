@@ -288,3 +288,8 @@ export const ctaSearch = (searchData) => (dispatch) => {
 export const handleSearchFilters = (filter) => (dispatch) => {
   dispatch(setSelectedFilter(filter));
 };
+
+export const fileNamer = (fName, num) => {
+  const fileExt = fName.split(".")[fName.split(".").length - 1];
+  return `photo${num}.${fileExt}`;
+};

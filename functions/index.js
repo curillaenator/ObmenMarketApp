@@ -23,9 +23,15 @@ exports.blurOffensiveImages = functions.storage
 
     console.log(filePath, meta);
 
+    const bluredPhoto = bucket.file(`${BLURED}/${object.name}`);
+
+    if (bluredPhoto.exists()) {
+      return null;
+    }
+
     const checked = await vision.detectSafeSearch(file);
 
-    if (checked[0].adult || checked[0].violence) {
+    if (checked[0].adult || checked[0].violence || checked[0].me) {
       const tempFile = `gs://${object.bucket}/${BLURED}/${file.name}`;
       const tempLocalDir = path.dirname(tempFile);
 
@@ -37,14 +43,14 @@ exports.blurOffensiveImages = functions.storage
           console.log(res);
 
           gm(tempLocalDir)
-            .blur(0, 16)
+            .blur(0, 16).colorspace(L)
             .write(tempLocalDir, (err, out) => {
               if (err) return err;
               console.log(out);
             });
         })
         .then(() => {
-          bucket.file(`${BLURED}/${file.name}`).setMetadata(meta);
+          bucket.file(`${BLURED}/${object.name}`).setMetadata(meta);
         });
     }
   });
