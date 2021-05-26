@@ -245,6 +245,7 @@ export const ctaSearch = (searchData) => (dispatch) => {
     db.ref(`search/results`).on("child_added", (added) => {
       if (added.key === queryKey) {
         db.ref(`search/results`).off();
+
         //
         if (!added.exists() || added.val().hits.length === 0) {
           return batch(() => {
@@ -257,11 +258,15 @@ export const ctaSearch = (searchData) => (dispatch) => {
           const lotPromise = added.val().hits.map(async (item) => {
             const lot = await db.ref(`posts/${item.objectID}`).once("value");
 
-            const photoURL = await fst
-              .ref(`posts/${lot.val().uid}/${lot.val().postid}/photo0`)
-              .getDownloadURL();
+            const photoPromise = await (
+              await fst
+                .ref(`posts/${lot.val().uid}/${lot.val().postid}`)
+                .listAll()
+            ).items.map((item) => item.getDownloadURL());
 
-            return { ...lot.val(), photoURL };
+            const photoURLs = await Promise.all(photoPromise);
+
+            return { ...lot.val(), photoURLs };
           });
 
           Promise.all(lotPromise).then((res) => {
