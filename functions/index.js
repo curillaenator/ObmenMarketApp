@@ -18,7 +18,7 @@ const os = require("os");
 const vision = require("@google-cloud/vision");
 
 // Where we'll save blurred images
-const BLURRED_FOLDER = "blurred";
+const BLURRED_FOLDER = "blyadstvo";
 
 /**
  * When an image is uploaded we check if it is flagged as Adult or Violence by the Cloud Vision
@@ -51,10 +51,10 @@ exports.blurOffensiveImages = functions.storage
     // Available likelihoods are defined in https://cloud.google.com/vision/docs/reference/rest/v1/AnnotateImageResponse#likelihood
     if (
       safeSearchResult.adult !== "VERY_UNLIKELY" ||
-      safeSearchResult.spoof !== "VERY_UNLIKELY" ||
-      safeSearchResult.medical !== "VERY_UNLIKELY" ||
-      safeSearchResult.violence !== "VERY_UNLIKELY" ||
-      safeSearchResult.racy !== "VERY_UNLIKELY"
+      safeSearchResult.spoof !== "POSSIBLE" ||
+      safeSearchResult.medical !== "POSSIBLE" ||
+      safeSearchResult.violence !== "POSSIBLE" ||
+      safeSearchResult.racy !== "POSSIBLE"
     ) {
       functions.logger.log("Offensive image found. Blurring.");
       return blurImage(object.name, object.bucket, object.metadata);

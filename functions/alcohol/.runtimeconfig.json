@@ -1,0 +1,18 @@
+{
+  "algolia": {
+    "app_id": "TGH8UVIE95",
+    "api_key": "b83a9442d3680f74fc45bb16cebe1ecd"
+  },
+  "users": {
+    "admin": "$2a$08$zUMENzB2lqfm5zKvJ/OaNeEWY5VrSlrugr7PYZSsAbSIdWdq/vchC"
+  },
+  "auth": {
+    "secret": "-----BEGIN PRIVATE KEY-----\\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCTDkHXpXSRDtv6\\njgZPTr3K51eabiHmjrw/YUrmigfc1nwJ4AS21zyWvLfkPt+rYBQ1UfQdzjpEK3WG\\n1elSTpvJniqpsMwDH5yJBFnOHHw8lA8Txs7KAhmu0OfkW9+7JG9ulFwU8lqpT6a1\\n7vlKoyAwSLYa6XeFy7rJqCcWc8D918YtMtd5UDmi3eN9ysGSan1+77Adgxlx8Ygx\\nU2T1HExiU4s7mEUrwEmBPf+9RPD//MrwHfOzU9rAxYhDmOQBmjHo4VdF5t4B+XG9\\n5ng6y9Ww+kglw5Jcjs6koW4ZXKB0KkPkS4RCG1cd3e7vWnC3ay8Eo0XJJvhw64mx\\nTO73YITBAgMBAAECggEAAppWAAMltQuWSTEKW40BPv4pRsp8PyB3pIeMU9hNm1MQ\\njvwwGSxmHiTo/FlAjD//G5J/x6dG0L4ULnbK0nIhv8fU6Xv/oG6GzsYM8OEAMfJM\\n8gSq1FiFK9r2v8wAgcd7UXG+z4AaqrSGNuIr9247u58N2hwXyX55p+gaCQOzfsq0\\nEAw5+3m8hNBHJYsiIMgRODDmZW0HoTTU+EMatlgua6lWZXpNf89wy5KTpcsSuP7u\\nIiIYPzYLEJLEONX7xEOvAVi+BveATMqAUxQ1wY4mUH3y/HYrpdujx3WxamFRurai\\nwQqh5V6rwXj1HketUL2UdrDDgjB5Gw4dlNRZHZ7YAQKBgQDIO70GA3LsmqZKdKvi\\nIv38vYzsfhKnK8NbjWUORFt8dKtfC9P+m2QI1wRFe8wWMJZ6EyoLZ9z24oCxpK6J\\nsN7vkP2G/pvQi8ccc8fdCSJJEtRxtEqQYnTeEAbOi2nB6pypcO6vYC7EXWnU0rbF\\n9kQDy2cxPjzVgzzWeqduwTlRkQKBgQC8Aw00ZSd0MYfwBtoXEV3v7Q5Uw8JPWmHG\\n4bUvh4H3r+rO4CoExgBP475QPjkuqDGK4/bpxamWfaTiLzN9IS8PzHhBVfZ4NgUQ\\n9+ew35YoSHZIq3q/w4cKYRRAM03E7htnUmUCyRTuhuqz4VGo5ZcDcJPe7OekzE84\\nvipeO3VoMQKBgB0hy+OXFt5jtbP5e5SAINHnxhwWT6Jw1JB6ZuyHd4QI+XHvp51Q\\ngGJk3iM52ryTvyDtrt1P9C8bTzwJSLeRuy3Bu5ErdAIIhCSYl8iJ7qoRCkWsxHhz\\nSquQS107nVxwRPDGFIQBi2xYZvBm496zcLvYmR/p/THXUT+nQrrzc+JxAoGBAKqP\\noiUMNzSj0oyfyq3upWeJiNzBEr/mYJmKHVLW/cLzpnKyzauy7ImNNBObv0hicT9s\\n+4ysMuNBbJl89JrpxcXxWo77KzN23jW8kEXXMGOvCQ938U2SVinGVBbB9CVZVSbw\\nio5yWTji0H0LRYeRcOQ/9wXfqW3Jo3z4l3sRObuhAoGAQqHA9uML6paBC070GbzD\\n691FpkXu25JIc30pLw3hlqs9I5Bb4wirkegJwJAbn13+MKfyD52uU8YdfoN9DFsv\\naWH5gS0JW8CQlVu93tpfmVktZ89qbFkj7hvNmA0yn3U3pzedKmo3ShrbUKpihwNf\\nbxmHicft2qRO9VhfF/AMma4=\\n-----END PRIVATE KEY-----\\n"
+  },
+  "firebase": {
+    "projectId": "obmen-market-666",
+    "databaseURL": "https://obmenmarket.europe-west1.firebasedatabase.app/",
+    "storageBucket": "obmen-market-666.appspot.com",
+    "locationId": "europe-west"
+  }
+}
