@@ -9,6 +9,8 @@ import {
   db_notes,
 } from "../../Utils/firebase";
 
+import { lotImageGetter } from "../../Utils/helpers";
+
 import {
   onLotCreateSendMail,
   onOfferCreateSendMail,
@@ -16,7 +18,7 @@ import {
   onConfirmByOfferAuthor,
 } from "../../Utils/SendMails";
 
-import { setFormMode, setProgress, setNewToast } from "./home";
+import { setFormMode, setProgress, setNewToast, setLastSearch } from "./home";
 
 import { toastsModel } from "../../Utils/toasts";
 
@@ -173,39 +175,15 @@ export const onLogoClick = () => (dispatch) => {
     dispatch(resetLotList([]));
     dispatch(setSearchRes(null));
     dispatch(setLotList([]));
+    dispatch(setLastSearch(""));
   });
 };
 
 // fullfill each lotMeta with photoURL and offerQty
 
-const lotMetasPageLoader = (listArr) => {
+const lotMetaLoader = (listArr) => {
   return listArr.map(async (lot) => {
-    const normalPromise = await (
-      await fst.ref(`posts/${lot.uid}/${lot.postid}`).listAll()
-    ).items.map((item) => item.getDownloadURL());
-
-    const bluredPromise = await (
-      await fst.ref(`blyadstvo/posts/${lot.uid}/${lot.postid}`).listAll()
-    ).items.map((item) => item.getDownloadURL());
-
-    const bucket =
-      "https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/";
-
-    const normalURLs = await Promise.all(normalPromise).then((res) =>
-      res.map((url) => url.replace(bucket, ""))
-    );
-
-    const bluredURLs = await Promise.all(bluredPromise).then((res) =>
-      res.map((url) => url.replace(bucket, ""))
-    );
-
-    const photoURLs = normalURLs
-      .map((url) =>
-        bluredURLs.includes(`blyadstvo%2F${url}`)
-          ? bluredURLs.find((blurl) => blurl === `blyadstvo%2F${url}`)
-          : url
-      )
-      .map((url) => `${bucket}${url}`);
+    const photoURLs = await lotImageGetter(lot);
 
     const offersQtySnap = await db_offer.ref(lot.postid).once("value");
 
@@ -238,7 +216,7 @@ export const setAuthoredLots =
             (lotID) => list.val()[lotID]
           );
 
-          Promise.all(lotMetasPageLoader(listArr)).then((lotsResolved) => {
+          Promise.all(lotMetaLoader(listArr)).then((lotsResolved) => {
             batch(() => {
               dispatch(myLotList([...lotsResolved].reverse()));
               dispatch(setLastProfile(paramsID ? paramsID : ownerID));
@@ -258,18 +236,6 @@ export const getPaginationFirstPage = () => async (dispatch, getState) => {
     dispatch(setLotsPending(true));
   });
 
-  // const descend = await db
-  //   .ref("posts")
-  //   .limitToLast(getState().lots.lotsPerPage)
-  //   .once("value");
-
-  // const ascend = await db
-  //   .ref("posts")
-  //   .limitToFirst(getState().lots.lotsPerPage)
-  //   .once("value");
-
-  // const page = filt === "asc" ? ascend : descend;
-
   db.ref("posts")
     .limitToLast(getState().lots.lotsPerPage)
     .once("value", (page) => {
@@ -278,7 +244,7 @@ export const getPaginationFirstPage = () => async (dispatch, getState) => {
           (lotID) => page.val()[lotID]
         );
 
-        Promise.all(lotMetasPageLoader(listArr)).then((lotsResolved) => {
+        Promise.all(lotMetaLoader(listArr)).then((lotsResolved) => {
           batch(() => {
             dispatch(setEndBeforeID(lotsResolved[0].postid));
             dispatch(setLotList([...lotsResolved].reverse()));
@@ -315,7 +281,7 @@ export const getPaginationNextPage = (endBeforeID) => (dispatch, getState) => {
           (lotID) => list.val()[lotID]
         );
 
-        Promise.all(lotMetasPageLoader(listArr)).then((lotsResolved) => {
+        Promise.all(lotMetaLoader(listArr)).then((lotsResolved) => {
           batch(() => {
             dispatch(setEndBeforeID(lotsResolved[0].postid));
             dispatch(setLotList([...lotsResolved].reverse()));
@@ -365,34 +331,7 @@ export const getLotMeta = (lotID, history) => (dispatch) => {
   dispatch(setProgress(1));
 
   const compileLotMeta = async (lotMeta) => {
-    const bucket =
-      "https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/";
-
-    const normalPromise = await fst
-      .ref(`posts/${lotMeta.uid}/${lotMeta.postid}`)
-      .listAll()
-      .then((res) => res.items.map((item) => item.getDownloadURL()));
-
-    const bluredPromise = await fst
-      .ref(`blyadstvo/posts/${lotMeta.uid}/${lotMeta.postid}`)
-      .listAll()
-      .then((res) => res.items.map((item) => item.getDownloadURL()));
-
-    const normalLinks = await Promise.all(normalPromise).then((res) =>
-      res.map((url) => url.replace(bucket, ""))
-    );
-
-    const bluredLinks = await Promise.all(bluredPromise).then((res) =>
-      (res || []).map((url) => url.replace(bucket, ""))
-    );
-
-    const pLinks = normalLinks
-      .map((url) =>
-        bluredLinks.includes(`blyadstvo%2F${url}`)
-          ? bluredLinks.find((blurl) => blurl === `blyadstvo%2F${url}`)
-          : url
-      )
-      .map((url) => `${bucket}${url}`);
+    const pLinks = await lotImageGetter(lotMeta);
 
     const offersSnap = await db_offer.ref(lotMeta.postid).once("value");
 

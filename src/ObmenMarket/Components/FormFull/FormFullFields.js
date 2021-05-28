@@ -8,7 +8,7 @@ import { Button } from "../Button/Button";
 import { ButtonOutline } from "../Button/ButtonOutline";
 
 import { setProgress } from "../../../Redux/Reducers/home";
-import { fileNamer } from "../../../Redux/Reducers/home";
+import { fileNamer } from "../../../Utils/helpers";
 
 import {
   required,

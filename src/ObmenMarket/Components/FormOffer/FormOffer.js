@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { Form, Field } from "react-final-form";
 import { fst } from "../../../Utils/firebase";
 
-import { fileNamer } from "../../../Redux/Reducers/home";
+import { fileNamer } from "../../../Utils/helpers";
 
 import { Button } from "../../Components/Button/Button";
 import { FormDropzone } from "../../Components/FormDropzone/FormDropzone";

@@ -1,6 +1,7 @@
 import { batch } from "react-redux";
 import { db, db_offer, fst, fa } from "../../Utils/firebase";
 import { toastsModel } from "../../Utils/toasts";
+import { lotImageGetter } from "../../Utils/helpers";
 
 import { setLotOffers, setSelectedOfferID, setSearchRes } from "./lots";
 
@@ -258,34 +259,7 @@ export const ctaSearch = (searchData) => (dispatch) => {
           const lotPromise = added.val().hits.map(async (item) => {
             const lot = await db.ref(`posts/${item.objectID}`).once("value");
 
-            const bucket =
-              "https://firebasestorage.googleapis.com/v0/b/obmen-market-666.appspot.com/o/";
-
-            const normalPromise = await fst
-              .ref(`posts/${lot.val().uid}/${lot.val().postid}`)
-              .listAll()
-              .then((res) => res.items.map((item) => item.getDownloadURL()));
-
-            const bluredPromise = await fst
-              .ref(`blyadstvo/posts/${lot.val().uid}/${lot.val().postid}`)
-              .listAll()
-              .then((res) => res.items.map((item) => item.getDownloadURL()));
-
-            const normalURLs = await Promise.all(normalPromise).then((res) =>
-              res.map((url) => url.replace(bucket, ""))
-            );
-
-            const bluredURLs = await Promise.all(bluredPromise).then((res) =>
-              res.map((url) => url.replace(bucket, ""))
-            );
-
-            const photoURLs = normalURLs
-              .map((url) =>
-                bluredURLs.includes(`blyadstvo%2F${url}`)
-                  ? bluredURLs.find((blurl) => blurl === `blyadstvo%2F${url}`)
-                  : url
-              )
-              .map((url) => `${bucket}${url}`);
+            const photoURLs = await lotImageGetter(lot.val());
 
             return { ...lot.val(), photoURLs };
           });
@@ -313,9 +287,4 @@ export const ctaSearch = (searchData) => (dispatch) => {
 
 export const handleSearchFilters = (filter) => (dispatch) => {
   dispatch(setSelectedFilter(filter));
-};
-
-export const fileNamer = (fName, num) => {
-  const fileExt = fName.split(".")[fName.split(".").length - 1];
-  return `photo${num}.${fileExt}`;
 };
