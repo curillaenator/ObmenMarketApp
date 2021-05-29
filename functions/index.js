@@ -1,99 +1,68 @@
+const algoliasearch = require("algoliasearch");
 const functions = require("firebase-functions");
+
 const admin = require("firebase-admin");
-admin.initializeApp();
+admin.initializeApp({
+  databaseURL: "https://obmenmarket.europe-west1.firebasedatabase.app/",
+});
 
-//---------------------------------
-// Детект порева, жморева и Киркорева
-//---------------------------------
+const client = algoliasearch(
+  functions.config().algolia.app_id,
+  functions.config().algolia.api_key
+);
 
-// Node.js core modules
-const fs = require("fs");
-const mkdirp = fs.promises.mkdir;
-const { promisify } = require("util");
-const exec = promisify(require("child_process").exec);
-const path = require("path");
-const os = require("os");
+const index = client.initIndex("title");
 
-// Vision API
-const vision = require("@google-cloud/vision");
+exports.indexnewentry = functions.database
+  .instance("obmenmarket")
+  .ref("posts/{postid}")
+  .onCreate((lot, context) => {
+    const firebaseObject = {
+      title: lot.val().title,
+      description: lot.val().description,
+      categories: lot.val().categories,
+      wishes: lot.val().wishes,
+      expireDate: lot.val().expireDate,
+      objectID: context.params.postid,
+    };
 
-// Where we'll save blurred images
-const BLURRED_FOLDER = "blyadstvo";
-
-/**
- * When an image is uploaded we check if it is flagged as Adult or Violence by the Cloud Vision
- * API and if it is we blur it using ImageMagick.
- */
-exports.blurOffensiveImages = functions.storage
-  .object()
-  .onFinalize(async (object) => {
-    // Ignore things we've already blurred
-    if (object.name.startsWith(`${BLURRED_FOLDER}/`)) {
-      functions.logger.log(
-        `Ignoring upload "${object.name}" because it was already blurred.`
-      );
-      return null;
-    }
-
-    // Check the image content using the Cloud Vision API.
-    const visionClient = new vision.ImageAnnotatorClient();
-    const data = await visionClient.safeSearchDetection(
-      `gs://${object.bucket}/${object.name}`
-    );
-    const safeSearchResult = data[0].safeSearchAnnotation;
-    functions.logger.log(
-      `SafeSearch results on image "${object.name}"`,
-      safeSearchResult
-    );
-
-    // Tune these detection likelihoods to suit your app.
-    // The current settings show the most strict configuration
-    // Available likelihoods are defined in https://cloud.google.com/vision/docs/reference/rest/v1/AnnotateImageResponse#likelihood
-    if (
-      safeSearchResult.adult !== "VERY_UNLIKELY" ||
-      safeSearchResult.spoof !== "POSSIBLE" ||
-      safeSearchResult.medical !== "POSSIBLE" ||
-      safeSearchResult.violence !== "POSSIBLE" ||
-      safeSearchResult.racy !== "POSSIBLE"
-    ) {
-      functions.logger.log("Offensive image found. Blurring.");
-      return blurImage(object.name, object.bucket, object.metadata);
-    }
-
-    return null;
+    index.saveObject(firebaseObject);
   });
 
-/**
- * Blurs the given image located in the given bucket using ImageMagick.
- */
-async function blurImage(filePath, bucketName, metadata) {
-  const tempLocalFile = path.join(os.tmpdir(), filePath);
-  const tempLocalDir = path.dirname(tempLocalFile);
-  
-  const bucket = admin.storage().bucket(bucketName);
+exports.indexupdentry = functions.database
+  .instance("obmenmarket")
+  .ref("posts/{postid}")
+  .onUpdate((lot, context) => {
+    const firebaseObject = {
+      title: lot.after.val().title,
+      description: lot.after.val().description,
+      categories: lot.after.val().categories,
+      wishes: lot.after.val().wishes,
+      expireDate: lot.after.val().expireDate,
+      objectID: context.params.postid,
+    };
 
-  // Create the temp directory where the storage file will be downloaded.
-  await mkdirp(tempLocalDir, { recursive: true });
-  functions.logger.log("Temporary directory has been created", tempLocalDir);
-
-  // Download file from bucket.
-  await bucket.file(filePath).download({ destination: tempLocalFile });
-  functions.logger.log("The file has been downloaded to", tempLocalFile);
-
-  // Blur the image using ImageMagick.
-  await exec(
-    `convert ${tempLocalFile} -resize 50% -grayscale Rec709Luma -blur 0x8 ${tempLocalFile}`
-  );
-  functions.logger.log("Blurred image created at", tempLocalFile);
-
-  // Uploading the Blurred image.
-  await bucket.upload(tempLocalFile, {
-    destination: `${BLURRED_FOLDER}/${filePath}`,
-    metadata: { metadata: metadata }, // Keeping custom metadata.
+    index.partialUpdateObject(firebaseObject);
   });
-  functions.logger.log("Blurred image uploaded to Storage at", filePath);
 
-  // Clean up the local file
-  fs.unlinkSync(tempLocalFile);
-  functions.logger.log("Deleted local file", filePath);
-}
+exports.indexdelentry = functions.database
+  .instance("obmenmarket")
+  .ref("posts/{postid}")
+  .onDelete((lot, context) => {
+    index.deleteObject(context.params.postid);
+  });
+
+exports.searchentry = functions.database
+  .instance("obmenmarket")
+  .ref("search/queries/{queryid}")
+  .onCreate(async (snap, context) => {
+    const query = snap.val().query;
+    const key = snap.key;
+
+    const content = await index.search(query);
+    const updates = {
+      "search/last_query_timestamp": Date.parse(context.timestamp),
+    };
+    updates[`search/results/${key}`] = content;
+    return admin.database().ref().update(updates);
+  });
