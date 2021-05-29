@@ -98,7 +98,7 @@ export const Header = ({
       <ObmenMarketLogo onLogoClick={onLogoClick} />
 
       <div className={styles.pad}>
-        {isInitialized && isAuth && (
+        {isInitialized && isAuth && user && (
           <Authorized
             user={user}
             newMsgsQty={newMsgsQty}

@@ -88,7 +88,7 @@ export const googleSignIn = () => async (dispatch) => {
   await fb.auth().signInWithPopup(provider);
 
   await fb.auth().onAuthStateChanged((user) => {
-    // if (!user) return;
+    if (!user) return;
     // const ref = db.ref(`users/${user.uid}`);
     db.ref(`users/${user.uid}`).once("value", (snapshot) => {
       !snapshot.exists() && newUser(user);

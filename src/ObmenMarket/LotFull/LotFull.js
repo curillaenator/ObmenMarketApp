@@ -339,7 +339,7 @@ const LotFull = ({
     ) {
       console.log(query.get("action"));
 
-      const offers = lotMeta.offers;
+      const offers = lotMeta.offers || [];
       const offerMeta = offers.find((o) => o.offerID === query.get("offerID"));
 
       return querySelector[query.get("action")](offerMeta);
