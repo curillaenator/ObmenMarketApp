@@ -312,9 +312,18 @@ const LotFull = ({
   // handle queries from url
 
   useEffect(() => {
-    if (!isAuth) return history.push(`/posts/${lotid}`);
+    if (!isAuth) {
+      console.log("!auth");
 
-    if (!lotMeta || !query.has("action")) return null;
+      return null;
+      // return history.push(`/posts/${lotid}`);
+    }
+
+    if (!lotMeta || !query.has("action")) {
+      console.log("!lotMeta & !action");
+
+      return null;
+    }
 
     if (query.has("action") && !querySelector[query.get("action")]) {
       console.log("bad link query");
@@ -328,6 +337,8 @@ const LotFull = ({
       query.get("action") === "view" ||
       query.get("action") === "extend"
     ) {
+      console.log(query.get("action"));
+
       const offers = lotMeta.offers;
       const offerMeta = offers.find((o) => o.offerID === query.get("offerID"));
 
