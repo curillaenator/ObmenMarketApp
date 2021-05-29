@@ -83,7 +83,7 @@ const LotList = ({
   setMyLotsPage,
 
   // search
-  filterSelected,
+  lastSearch,
   searchResults,
 }) => {
   const [display, setDisplay] = useState([]);
@@ -103,6 +103,8 @@ const LotList = ({
     ? () => setMyLotsPage(myLotsPage + myLotsPerPage)
     : () => getPaginationNextPage(endBeforeID);
 
+  if (lastSearch && !searchResults) return <div></div>;
+
   return (
     <div className={styles.lotlist}>
       <div className={styles.lotlist_list}>
@@ -111,12 +113,14 @@ const LotList = ({
         ))}
       </div>
 
-      <Pagination
-        icons={icons}
-        allLotsLoaded={myLots ? myLotList.length < myLotsPage : allLotsLoaded}
-        lotsPending={myLots ? myLotsPending : lotsPending}
-        handleNextPage={handleNextPage}
-      />
+      {!searchResults && (
+        <Pagination
+          icons={icons}
+          allLotsLoaded={myLots ? myLotList.length < myLotsPage : allLotsLoaded}
+          lotsPending={myLots ? myLotsPending : lotsPending}
+          handleNextPage={handleNextPage}
+        />
+      )}
     </div>
   );
 };
@@ -131,8 +135,8 @@ const mstp = (state) => ({
   myLotsPage: state.lots.myLotsPage,
   myLotsPerPage: state.lots.myLotsPerPage,
   lotsPending: state.lots.lotsPending,
+  lastSearch: state.home.lastSearch,
   myLotsPending: state.lots.myLotsPending,
-  filterSelected: state.home.filterSelected,
 });
 
 export const LotListCont = connect(mstp, {

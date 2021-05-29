@@ -59,7 +59,12 @@ exports.searchentry = functions.database
     const query = snap.val().query;
     const key = snap.key;
 
+    // const requestOptions = {
+    //   timeouts: { read: 10 },
+    // };
+
     const content = await index.search(query);
+
     const updates = {
       "search/last_query_timestamp": Date.parse(context.timestamp),
     };

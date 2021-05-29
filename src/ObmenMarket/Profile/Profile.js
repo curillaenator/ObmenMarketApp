@@ -15,7 +15,7 @@ import {
 import { UserInfo } from "./UserInfo";
 import { ProfileLots } from "./ProfileLots";
 import { ProfileEdit } from "./ProfileEdit";
-import { Cta } from "../Components/CTA/CTA";
+// import { Cta } from "../Components/CTA/CTA";
 import { FormFull } from "../Components/FormFull/FormFull";
 
 import styles from "./profile.module.scss";
@@ -39,8 +39,8 @@ const Profile = ({
   setFormMode,
   resetMetaState,
   setAuthoredLots,
-  onLotCreateFromForm,
-  onLotCreateFormCancel,
+  // onLotCreateFromForm,
+  // onLotCreateFormCancel,
   publishNewLotFromForm,
 }) => {
   const history = useHistory();
@@ -89,7 +89,7 @@ const Profile = ({
 
         {!isEdit && profile && (
           <div className={styles.display}>
-            {isOwner && (
+            {/* {isOwner && (
               <Cta
                 icons={icons}
                 isAuth={isAuth}
@@ -99,7 +99,7 @@ const Profile = ({
                 onLotCreateFromForm={onLotCreateFromForm}
                 onLotCreateFormCancel={onLotCreateFormCancel}
               />
-            )}
+            )} */}
 
             {!isFormModeOn && (
               <>

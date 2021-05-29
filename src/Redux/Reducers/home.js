@@ -35,7 +35,7 @@ const initialState = {
   // search
   isSearching: false,
   lastSearch: "",
-  filterSelected: "asc",
+  filterSelected: "desc",
   onSearchMsg: "",
 };
 
@@ -227,8 +227,8 @@ export const getToastList = (ownerID) => (dispatch) => {
 
 const searchWorder = (query, param) => {
   const phraser = {
-    none: `По вашему запросу "${query}" ничего к не найдено(((`,
-    ok: `Гля че нашли по запросу "${query}"!!!`,
+    none: `По вашему запросу ничего к не найдено(((`,
+    ok: `Результаты поиска по запросу1111:`,
   };
 
   return phraser[param];
@@ -237,22 +237,31 @@ const searchWorder = (query, param) => {
 export const ctaSearch = (searchData) => (dispatch) => {
   batch(() => {
     dispatch(setIsSearching(true));
+    dispatch(setSearchRes(null));
     dispatch(setLastSearch(searchData.query));
   });
 
   const queryKey = db.ref().child(`search/queries/`).push().key;
 
   const Success = () => {
+    const failedSearch = () => {
+      batch(() => {
+        // dispatch(setSearchRes(null));
+        dispatch(setOnSearchMsg(searchWorder(searchData.query, "none")));
+        dispatch(setIsSearching(false));
+      });
+    };
+
+    const timeout = setTimeout(failedSearch, 10000);
+
     db.ref(`search/results`).on("child_added", (added) => {
       if (added.key === queryKey) {
         db.ref(`search/results`).off();
+        clearTimeout(timeout);
 
         //
         if (!added.exists() || added.val().hits.length === 0) {
-          return batch(() => {
-            dispatch(setOnSearchMsg(searchWorder(searchData.query, "none")));
-            dispatch(setIsSearching(false));
-          });
+          return failedSearch();
         }
 
         if (added.exists()) {
