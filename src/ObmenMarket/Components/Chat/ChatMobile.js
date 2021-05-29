@@ -252,12 +252,13 @@ const Dialog = styled.div`
   .dialog_scroll {
     display: flex;
     flex-direction: column;
+    // justify-content: flex-end;
     padding: 24px;
   }
 `;
 
 const NewMessage = styled.div`
-  position: absolute;
+  position: fixed;
   bottom: 0;
   right: 0;
   display: flex;
