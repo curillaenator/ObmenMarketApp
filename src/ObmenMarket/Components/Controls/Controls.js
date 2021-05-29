@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import { ButtonGhost } from "../Button/ButtonGhost";
+import { DropdownShare } from "../Dropdown/DropdownShare";
 
 import cloudtailpic from "../../../Assets/Icons/cloudtail.svg";
 
@@ -18,6 +20,7 @@ export const Controls = ({
   removeLot,
 }) => {
   const [isTitles, setIsTitles] = useState(window.innerWidth >= 640);
+  const location = useLocation();
 
   useEffect(() => {
     const listener = () => setIsTitles(window.innerWidth >= 640);
@@ -30,6 +33,45 @@ export const Controls = ({
 
   const titler = (ttl) => (isTitles ? ttl : "");
 
+  const shareItems = [
+    {
+      title: "вКонтакте",
+      icon: icons.shareDrop.vk,
+      handler: () => {
+        window.open(
+          `https://vk.com/share.php?url=https://obmen.market${history.createHref(
+            location
+          )}?utm_source=vKontakte`,
+          "_blank"
+        );
+      },
+    },
+    {
+      title: "Facebook",
+      icon: icons.shareDrop.fb,
+      handler: () => {
+        window.open(
+          ` https://www.facebook.com/sharer/sharer.php?u=https://obmen.market${history.createHref(
+            location
+          )}?utm_source=Facebook`,
+          "_blank"
+        );
+      },
+    },
+    {
+      title: "Twitter",
+      icon: icons.shareDrop.twitter,
+      handler: () => {
+        window.open(
+          `http://twitter.com/share?url=https://obmen.market${history.createHref(
+            location
+          )}?utm_source=Twitter`,
+          "_blank"
+        );
+      },
+    },
+  ];
+
   return (
     <div className={styles.controls}>
       <ButtonGhost
@@ -39,13 +81,12 @@ export const Controls = ({
       />
 
       <div className={styles.options}>
-        <ButtonGhost
+        <DropdownShare
           title={titler("Поделиться")}
-          handler={() => console.log("Поделиться")}
-          icon={icons.share}
-          // disabled={true}
+          items={shareItems}
+          commonLink={`https://obmen.market${history.createHref(location)}`}
         />
-        
+
         {isAuth && ownerID === lotMeta.uid && (
           <div className={styles.editbtn}>
             <ButtonGhost
