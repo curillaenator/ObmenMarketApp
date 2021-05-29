@@ -53,7 +53,6 @@ export const an = firebase.analytics();
 export const perf = firebase.performance();
 
 const client = algoliasearch("TGH8UVIE95", "b83a9442d3680f74fc45bb16cebe1ecd");
-
 export const algolia = client.initIndex("title");
 
 // using SendGrid's Node.js Library - https://github.com/sendgrid/sendgrid-nodejs

@@ -7,6 +7,7 @@ import {
   db_offer,
   db_chat,
   db_notes,
+  // algolia,
 } from "../../Utils/firebase";
 
 import { lotImageGetter } from "../../Utils/helpers";
@@ -485,14 +486,14 @@ export const removeLot = (lotID, history) => async (dispatch, getState) => {
   const ownerID = getState().auth.ownerID;
 
   await db.ref(`posts/${lotID}/chats`).once("value", (chats) => {
-    console.log(chats.exists());
+    // console.log(chats.exists());
 
     if (chats.exists()) {
       Object.keys(chats.val()).forEach((roomID) => {
         const offerAuthor = chats.val()[roomID].offerAuthorID;
         const lotAuthor = chats.val()[roomID].lotAuthorID;
 
-        console.log(roomID);
+        // console.log(roomID);
 
         db_chat.ref(`messages/${roomID}`).set(null);
         db_chat.ref(`chats/${roomID}`).set(null);
@@ -507,7 +508,8 @@ export const removeLot = (lotID, history) => async (dispatch, getState) => {
     .ref(lotID)
     .once("value", (offers) => {
       if (offers.exists()) {
-        console.log("offers del");
+        // console.log("offers del");
+
         Object.keys(offers.val())
           .map((offerID) => offers.val()[offerID].photospath)
           .forEach((path) => {
@@ -535,6 +537,8 @@ export const removeLot = (lotID, history) => async (dispatch, getState) => {
         dispatch(setProgress(60));
       })
     );
+
+  // await algolia.deleteObject(lotID);
 
   await db.ref(`posts/${lotID}`).remove();
 

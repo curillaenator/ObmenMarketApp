@@ -257,7 +257,11 @@ export const ctaSearch = (searchData) => (dispatch) => {
 
         if (added.exists()) {
           const lotPromise = added.val().hits.map(async (item) => {
+            // console.log(item.objectID);
+
             const lot = await db.ref(`posts/${item.objectID}`).once("value");
+
+            // console.log(lot.val());
 
             const photoURLs = await lotImageGetter(lot.val());
 
