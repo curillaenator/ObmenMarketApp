@@ -28,6 +28,10 @@
     ],
     "rewrites": [
       {
+        "source": "/posts/*",
+        "function": "addsocialmeta"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }

@@ -71,3 +71,5 @@ exports.searchentry = functions.database
     updates[`search/results/${key}`] = content;
     return admin.database().ref().update(updates);
   });
+
+  
