@@ -212,6 +212,7 @@ const Offers = ({
 // MAIN COMPONENT
 
 const LotFull = ({
+  isMobile,
   icons,
   isAuth,
   ownerID,
@@ -357,14 +358,15 @@ const LotFull = ({
   return (
     <div className={styles.lotwrapper}>
       <Controls
+        isMobile={isMobile}
         icons={icons}
         isAuth={isAuth}
         isAdmin={user.isAdmin}
         ownerID={ownerID}
         isFormModeOn={isFormModeOn}
+        setFormMode={setFormMode}
         lotMeta={lotMeta}
         history={history}
-        editLot={() => setFormMode(!isFormModeOn)}
         removeLot={removeLot}
       />
 
@@ -438,6 +440,7 @@ const LotFull = ({
 };
 
 const mstp = (state) => ({
+  isMobile: state.home.isMobile,
   icons: state.ui.icons,
   isAuth: state.auth.isAuth,
   ownerID: state.auth.ownerID,

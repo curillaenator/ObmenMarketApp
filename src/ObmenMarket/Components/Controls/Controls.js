@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import { ButtonGhost } from "../Button/ButtonGhost";
@@ -9,29 +8,18 @@ import cloudtailpic from "../../../Assets/Icons/cloudtail.svg";
 import styles from "./controls.module.scss";
 
 export const Controls = ({
+  isMobile,
   icons,
   isAuth,
   isAdmin,
   ownerID,
   isFormModeOn,
+  setFormMode,
   lotMeta,
   history,
-  editLot,
   removeLot,
 }) => {
-  const [isTitles, setIsTitles] = useState(window.innerWidth >= 640);
   const location = useLocation();
-
-  useEffect(() => {
-    const listener = () => setIsTitles(window.innerWidth >= 640);
-
-    window.addEventListener("resize", listener);
-    return () => {
-      window.removeEventListener("resize", listener);
-    };
-  }, []);
-
-  const titler = (ttl) => (isTitles ? ttl : "");
 
   const shareItems = [
     {
@@ -72,26 +60,33 @@ export const Controls = ({
     },
   ];
 
+  const titler = (ttl) => (!isMobile ? ttl : "");
+
   return (
     <div className={styles.controls}>
       <ButtonGhost
         title={titler("Назад")}
-        handler={history.goBack}
+        handler={() => {
+          setFormMode(false);
+          history.goBack();
+        }}
         icon={icons.back}
       />
 
       <div className={styles.options}>
         <DropdownShare
+          isMobile={isMobile}
           title={titler("Поделиться")}
           items={shareItems}
           commonLink={`https://obmen.market${history.createHref(location)}`}
+          disabled={isFormModeOn}
         />
 
         {isAuth && ownerID === lotMeta.uid && (
           <div className={styles.editbtn}>
             <ButtonGhost
               title={titler("Редактировать")}
-              handler={editLot}
+              handler={() => setFormMode(!isFormModeOn)}
               icon={icons.edit}
               active={isFormModeOn}
               shape={true}
@@ -109,6 +104,7 @@ export const Controls = ({
             handler={() => removeLot(lotMeta.postid, history)}
             icon={icons.delete}
             danger={true}
+            disabled={isFormModeOn}
           />
         )}
       </div>

@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import styled, { keyframes } from "styled-components";
 
-import { ButtonGhost } from "../Button/ButtonGhost";
-import { ButtonIcon } from "../Button/ButtonIcon";
+import { setNewToast } from "../../../Redux/Reducers/home";
 
-import bginput from "../../../Assets/Icons/input_bg.svg";
+import { ButtonGhost } from "../Button/ButtonGhost";
+
+import { colors } from "../../../Utils/palette";
 
 const appear = keyframes`
     from {
@@ -25,12 +26,12 @@ const Wrapper = styled.div`
 
 const Menu = styled.div`
   position: absolute;
-  top: calc(100% + 8px);
-  left: -100%;
+  top: calc(100% + 12px);
+  right: -200%;
   padding: 16px;
-  border-radius: 16px;
-  background-color: #ffffff;
-  box-shadow: 0px 18px 32px 0px #1a1a1a3f;
+  border-radius: 24px;
+  background-color: ${colors.whiteBG};
+  box-shadow: 0px 18px 32px 0px ${colors.primary2IdleShadow};
   animation: ${appear} 0.12s ease-out;
   z-index: 999;
 
@@ -51,6 +52,7 @@ const Menu = styled.div`
 
   .soc_link {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     width: 100%;
     height: 68px;
@@ -58,24 +60,43 @@ const Menu = styled.div`
     background-color: #f7f6f9;
     box-shadow: inset 0px 2px 4px rgba(47, 0, 107, 0.1);
     border-radius: 16px;
-    // background-image: url(${bginput});
-    // background-size: cover;
-    // background-repeat: no-repeat;
+    cursor: pointer;
 
     .soc_link_text {
+      margin-right: 8px;
       font-weight: 600;
       font-size: 15px;
       line-height: 20px;
       letter-spacing: 0.8px;
-      color: #7000ff;
+      color: ${colors.fontGrey};
     }
+
+    & > svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    &:hover .soc_link_text {
+      color: ${colors.primary};
+    }
+  }
+
+  @media (min-width: 480px) {
+    right: 0;
   }
 `;
 
-export const DropdownShare = ({ title, items, commonLink }) => {
+export const DropdownShare = ({
+  isMobile,
+  title,
+  items,
+  commonLink,
+  disabled,
+}) => {
+  const dispatch = useDispatch();
+
   const { icons } = useSelector((state) => state.ui);
   const [trig, setTrig] = useState(false);
-
   const close = () => setTrig(false);
 
   useEffect(() => {
@@ -86,43 +107,56 @@ export const DropdownShare = ({ title, items, commonLink }) => {
     return () => window.document.removeEventListener("click", close);
   }, [trig]);
 
+  const copyLink = () => {
+    navigator.clipboard.writeText(commonLink);
+
+    dispatch(
+      setNewToast(
+        "success",
+        "Готово!",
+        "Ссылка скопирована в буфер обмена",
+        null
+      )
+    );
+  };
+
   return (
     <Wrapper>
       <ButtonGhost
         icon={icons.share}
-        active={trig}
         title={title}
+        active={trig}
+        disabled={disabled}
+        shape={true}
         handler={() => setTrig(!trig)}
       />
 
       {trig && (
-        <Menu trig={trig} height={items.length * 40 + 4}>
+        <Menu trig={trig}>
           <div className="soc_title">Создайте пост в соц.сетях</div>
 
           <div className="soc_buttons">
             {items.map((item) => (
               <ButtonGhost
                 key={item.title}
-                title={item.title}
+                title={isMobile ? "" : item.title}
                 icon={item.icon}
                 handler={item.handler}
+                iconsize={32}
               />
             ))}
           </div>
 
           <div className="soc_title">
-            или скопируйте ссылку для мессенджеров
+            или кликните, чтобы скопировать ссылку для мессенджеров
           </div>
 
-          <div className="soc_link">
+          <div className="soc_link" onClick={copyLink}>
             <div type="text" className="soc_link_text">
-              {commonLink}
+              {isMobile ? "копировать" : commonLink}
             </div>
 
-            <ButtonIcon
-              icon={icons.copy}
-              handler={() => navigator.clipboard.writeText(commonLink)}
-            />
+            {icons.copy}
           </div>
         </Menu>
       )}

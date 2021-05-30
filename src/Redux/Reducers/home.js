@@ -6,6 +6,7 @@ import { lotImageGetter } from "../../Utils/helpers";
 import { setLotOffers, setSelectedOfferID, setSearchRes } from "./lots";
 
 const SET_TITLE = "home/SET_TITLE";
+const SET_IS_MOBILE = "home/SET_IS_MOBILE";
 const SET_PROGRESS = "home/SET_PROGRESS";
 const SET_FORM_MODE = "home/SET_FORM_MODE";
 const SET_IS_OWNER = "home/SET_IS_OWNER";
@@ -22,6 +23,7 @@ const SET_FILT_SEL = "home/SET_FILT_SEL";
 const SET_ONSEARCH_MSG = "home/SET_ONSEARCH_MSG";
 
 const initialState = {
+  isMobile: false,
   title: "",
   progress: null,
   isFormModeOn: false,
@@ -41,6 +43,9 @@ const initialState = {
 
 export const home = (state = initialState, action) => {
   switch (action.type) {
+    case SET_IS_MOBILE:
+      return { ...state, isMobile: action.payload };
+
     case SET_TITLE:
       return { ...state, title: action.title };
 
@@ -88,7 +93,7 @@ export const home = (state = initialState, action) => {
 };
 
 // ACTIONs
-// const setNewMsgsQty = (qty) => ({ type: SET_NEW_MSGS_QTY, qty });
+export const setIsMobile = (payload) => ({ type: SET_IS_MOBILE, payload });
 export const setTitle = (title) => ({ type: SET_TITLE, title });
 export const setProgress = (payload) => ({ type: SET_PROGRESS, payload });
 export const setIsModalOn = (payload) => ({ type: SET_IS_MODAL_ON, payload });
@@ -101,8 +106,6 @@ const setIsSearching = (payload) => ({ type: SET_IS_SEARCH, payload });
 export const setLastSearch = (payload) => ({ type: SET_LASTSRCH, payload });
 const setSelectedFilter = (payload) => ({ type: SET_FILT_SEL, payload });
 const setOnSearchMsg = (payload) => ({ type: SET_ONSEARCH_MSG, payload });
-// const setToastsList = (payload) => ({ type: SET_TOAST_LIST, payload });
-// const setToastsNew = (payload) => ({ type: SET_TOAST_NEW, payload });
 
 // THUNKs
 

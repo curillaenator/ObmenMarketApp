@@ -46,8 +46,8 @@ const ButtonWrap = styled.button`
     margin-right: ${(props) => (props.title ? "8px" : "0px")};
 
     & > svg {
-      width: 24px;
-      height: 24px;
+      width: ${({ iconsize }) => iconsize}px;
+      height: ${({ iconsize }) => iconsize}px;
     }
   }
 
@@ -71,6 +71,7 @@ const ButtonWrap = styled.button`
 export const ButtonGhost = ({
   title = "",
   icon = null,
+  iconsize = 24,
   shape = false,
   active = false,
   danger = false,
@@ -88,6 +89,7 @@ export const ButtonGhost = ({
       disabled={disabled}
       fontsize={fontsize}
       transition={transition}
+      iconsize={iconsize}
       onClick={handler}
     >
       {shape && active && <div className="shape"></div>}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Route, Switch, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
@@ -22,11 +22,12 @@ import { ChatMobileCont } from "./Components/Chat/ChatMobile";
 
 import { authCheck, onConnectDisconnect } from "../Redux/Reducers/auth";
 import { subRoomsMsgs } from "../Redux/Reducers/chat";
-import { setIsModalOn, setProgress } from "../Redux/Reducers/home";
+import { setIsModalOn, setProgress, setIsMobile } from "../Redux/Reducers/home";
 
 import styles from "./obmen.module.scss";
 
 const ObmenMarket = ({
+  isMobile,
   title,
   icons,
   isInitialized,
@@ -36,6 +37,7 @@ const ObmenMarket = ({
   isChatOn,
   progress,
   isToast,
+  setIsMobile,
   setProgress,
   authCheck,
   setIsModalOn,
@@ -45,18 +47,18 @@ const ObmenMarket = ({
   const history = useHistory();
   const [user, userLoading] = useAuthState(fa);
 
-  const [isMobile, setIsMobile] = useState(false);
-  const chatResize = () => {
-    window.innerWidth >= 768 && setIsMobile(false);
-    window.innerWidth < 768 && setIsMobile(true);
-  };
-
   // listen for viewport resize
 
   useEffect(() => {
-    chatResize();
-    window.addEventListener("resize", chatResize);
-  }, []);
+    const isMobileSetter = () => {
+      window.innerWidth >= 768 && setIsMobile(false);
+      window.innerWidth < 768 && setIsMobile(true);
+    };
+
+    isMobileSetter();
+
+    window.addEventListener("resize", isMobileSetter);
+  }, [setIsMobile]);
 
   // change title by state title
 
@@ -159,6 +161,7 @@ const ObmenMarket = ({
   );
 };
 const mstp = (state) => ({
+  isMobile: state.home.isMobile,
   title: state.home.title,
   icons: state.ui.icons,
   progress: state.home.progress,
@@ -171,6 +174,7 @@ const mstp = (state) => ({
 });
 
 export const ObmenMarketApp = connect(mstp, {
+  setIsMobile,
   setProgress,
   authCheck,
   setIsModalOn,

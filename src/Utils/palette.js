@@ -18,8 +18,6 @@ export const colors = {
   primaryActive: "#edeff2",
   primaryDisabled: "#b5b1bf",
   primaryFontClicked: "#ccd1ff",
-  // ctaIconHover1: "#ffffff",
-  // ctaIconHover2: "#a966ff",
   // OUTLINE BUTTON
   outline: "#f9f8ff",
   outlineStroke: "#efecff",
@@ -27,6 +25,7 @@ export const colors = {
   outlineClick: "#e7e3ff",
   outlineFontClicked: "#4617a8",
   // COMMON
+  whiteBG: "#ffffff",
   headerButton: "#4d4765",
   shape: "#edeff2",
   formSpacer: "#e1e1e8",
