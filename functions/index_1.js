@@ -6,13 +6,17 @@ admin.initializeApp();
 
 const createTags = async (id) => {
   const lotMeta = await admin.database().ref(id).once("value");
+  functions.logger.log(` LotMeta = "${lotMeta}" `);
+
   const { title, uid } = lotMeta.val();
+  functions.logger.log(` Title & UID = "${title}" & ${uid}`);
 
   const photoPromise = await (
     await admin.storage().ref(`posts/${uid}/${id}`).listAll()
   ).items.map((item) => item.getDownloadURL());
 
   const photoLinks = await Promise.all(photoPromise);
+  functions.logger.log(` PhotoLinks = "${photoLinks}"`);
 
   return `
   <title>${title} | Обмен.маркет</title>
@@ -115,11 +119,16 @@ const template = (tags) => `
 
 exports.addsocialmeta = functions.https.onRequest(async (req, res) => {
   const path = new Path("/posts/:id");
+  functions.logger.log(` Path created "${path}" `);
+
   const { id } = path.test(req.path);
+  functions.logger.log(` ID = "${id}" `);
 
   const tags = await createTags(id);
+  functions.logger.log(` TAGS = "${tags}" `);
 
   const html = template(tags);
 
+  res.set("Cache-Control", "public, max-age=0, s-maxage=0");
   res.send(html);
 });
