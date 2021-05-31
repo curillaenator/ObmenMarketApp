@@ -26,10 +26,15 @@
         ]
       }
     ],
+    "appAssociation": "AUTO",
     "rewrites": [
       {
-        "source": "/posts/*",
-        "function": "addsocialmeta"
+        "source": "/go/**",
+        "dynamicLinks": true
+      },
+      {
+        "source": "/share/**",
+        "dynamicLinks": true
       },
       {
         "source": "**",
