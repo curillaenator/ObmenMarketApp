@@ -4,6 +4,7 @@ import {
   db,
   fa,
   fb,
+  an,
   db_offer,
   db_chat,
   db_notes,
@@ -306,6 +307,9 @@ export const getPaginationNextPage = (endBeforeID) => (dispatch, getState) => {
 export const onLotCreateFromForm = () => (dispatch) => {
   const lotID = db.ref().child("posts").push().key;
 
+  an.logEvent("user_engagement", { formOpened: "formOpened" });
+  an.logEvent("formopened");
+
   dispatch(setNewLotId(lotID));
 };
 
@@ -406,6 +410,13 @@ export const publishNewLotFromForm = (updData, history) => (dispatch) => {
       dispatch(setNewLotId(null));
       dispatch(setFormMode(false));
       dispatch(setProgress(100));
+    });
+
+    // analitics metrics
+
+    an.logEvent("postcreated", {
+      categories: updData.categories,
+      wishes: updData.wishes,
     });
 
     //send mail
@@ -551,6 +562,10 @@ export const removeLot = (lotID, history) => async (dispatch, getState) => {
         null
       )
     );
+
+    dispatch(resetLotList([]));
+    dispatch(setSearchRes(null));
+    dispatch(setLotList([]));
 
     dispatch(setProgress(100));
   });
@@ -882,6 +897,10 @@ export const createOffer = (lotMeta, offerData) => (dispatch, getState) => {
 
       dispatch(setProgress(100));
     });
+
+    // offer created analytics
+
+    an.logEvent("offercreated");
 
     // send mail
 
