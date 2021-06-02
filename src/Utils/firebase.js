@@ -12,7 +12,7 @@ import algoliasearch from "algoliasearch";
 const config = {
   apiKey: "AIzaSyBmYNXLxCwaIR_U2RYWUAzCeRIQjixMVv4",
   authDomain: "obmen.market",
-  databaseURL: "https://test-obmenmarket.europe-west1.firebasedatabase.app/",
+  databaseURL: "https://obmenmarket.europe-west1.firebasedatabase.app/",
   projectId: "obmen-market-666",
   storageBucket: "obmen-market-666.appspot.com",
   messagingSenderId: "755387476175",
@@ -29,14 +29,12 @@ export const db = app.database();
 /// OFFERS
 
 export const db_offer = app.database(
-  "https://test-obmenmarket-offers.europe-west1.firebasedatabase.app/"
+  "https://obmenmarket-offers.europe-west1.firebasedatabase.app/"
 );
 
 /// CHAT
 
-export const db_chat = app.database(
-  "https://test-obmenmarket-chat.firebaseio.com/"
-);
+export const db_chat = app.database("https://obmenmarket-chat.firebaseio.com/");
 
 /// NOTIFICATIONS
 
