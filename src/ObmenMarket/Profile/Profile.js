@@ -41,6 +41,7 @@ const Profile = ({
   ownerID,
   profile,
   myLotsPage,
+  myLotList,
   setSiteTitle,
   getProfile,
   logout,
@@ -93,11 +94,13 @@ const Profile = ({
               handleEdit={() => setIsEdit(!isEdit)}
             />
 
-            <div className="profile_titles">
-              <div className="titles_title">
-                {isOwner ? "Мои лоты" : "Лоты автора"}
+            {myLotList.length > 0 && (
+              <div className="profile_titles">
+                <div className="titles_title">
+                  {isOwner ? "Мои лоты" : "Лоты автора"}
+                </div>
               </div>
-            </div>
+            )}
 
             <LotListCont profileLots />
           </>
@@ -116,6 +119,7 @@ const mstp = (state) => ({
   ownerID: state.auth.ownerID,
   profile: state.home.profile,
   myLotsPage: state.lots.myLotsPage,
+  myLotList: state.lots.myLotList,
 });
 
 export const ProfileCont = connect(mstp, {

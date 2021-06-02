@@ -230,8 +230,8 @@ export const getToastList = (ownerID) => (dispatch) => {
 
 const searchWorder = (query, param) => {
   const phraser = {
-    none: `По вашему запросу ничего к не найдено(((`,
-    ok: `Результаты поиска по запросу1111:`,
+    none: `По вашему запросу ничего не найдено:`,
+    ok: `Результаты поиска по запросу:`,
   };
 
   return phraser[param];

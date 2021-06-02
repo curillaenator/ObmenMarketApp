@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { ButtonIcon } from "../Button/ButtonIcon";
 
 import {
-  handleSearchFilters,
+  // handleSearchFilters,
   setLastSearch,
 } from "../../../Redux/Reducers/home";
 
@@ -19,8 +19,7 @@ const ResultMessage = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: ${({ isOn }) => (isOn ? "28px" : "0px")};
-  margin-bottom: ${({ isOn }) => (isOn ? "40px" : "0px")};
+  margin-bottom: 40px;
   transition: 0.12s linear;
   overflow: hidden;
 
@@ -138,8 +137,8 @@ const Wrapper = styled.div`
 const Filters = ({
   isSearching,
   lastSearch,
-  filterSelected,
-  handleSearchFilters,
+  // filterSelected,
+  // handleSearchFilters,
   onSearchMsg,
   setLastSearch,
   resetSearchResult,
@@ -165,18 +164,20 @@ const Filters = ({
 
   return (
     <Wrapper>
-      <ResultMessage isOn={!!lastSearch && !isSearching}>
-        <div className="result_message">{onSearchMsg}</div>
-        <div className="result_message" style={{ color: colors.primary }}>
-          {lastSearch}
-        </div>
+      {!!lastSearch && !isSearching && (
+        <ResultMessage>
+          <div className="result_message">{`${onSearchMsg} ${lastSearch}`}</div>
+          {/* <div className="result_message" style={{ color: colors.primary }}>
+            {lastSearch}
+          </div> */}
 
-        <ButtonIcon
-          icon={icons.cancel}
-          handler={resetSearchHandler}
-          disabled={isSearching}
-        />
-      </ResultMessage>
+          <ButtonIcon
+            icon={icons.cancel}
+            handler={resetSearchHandler}
+            disabled={isSearching}
+          />
+        </ResultMessage>
+      )}
 
       {/* <FiltersStyled>
         {width && height && <Shape width={width + 32} height={height} bg />}
@@ -209,11 +210,11 @@ const mstp = (state) => ({
   isSearching: state.home.isSearching,
   lastSearch: state.home.lastSearch,
   onSearchMsg: state.home.onSearchMsg,
-  filterSelected: state.home.filterSelected,
+  // filterSelected: state.home.filterSelected,
 });
 
 export const FiltersCont = connect(mstp, {
-  handleSearchFilters,
+  // handleSearchFilters,
   setLastSearch,
   resetSearchResult,
 })(Filters);
