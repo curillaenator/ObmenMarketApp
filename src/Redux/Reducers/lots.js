@@ -141,7 +141,7 @@ const setAllLotsLoaded = (payload) => ({ type: SET_ALLLOTS_LOADED, payload });
 
 export const setSearchRes = (payload) => ({ type: SET_SRCH_RES, payload });
 
-const myLotList = (lotList) => ({ type: MY_LOTLIST, lotList });
+export const myLotList = (lotList) => ({ type: MY_LOTLIST, lotList });
 const myLotsPending = (payload) => ({ type: MY_LOTS_PENDING, payload });
 const setLastProfile = (payload) => ({ type: SET_LAST_PROFILE, payload });
 export const setMyLotsPage = (payload) => ({ type: MY_LOTS_PAGE, payload });
@@ -556,7 +556,7 @@ export const removeLot = (lotID, history) => async (dispatch, getState) => {
   await batch(() => {
     dispatch(
       setNewToast(
-        "success",
+        "warning",
         toastsModel.lotDeleted.title,
         toastsModel.lotDeleted.msg,
         null

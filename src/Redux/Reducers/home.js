@@ -94,7 +94,7 @@ export const home = (state = initialState, action) => {
 
 // ACTIONs
 export const setIsMobile = (payload) => ({ type: SET_IS_MOBILE, payload });
-export const setTitle = (title) => ({ type: SET_TITLE, title });
+export const setSiteTitle = (title) => ({ type: SET_TITLE, title });
 export const setProgress = (payload) => ({ type: SET_PROGRESS, payload });
 export const setIsModalOn = (payload) => ({ type: SET_IS_MODAL_ON, payload });
 export const setFormMode = (mode) => ({ type: SET_FORM_MODE, mode });

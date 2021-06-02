@@ -36,7 +36,7 @@ export const Cta = ({
         />
       </div>
 
-      <Search icon={icons.search} ctaSearch={ctaSearch} />
+      {!isFormModeOn && <Search icon={icons.search} ctaSearch={ctaSearch} />}
     </div>
   );
 };
