@@ -24,7 +24,11 @@ import {
   setSelectedOfferID,
   acceptConfirmOffer,
 } from "../../Redux/Reducers/lots";
-import { setTitle, setFormMode, setIsModalOn } from "../../Redux/Reducers/home";
+import {
+  setSiteTitle,
+  setFormMode,
+  setIsModalOn,
+} from "../../Redux/Reducers/home";
 import { chatRoom, setChatFromLotFull } from "../../Redux/Reducers/chat";
 
 import styles from "./lotfull.module.scss";
@@ -225,7 +229,7 @@ const LotFull = ({
   lotMeta,
   getLotMeta,
   isChatOn,
-  setTitle,
+  setSiteTitle,
   updateLotFromEditForm,
   removeLot,
   onOfferCreate,
@@ -350,8 +354,8 @@ const LotFull = ({
   // change page title
 
   useEffect(() => {
-    lotMeta && setTitle(lotMeta.title);
-  }, [lotMeta, setTitle]);
+    lotMeta && setSiteTitle(lotMeta.title);
+  }, [lotMeta, setSiteTitle]);
 
   if (!lotMeta) return <Loading />;
 
@@ -454,7 +458,7 @@ const mstp = (state) => ({
 });
 
 export const LotFullCont = connect(mstp, {
-  setTitle,
+  setSiteTitle,
   setFormMode,
   getLotMeta,
   updateLotFromEditForm,

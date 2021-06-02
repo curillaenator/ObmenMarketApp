@@ -1,47 +1,52 @@
 import { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { useParams, useHistory } from "react-router-dom";
+import styled from "styled-components";
 
 import { logout, updateUserProfile } from "../../Redux/Reducers/auth";
-import { setTitle, setFormMode, getProfile } from "../../Redux/Reducers/home";
-import {
-  resetMetaState,
-  setAuthoredLots,
-  onLotCreateFromForm,
-  onLotCreateFormCancel,
-  publishNewLotFromForm,
-} from "../../Redux/Reducers/lots";
+import { setSiteTitle, getProfile } from "../../Redux/Reducers/home";
+import { resetMetaState, setAuthoredLots } from "../../Redux/Reducers/lots";
 
 import { UserInfo } from "./UserInfo";
-import { ProfileLots } from "./ProfileLots";
 import { ProfileEdit } from "./ProfileEdit";
-// import { Cta } from "../Components/CTA/CTA";
-import { FormFull } from "../Components/FormFull/FormFull";
+import { LotListCont } from "../Components/LotList/LotList";
 
-import styles from "./profile.module.scss";
+import { colors } from "../../Utils/palette";
+
+const ProfileStyled = styled.div`
+  .profile_titles {
+    display: flex;
+    align-items: center;
+
+    .titles_title {
+      text-decoration: none;
+      margin-right: 0;
+      margin-bottom: 24px;
+      font-weight: 800;
+      font-size: 28px;
+      line-height: 20px;
+      letter-spacing: -0.576px;
+      color: ${colors.primary};
+      user-select: none;
+    }
+  }
+`;
 
 const Profile = ({
   icons,
   formProfile,
-  formFullUI,
   user,
   isAuth,
-  createLotId,
-  isFormModeOn,
   isOwner,
   ownerID,
   profile,
   myLotsPage,
-  setTitle,
+  setSiteTitle,
   getProfile,
   logout,
   updateUserProfile,
-  setFormMode,
   resetMetaState,
   setAuthoredLots,
-  // onLotCreateFromForm,
-  // onLotCreateFormCancel,
-  publishNewLotFromForm,
 }) => {
   const history = useHistory();
   const { userid } = useParams();
@@ -54,29 +59,20 @@ const Profile = ({
   );
 
   useEffect(() => {
-    setFormMode(false);
     resetMetaState();
     if (!isAuth && !userid) return history.push("/login");
     if (!isAuth && userid) return getProfile(null, userid);
     if (isAuth && !userid) return getProfile(ownerID, null);
     return getProfile(ownerID, userid);
-  }, [
-    ownerID,
-    userid,
-    getProfile,
-    resetMetaState,
-    setFormMode,
-    history,
-    isAuth,
-  ]);
+  }, [ownerID, userid, getProfile, resetMetaState, history, isAuth]);
 
   useEffect(() => {
-    profile && setTitle(`${profile.username}`);
-  }, [setTitle, profile]);
+    profile && setSiteTitle(`${profile.username}`);
+  }, [setSiteTitle, profile]);
 
   return (
     profile && (
-      <div className={styles.profile}>
+      <ProfileStyled>
         {isEdit && (
           <ProfileEdit
             icons={icons}
@@ -88,53 +84,25 @@ const Profile = ({
         )}
 
         {!isEdit && profile && (
-          <div className={styles.display}>
-            {/* {isOwner && (
-              <Cta
-                icons={icons}
-                isAuth={isAuth}
-                isFormModeOn={isFormModeOn}
-                setFormMode={setFormMode}
-                createLotId={createLotId}
-                onLotCreateFromForm={onLotCreateFromForm}
-                onLotCreateFormCancel={onLotCreateFormCancel}
-              />
-            )} */}
+          <>
+            <UserInfo
+              ownerID={ownerID}
+              isOwner={isOwner}
+              profile={isOwner ? user : profile}
+              logout={logout}
+              handleEdit={() => setIsEdit(!isEdit)}
+            />
 
-            {!isFormModeOn && (
-              <>
-                <UserInfo
-                  ownerID={ownerID}
-                  isOwner={isOwner}
-                  profile={isOwner ? user : profile}
-                  logout={logout}
-                  handleEdit={() => setIsEdit(!isEdit)}
-                />
+            <div className="profile_titles">
+              <div className="titles_title">
+                {isOwner ? "Мои лоты" : "Лоты автора"}
+              </div>
+            </div>
 
-                <ProfileLots
-                  ownerID={ownerID}
-                  isOwner={isOwner}
-                  matchedID={userid}
-                />
-              </>
-            )}
-
-            {isFormModeOn && (
-              <FormFull
-                user={user}
-                ownerID={ownerID}
-                createLotId={createLotId}
-                cloudtail={true}
-                icons={icons}
-                formFullUI={formFullUI}
-                lotID={createLotId}
-                update={false}
-                formHandler={publishNewLotFromForm}
-              />
-            )}
-          </div>
+            <LotListCont profileLots />
+          </>
         )}
-      </div>
+      </ProfileStyled>
     )
   );
 };
@@ -142,26 +110,20 @@ const Profile = ({
 const mstp = (state) => ({
   icons: state.ui.icons,
   formProfile: state.ui.formProfile,
-  formFullUI: state.ui.formFull,
   user: state.auth.user,
   isAuth: state.auth.isAuth,
-  isFormModeOn: state.home.isFormModeOn,
   isOwner: state.home.isOwner,
   ownerID: state.auth.ownerID,
   profile: state.home.profile,
-  createLotId: state.lots.createLotId,
   myLotsPage: state.lots.myLotsPage,
 });
 
 export const ProfileCont = connect(mstp, {
   resetMetaState,
-  setFormMode,
+  // setFormMode,
   getProfile,
   logout,
   updateUserProfile,
   setAuthoredLots,
-  onLotCreateFromForm,
-  onLotCreateFormCancel,
-  publishNewLotFromForm,
-  setTitle,
+  setSiteTitle,
 })(Profile);

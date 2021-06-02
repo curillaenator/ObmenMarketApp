@@ -127,7 +127,6 @@ export const DropdownShare = ({
         title={title}
         active={trig}
         disabled={disabled}
-        shape={true}
         handler={() => setTrig(!trig)}
       />
 

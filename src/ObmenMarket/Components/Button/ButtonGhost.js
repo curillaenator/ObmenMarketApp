@@ -37,6 +37,8 @@ const ButtonWrap = styled.button`
     height: 100%;
     border-radius: 16px;
     background-color: ${colors.shape};
+    opacity: ${({ active }) => (active ? "1" : "0")};
+    transition: ${({ transition }) => transition}s linear;
     z-index: -10;
   }
 
@@ -72,7 +74,6 @@ export const ButtonGhost = ({
   title = "",
   icon = null,
   iconsize = 24,
-  shape = false,
   active = false,
   danger = false,
   disabled = false,
@@ -92,7 +93,7 @@ export const ButtonGhost = ({
       iconsize={iconsize}
       onClick={handler}
     >
-      {shape && active && <div className="shape"></div>}
+      <div className="shape"></div>
 
       {loader && <img className="loader" src={preloader} alt="Загрузка" />}
 
