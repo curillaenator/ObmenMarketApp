@@ -336,6 +336,24 @@ const initialState = {
         />
       </svg>
     ),
+    up: (
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          width="24" 
+          height="24" 
+          fill="none" 
+          viewBox="0 0 24 24"
+        >
+          <path 
+            fill="#D5B5FF" 
+            d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"
+          />
+          <path 
+            fill="#7000FF" 
+            d="M12.707 6.293a1 1 0 00-1.414 0l-2 2a1 1 0 001.414 1.414L11 9.414V17a1 1 0 102 0V9.414l.293.293a1 1 0 001.414-1.414l-2-2z"
+          />
+        </svg>
+    ),
     share: (
       <svg
         xmlns="http://www.w3.org/2000/svg"

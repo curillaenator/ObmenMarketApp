@@ -96,10 +96,10 @@ const BodyStyled = styled.div`
   .body_description {
     margin-bottom: 16px;
     padding: 0 8px;
-    font-weight: 500;
-    font-size: 13px;
-    line-height: 19px;
-    letter-spacing: -0.08px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 24px;
+    letter-spacing: -0.0008em;
     font-feature-settings: 'cv02' on, 'cv03' on, 'cv04' on, 'cv05' on, 'cv10' on, 'cv09' on, 'cv08' on, 'cv07' on, 'cv06' on;
     color: ${colors.fontGrey};
   }
@@ -129,17 +129,17 @@ const OfferStyled = styled.div`
   margin-bottom: 8px;
   padding: 8px;
   border-radius: 16px;
-  background-color: ${colors.primaryActive};
+  background-color: ${colors.chatbox};
   overflow: hidden;
   transition: background-color 0.08s linear;
   transition: height 0.2s ease-in-out;
 
   @media (min-width: 1024px) {
     background-color: ${({ selected }) =>
-      selected ? colors.primaryActive : "transparent"};
+      selected ? colors.chatbox : "transparent"};
 
     &:hover {
-      background-color: ${colors.primaryActive};
+      background-color: ${colors.chatbox};
     }
   }
 `;

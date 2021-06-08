@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import { store } from "./Redux/store";
 import { ToastContainer } from "react-toastify";
 import ScrollMemory from "react-router-scroll-memory";
+import { ScrollToTop } from "./ObmenMarket/Components/ScrollToTop/ScrollToTop";
 
 import { ObmenMarketApp } from "./ObmenMarket/Obmen";
 
@@ -22,6 +23,7 @@ const App = () => {
         <BrowserRouter>
           <ScrollMemory />
           <ObmenMarketApp />
+          <ScrollToTop />
           <ToastContainer
             hideProgressBar={true}
             // limit={3}

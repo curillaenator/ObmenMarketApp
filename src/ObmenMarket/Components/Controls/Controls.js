@@ -62,7 +62,9 @@ export const Controls = ({
   ];
 
   const titler = (ttl) => (!isMobile ? ttl : "");
-
+  //
+  // Almost like Hitler but Titler you know... Hooray for boobies!!! 🌖🌔
+  // 
   return (
     <div className={styles.controls}>
       <ButtonGhost

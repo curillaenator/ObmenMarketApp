@@ -329,7 +329,7 @@ const Chat = ({
           // isChatOn={isChatOn}
           dialogsOpen={
             isDialogsOn
-              ? { width: "calc(100vw - 416px)", maxWidth: "720px" }
+              ? { width: "calc(100vw - 431px)", maxWidth: "720px" }
               : { width: "0px" }
           }
           roomInfo={rooms.find((room) => room.roomID === curRoomID)}
