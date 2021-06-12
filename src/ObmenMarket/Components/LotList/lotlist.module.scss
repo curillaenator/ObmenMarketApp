@@ -39,6 +39,7 @@
   padding-top: 16px;
   border-bottom: 1px solid $spacer;
   margin-bottom: 16px;
+  transition: 0.08s ease-in-out;
 
   &::before {
     content: "";
@@ -56,6 +57,14 @@
 
   &:active::before {
     opacity: 1;
+  }
+
+  &:hover {
+    .content {
+      .title {
+        color: $primary;
+      }
+    }
   }
 
   .author {
@@ -112,6 +121,12 @@
         mask-size: cover;
         mask-repeat: no-repeat;
       }
+
+      &:hover {
+        & > img {
+          filter: grayscale(0%);
+        }
+      }
     }
 
     .title {
@@ -124,16 +139,22 @@
       line-height: 28px;
       letter-spacing: -0.4px;
       color: $fontTitle;
-      margin-bottom: 12px;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 12px 16px $primary2IdleShadow);
+      -webkit-filter: blur(0px); 
+      -moz-filter: blur(0px); 
+      -ms-filter: blur(0px);
+      filter:progid:DXImageTransform.Microsoft.Blur(PixelRadius='0');
+      transition: 0.08s ease-in-out;
     }
 
     .description {
       overflow-y: hidden;
       min-height: 66px;
       font-size: 14px;
-      line-height: 22px;
+      line-height: 1.7em;
       /* or 143% */
-      letter-spacing: -0.08px;
+      letter-spacing: -0.0008em;
       color: $fontGrey;
       margin-bottom: 22px;
       display: -webkit-box;

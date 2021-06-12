@@ -3,13 +3,14 @@ import { useHistory, useLocation } from "react-router-dom";
 import { connect } from "react-redux";
 
 import {
-  setTitle,
+  setSiteTitle,
   setFormMode,
   setProfile,
   ctaSearch,
 } from "../../Redux/Reducers/home";
 
 import {
+  myLotList,
   resetMetaState,
   onLotCreateFromForm,
   onLotCreateFormCancel,
@@ -33,11 +34,12 @@ const Home = ({
   formFullUI,
   isFormModeOn,
   isSearching,
-  searchResults,
-  setTitle,
+  // searchResults,
+  setSiteTitle,
   createLotId,
   setFormMode,
   setProfile,
+  myLotList,
   onLotCreateFromForm,
   onLotCreateFormCancel,
   publishNewLotFromForm,
@@ -76,9 +78,10 @@ const Home = ({
   useEffect(() => {
     resetMetaState();
     setProfile(null);
-  }, [resetMetaState, setProfile]);
+    myLotList([]);
+  }, [resetMetaState, setProfile, myLotList]);
 
-  useEffect(() => setTitle("Обмен.маркет"), [setTitle]);
+  useEffect(() => setSiteTitle("Обмен.маркет"), [setSiteTitle]);
 
   return (
     <div className={styles.home}>
@@ -133,17 +136,18 @@ const mstp = (state) => ({
   user: state.auth.user,
   ownerID: state.auth.ownerID,
   isSearching: state.home.isSearching,
-  searchResults: state.lots.searchResults,
+  // searchResults: state.lots.searchResults,
   formFullUI: state.ui.formFull,
   isFormModeOn: state.home.isFormModeOn,
   createLotId: state.lots.createLotId,
 });
 
 export const HomeCont = connect(mstp, {
-  setTitle,
+  setSiteTitle,
   resetMetaState,
   setFormMode,
   setProfile,
+  myLotList,
   onLotCreateFromForm,
   onLotCreateFormCancel,
   publishNewLotFromForm,

@@ -2,6 +2,7 @@ import { useLocation } from "react-router-dom";
 
 import { ButtonGhost } from "../Button/ButtonGhost";
 import { DropdownShare } from "../Dropdown/DropdownShare";
+import { DropdownDel } from "../Dropdown/DropdownDel";
 
 import cloudtailpic from "../../../Assets/Icons/cloudtail.svg";
 
@@ -61,7 +62,9 @@ export const Controls = ({
   ];
 
   const titler = (ttl) => (!isMobile ? ttl : "");
-
+  //
+  // Almost like Hitler but Titler you know... Hooray for boobies!!! 🌖🌔
+  // 
   return (
     <div className={styles.controls}>
       <ButtonGhost
@@ -89,7 +92,6 @@ export const Controls = ({
               handler={() => setFormMode(!isFormModeOn)}
               icon={icons.edit}
               active={isFormModeOn}
-              shape={true}
             />
 
             {isFormModeOn && (
@@ -99,12 +101,13 @@ export const Controls = ({
         )}
 
         {isAuth && (ownerID === lotMeta.uid || isAdmin) && (
-          <ButtonGhost
+          <DropdownDel
             title={titler("Удалить")}
-            handler={() => removeLot(lotMeta.postid, history)}
+            warntext="Удалить пост?"
             icon={icons.delete}
-            danger={true}
+            danger
             disabled={isFormModeOn}
+            handler={() => removeLot(lotMeta.postid, history)}
           />
         )}
       </div>

@@ -41,7 +41,13 @@ const Lot = ({ data }) => {
   );
 };
 
-const Pagination = ({ icons, lotsPending, allLotsLoaded, handleNextPage }) => {
+const Pagination = ({
+  icons,
+  profileLots,
+  lotsPending,
+  allLotsLoaded,
+  handleNextPage,
+}) => {
   return (
     <div className={styles.lotlist_pagination}>
       {!allLotsLoaded && (
@@ -56,7 +62,7 @@ const Pagination = ({ icons, lotsPending, allLotsLoaded, handleNextPage }) => {
         />
       )}
 
-      {allLotsLoaded && (
+      {!profileLots && allLotsLoaded && (
         <div className={styles.message}>Все лоты загружены!</div>
       )}
     </div>
@@ -65,7 +71,7 @@ const Pagination = ({ icons, lotsPending, allLotsLoaded, handleNextPage }) => {
 
 const LotList = ({
   icons,
-  myLots = false, // false for main page, true for profile page
+  profileLots = false, // false for main page, true for profile page
 
   // main page params (are used when myLots is false)
   lotList,
@@ -95,11 +101,11 @@ const LotList = ({
 
   useEffect(() => {
     if (searchResults) return setDisplay(searchResults);
-    if (myLots) return setDisplay(myLotList);
+    if (profileLots) return setDisplay(myLotList);
     return setDisplay(lotList);
-  }, [searchResults, myLots, myLotList, lotList]);
+  }, [searchResults, profileLots, myLotList, lotList]);
 
-  const handleNextPage = myLots
+  const handleNextPage = profileLots
     ? () => setMyLotsPage(myLotsPage + myLotsPerPage)
     : () => getPaginationNextPage(endBeforeID);
 
@@ -116,8 +122,11 @@ const LotList = ({
       {!searchResults && (
         <Pagination
           icons={icons}
-          allLotsLoaded={myLots ? myLotList.length < myLotsPage : allLotsLoaded}
-          lotsPending={myLots ? myLotsPending : lotsPending}
+          profileLots={profileLots}
+          allLotsLoaded={
+            profileLots ? myLotList.length < myLotsPage : allLotsLoaded
+          }
+          lotsPending={profileLots ? myLotsPending : lotsPending}
           handleNextPage={handleNextPage}
         />
       )}
