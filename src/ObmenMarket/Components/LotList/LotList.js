@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import ImageShadow from "react-image-shadow";
-
+import { motion } from "framer-motion"
 import {
   getPaginationFirstPage,
   getPaginationNextPage,
@@ -14,30 +14,62 @@ import { StatusBar } from "../StatusBar/StatusBar";
 
 import styles from "./lotlist.module.scss";
 
+
+
 const Lot = ({ data }) => {
+
+  const lotContainer = {
+    idle: { opacity: 1 },
+    hover: { opacity: 1 },
+    tap: {
+      scale: 0.8,
+      opacity: 0,
+      transition: {
+        when: "beforeChildren",
+        staggerChildren: 0.3,
+      },
+    },
+    exit: {
+      opacity: 0
+    },
+  };
+  
+  const lotPhotoLink = {
+    idle: {
+      scale: 1,
+      y: 0
+    },
+    hover: {
+      scale: 1.024,
+      y: 0,
+    }
+  };
+
   return (
-    <div className={styles.lot}>
-      <Link to={`/profile/${data.uid}`} className={styles.author}>
-        <img src={data.avatar} alt={data.username} draggable="false" />
-        <p>{data.username}</p>
-      </Link>
+      <motion.div className={styles.lot} variants={lotContainer} initial="idle" whileHover="hover" whileTap="tap">
+        <Link to={`/profile/${data.uid}`} className={styles.author}>
+          <img src={data.avatar} alt={data.username} draggable="false" />
+          <p>{data.username}</p>
+        </Link>
 
-      <Link to={`/posts/${data.postid}`} className={styles.content}>
-        <ImageShadow
-          src={data.photoURLs[0]}
-          className={styles.photo}
-          shadowRadius="16"
-          shadowBlur="20"
-          width="100%"
-        />
+        <Link to={`/posts/${data.postid}`} className={styles.content}>
+          <motion.div variants={lotPhotoLink}>
+          <ImageShadow
+            src={data.photoURLs[0]}
+            className={styles.photo}
+            shadowRadius="16"
+            shadowBlur="20"
+            width="100%"
+          />
+          </motion.div>
 
-        <div className={styles.title}>{data.title}</div>
+          <div className={styles.title}>{data.title}</div>
 
-        <div className={styles.description}>{data.description}</div>
+          <div className={styles.description}>{data.description}</div>
 
-        <StatusBar offersQty={data.offersQty} expiryDate={data.expireDate} />
-      </Link>
-    </div>
+          <StatusBar offersQty={data.offersQty} expiryDate={data.expireDate} />
+        </Link>
+      </motion.div>
   );
 };
 

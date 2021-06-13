@@ -94,7 +94,7 @@ const ButtonWrap = styled.button`
     font-size: ${(props) => (props.fontsize ? props.fontsize + "px" : "14px")};
     line-height: 24px;
     letter-spacing: -0.149333px;
-    transition: 0.08s linear;
+    transition: 0.08s easeInOut;
 
     .subtitle {
       font-weight: 500;

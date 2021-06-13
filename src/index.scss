@@ -57,4 +57,12 @@ input[type="number"]::-webkit-inner-spin-button {
   appearance: none;
 }
 
+.react-scrolltop-button {
+  &::content {
+    position: fixed;
+    top: 0px;
+    vertical-align: top;
+  }
+}
+
 @import "./toasts.scss";

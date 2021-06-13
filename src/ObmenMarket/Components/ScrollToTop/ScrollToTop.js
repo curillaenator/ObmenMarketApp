@@ -4,6 +4,8 @@ import { colors } from "../../../Utils/palette";
 
 const StyledScrollTop = styled(ScrollTop)`
     position: fixed;
+    display: none;
+    align-items: flex-start;
     left: 0px;
     bottom: 0px;
     background-color: ${colors.chatbox};
@@ -12,13 +14,22 @@ const StyledScrollTop = styled(ScrollTop)`
     height: 100vh;
     border-radius: 0;
     transition: 0.32s ease-in-out;
+
+    &:hover {
+        background-color: #f3f1f5;
+        color: ${colors.primary};
+    }
+
+    @media (min-width: 1140px) {
+        display: flex;
+    }
 `;
 
 export const ScrollToTop = ( props ) => {
 
     return (
         <StyledScrollTop
-            title="наверх"
+            text="наверх"
             distance={400}
             breakpoint={1140}
             className="scroll-to-top"
