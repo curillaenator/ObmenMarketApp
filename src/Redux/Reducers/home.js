@@ -7,6 +7,7 @@ import { setLotOffers, setSelectedOfferID, setSearchRes } from "./lots";
 
 const SET_TITLE = "home/SET_TITLE";
 const SET_IS_MOBILE = "home/SET_IS_MOBILE";
+const SET_SCROLL = "home/SET_SCROLL";
 const SET_PROGRESS = "home/SET_PROGRESS";
 const SET_FORM_MODE = "home/SET_FORM_MODE";
 const SET_IS_OWNER = "home/SET_IS_OWNER";
@@ -24,6 +25,7 @@ const SET_ONSEARCH_MSG = "home/SET_ONSEARCH_MSG";
 
 const initialState = {
   isMobile: false,
+  scroll: false,
   title: "",
   progress: null,
   isFormModeOn: false,
@@ -45,6 +47,9 @@ export const home = (state = initialState, action) => {
   switch (action.type) {
     case SET_IS_MOBILE:
       return { ...state, isMobile: action.payload };
+
+    case SET_SCROLL:
+      return { ...state, scroll: action.payload };
 
     case SET_TITLE:
       return { ...state, title: action.title };
@@ -94,6 +99,7 @@ export const home = (state = initialState, action) => {
 
 // ACTIONs
 export const setIsMobile = (payload) => ({ type: SET_IS_MOBILE, payload });
+export const setScroll = (payload) => ({ type: SET_SCROLL, payload });
 export const setSiteTitle = (title) => ({ type: SET_TITLE, title });
 export const setProgress = (payload) => ({ type: SET_PROGRESS, payload });
 export const setIsModalOn = (payload) => ({ type: SET_IS_MODAL_ON, payload });

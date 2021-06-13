@@ -317,18 +317,9 @@ const LotFull = ({
   // handle queries from url
 
   useEffect(() => {
-    if (!isAuth) {
-      console.log("!auth");
+    if (!isAuth) return null;
 
-      return null;
-      // return history.push(`/posts/${lotid}`);
-    }
-
-    if (!lotMeta || !query.has("action")) {
-      console.log("!lotMeta & !action");
-
-      return null;
-    }
+    if (!lotMeta || !query.has("action")) return null;
 
     if (query.has("action") && !querySelector[query.get("action")]) {
       console.log("bad link query");
@@ -377,7 +368,7 @@ const LotFull = ({
       {!isFormModeOn && (
         <div className={styles.lot}>
           <div className={styles.detailes}>
-            <Gallery lotPhotos={lotMeta.photoLinks} />
+            <Gallery photos={lotMeta.photoLinks} />
 
             <div className={styles.status}>
               <StatusBar

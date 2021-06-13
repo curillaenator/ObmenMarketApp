@@ -264,7 +264,7 @@ export const OfferCard = ({
       <BodyStyled ref={bodyRef}>
         <div className="body_title">{offerMeta.name}</div>
 
-        <Gallery lotPhotos={offerMeta.photoURLs} />
+        <Gallery photos={offerMeta.photoURLs} />
 
         <div className="body_author">
           <Author

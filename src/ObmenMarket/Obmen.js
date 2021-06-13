@@ -12,6 +12,9 @@ import { slidein } from "../Utils/toasts";
 import { LoadingFS } from "./Components/Loading/Loading";
 import { HeaderCont } from "./Components/Header/Header";
 import { ToastComponent } from "./Components/Toast/Toast";
+// import { ButtonScrollTop } from "./Components/Button/ButtonScrollTop";
+import { ScrollToTop } from "./Components/ScrollToTop/ScrollToTop";
+
 import { LoginCont } from "./Login/Login";
 import { HomeCont } from "./Home/Home";
 import { ProfileCont } from "./Profile/Profile";
@@ -22,11 +25,17 @@ import { ChatMobileCont } from "./Components/Chat/ChatMobile";
 
 import { authCheck, onConnectDisconnect } from "../Redux/Reducers/auth";
 import { subRoomsMsgs } from "../Redux/Reducers/chat";
-import { setIsModalOn, setProgress, setIsMobile } from "../Redux/Reducers/home";
+import {
+  setIsModalOn,
+  setProgress,
+  setIsMobile,
+  setScroll,
+} from "../Redux/Reducers/home";
 
 import styles from "./obmen.module.scss";
 
 const ObmenMarket = ({
+  scroll,
   isMobile,
   title,
   icons,
@@ -38,6 +47,7 @@ const ObmenMarket = ({
   progress,
   isToast,
   setIsMobile,
+  setScroll,
   setProgress,
   authCheck,
   setIsModalOn,
@@ -51,14 +61,18 @@ const ObmenMarket = ({
 
   useEffect(() => {
     const isMobileSetter = () => {
-      window.innerWidth >= 768 && setIsMobile(false);
-      window.innerWidth < 768 && setIsMobile(true);
+      window.innerWidth >= 768 ? setIsMobile(false) : setIsMobile(true);
+    };
+
+    const scrollSetter = () => {
+      window.scrollY > 400 ? setScroll(true) : setScroll(false);
     };
 
     isMobileSetter();
 
     window.addEventListener("resize", isMobileSetter);
-  }, [setIsMobile]);
+    window.addEventListener("scroll", scrollSetter);
+  }, [setIsMobile, setScroll]);
 
   // change title by state title
 
@@ -137,6 +151,8 @@ const ObmenMarket = ({
         />
       </div>
 
+      <ScrollToTop icon={icons.up} title="Наверх" />
+
       <RemoveScroll enabled={isChatOn}>
         {isInitialized && isAuth && !isMobile && <Chat />}
         {isInitialized && isAuth && isMobile && <ChatMobileCont />}
@@ -162,6 +178,7 @@ const ObmenMarket = ({
 };
 const mstp = (state) => ({
   isMobile: state.home.isMobile,
+  scroll: state.home.scroll,
   title: state.home.title,
   icons: state.ui.icons,
   progress: state.home.progress,
@@ -175,6 +192,7 @@ const mstp = (state) => ({
 
 export const ObmenMarketApp = connect(mstp, {
   setIsMobile,
+  setScroll,
   setProgress,
   authCheck,
   setIsModalOn,

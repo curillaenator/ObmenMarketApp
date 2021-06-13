@@ -31,6 +31,7 @@ export const colors = {
   formSpacer: "#e1e1e8",
   spacer: "#d8d8d8",
   galleryTint: "#413f46ab",
+  galleryTintOpaque: "#413f4644",
   modalfill: "#080314e5",
   disabledText: "#d4d1eb",
   disabledIdle: "#f9f8ff",
