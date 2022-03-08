@@ -8,7 +8,7 @@
 
 <br />
 
-## Service for exchange anythig you want (Demo WIP)
+## Service for exchange anything you want (Demo WIP)
 
 [Watch deployed](https://obmen.market)
 
