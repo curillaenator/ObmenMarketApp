@@ -8,6 +8,20 @@
 
 <br />
 
->### **Обмен.маркет** это онлайн-сервис, на котором легко и удобно меняться вещами
->
->[Открыть сайт](https://obmen.market)
+## Servise for exchange anythig you want (Demo WIP)
+
+[Watch deployed](https://obmen.market)
+
+## Screenshots
+
+<div align="center">
+  <img src="/screenshots/image1.jpg">
+  <img src="/screenshots/image2.jpg">
+  <img src="/screenshots/image3.jpg">
+  <img src="/screenshots/image4.jpg">
+</div>
+
+## Local start:
+
+- npm install
+- npm start
